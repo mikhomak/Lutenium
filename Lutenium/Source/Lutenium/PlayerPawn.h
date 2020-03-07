@@ -3,10 +3,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "LuteniumPawn.generated.h"
+#include "PlayerPawn.generated.h"
 
 UCLASS(Config=Game)
-class ALuteniumPawn : public APawn
+class APlayerPawn : public APawn
 {
 	GENERATED_BODY()
 
@@ -22,7 +22,7 @@ class ALuteniumPawn : public APawn
 	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* Camera;
 public:
-	ALuteniumPawn();
+	APlayerPawn();
 
 	// Begin AActor overrides
 	virtual void Tick(float DeltaSeconds) override;
@@ -39,30 +39,39 @@ protected:
 	void ThrustInput(float Val);
 	
 	/** Bound to the vertical axis */
-	void MoveUpInput(float Val);
+	void PitchInput(float Val);
 
 	/** Bound to the horizontal axis */
-	void MoveRightInput(float Val);
+	void YawnInput(float Val);
 
-	void Roll(float Val);
+	void RollInput(float Val);
 
 private:
 
 	/** How quickly forward speed changes */
-	UPROPERTY(Category=Plane, EditAnywhere)
-	float Acceleration;
+	UPROPERTY(Category=Speed, EditAnywhere)
+	float ThrustAcceleration;
 
-	/** How quickly pawn can steer */
-	UPROPERTY(Category=Plane, EditAnywhere)
-	float TurnSpeed;
 
 	/** Max forward speed */
-	UPROPERTY(Category = Pitch, EditAnywhere)
-	float MaxSpeed;
+	UPROPERTY(Category = Speed, EditAnywhere)
+		float ThrustMaxSpeed;
 
 	/** Min forward speed */
-	UPROPERTY(Category=Yaw, EditAnywhere)
-	float MinSpeed;
+	UPROPERTY(Category = Speed, EditAnywhere)
+		float ThrustMinSpeed;
+
+	/** How quickly pawn can steer */
+	UPROPERTY(Category=Speed, EditAnywhere)
+	float YawnSpeed;
+
+	UPROPERTY(Category = Speed, EditAnywhere)
+	float RollSpeed;
+	
+	UPROPERTY(Category = Speed, EditAnywhere)
+		float PitchSpeed;
+
+
 
 	/** Current forward speed */
 	float CurrentForwardSpeed;

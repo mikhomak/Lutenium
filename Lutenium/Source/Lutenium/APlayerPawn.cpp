@@ -1,6 +1,6 @@
 // Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
 
-#include "LuteniumPawn.h"
+#include "PlayerPawn.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -8,8 +8,9 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Engine/World.h"
 #include "Engine/StaticMesh.h"
+#include "GenericPlatform/GenericPlatformMath.h"
 
-ALuteniumPawn::ALuteniumPawn()
+APlayerPawn::APlayerPawn()
 {
 	// Structure to hold one-time initialization
 	struct FConstructorStatics
@@ -32,7 +33,7 @@ ALuteniumPawn::ALuteniumPawn()
 	SpringArm->SetupAttachment(RootComponent);	// Attach SpringArm to RootComponent
 	SpringArm->TargetArmLength = 500.0f; // The camera follows at this distance behind the character	
 	SpringArm->SocketOffset = FVector(0.f,0.f,60.f);
-	SpringArm->bEnableCameraLag = false;	// Do not allow camera to lag
+	SpringArm->bEnableCameraLag = true;	// Do not allow camera to lag
 	SpringArm->CameraLagSpeed = 15.f;
 
 	// Create camera component 
@@ -41,14 +42,16 @@ ALuteniumPawn::ALuteniumPawn()
 	Camera->bUsePawnControlRotation = false; // Don't rotate camera with controller
 
 	// Set handling parameters
-	Acceleration = 500.f;
-	TurnSpeed = 50.f;
-	MaxSpeed = 4000.f;
-	MinSpeed = 500.f;
+	ThrustAcceleration = 500.f;
+	ThrustMaxSpeed = 2000.f;
+	ThrustMinSpeed = 50.f;
+	YawnSpeed = 50.f;
+	RollSpeed = 100.f;
 	CurrentForwardSpeed = 500.f;
+	PitchSpeed = 80.f;
 }
 
-void ALuteniumPawn::Tick(float DeltaSeconds)
+void APlayerPawn::Tick(float DeltaSeconds)
 {
 	const FVector LocalMove = FVector(CurrentForwardSpeed * DeltaSeconds, 0.f, 0.f);
 
@@ -68,7 +71,7 @@ void ALuteniumPawn::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 }
 
-void ALuteniumPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
+void APlayerPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
 {
 	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
@@ -78,46 +81,56 @@ void ALuteniumPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* O
 }
 
 
-void ALuteniumPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
+void APlayerPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
     // Check if PlayerInputComponent is valid (not NULL)
 	check(PlayerInputComponent);
 
 	// Bind our control axis' to callback functions
-	PlayerInputComponent->BindAxis("Thrust", this, &ALuteniumPawn::ThrustInput);
-	PlayerInputComponent->BindAxis("Pitch", this, &ALuteniumPawn::MoveUpInput);
-	PlayerInputComponent->BindAxis("Yawn", this, &ALuteniumPawn::MoveRightInput);
-	PlayerInputComponent->BindAxis("Roll", this, &ALuteniumPawn::Roll);
+	PlayerInputComponent->BindAxis("Thrust", this, &APlayerPawn::ThrustInput);
+	PlayerInputComponent->BindAxis("Pitch", this, &APlayerPawn::PitchInput);
+	PlayerInputComponent->BindAxis("Yawn", this, &APlayerPawn::YawnInput);
+	PlayerInputComponent->BindAxis("Roll", this, &APlayerPawn::RollInput);
 }
 
-void ALuteniumPawn::ThrustInput(float Val)
+void APlayerPawn::ThrustInput(float Val)
 {
 	// Is there any input?
 	bool bHasInput = !FMath::IsNearlyEqual(Val, 0.f);
 	// If input is not held down, reduce speed
-	float CurrentAcc = bHasInput ? (Val * Acceleration) : (-0.5f * Acceleration);
+	float CurrentAcc = bHasInput ? (Val * ThrustAcceleration) : (-0.5f * ThrustAcceleration);
 	// Calculate new speed
 	float NewForwardSpeed = CurrentForwardSpeed + (GetWorld()->GetDeltaSeconds() * CurrentAcc);
 	// Clamp between MinSpeed and MaxSpeed
-	CurrentForwardSpeed = FMath::Clamp(NewForwardSpeed, MinSpeed, MaxSpeed);
+	CurrentForwardSpeed = FMath::Clamp(NewForwardSpeed, ThrustMinSpeed, ThrustMaxSpeed);
+	// If the plane is not accelarating 
+	if (Val > 0.4f) {
+		SpringArm->bUsePawnControlRotation = false;
+	}
+	else {
+		SpringArm->bUsePawnControlRotation = true;
+	}
 }
 
-void ALuteniumPawn::MoveUpInput(float Val)
+void APlayerPawn::PitchInput(float Val)
 {
 	// Target pitch speed is based in input
-	float TargetPitchSpeed = (Val * TurnSpeed * -1.f);
+	float TargetPitchSpeed = (Val * PitchSpeed * -1.f);
 
 	// When steering, we decrease pitch slightly
 	TargetPitchSpeed += (FMath::Abs(CurrentYawSpeed) * -0.2f);
 
 	// Smoothly interpolate to target pitch speed
 	CurrentPitchSpeed = FMath::FInterpTo(CurrentPitchSpeed, TargetPitchSpeed, GetWorld()->GetDeltaSeconds(), 2.f);
+	
+	
+
 }
 
-void ALuteniumPawn::MoveRightInput(float Val)
+void APlayerPawn::YawnInput(float Val)
 {
 	// Target yaw speed is based on input
-	float TargetYawSpeed = (Val * TurnSpeed);
+	float TargetYawSpeed = (Val * YawnSpeed);
 
 	// Smoothly interpolate to target yaw speed
 	CurrentYawSpeed = FMath::FInterpTo(CurrentYawSpeed, TargetYawSpeed, GetWorld()->GetDeltaSeconds(), 2.f);
@@ -130,7 +143,7 @@ void ALuteniumPawn::MoveRightInput(float Val)
 
 }
 
-void ALuteniumPawn::Roll(float Val) {
+void APlayerPawn::RollInput(float Val) {
 
-	CurrentRollSpeed = FMath::FInterpTo(CurrentRollSpeed, Val * TurnSpeed, GetWorld()->GetDeltaSeconds(), 2.f);
+	CurrentRollSpeed = FMath::FInterpTo(CurrentRollSpeed, Val * RollSpeed, GetWorld()->GetDeltaSeconds(), 2.f);
 }
