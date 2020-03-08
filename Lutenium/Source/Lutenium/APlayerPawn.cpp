@@ -105,10 +105,12 @@ void APlayerPawn::ThrustInput(float Val)
 	CurrentForwardSpeed = FMath::Clamp(NewForwardSpeed, ThrustMinSpeed, ThrustMaxSpeed);
 	// If the plane is not accelarating 
 	if (Val > 0.4f) {
-		SpringArm->bUsePawnControlRotation = false;
+		SpringArm->bInheritPitch = false;
+		//SpringArm->bUsePawnControlRotation = false;
 	}
 	else {
-		SpringArm->bUsePawnControlRotation = true;
+		SpringArm->bInheritPitch = true;
+		//SpringArm->bUsePawnControlRotation = true;
 	}
 }
 
