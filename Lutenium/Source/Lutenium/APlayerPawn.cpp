@@ -14,7 +14,6 @@
 
 APlayerPawn::APlayerPawn()
 {
-	// Structure to hold one-time initialization
 	struct FConstructorStatics
 	{
 		ConstructorHelpers::FObjectFinderOptional<UStaticMesh> PlaneMesh;
@@ -25,12 +24,10 @@ APlayerPawn::APlayerPawn()
 	};
 	static FConstructorStatics ConstructorStatics;
 
-	// Create static mesh component
 	PlaneMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlaneMesh0"));
 	PlaneMesh->SetStaticMesh(ConstructorStatics.PlaneMesh.Get());	// Set static mesh
 	RootComponent = PlaneMesh;
 
-	// Create a spring arm component
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm0"));
 	SpringArm->SetupAttachment(RootComponent);	// Attach SpringArm to RootComponent
 	SpringArm->TargetArmLength = 500.0f; // The camera follows at this distance behind the character	
@@ -38,7 +35,6 @@ APlayerPawn::APlayerPawn()
 	SpringArm->bEnableCameraLag = true;	// Do not allow camera to lag
 	SpringArm->CameraLagSpeed = 15.f;
 
-	// Create camera component 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera0"));
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);	// Attach the camera
 	Camera->bUsePawnControlRotation = false; // Don't rotate camera with controller
@@ -50,7 +46,6 @@ APlayerPawn::APlayerPawn()
 void APlayerPawn::Tick(float DeltaSeconds)
 {
 
-	// Call any parent class Tick implementation
 	Super::Tick(DeltaSeconds);
 }
 
