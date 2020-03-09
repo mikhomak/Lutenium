@@ -9,6 +9,8 @@
 #include "Engine/World.h"
 #include "Engine/StaticMesh.h"
 #include "GenericPlatform/GenericPlatformMath.h"
+#include "PlaneMovementComponent.h"
+
 
 APlayerPawn::APlayerPawn()
 {
@@ -41,31 +43,12 @@ APlayerPawn::APlayerPawn()
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);	// Attach the camera
 	Camera->bUsePawnControlRotation = false; // Don't rotate camera with controller
 
-	// Set handling parameters
-	ThrustAcceleration = 500.f;
-	ThrustMaxSpeed = 2000.f;
-	ThrustMinSpeed = 50.f;
-	YawnSpeed = 50.f;
-	RollSpeed = 100.f;
-	CurrentForwardSpeed = 500.f;
-	PitchSpeed = 80.f;
+	PlaneMovement = CreateDefaultSubobject<UPlaneMovementComponent>(TEXT("PlayerMovement0"));
+
 }
 
 void APlayerPawn::Tick(float DeltaSeconds)
 {
-	const FVector LocalMove = FVector(CurrentForwardSpeed * DeltaSeconds, 0.f, 0.f);
-
-	// Move plan forwards (with sweep so we stop when we collide with things)
-	AddActorLocalOffset(LocalMove, true);
-
-	// Calculate change in rotation this frame
-	FRotator DeltaRotation(0,0,0);
-	DeltaRotation.Pitch = CurrentPitchSpeed * DeltaSeconds;
-	DeltaRotation.Yaw = CurrentYawSpeed * DeltaSeconds;
-	DeltaRotation.Roll = CurrentRollSpeed * DeltaSeconds;
-
-	// Rotate plane
-	AddActorLocalRotation(DeltaRotation);
 
 	// Call any parent class Tick implementation
 	Super::Tick(DeltaSeconds);
@@ -87,65 +70,8 @@ void APlayerPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputCo
 	check(PlayerInputComponent);
 
 	// Bind our control axis' to callback functions
-	PlayerInputComponent->BindAxis("Thrust", this, &APlayerPawn::ThrustInput);
-	PlayerInputComponent->BindAxis("Pitch", this, &APlayerPawn::PitchInput);
-	PlayerInputComponent->BindAxis("Yawn", this, &APlayerPawn::YawnInput);
-	PlayerInputComponent->BindAxis("Roll", this, &APlayerPawn::RollInput);
-}
-
-void APlayerPawn::ThrustInput(float Val)
-{
-	// Is there any input?
-	bool bHasInput = !FMath::IsNearlyEqual(Val, 0.f);
-	// If input is not held down, reduce speed
-	float CurrentAcc = bHasInput ? (Val * ThrustAcceleration) : (-0.5f * ThrustAcceleration);
-	// Calculate new speed
-	float NewForwardSpeed = CurrentForwardSpeed + (GetWorld()->GetDeltaSeconds() * CurrentAcc);
-	// Clamp between MinSpeed and MaxSpeed
-	CurrentForwardSpeed = FMath::Clamp(NewForwardSpeed, ThrustMinSpeed, ThrustMaxSpeed);
-	// If the plane is not accelarating 
-	if (Val > 0.4f) {
-		SpringArm->bInheritPitch = false;
-		//SpringArm->bUsePawnControlRotation = false;
-	}
-	else {
-		SpringArm->bInheritPitch = true;
-		//SpringArm->bUsePawnControlRotation = true;
-	}
-}
-
-void APlayerPawn::PitchInput(float Val)
-{
-	// Target pitch speed is based in input
-	float TargetPitchSpeed = (Val * PitchSpeed * -1.f);
-
-	// When steering, we decrease pitch slightly
-	TargetPitchSpeed += (FMath::Abs(CurrentYawSpeed) * -0.2f);
-
-	// Smoothly interpolate to target pitch speed
-	CurrentPitchSpeed = FMath::FInterpTo(CurrentPitchSpeed, TargetPitchSpeed, GetWorld()->GetDeltaSeconds(), 2.f);
-	
-	
-
-}
-
-void APlayerPawn::YawnInput(float Val)
-{
-	// Target yaw speed is based on input
-	float TargetYawSpeed = (Val * YawnSpeed);
-
-	// Smoothly interpolate to target yaw speed
-	CurrentYawSpeed = FMath::FInterpTo(CurrentYawSpeed, TargetYawSpeed, GetWorld()->GetDeltaSeconds(), 2.f);
-
-	// Is there any left/right input?
-	//const bool bIsTurning = FMath::Abs(Val) > 0.2f;
-
-	// If turning, yaw value is used to influence roll
-	// If not turning, roll to reverse current roll value.
-
-}
-
-void APlayerPawn::RollInput(float Val) {
-
-	CurrentRollSpeed = FMath::FInterpTo(CurrentRollSpeed, Val * RollSpeed, GetWorld()->GetDeltaSeconds(), 2.f);
+	PlayerInputComponent->BindAxis("Thrust", PlaneMovement, &UPlaneMovementComponent::ThrustInput);
+	PlayerInputComponent->BindAxis("Pitch", PlaneMovement, &UPlaneMovementComponent::PitchInput);
+	PlayerInputComponent->BindAxis("Yawn", PlaneMovement, &UPlaneMovementComponent::YawnInput);
+	PlayerInputComponent->BindAxis("Roll", PlaneMovement, &UPlaneMovementComponent::RollInput);
 }

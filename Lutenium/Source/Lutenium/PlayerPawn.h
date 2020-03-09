@@ -5,6 +5,7 @@
 #include "GameFramework/Pawn.h"
 #include "PlayerPawn.generated.h"
 
+
 UCLASS(Config=Game)
 class APlayerPawn : public APawn
 {
@@ -21,6 +22,11 @@ class APlayerPawn : public APawn
 	/** Camera component that will be our viewpoint */
 	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* Camera;
+	
+	/**Plane movement component*/
+	UPROPERTY(Category = Movement, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class UPlaneMovementComponent* PlaneMovement;
+
 public:
 	APlayerPawn();
 
@@ -35,55 +41,7 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override; // Allows binding actions/axes to functions
 	// End APawn overrides
 
-	/** Bound to the thrust axis */
-	void ThrustInput(float Val);
-	
-	/** Bound to the vertical axis */
-	void PitchInput(float Val);
 
-	/** Bound to the horizontal axis */
-	void YawnInput(float Val);
-
-	void RollInput(float Val);
-
-private:
-
-	/** How quickly forward speed changes */
-	UPROPERTY(Category=Speed, EditAnywhere)
-	float ThrustAcceleration;
-
-
-	/** Max forward speed */
-	UPROPERTY(Category = Speed, EditAnywhere)
-		float ThrustMaxSpeed;
-
-	/** Min forward speed */
-	UPROPERTY(Category = Speed, EditAnywhere)
-		float ThrustMinSpeed;
-
-	/** How quickly pawn can steer */
-	UPROPERTY(Category=Speed, EditAnywhere)
-	float YawnSpeed;
-
-	UPROPERTY(Category = Speed, EditAnywhere)
-	float RollSpeed;
-	
-	UPROPERTY(Category = Speed, EditAnywhere)
-		float PitchSpeed;
-
-
-
-	/** Current forward speed */
-	float CurrentForwardSpeed;
-
-	/** Current yaw speed */
-	float CurrentYawSpeed;
-
-	/** Current pitch speed */
-	float CurrentPitchSpeed;
-
-	/** Current roll speed */
-	float CurrentRollSpeed;
 
 
 public:
@@ -93,4 +51,6 @@ public:
 	FORCEINLINE class USpringArmComponent* GetSpringArm() const { return SpringArm; }
 	/** Returns Camera subobject **/
 	FORCEINLINE class UCameraComponent* GetCamera() const { return Camera; }
+
+	FORCEINLINE class UPlaneMovementComponent* GetPlaneComponent() const { return PlaneMovement; }
 };
