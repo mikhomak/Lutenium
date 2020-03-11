@@ -27,6 +27,7 @@ APlayerPawn::APlayerPawn()
 	PlaneMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlaneMesh0"));
 	PlaneMesh->SetStaticMesh(ConstructorStatics.PlaneMesh.Get());	// Set static mesh
 	PlaneMesh->SetSimulatePhysics(true);
+	PlaneMesh->SetEnableGravity(false);
 	RootComponent = PlaneMesh;
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm0"));

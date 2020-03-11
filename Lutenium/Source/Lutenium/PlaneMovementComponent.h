@@ -16,6 +16,7 @@ class LUTENIUM_API UPlaneMovementComponent : public UActorComponent
 	class APlayerPawn* PlayerPawn;
 
 
+
 public:	
 	UPlaneMovementComponent();
 
@@ -35,6 +36,9 @@ public:
 
 
 private: 
+	UPROPERTY(Category = Control, EditAnywhere)
+		float AirControl;
+
 	UPROPERTY(Category = Speed, EditAnywhere)
 		float ThrustAcceleration;
 

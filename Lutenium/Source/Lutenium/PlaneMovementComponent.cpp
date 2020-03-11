@@ -3,20 +3,21 @@
 
 #include "PlaneMovementComponent.h"
 #include "PlayerPawn.h"
-#include "PlayerPawn.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Engine/World.h"
 #include "Engine/StaticMesh.h"
 #include "GenericPlatform/GenericPlatformMath.h"
+#include "Components/PrimitiveComponent.h"
+#include "Math/Vector.h"
+#include "Components/StaticMeshComponent.h"
 
 UPlaneMovementComponent::UPlaneMovementComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
 	PlayerPawn = (APlayerPawn*) GetOwner();
-
 	ThrustAcceleration = 500.f;
 	ThrustMaxSpeed = 2000.f;
 	ThrustMinSpeed = 50.f;
@@ -24,6 +25,7 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 	RollSpeed = 100.f;
 	CurrentForwardSpeed = 500.f;
 	PitchSpeed = 80.f;
+	AirControl = 2500.f;
 
 }
 
@@ -50,7 +52,7 @@ void UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	DeltaRotation.Yaw = CurrentYawSpeed * GetWorld()->GetDeltaSeconds();
 	DeltaRotation.Roll = CurrentRollSpeed * GetWorld()->GetDeltaSeconds();
 
-	PlayerPawn->AddActorLocalRotation(DeltaRotation);
+	//PlayerPawn->AddActorLocalRotation(DeltaRotation);
 
 }
 
