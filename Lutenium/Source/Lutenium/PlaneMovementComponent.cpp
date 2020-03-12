@@ -18,6 +18,7 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	PlayerPawn = (APlayerPawn*) GetOwner();
+
 	ThrustAcceleration = 500.f;
 	ThrustMaxSpeed = 2000.f;
 	ThrustMinSpeed = 50.f;
@@ -98,6 +99,18 @@ void UPlaneMovementComponent::YawnInput(float Val) {
 }
 
 void UPlaneMovementComponent::RollInput(float Val) {
-
-	CurrentRollSpeed = FMath::FInterpTo(CurrentRollSpeed, Val * RollSpeed, GetWorld()->GetDeltaSeconds(), 2.f);
+	FVector forward = PlayerPawn->GetActorForwardVector();
+	FVector ZeroVector;
+	FVector Direction = FMath::Lerp(ZeroVector, forward * Val * AirControl, 0.1f);
+	//PrimitiveComponent->AddTorqueInDegrees(Direction);
+	if (PlayerPawn->IsA(UPrimitiveComponent::StaticClass())) {
+		UE_LOG(LogTemp, Warning, TEXT("Your message"));
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("Your asdasdas"));
+	}
+	if (PlayerPawn->GetPlaneMesh()->IsA(UPrimitiveComponent::StaticClass())) {
+		UE_LOG(LogTemp, Warning, TEXT("Your 1231231"));
+	}
+	//CurrentRollSpeed = FMath::FInterpTo(CurrentRollSpeed, Val * RollSpeed, GetWorld()->GetDeltaSeconds(), 2.f);
 }

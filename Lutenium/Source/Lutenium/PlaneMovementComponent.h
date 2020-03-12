@@ -15,7 +15,8 @@ class LUTENIUM_API UPlaneMovementComponent : public UActorComponent
 	UPROPERTY(Category = Player, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class APlayerPawn* PlayerPawn;
 
-
+	UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		class UPrimitiveComponent* PrimitiveComponent;
 
 public:	
 	UPlaneMovementComponent();
