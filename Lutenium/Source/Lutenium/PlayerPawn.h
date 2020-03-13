@@ -23,10 +23,15 @@ class APlayerPawn : public APawn
 	UPROPERTY(Category = Movement, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UPlaneMovementComponent* PlaneMovement;
 
+
+
+
 public:
 	APlayerPawn();
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
+
+	
 
 protected:
 

@@ -10,7 +10,7 @@
 #include "Engine/StaticMesh.h"
 #include "GenericPlatform/GenericPlatformMath.h"
 #include "PlaneMovementComponent.h"
-
+#include "Components/PrimitiveComponent.h"
 
 APlayerPawn::APlayerPawn()
 {
@@ -29,7 +29,7 @@ APlayerPawn::APlayerPawn()
 	PlaneMesh->SetSimulatePhysics(true);
 	PlaneMesh->SetEnableGravity(false);
 	RootComponent = PlaneMesh;
-
+	
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm0"));
 	SpringArm->SetupAttachment(RootComponent);	// Attach SpringArm to RootComponent
 	SpringArm->TargetArmLength = 500.0f; // The camera follows at this distance behind the character	
@@ -47,7 +47,7 @@ APlayerPawn::APlayerPawn()
 
 void APlayerPawn::Tick(float DeltaSeconds)
 {
-
+	
 	Super::Tick(DeltaSeconds);
 }
 
@@ -72,4 +72,3 @@ void APlayerPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAxis("Yawn", PlaneMovement, &UPlaneMovementComponent::YawnInput);
 	PlayerInputComponent->BindAxis("Roll", PlaneMovement, &UPlaneMovementComponent::RollInput);
 }
-
