@@ -11,6 +11,7 @@
 #include "GenericPlatform/GenericPlatformMath.h"
 #include "Math/Vector.h"
 #include "Components/StaticMeshComponent.h"
+#include "Math/UnrealMathUtility.h"
 
 UPlaneMovementComponent::UPlaneMovementComponent()
 {
@@ -18,14 +19,11 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 
 	PlayerPawn = (APlayerPawn*) GetOwner();
 
-	ThrustAcceleration = 500.f;
-	ThrustMaxSpeed = 2000.f;
+	ThrustAcceleration = 1500.f;
+	ThrustMaxSpeed = 20000.f;
 	ThrustMinSpeed = 50.f;
-	YawnSpeed = 50.f;
-	RollSpeed = 100.f;
-	CurrentForwardSpeed = 500.f;
-	PitchSpeed = 80.f;
-	AirControl = 2500.f;
+
+	AirControl = 50.f;
 
 }
 
@@ -42,67 +40,54 @@ void UPlaneMovementComponent::BeginPlay()
 void UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	
-	const FVector LocalMove = FVector(CurrentForwardSpeed * GetWorld()->GetDeltaSeconds(), 0.f, 0.f);
-
-	//PlayerPawn->AddActorLocalOffset(LocalMove, true);
-
-	FRotator DeltaRotation(0, 0, 0);
-	DeltaRotation.Pitch = CurrentPitchSpeed * GetWorld()->GetDeltaSeconds();
-	DeltaRotation.Yaw = CurrentYawSpeed * GetWorld()->GetDeltaSeconds();
-	DeltaRotation.Roll = CurrentRollSpeed * GetWorld()->GetDeltaSeconds();
-
-	//PlayerPawn->AddActorLocalRotation(DeltaRotation);
-
+	PlayerMesh->AddTorqueInDegrees(PlayerMesh->GetPhysicsAngularVelocityInDegrees() * -1.f / 0.5f, FName(), true);
+	AddThrust();
 }
 
 
 void UPlaneMovementComponent::ThrustInput(float Val) {
-	// Is there any input?
-	bool bHasInput = !FMath::IsNearlyEqual(Val, 0.f);
-	// If input is not held down, reduce speed
-	float CurrentAcc = bHasInput ? (Val * ThrustAcceleration) : (-0.5f * ThrustAcceleration);
-	
-	float NewForwardSpeed = CurrentForwardSpeed + (GetWorld()->GetDeltaSeconds() * CurrentAcc);
-	CurrentForwardSpeed = FMath::Clamp(NewForwardSpeed, ThrustMinSpeed, ThrustMaxSpeed);
-	
-	// If the plane is not accelarating 
-	if (Val > 0.4f) {
-		PlayerPawn->GetSpringArm()->bInheritPitch = true;
-		//SpringArm->bUsePawnControlRotation = false;
-	}
-	else {
-		PlayerPawn->GetSpringArm()->bInheritPitch = false;
-		//SpringArm->bUsePawnControlRotation = true;
-	}
+	Thrusting(Val);
 }
 
 void UPlaneMovementComponent::PitchInput(float Val) {
-	float TargetPitchSpeed = (Val * PitchSpeed * -1.f);
-
-	// When steering, we decrease pitch slightly
-	TargetPitchSpeed += (FMath::Abs(CurrentYawSpeed) * -0.2f);
-
-	CurrentPitchSpeed = FMath::FInterpTo(CurrentPitchSpeed, TargetPitchSpeed, GetWorld()->GetDeltaSeconds(), 2.f);
-
-
-
+	AddTorqueToThePlane(PlayerPawn->GetActorRightVector(), Val);
 }
 
 void UPlaneMovementComponent::YawnInput(float Val) {
-	float TargetYawSpeed = (Val * YawnSpeed);
-
-	CurrentYawSpeed = FMath::FInterpTo(CurrentYawSpeed, TargetYawSpeed, GetWorld()->GetDeltaSeconds(), 2.f);
-
+	AddTorqueToThePlane(PlayerPawn->GetActorUpVector(), Val);
 
 }
 
 void UPlaneMovementComponent::RollInput(float Val) {
+	AddTorqueToThePlane(PlayerPawn->GetActorForwardVector(), Val);
+}
 
-	FVector forward = PlayerPawn->GetActorForwardVector();
+void UPlaneMovementComponent::AddTorqueToThePlane(FVector Direction, float InputVal) {
 	FVector ZeroVector;
-	FVector Direction = FMath::Lerp(ZeroVector, forward * Val * AirControl, 0.1f);
-	//PrimitiveComponent->AddTorqueInDegrees(Direction);
-	PlayerMesh->AddTorque(forward * 500.f * Val*AirControl);
-	//CurrentRollSpeed = FMath::FInterpTo(CurrentRollSpeed, Val * RollSpeed, GetWorld()->GetDeltaSeconds(), 2.f);
+	FVector DirectionToTilt = FMath::Lerp(ZeroVector, Direction * InputVal * AirControl, 0.1f);
+	PlayerMesh->AddTorque(DirectionToTilt, FName(), true);
+}
+
+void  UPlaneMovementComponent::Thrusting(float InputVal) {
+	if(InputVal == 0){
+		ThrustUp = false;
+		ThrustDown = false;
+	}
+	else {
+		if (InputVal > 0) {
+			ThrustUp = true;
+			ThrustDown = false;
+		}
+		else if (InputVal < 0) {
+			ThrustDown = true;
+			ThrustUp = false;
+		}
+	}
+}
+
+void UPlaneMovementComponent::AddThrust() {
+	float Thrust = ThrustUp ? 1 : ThrustDown ? -1 : 0;
+	float Speed = FMath::Clamp(Thrust * ThrustAcceleration, ThrustMinSpeed, ThrustMaxSpeed);
+	FVector Velocity = FMath::Lerp(PlayerMesh->GetPhysicsLinearVelocity(), PlayerMesh->GetForwardVector() * Speed, 0.01f);
+	PlayerMesh->SetPhysicsLinearVelocity(Velocity, false, FName());
 }

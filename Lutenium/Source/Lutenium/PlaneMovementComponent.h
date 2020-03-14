@@ -37,6 +37,7 @@ public:
 
 private: 
 	class UStaticMeshComponent* PlayerMesh;
+
 	UPROPERTY(Category = Control, EditAnywhere)
 		float AirControl;
 
@@ -49,21 +50,14 @@ private:
 	UPROPERTY(Category = Speed, EditAnywhere)
 		float ThrustMinSpeed;
 
-	UPROPERTY(Category = Speed, EditAnywhere)
-		float YawnSpeed;
+	float CurrentThrust;
 
-	UPROPERTY(Category = Speed, EditAnywhere)
-		float RollSpeed;
+	bool ThrustUp;	
+	
+	bool ThrustDown;
 
-	UPROPERTY(Category = Speed, EditAnywhere)
-		float PitchSpeed;
-
-
-	float CurrentForwardSpeed;
-
-	float CurrentYawSpeed;
-
-	float CurrentPitchSpeed;
-
-	float CurrentRollSpeed;
+	void AddTorqueToThePlane(FVector Direction, float InputVal);
+	
+	void Thrusting(float InputVal);
+	void AddThrust();
 };
