@@ -69,20 +69,8 @@ void UPlaneMovementComponent::AddTorqueToThePlane(FVector Direction, float Input
 }
 
 void  UPlaneMovementComponent::Thrusting(float InputVal) {
-	if(InputVal == 0){
-		ThrustUp = false;
-		ThrustDown = false;
-	}
-	else {
-		if (InputVal > 0) {
-			ThrustUp = true;
-			ThrustDown = false;
-		}
-		else if (InputVal < 0) {
-			ThrustDown = true;
-			ThrustUp = false;
-		}
-	}
+	ThrustUp = InputVal == 0 ? false : InputVal > 0 ? true : false;
+	ThrustUp = InputVal == 0 ? false : InputVal < 0 ? true : false;
 }
 
 void UPlaneMovementComponent::AddThrust() {
