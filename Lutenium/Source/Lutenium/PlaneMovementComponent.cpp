@@ -12,6 +12,7 @@
 #include "Math/Vector.h"
 #include "Components/StaticMeshComponent.h"
 #include "Math/UnrealMathUtility.h"
+#include "TimerManager.h"
 
 UPlaneMovementComponent::UPlaneMovementComponent()
 {
@@ -19,10 +20,9 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 
 	PlayerPawn = (APlayerPawn*) GetOwner();
 
-	ThrustAcceleration = 1500.f;
-	ThrustMaxSpeed = 20000.f;
+	ThrustAcceleration = 100.f;
+	ThrustMaxSpeed = 10000.f;
 	ThrustMinSpeed = 50.f;
-
 	AirControl = 50.f;
 
 }
@@ -33,10 +33,9 @@ void UPlaneMovementComponent::BeginPlay()
 	Super::BeginPlay();
 
 	PlayerMesh = PlayerPawn->GetPlaneMesh();
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UPlaneMovementComponent::CalculateAcceleration, 0.05f, true);
 }
 
-
-// Called every frame
 void UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -70,12 +69,15 @@ void UPlaneMovementComponent::AddTorqueToThePlane(FVector Direction, float Input
 
 void  UPlaneMovementComponent::Thrusting(float InputVal) {
 	ThrustUp = InputVal == 0 ? false : InputVal > 0 ? true : false;
-	ThrustUp = InputVal == 0 ? false : InputVal < 0 ? true : false;
 }
 
 void UPlaneMovementComponent::AddThrust() {
-	float Thrust = ThrustUp ? 1 : ThrustDown ? -1 : 0;
-	float Speed = FMath::Clamp(Thrust * ThrustAcceleration, ThrustMinSpeed, ThrustMaxSpeed);
+	float Speed = FMath::Clamp(ThrustAcceleration * Acceleration, ThrustMinSpeed, ThrustMaxSpeed);
 	FVector Velocity = FMath::Lerp(PlayerMesh->GetPhysicsLinearVelocity(), PlayerMesh->GetForwardVector() * Speed, 0.01f);
 	PlayerMesh->SetPhysicsLinearVelocity(Velocity, false, FName());
+}
+
+void UPlaneMovementComponent::CalculateAcceleration() {
+	Acceleration += ThrustUp ? 1 : -1;
+	Acceleration = FMath::Clamp(Acceleration, 0.f, 100.f);
 }

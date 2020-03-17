@@ -49,15 +49,21 @@ private:
 
 	UPROPERTY(Category = Speed, EditAnywhere)
 		float ThrustMinSpeed;
+	
+		float Acceleration;
+
 
 	float CurrentThrust;
 
 	bool ThrustUp;	
 	
-	bool ThrustDown;
+	FTimerHandle TimerHandle;
 
 	void AddTorqueToThePlane(FVector Direction, float InputVal);
 	
 	void Thrusting(float InputVal);
+	
 	void AddThrust();
+
+	void CalculateAcceleration();
 };
