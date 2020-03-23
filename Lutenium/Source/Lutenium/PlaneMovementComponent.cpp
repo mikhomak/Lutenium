@@ -21,9 +21,10 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 	PlayerPawn = (APlayerPawn*) GetOwner();
 
 	ThrustAcceleration = 100.f;
-	ThrustMaxSpeed = 10000.f;
+	ThrustMaxSpeed = 8000.f;
 	ThrustMinSpeed = 50.f;
-	AirControl = 50.f;
+	AirControl = 40.f;
+	CustomGravity = -1500.f
 
 }
 
@@ -54,7 +55,6 @@ void UPlaneMovementComponent::PitchInput(float Val) {
 
 void UPlaneMovementComponent::YawnInput(float Val) {
 	AddTorqueToThePlane(PlayerPawn->GetActorUpVector(), Val);
-
 }
 
 void UPlaneMovementComponent::RollInput(float Val) {
@@ -80,4 +80,8 @@ void UPlaneMovementComponent::AddThrust() {
 void UPlaneMovementComponent::CalculateAcceleration() {
 	Acceleration += ThrustUp ? 1 : -1;
 	Acceleration = FMath::Clamp(Acceleration, 0.f, 100.f);
+}
+
+void UPlaneMovementComponent::AddGravityForce() {
+	PlayerMesh->AddForce(FVector(0,0, CustomGravity), FName(), true);
 }

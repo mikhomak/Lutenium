@@ -50,8 +50,12 @@ private:
 	UPROPERTY(Category = Speed, EditAnywhere)
 		float ThrustMinSpeed;
 	
-		float Acceleration;
 
+	UPROPERTY(Category = CustomPhysics, EditAnywhere)
+		float CustomGravity;
+
+
+	float Acceleration;
 
 	float CurrentThrust;
 
@@ -66,4 +70,6 @@ private:
 	void AddThrust();
 
 	void CalculateAcceleration();
+
+	void AddGravityForce();
 };
