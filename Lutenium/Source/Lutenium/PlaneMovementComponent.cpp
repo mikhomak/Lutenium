@@ -24,7 +24,7 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 	ThrustMaxSpeed = 8000.f;
 	ThrustMinSpeed = 50.f;
 	AirControl = 40.f;
-	CustomGravity = -1500.f
+	CustomGravity = -600.f;
 
 }
 
@@ -42,6 +42,7 @@ void UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	PlayerMesh->AddTorqueInDegrees(PlayerMesh->GetPhysicsAngularVelocityInDegrees() * -1.f / 0.5f, FName(), true);
 	AddThrust();
+	AddGravityForce();
 }
 
 
