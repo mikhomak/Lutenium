@@ -13,6 +13,8 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Math/UnrealMathUtility.h"
 #include "TimerManager.h"
+#include <EngineGlobals.h>
+#include <Runtime/Engine/Classes/Engine/Engine.h>
 
 UPlaneMovementComponent::UPlaneMovementComponent()
 {
@@ -35,6 +37,7 @@ void UPlaneMovementComponent::BeginPlay()
 
 	PlayerMesh = PlayerPawn->GetPlaneMesh();
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UPlaneMovementComponent::CalculateAcceleration, 0.05f, true);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Begin play"));
 }
 
 void UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -43,6 +46,7 @@ void UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	PlayerMesh->AddTorqueInDegrees(PlayerMesh->GetPhysicsAngularVelocityInDegrees() * -1.f / 0.5f, FName(), true);
 	AddThrust();
 	AddGravityForce();
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Tick"));
 }
 
 
@@ -51,6 +55,7 @@ void UPlaneMovementComponent::ThrustInput(float Val) {
 }
 
 void UPlaneMovementComponent::PitchInput(float Val) {
+	
 	AddTorqueToThePlane(PlayerPawn->GetActorRightVector(), Val);
 }
 

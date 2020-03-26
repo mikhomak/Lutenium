@@ -26,16 +26,21 @@ protected:
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
 	void ThrustInput(float Val);
 
+	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
 	void PitchInput(float Val);
-
+	
+	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
 	void YawnInput(float Val);
-
+	
+	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
 	void RollInput(float Val);
 
 
 private: 
+	UPROPERTY(Category = Mesh, EditAnywhere)
 	class USkeletalMeshComponent* PlayerMesh;
 
 	UPROPERTY(Category = Control, EditAnywhere)
@@ -67,9 +72,12 @@ private:
 	
 	void Thrusting(float InputVal);
 	
+	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
 	void AddThrust();
 
+	UFUNCTION(BlueprintCallable, Category = "Physic", meta = (AdvancedDisplay = "2"))
 	void CalculateAcceleration();
 
+	UFUNCTION(BlueprintCallable, Category = "Physic", meta = (AdvancedDisplay = "2"))
 	void AddGravityForce();
 };
