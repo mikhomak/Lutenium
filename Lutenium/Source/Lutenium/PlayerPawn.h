@@ -12,7 +12,7 @@ class APlayerPawn : public APawn
 	GENERATED_BODY()
 
 	UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UStaticMeshComponent* PlaneMesh;
+	class USkeletalMeshComponent* PlaneMesh;
 
 	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* SpringArm;
@@ -41,7 +41,7 @@ protected:
 
 
 public:
-	FORCEINLINE class UStaticMeshComponent* GetPlaneMesh() const { return PlaneMesh; }
+	FORCEINLINE class USkeletalMeshComponent* GetPlaneMesh() const { return PlaneMesh; }
 	FORCEINLINE class USpringArmComponent* GetSpringArm() const { return SpringArm; }
 	FORCEINLINE class UCameraComponent* GetCamera() const { return Camera; }
 	FORCEINLINE class UPlaneMovementComponent* GetPlaneComponent() const { return PlaneMovement; }

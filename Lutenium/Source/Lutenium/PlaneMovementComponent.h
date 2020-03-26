@@ -36,7 +36,7 @@ public:
 
 
 private: 
-	class UStaticMeshComponent* PlayerMesh;
+	class USkeletalMeshComponent* PlayerMesh;
 
 	UPROPERTY(Category = Control, EditAnywhere)
 		float AirControl;

@@ -4,6 +4,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Engine/World.h"
@@ -16,26 +17,27 @@ APlayerPawn::APlayerPawn()
 {
 	struct FConstructorStatics
 	{
-		ConstructorHelpers::FObjectFinderOptional<UStaticMesh> PlaneMesh;
+		ConstructorHelpers::FObjectFinderOptional<USkeletalMesh> PlaneMesh;
 		FConstructorStatics()
-			: PlaneMesh(TEXT("/Game/Flying/Meshes/UFO.UFO"))
+			: PlaneMesh(TEXT("/Game/Flying/Meshes/airplane/airplaneBones.airplaneBones"))
 		{
 		}
 	};
 	static FConstructorStatics ConstructorStatics;
 
-	PlaneMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlaneMesh0"));
-	PlaneMesh->SetStaticMesh(ConstructorStatics.PlaneMesh.Get());	// Set static mesh
+	PlaneMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("PlaneMesh0"));
+	PlaneMesh->SetSkeletalMesh(ConstructorStatics.PlaneMesh.Get());	
 	PlaneMesh->SetSimulatePhysics(true);
 	PlaneMesh->SetEnableGravity(false);
+	PlaneMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	RootComponent = PlaneMesh;
 	
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm0"));
 	SpringArm->SetupAttachment(RootComponent);	// Attach SpringArm to RootComponent
 	SpringArm->TargetArmLength = 700.0f; // The camera follows at this distance behind the character	
 	SpringArm->SocketOffset = FVector(0.f,0.f,60.f);
-	SpringArm->bEnableCameraLag = false;	// Do not allow camera to lag
-	SpringArm->CameraLagSpeed = 0.5f;
+	SpringArm->bEnableCameraLag = true;	// Do not allow camera to lag
+	SpringArm->CameraLagSpeed = 20.f;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera0"));
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);	// Attach the camera

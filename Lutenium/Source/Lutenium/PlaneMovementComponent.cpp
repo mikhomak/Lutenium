@@ -10,7 +10,7 @@
 #include "Engine/StaticMesh.h"
 #include "GenericPlatform/GenericPlatformMath.h"
 #include "Math/Vector.h"
-#include "Components/StaticMeshComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Math/UnrealMathUtility.h"
 #include "TimerManager.h"
 
