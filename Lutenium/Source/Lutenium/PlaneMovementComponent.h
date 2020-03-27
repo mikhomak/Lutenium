@@ -12,7 +12,7 @@ class LUTENIUM_API UPlaneMovementComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-	UPROPERTY(Category = Player, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Category = Player, EditAnywhere, meta = (AllowPrivateAccess = "true"))
 	class APlayerPawn* PlayerPawn;
 
 
@@ -38,6 +38,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
 	void RollInput(float Val);
 
+	UFUNCTION(BlueprintCallable, Category = "Pawn", meta = (AdvancedDisplay = "2"))
+	void SetMesh(USkeletalMeshComponent* Mesh);
+	
+	UFUNCTION(BlueprintCallable, Category = "Pawn", meta = (AdvancedDisplay = "2"))
+	void SetPawn(APlayerPawn* Pawn);
 
 private: 
 	UPROPERTY(Category = Mesh, EditAnywhere)
@@ -60,6 +65,9 @@ private:
 		float CustomGravity;
 
 
+
+
+
 	float Acceleration;
 
 	float CurrentThrust;
@@ -72,12 +80,12 @@ private:
 	
 	void Thrusting(float InputVal);
 	
-	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
 	void AddThrust();
 
-	UFUNCTION(BlueprintCallable, Category = "Physic", meta = (AdvancedDisplay = "2"))
 	void CalculateAcceleration();
 
-	UFUNCTION(BlueprintCallable, Category = "Physic", meta = (AdvancedDisplay = "2"))
 	void AddGravityForce();
+
+
+
 };

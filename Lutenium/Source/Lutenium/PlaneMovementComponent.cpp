@@ -34,10 +34,8 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 void UPlaneMovementComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
 	PlayerMesh = PlayerPawn->GetPlaneMesh();
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UPlaneMovementComponent::CalculateAcceleration, 0.05f, true);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Begin play"));
 }
 
 void UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -46,7 +44,6 @@ void UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	PlayerMesh->AddTorqueInDegrees(PlayerMesh->GetPhysicsAngularVelocityInDegrees() * -1.f / 0.5f, FName(), true);
 	AddThrust();
 	AddGravityForce();
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Tick"));
 }
 
 
@@ -55,7 +52,7 @@ void UPlaneMovementComponent::ThrustInput(float Val) {
 }
 
 void UPlaneMovementComponent::PitchInput(float Val) {
-	
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, PlayerPawn->GetActorRightVector().ToString());
 	AddTorqueToThePlane(PlayerPawn->GetActorRightVector(), Val);
 }
 
@@ -90,4 +87,14 @@ void UPlaneMovementComponent::CalculateAcceleration() {
 
 void UPlaneMovementComponent::AddGravityForce() {
 	PlayerMesh->AddForce(FVector(0,0, CustomGravity), FName(), true);
+}
+
+void UPlaneMovementComponent::SetMesh(USkeletalMeshComponent* Mesh)
+{
+	PlayerMesh = Mesh;
+}
+
+void UPlaneMovementComponent::SetPawn(APlayerPawn* Pawn)
+{
+	PlayerPawn = Pawn;
 }
