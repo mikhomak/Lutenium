@@ -44,7 +44,8 @@ APlayerPawn::APlayerPawn()
 	Camera->bUsePawnControlRotation = false; // Don't rotate camera with controller
 
 	PlaneMovement = CreateDefaultSubobject<UPlaneMovementComponent>(TEXT("PlayerMovement0"));
-	
+	PlaneMovement->SetMesh(PlaneMesh);
+	PlaneMovement->SetPawn(this);
 
 }
 

@@ -51,6 +51,15 @@ private:
 	UPROPERTY(Category = Control, EditAnywhere)
 		float AirControl;
 
+	UPROPERTY(Category = Control, EditAnywhere)
+		float YawnControl;
+
+	UPROPERTY(Category = Control, EditAnywhere)
+		float PitchControl;
+	
+	UPROPERTY(Category = Control, EditAnywhere)
+		float RollControl;
+
 	UPROPERTY(Category = Speed, EditAnywhere)
 		float ThrustAcceleration;
 

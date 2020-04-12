@@ -20,13 +20,15 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
-	PlayerPawn = (APlayerPawn*) GetOwner();
 
 	ThrustAcceleration = 100.f;
 	ThrustMaxSpeed = 8000.f;
 	ThrustMinSpeed = 50.f;
-	AirControl = 40.f;
+	AirControl = 0.1f;
 	CustomGravity = -600.f;
+	YawnControl = 0.5f;
+	PitchControl = 1.f;
+	RollControl = 1.f;
 
 }
 
@@ -34,7 +36,6 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 void UPlaneMovementComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	PlayerMesh = PlayerPawn->GetPlaneMesh();
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UPlaneMovementComponent::CalculateAcceleration, 0.05f, true);
 }
 
@@ -53,21 +54,23 @@ void UPlaneMovementComponent::ThrustInput(float Val) {
 
 void UPlaneMovementComponent::PitchInput(float Val) {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, PlayerPawn->GetActorRightVector().ToString());
-	AddTorqueToThePlane(PlayerPawn->GetActorRightVector(), Val);
+	AddTorqueToThePlane(PlayerPawn->GetActorRightVector(), Val * PitchControl);
 }
 
 void UPlaneMovementComponent::YawnInput(float Val) {
-	AddTorqueToThePlane(PlayerPawn->GetActorUpVector(), Val);
+	AddTorqueToThePlane(PlayerPawn->GetActorUpVector(), Val * YawnControl);
 }
 
 void UPlaneMovementComponent::RollInput(float Val) {
-	AddTorqueToThePlane(PlayerPawn->GetActorForwardVector(), Val);
+	AddTorqueToThePlane(PlayerPawn->GetActorForwardVector(), Val * RollControl);
 }
 
 void UPlaneMovementComponent::AddTorqueToThePlane(FVector Direction, float InputVal) {
-	FVector ZeroVector;
-	FVector DirectionToTilt = FMath::Lerp(ZeroVector, Direction * InputVal * AirControl, 0.1f);
-	PlayerMesh->AddTorque(DirectionToTilt, FName(), true);
+	if (InputVal != 0) {
+		FVector ZeroVector;
+		FVector DirectionToTilt = FMath::Lerp(ZeroVector, Direction * InputVal * AirControl, 0.1f);
+		PlayerMesh->AddTorque(DirectionToTilt, FName(), true);
+	}
 }
 
 void  UPlaneMovementComponent::Thrusting(float InputVal) {
