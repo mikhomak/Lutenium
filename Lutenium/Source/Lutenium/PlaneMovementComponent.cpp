@@ -103,9 +103,7 @@ void UPlaneMovementComponent::SetPawn(APlayerPawn* Pawn)
 }
 
 void UPlaneMovementComponent::StopInput() 	{
-	FVector Direction = FVector(0, PlayerMesh->GetPhysicsLinearVelocity().Y, 0);
 	float Speed = FMath::Clamp(ThrustAcceleration * Acceleration, ThrustMinSpeed, ThrustMaxSpeed);
-	FVector Velocity = PlayerPawn->GetVelocity() + PlayerMesh->GetForwardVector() * (Speed/4);
-	Direction += Velocity;
+	FVector Velocity = PlayerPawn->GetVelocity() + PlayerMesh->GetForwardVector() * (Speed/5);
 	PlayerMesh->SetPhysicsLinearVelocity(Velocity, false, FName());
 }

@@ -38,6 +38,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
 	void RollInput(float Val);
 
+	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
+	void StopInput();
+
 	UFUNCTION(BlueprintCallable, Category = "Pawn", meta = (AdvancedDisplay = "2"))
 	void SetMesh(USkeletalMeshComponent* Mesh);
 	
