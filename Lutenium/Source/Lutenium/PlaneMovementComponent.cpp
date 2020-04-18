@@ -45,6 +45,7 @@ void UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	PlayerMesh->AddTorqueInDegrees(PlayerMesh->GetPhysicsAngularVelocityInDegrees() * -1.f / 0.5f, FName(), true);
 	AddThrust();
 	AddGravityForce();
+	
 }
 
 
@@ -53,7 +54,6 @@ void UPlaneMovementComponent::ThrustInput(float Val) {
 }
 
 void UPlaneMovementComponent::PitchInput(float Val) {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, PlayerPawn->GetActorRightVector().ToString());
 	AddTorqueToThePlane(PlayerPawn->GetActorRightVector(), Val * PitchControl);
 }
 
@@ -100,4 +100,12 @@ void UPlaneMovementComponent::SetMesh(USkeletalMeshComponent* Mesh)
 void UPlaneMovementComponent::SetPawn(APlayerPawn* Pawn)
 {
 	PlayerPawn = Pawn;
+}
+
+void UPlaneMovementComponent::StopInput() 	{
+	FVector Direction = FVector(0, PlayerMesh->GetPhysicsLinearVelocity().Y, 0);
+	float Speed = FMath::Clamp(ThrustAcceleration * Acceleration, ThrustMinSpeed, ThrustMaxSpeed);
+	FVector Velocity = PlayerPawn->GetVelocity() + PlayerMesh->GetForwardVector() * (Speed/4);
+	Direction += Velocity;
+	PlayerMesh->SetPhysicsLinearVelocity(Velocity, false, FName());
 }
