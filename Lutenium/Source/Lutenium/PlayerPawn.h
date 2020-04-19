@@ -31,13 +31,21 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 
-	
+	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
+	float GetYawnInput();
+
+	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
+	float GetRollInput();
+
+	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
+	float GetPitchInput();
 
 protected:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override; // Allows binding actions/axes to functions
 
-
+private: 
+	UInputComponent* InputComponent;
 
 
 public:

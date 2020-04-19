@@ -67,10 +67,21 @@ void APlayerPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Oth
 void APlayerPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	check(PlayerInputComponent);
-
+	InputComponent = PlayerInputComponent;
 	PlayerInputComponent->BindAxis("Thrust", PlaneMovement, &UPlaneMovementComponent::ThrustInput);
 	PlayerInputComponent->BindAxis("Pitch", PlaneMovement, &UPlaneMovementComponent::PitchInput);
 	PlayerInputComponent->BindAxis("Yawn", PlaneMovement, &UPlaneMovementComponent::YawnInput);
 	PlayerInputComponent->BindAxis("Roll", PlaneMovement, &UPlaneMovementComponent::RollInput);
 	PlayerInputComponent->BindAction("Stop", IE_Pressed, PlaneMovement, &UPlaneMovementComponent::StopInput);
+}
+
+float APlayerPawn::GetYawnInput() {
+	return InputComponent->GetAxisValue("Yawn");
+}
+
+float APlayerPawn::GetRollInput(){
+	return InputComponent->GetAxisValue("Roll");
+}
+float APlayerPawn::GetPitchInput() {
+	return InputComponent->GetAxisValue("Pitch");
 }
