@@ -76,12 +76,24 @@ void APlayerPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputCo
 }
 
 float APlayerPawn::GetYawnInput() {
-	return InputComponent->GetAxisValue("Yawn");
+	if (InputComponent) {
+		check(InputComponent);
+		return InputComponent->GetAxisValue("Yawn");
+	}
+	return 0.f;
 }
 
 float APlayerPawn::GetRollInput(){
-	return InputComponent->GetAxisValue("Roll");
+	if (InputComponent) {
+		check(InputComponent);
+		return InputComponent->GetAxisValue("Roll");
+	}
+	return 0.f;
 }
 float APlayerPawn::GetPitchInput() {
-	return InputComponent->GetAxisValue("Pitch");
+	if (InputComponent) {
+		check(InputComponent);
+		return InputComponent->GetAxisValue("Pitch");
+	}
+	return 0.f;
 }
