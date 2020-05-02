@@ -1,6 +1,6 @@
 // Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
 
-#include "PlayerPawn.h"
+#include "../public/PlayerPawn.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -10,7 +10,7 @@
 #include "Engine/World.h"
 #include "Engine/StaticMesh.h"
 #include "GenericPlatform/GenericPlatformMath.h"
-#include "PlaneMovementComponent.h"
+#include "../public/PlaneMovementComponent.h"
 #include "Components/PrimitiveComponent.h"
 
 APlayerPawn::APlayerPawn()

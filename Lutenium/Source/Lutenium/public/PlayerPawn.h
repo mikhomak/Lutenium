@@ -42,7 +42,7 @@ public:
 
 protected:
 
-	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override; // Allows binding actions/axes to functions
+	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
 private: 
 	UInputComponent* InputComponent;

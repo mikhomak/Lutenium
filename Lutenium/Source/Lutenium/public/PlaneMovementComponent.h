@@ -17,13 +17,13 @@ class LUTENIUM_API UPlaneMovementComponent : public UActorComponent
 
 
 
-public:	
+public:
 	UPlaneMovementComponent();
 
 protected:
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
@@ -31,10 +31,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
 	void PitchInput(float Val);
-	
+
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
 	void YawnInput(float Val);
-	
+
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
 	void RollInput(float Val);
 
@@ -43,11 +43,11 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Pawn", meta = (AdvancedDisplay = "2"))
 	void SetMesh(USkeletalMeshComponent* Mesh);
-	
+
 	UFUNCTION(BlueprintCallable, Category = "Pawn", meta = (AdvancedDisplay = "2"))
 	void SetPawn(APlayerPawn* Pawn);
 
-private: 
+private:
 	UPROPERTY(Category = Mesh, EditAnywhere)
 	class USkeletalMeshComponent* PlayerMesh;
 
@@ -59,9 +59,12 @@ private:
 
 	UPROPERTY(Category = Control, EditAnywhere)
 		float PitchControl;
-	
+
 	UPROPERTY(Category = Control, EditAnywhere)
 		float RollControl;
+
+	UPROPERTY(Category = Control, EditAnywhere)
+		float AerodynamicMultiplier;
 
 	UPROPERTY(Category = Speed, EditAnywhere)
 		float ThrustAcceleration;
@@ -71,33 +74,30 @@ private:
 
 	UPROPERTY(Category = Speed, EditAnywhere)
 		float ThrustMinSpeed;
-	
+
 
 	UPROPERTY(Category = CustomPhysics, EditAnywhere)
 		float CustomGravity;
-
-
-
 
 
 	float Acceleration;
 
 	float CurrentThrust;
 
-	bool ThrustUp;	
-	
+	bool ThrustUp;
+
 	FTimerHandle TimerHandle;
 
 	void AddTorqueToThePlane(FVector Direction, float InputVal);
-	
+
 	void Thrusting(float InputVal);
-	
+
 	void AddThrust();
 
 	void CalculateAcceleration();
 
 	void AddGravityForce();
 
-
+    void CalculateAerodynamic();
 
 };
