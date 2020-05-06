@@ -1,13 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "../public/PlaneMovementComponent.h"
 #include "../public/PlayerPawn.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Engine/World.h"
-#include "Engine/StaticMesh.h"
 #include "GenericPlatform/GenericPlatformMath.h"
 #include "Math/Vector.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -42,7 +38,7 @@ void UPlaneMovementComponent::BeginPlay() {
 void UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                             FActorComponentTickFunction *ThisTickFunction) {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-    PlayerMesh->AddTorqueInDegrees(PlayerMesh->GetPhysicsAngularVelocityInDegrees() * -1.f / 0.5f, FName(), true);
+    PlayerMesh->AddTorqueInDegrees(PlayerMesh->GetPhysicsAngularVelocityInDegrees() * -1f / 0.5f, FName(), true);
     AddThrust();
     AddGravityForce();
 	CalculateAerodynamic();
@@ -80,7 +76,7 @@ void UPlaneMovementComponent::Thrusting(float InputVal) {
 void UPlaneMovementComponent::AddThrust() {
     float Speed = FMath::Clamp(ThrustAcceleration * Acceleration, ThrustMinSpeed, ThrustMaxSpeed);
     FVector Velocity = FMath::Lerp(PlayerMesh->GetPhysicsLinearVelocity(), PlayerMesh->GetForwardVector() * Speed,
-                                   0.01f);
+                                   0.014f);
     PlayerMesh->SetPhysicsLinearVelocity(Velocity, false, FName());
 }
 
@@ -103,8 +99,8 @@ void UPlaneMovementComponent::SetPawn(APlayerPawn *Pawn) {
 
 void UPlaneMovementComponent::StopInput() {
     float Speed = FMath::Clamp(ThrustAcceleration * Acceleration, ThrustMinSpeed, ThrustMaxSpeed);
-    FVector Velocity = PlayerPawn->GetVelocity() + PlayerMesh->GetForwardVector() * (Speed / 5);
-    PlayerMesh->SetPhysicsLinearVelocity(Velocity, false, FName());
+    //FVector Velocity = PlayerPawn->GetVelocity() + PlayerMesh->GetForwardVector() * (Speed / 5);
+    PlayerMesh->SetPhysicsLinearVelocity(PlayerMesh->GetForwardVector() * (Speed / 5), true, FName());
 }
 
 void UPlaneMovementComponent::CalculateAerodynamic(){

@@ -15,6 +15,8 @@ class LUTENIUM_API UPlaneMovementComponent : public UActorComponent
 	UPROPERTY(Category = Player, EditAnywhere, meta = (AllowPrivateAccess = "true"))
 	class APlayerPawn* PlayerPawn;
 
+    UPROPERTY(Category = Mesh, EditAnywhere)
+    class USkeletalMeshComponent* PlayerMesh;
 
 
 public:
@@ -48,36 +50,34 @@ public:
 	void SetPawn(APlayerPawn* Pawn);
 
 private:
-	UPROPERTY(Category = Mesh, EditAnywhere)
-	class USkeletalMeshComponent* PlayerMesh;
 
 	UPROPERTY(Category = Control, EditAnywhere)
-		float AirControl;
+	float AirControl;
 
 	UPROPERTY(Category = Control, EditAnywhere)
-		float YawnControl;
+	float YawnControl;
 
 	UPROPERTY(Category = Control, EditAnywhere)
-		float PitchControl;
+	float PitchControl;
 
 	UPROPERTY(Category = Control, EditAnywhere)
-		float RollControl;
+	float RollControl;
 
 	UPROPERTY(Category = Control, EditAnywhere)
-		float AerodynamicMultiplier;
+	float AerodynamicMultiplier;
 
 	UPROPERTY(Category = Speed, EditAnywhere)
-		float ThrustAcceleration;
+	float ThrustAcceleration;
 
 	UPROPERTY(Category = Speed, EditAnywhere)
-		float ThrustMaxSpeed;
+	float ThrustMaxSpeed;
 
 	UPROPERTY(Category = Speed, EditAnywhere)
-		float ThrustMinSpeed;
+	float ThrustMinSpeed;
 
 
 	UPROPERTY(Category = CustomPhysics, EditAnywhere)
-		float CustomGravity;
+	float CustomGravity;
 
 
 	float Acceleration;
