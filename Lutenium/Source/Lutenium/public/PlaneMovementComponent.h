@@ -26,7 +26,11 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+
+	// TICK
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+
 
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
 	void ThrustInput(float Val);
@@ -75,12 +79,16 @@ private:
 	UPROPERTY(Category = Speed, EditAnywhere)
 	float ThrustMinSpeed;
 
+	UPROPERTY(Category = Speed, EditAnywhere)
+	float DashImpact;
+
+	UPROPERTY(Category = Speed, EditAnywhere)
+	float CurrentAcceleration;
 
 	UPROPERTY(Category = CustomPhysics, EditAnywhere)
 	float CustomGravity;
 
 
-	float Acceleration;
 
 	float CurrentThrust;
 
@@ -92,12 +100,12 @@ private:
 
 	void Thrusting(float InputVal);
 
-	void AddThrust();
+	void AddThrust(float DeltaTime);
 
 	void CalculateAcceleration();
 
-	void AddGravityForce();
+	void AddGravityForce(float DeltaTime);
 
-    void CalculateAerodynamic();
+    void CalculateAerodynamic(float DeltaTime);
 
 };

@@ -21,10 +21,13 @@ APlayerPawn::APlayerPawn()
 		FConstructorStatics()
 			: PlaneMesh(TEXT("/Game/Flying/Meshes/airplane/airplaneBones.airplaneBones"))
 		{
+			
 		}
 	};
-	static FConstructorStatics ConstructorStatics;
 
+	static FConstructorStatics ConstructorStatics;
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.TickGroup = TG_PostPhysics;
 	PlaneMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("PlaneMesh0"));
 	PlaneMesh->SetSkeletalMesh(ConstructorStatics.PlaneMesh.Get());	
 	PlaneMesh->SetSimulatePhysics(true);
@@ -51,7 +54,6 @@ APlayerPawn::APlayerPawn()
 
 void APlayerPawn::Tick(float DeltaSeconds)
 {
-	
 	Super::Tick(DeltaSeconds);
 }
 
