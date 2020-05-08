@@ -26,6 +26,7 @@ UPlaneMovementComponent::UPlaneMovementComponent() {
     RollControl = 1.f;
 	AerodynamicMultiplier = 0.4f;
 	DashImpact = 8000;
+	Dot = 0;
 }
 
 
@@ -112,4 +113,10 @@ void UPlaneMovementComponent::CalculateAerodynamic(float DeltaTime){
 	if (DotProduct < 0) {
 		PlayerMesh->AddForce(Velocity * DotProduct * AerodynamicMultiplier, FName(), true);
 	}
+	Dot = DotProduct;
+}
+
+float UPlaneMovementComponent::GetDot()
+{
+	return Dot;
 }

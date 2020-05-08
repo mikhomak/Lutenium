@@ -11,6 +11,7 @@
 #include "Engine/StaticMesh.h"
 #include "GenericPlatform/GenericPlatformMath.h"
 #include "../public/PlaneMovementComponent.h"
+#include  "../public/PlaneParticleSystemComponent.h" 
 #include "Components/PrimitiveComponent.h"
 
 APlayerPawn::APlayerPawn()
@@ -26,12 +27,15 @@ APlayerPawn::APlayerPawn()
 	};
 
 	static FConstructorStatics ConstructorStatics;
+
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.TickGroup = TG_PostPhysics;
+
 	PlaneMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("PlaneMesh0"));
 	PlaneMesh->SetSkeletalMesh(ConstructorStatics.PlaneMesh.Get());	
 	PlaneMesh->SetSimulatePhysics(true);
 	PlaneMesh->SetEnableGravity(false);
+	PlaneMesh->SetTickGroup(TG_PostUpdateWork);
 	PlaneMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	RootComponent = PlaneMesh;
 	
@@ -46,9 +50,10 @@ APlayerPawn::APlayerPawn()
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);	// Attach the camera
 	Camera->bUsePawnControlRotation = false; // Don't rotate camera with controller
 
-	PlaneMovement = CreateDefaultSubobject<UPlaneMovementComponent>(TEXT("PlayerMovement0"));
+	PlaneMovement = CreateDefaultSubobject<UPlaneMovementComponent>(TEXT("Plane Movement"));
 	PlaneMovement->SetMesh(PlaneMesh);
 	PlaneMovement->SetPawn(this);
+
 
 }
 

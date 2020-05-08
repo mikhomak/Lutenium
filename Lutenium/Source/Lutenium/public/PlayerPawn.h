@@ -40,6 +40,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
 	float GetPitchInput();
 
+
+
 protected:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;

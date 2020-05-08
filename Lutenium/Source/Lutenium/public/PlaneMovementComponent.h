@@ -18,7 +18,6 @@ class LUTENIUM_API UPlaneMovementComponent : public UActorComponent
     UPROPERTY(Category = Mesh, EditAnywhere)
     class USkeletalMeshComponent* PlayerMesh;
 
-
 public:
 	UPlaneMovementComponent();
 
@@ -27,9 +26,7 @@ protected:
 
 public:
 
-	// TICK
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
 
 
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
@@ -52,6 +49,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Pawn", meta = (AdvancedDisplay = "2"))
 	void SetPawn(APlayerPawn* Pawn);
+
+	UFUNCTION(BlueprintCallable, Category = "Control", meta = (AdvancedDisplay = "2"))
+	float GetDot();
 
 private:
 
@@ -88,13 +88,13 @@ private:
 	UPROPERTY(Category = CustomPhysics, EditAnywhere)
 	float CustomGravity;
 
-
-
 	float CurrentThrust;
 
 	bool ThrustUp;
 
 	FTimerHandle TimerHandle;
+
+	float Dot;
 
 	void AddTorqueToThePlane(FVector Direction, float InputVal);
 
