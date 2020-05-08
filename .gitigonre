@@ -47,10 +47,11 @@ Lutenium/SourceArt/**/*.tga
 
 # Binary Files
 Lutenium/Binaries/*
-Lutenium/Plugins/*/Binaries/*
+Lutenium/Binaries/Win64/*
+/Lutenium/Plugins/*/Binaries/*
 
 # Builds
-Build/*
+Lutenium/Build/*
 
 # Whitelist PakBlacklist-<BuildConfiguration>.txt files
 Lutenium/!Build/*/
@@ -67,7 +68,7 @@ Lutenium/!Build/**/*.ico
 Lutenium/Saved/*
 
 # Compiled source files for the engine to use
-Lutenium/Intermediate/*
+/Lutenium/Intermediate/*
 Lutenium/Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
