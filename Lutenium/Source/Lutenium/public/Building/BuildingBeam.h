@@ -22,13 +22,26 @@ public:
 	UPROPERTY(Category = Mesh, BlueprintReadWrite, EditAnywhere, meta = (MakeEditWidget = ""))
 	class UStaticMeshComponent* PlatformEnd;
 
-	UPROPERTY(Category = Mesh, BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = "true"))
-	class USplineComponent* Beam;
 
 	UPROPERTY(Category = Mesh, BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* BeamMesh;
 
-private:
-	UFUNCTION(BlueprintCallable, Category = "Geometry", meta = (AdvancedDisplay = "2"))
-	FVector FindMidPoint(FVector& Start, FVector& End);
+	UFUNCTION(BlueprintCallable, Category = "Scales", meta = (AdvancedDisplay = "2"))
+	FVector2D GetScale();
+
+	UFUNCTION(BlueprintCallable, Category = "Scales", meta = (AdvancedDisplay = "2"))
+	float GetRollRotation();
+
+	UFUNCTION(BlueprintCallable, Category = "Scales", meta = (AdvancedDisplay = "2"))
+	TArray<FVector> CalculateSplinePoints();
+
+
+	UPROPERTY(Category = Scales, EditAnywhere)
+	FVector2D Scale;
+
+	UPROPERTY(Category = Scales, EditAnywhere)
+	float RollRotation;
+
+	UPROPERTY(Category = Scales, EditAnywhere)
+	int Points;
 };

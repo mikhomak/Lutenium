@@ -13,15 +13,32 @@ ABuildingBeam::ABuildingBeam() {
 	PlatformStart = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlatformStart"));
 	RootComponent = PlatformStart;
 	PlatformEnd = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlatformEnd"));
-	Beam = CreateDefaultSubobject<USplineComponent>(TEXT("Beam"));
-
+	Points = 2;
 }
 
-FVector FindMidPoint(FVector& Start, FVector& End) {
-	FVector Vec = (End - Start);
+FVector2D ABuildingBeam::GetScale() {
+	return Scale;
+}
+
+float ABuildingBeam::GetRollRotation() {
+	return RollRotation;
+}
+
+TArray<FVector> ABuildingBeam::CalculateSplinePoints() {
+	TArray<FVector> Result;
+	FVector Start = GetActorLocation();
+	FVector End = PlatformEnd->GetComponentLocation();
+	Result.Add(Start);
+	
+	FVector Direction;
 	float Length;
-	FVector Nor;
-	Vec.ToDirectionAndLength(Nor, Length);
-	Length /= 2;
-	return Start + Nor * Length;
+	FVector PointVector = (End - Start)/Points;
+	PointVector.ToDirectionAndLength(Direction, Length);
+
+	for (int32 i = 1; i < Points; i++) {
+		FVector Point = Start + (Direction * Length * i);
+		Result.Add(Point);
+	}
+	Result.Add(End);
+	return Result;
 }
