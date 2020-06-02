@@ -16,23 +16,26 @@ ABuildingBeam::ABuildingBeam() {
 	Points = 2;
 }
 
-FVector2D ABuildingBeam::GetScale() {
+FVector2D ABuildingBeam::GetScale() const
+{
 	return Scale;
 }
 
-float ABuildingBeam::GetRollRotation() {
+float ABuildingBeam::GetRollRotation() const
+{
 	return RollRotation;
 }
 
-TArray<FVector> ABuildingBeam::CalculateSplinePoints() {
+TArray<FVector> ABuildingBeam::CalculateSplinePoints() const
+{
 	TArray<FVector> Result;
-	FVector Start = GetActorLocation();
-	FVector End = PlatformEnd->GetComponentLocation();
+	const FVector Start = GetActorLocation();
+	const FVector End = PlatformEnd->GetComponentLocation();
 	Result.Add(Start);
 	
 	FVector Direction;
 	float Length;
-	FVector PointVector = (End - Start)/Points;
+	const FVector PointVector = (End - Start)/Points;
 	PointVector.ToDirectionAndLength(Direction, Length);
 
 	for (int32 i = 1; i < Points; i++) {

@@ -33,16 +33,16 @@ public:
 	void ThrustInput(float Val);
 
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
-	void PitchInput(float Val);
+	void PitchInput(float Val) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
-	void YawnInput(float Val);
+	void YawnInput(float Val) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
-	void RollInput(float Val);
+	void RollInput(float Val) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
-	void StopInput();
+	static void StopInput();
 
 	UFUNCTION(BlueprintCallable, Category = "Pawn", meta = (AdvancedDisplay = "2"))
 	void SetMesh(USkeletalMeshComponent* Mesh);
@@ -51,7 +51,7 @@ public:
 	void SetPawn(APlayerPawn* Pawn);
 
 	UFUNCTION(BlueprintCallable, Category = "Control", meta = (AdvancedDisplay = "2"))
-	float GetDot();
+	float GetDot() const;
 
 private:
 
@@ -96,15 +96,15 @@ private:
 
 	float Dot;
 
-	void AddTorqueToThePlane(FVector Direction, float InputVal);
+	void AddTorqueToThePlane(FVector Direction, float InputVal) const;
 
 	void Thrusting(float InputVal);
 
-	void AddThrust(float DeltaTime);
+	void AddThrust(float DeltaTime) const;
 
 	void CalculateAcceleration();
 
-	void AddGravityForce(float DeltaTime);
+	void AddGravityForce(float DeltaTime) const;
 
     void CalculateAerodynamic(float DeltaTime);
 

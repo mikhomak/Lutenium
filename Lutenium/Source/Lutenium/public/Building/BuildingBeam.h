@@ -27,13 +27,13 @@ public:
 	class UStaticMeshComponent* BeamMesh;
 
 	UFUNCTION(BlueprintCallable, Category = "Scales", meta = (AdvancedDisplay = "2"))
-	FVector2D GetScale();
+	FVector2D GetScale() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Scales", meta = (AdvancedDisplay = "2"))
-	float GetRollRotation();
+	float GetRollRotation() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Scales", meta = (AdvancedDisplay = "2"))
-	TArray<FVector> CalculateSplinePoints();
+	TArray<FVector> CalculateSplinePoints() const;
 
 
 	UPROPERTY(Category = Scales, EditAnywhere)
