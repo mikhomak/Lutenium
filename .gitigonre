@@ -1,6 +1,5 @@
 # Visual Studio 2015 user specific files
-Lutenium/.vs/
-
+Lutenium/.vs/*
 # Compiled Object files
 *.slo
 *.lo
