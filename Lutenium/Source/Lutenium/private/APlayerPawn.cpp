@@ -6,11 +6,8 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Engine/World.h"
 #include "Engine/StaticMesh.h"
-#include "GenericPlatform/GenericPlatformMath.h"
 #include "../public/PlaneMovementComponent.h"
-#include  "../public/PlaneParticleSystemComponent.h" 
 #include "Components/PrimitiveComponent.h"
 
 APlayerPawn::APlayerPawn()
@@ -19,7 +16,7 @@ APlayerPawn::APlayerPawn()
 	{
 		ConstructorHelpers::FObjectFinderOptional<USkeletalMesh> PlaneMesh;
 		FConstructorStatics()
-			: PlaneMesh(TEXT("/Game/Flying/Meshes/airplane/airplaneBones.airplaneBones"))
+			: PlaneMesh(TEXT("/Game/Art/Models/airplane/airplaneBones.airplaneBones"))
 		{
 			
 		}
@@ -65,7 +62,7 @@ void APlayerPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Oth
 {
 	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
-	FRotator CurrentRotation = GetActorRotation();
+	const FRotator CurrentRotation = GetActorRotation();
 	SetActorRotation(FQuat::Slerp(CurrentRotation.Quaternion(), HitNormal.ToOrientationQuat(), 0.025f));
 }
 
@@ -81,7 +78,8 @@ void APlayerPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAction("Stop", IE_Pressed, PlaneMovement, &UPlaneMovementComponent::StopInput);
 }
 
-float APlayerPawn::GetYawnInput() {
+float APlayerPawn::GetYawnInput() const
+{
 	if (InputComponent) {
 		check(InputComponent);
 		return InputComponent->GetAxisValue("Yawn");
@@ -89,14 +87,16 @@ float APlayerPawn::GetYawnInput() {
 	return 0.f;
 }
 
-float APlayerPawn::GetRollInput(){
+float APlayerPawn::GetRollInput() const
+{
 	if (InputComponent) {
 		check(InputComponent);
 		return InputComponent->GetAxisValue("Roll");
 	}
 	return 0.f;
 }
-float APlayerPawn::GetPitchInput() {
+float APlayerPawn::GetPitchInput() const
+{
 	if (InputComponent) {
 		check(InputComponent);
 		return InputComponent->GetAxisValue("Pitch");

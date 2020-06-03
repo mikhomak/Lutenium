@@ -36,12 +36,12 @@ public:
 	TArray<FVector> CalculateSplinePoints() const;
 
 
-	UPROPERTY(Category = Scales, EditAnywhere)
+	UPROPERTY(Category = Scales, EditAnywhere, BlueprintReadWrite)
 	FVector2D Scale;
 
-	UPROPERTY(Category = Scales, EditAnywhere)
+	UPROPERTY(Category = Scales, EditAnywhere, BlueprintReadWrite)
 	float RollRotation;
 
-	UPROPERTY(Category = Scales, EditAnywhere)
+	UPROPERTY(Category = Scales, EditAnywhere, BlueprintReadWrite)
 	int Points;
 };

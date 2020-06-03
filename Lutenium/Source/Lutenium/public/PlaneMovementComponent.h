@@ -33,16 +33,16 @@ public:
 	void ThrustInput(float Val);
 
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
-	void PitchInput(float Val) const;
+	void PitchInput(float Val);
 
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
-	void YawnInput(float Val) const;
+	void YawnInput(float Val);
 
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
-	void RollInput(float Val) const;
+	void RollInput(float Val);
 
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
-	static void StopInput();
+	void StopInput();
 
 	UFUNCTION(BlueprintCallable, Category = "Pawn", meta = (AdvancedDisplay = "2"))
 	void SetMesh(USkeletalMeshComponent* Mesh);

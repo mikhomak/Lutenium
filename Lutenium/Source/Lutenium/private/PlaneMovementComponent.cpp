@@ -1,16 +1,11 @@
 #include "../public/PlaneMovementComponent.h"
 #include "../public/PlayerPawn.h"
-#include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
-#include "GameFramework/SpringArmComponent.h"
 #include "Engine/World.h"
-#include "GenericPlatform/GenericPlatformMath.h"
 #include "Math/Vector.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Math/UnrealMathUtility.h"
 #include "TimerManager.h"
-#include <EngineGlobals.h>
-#include <Runtime/Engine/Classes/Engine/Engine.h>
 
 UPlaneMovementComponent::UPlaneMovementComponent()
 {
@@ -54,17 +49,17 @@ void UPlaneMovementComponent::ThrustInput(const float Val)
 	Thrusting(Val);
 }
 
-void UPlaneMovementComponent::PitchInput(const float Val) const
+void UPlaneMovementComponent::PitchInput(const float Val) 
 {
 	AddTorqueToThePlane(PlayerPawn->GetActorRightVector(), Val * PitchControl);
 }
 
-void UPlaneMovementComponent::YawnInput(const float Val) const
+void UPlaneMovementComponent::YawnInput(const float Val) 
 {
 	AddTorqueToThePlane(PlayerPawn->GetActorUpVector(), Val * YawnControl);
 }
 
-void UPlaneMovementComponent::RollInput(const float Val) const
+void UPlaneMovementComponent::RollInput(const float Val) 
 {
 	AddTorqueToThePlane(PlayerPawn->GetActorForwardVector(), Val * RollControl);
 }
@@ -75,7 +70,7 @@ void UPlaneMovementComponent::AddTorqueToThePlane(const FVector Direction, const
 	{
 		const FVector ZeroVector;
 		const FVector DirectionToTilt = FMath::Lerp(ZeroVector, Direction * InputVal * AirControl, 0.1f);
-		PlayerMesh->AddTorque(DirectionToTilt, FName(), true);
+		PlayerMesh->AddTorqueInRadians(DirectionToTilt, FName(), true);
 	}
 }
 
