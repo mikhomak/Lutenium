@@ -13,6 +13,7 @@ ABuildingBeam::ABuildingBeam() {
 	PlatformStart = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlatformStart"));
 	RootComponent = PlatformStart;
 	PlatformEnd = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlatformEnd"));
+	bRunConstructionScriptOnDrag = false;
 	Points = 2;
 }
 
