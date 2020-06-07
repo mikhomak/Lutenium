@@ -25,7 +25,6 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 	Dot = 0;
 	ThrustUpAcceleration = 1.f;
 	ThrustDownAcceleration = 10.f;
-	
 }
 
 
@@ -137,10 +136,11 @@ void UPlaneMovementComponent::CalculateAerodynamic(float DeltaTime)
 	{
 		PlayerMesh->AddForce(Velocity * DotProduct * AerodynamicMultiplier, FName(), true);
 	}
+	const float AbsPreviousDot = Dot < 0 ? Dot * -1.f : Dot;
+	const float AbsDot = DotProduct < 0 ? DotProduct * -1.f : DotProduct;
+	if ((AbsPreviousDot > 0.6f && AbsDot < 0.6f) || (AbsPreviousDot < 0.6f && AbsDot > 0.6f))
+	{
+		PlayerPawn->DotHasChange();
+	}
 	Dot = DotProduct;
-}
-
-float UPlaneMovementComponent::GetDot() const
-{
-	return Dot;
 }

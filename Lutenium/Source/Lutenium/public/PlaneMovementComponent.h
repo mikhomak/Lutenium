@@ -50,8 +50,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Pawn", meta = (AdvancedDisplay = "2"))
 	void SetPawn(APlayerPawn* Pawn);
 
-	UFUNCTION(BlueprintCallable, Category = "Control", meta = (AdvancedDisplay = "2"))
-	float GetDot() const;
 
 private:
 
