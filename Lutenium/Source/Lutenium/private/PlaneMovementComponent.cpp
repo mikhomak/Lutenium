@@ -12,7 +12,7 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 	PrimaryComponentTick.TickGroup = TG_PostPhysics;
 
-	ThrustAcceleration = 100.f;
+	MaxThrustUpAcceleration = 3000.f;
 	ThrustMaxSpeed = 8000.f;
 	ThrustMinSpeed = 50.f;
 	AirControl = 0.1f;
@@ -23,11 +23,15 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 	AerodynamicMultiplier = 0.4f;
 	DashImpact = 8000;
 	Dot = 0;
+	ThrustUpAcceleration = 1.f;
+	ThrustDownAcceleration = 10.f;
+	
 }
 
 
 void UPlaneMovementComponent::BeginPlay()
 {
+	MaxThrustDownAcceleration = MaxThrustUpAcceleration * -1.f;
 	Super::BeginPlay();
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UPlaneMovementComponent::CalculateAcceleration, 0.05f,
 	                                       true);
@@ -49,17 +53,17 @@ void UPlaneMovementComponent::ThrustInput(const float Val)
 	Thrusting(Val);
 }
 
-void UPlaneMovementComponent::PitchInput(const float Val) 
+void UPlaneMovementComponent::PitchInput(const float Val)
 {
 	AddTorqueToThePlane(PlayerPawn->GetActorRightVector(), Val * PitchControl);
 }
 
-void UPlaneMovementComponent::YawnInput(const float Val) 
+void UPlaneMovementComponent::YawnInput(const float Val)
 {
 	AddTorqueToThePlane(PlayerPawn->GetActorUpVector(), Val * YawnControl);
 }
 
-void UPlaneMovementComponent::RollInput(const float Val) 
+void UPlaneMovementComponent::RollInput(const float Val)
 {
 	AddTorqueToThePlane(PlayerPawn->GetActorForwardVector(), Val * RollControl);
 }
@@ -76,12 +80,16 @@ void UPlaneMovementComponent::AddTorqueToThePlane(const FVector Direction, const
 
 void UPlaneMovementComponent::Thrusting(float InputVal)
 {
-	ThrustUp = InputVal == 0 ? false : InputVal > 0 ? true : false;
+	bThrusting = InputVal != 0;
+	if (bThrusting)
+	{
+		ThrustUp = InputVal > 0 ? true : false;
+	}
 }
 
 void UPlaneMovementComponent::AddThrust(float DeltaTime) const
 {
-	const float Speed = FMath::Clamp(ThrustAcceleration * CurrentAcceleration, ThrustMinSpeed, ThrustMaxSpeed);
+	const float Speed = FMath::Clamp(CurrentAcceleration, ThrustMinSpeed, ThrustMaxSpeed);
 	const FVector Velocity = FMath::Lerp(PlayerMesh->GetPhysicsLinearVelocity(), PlayerMesh->GetForwardVector() * Speed,
 	                                     0.014f);
 	PlayerMesh->SetPhysicsLinearVelocity(Velocity, false, FName());
@@ -89,8 +97,11 @@ void UPlaneMovementComponent::AddThrust(float DeltaTime) const
 
 void UPlaneMovementComponent::CalculateAcceleration()
 {
-	CurrentAcceleration += ThrustUp ? 1 : -1;
-	CurrentAcceleration = FMath::Clamp(CurrentAcceleration, 0.f, 100.f);
+	if (bThrusting)
+	{
+		CurrentAcceleration += ThrustUp ? ThrustUpAcceleration : ThrustDownAcceleration;
+		CurrentAcceleration = FMath::Clamp(CurrentAcceleration, MaxThrustDownAcceleration, MaxThrustUpAcceleration);
+	}
 }
 
 void UPlaneMovementComponent::AddGravityForce(float DeltaTime) const

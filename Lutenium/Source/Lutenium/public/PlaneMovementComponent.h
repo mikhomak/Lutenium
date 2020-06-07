@@ -71,7 +71,7 @@ private:
 	float AerodynamicMultiplier;
 
 	UPROPERTY(Category = Speed, EditAnywhere)
-	float ThrustAcceleration;
+	float MaxThrustUpAcceleration;
 
 	UPROPERTY(Category = Speed, EditAnywhere)
 	float ThrustMaxSpeed;
@@ -85,12 +85,22 @@ private:
 	UPROPERTY(Category = Speed, EditAnywhere)
 	float CurrentAcceleration;
 
+	UPROPERTY(Category = Speed, EditAnywhere)
+	float ThrustUpAcceleration;
+
+	UPROPERTY(Category = Speed, EditAnywhere)
+	float ThrustDownAcceleration;
+
 	UPROPERTY(Category = CustomPhysics, EditAnywhere)
 	float CustomGravity;
 
 	float CurrentThrust;
 
 	bool ThrustUp;
+
+	bool bThrusting;
+
+	float MaxThrustDownAcceleration;
 
 	FTimerHandle TimerHandle;
 
