@@ -43,6 +43,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "PlaneMovement")
 	void DotHasChange();
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "PlaneMovement")
+	void DashImpact();
 
 protected:
 

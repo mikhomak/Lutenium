@@ -32,6 +32,7 @@ void UPlaneMovementComponent::BeginPlay()
 {
 	MaxThrustDownAcceleration = MaxThrustUpAcceleration * -1.f;
 	Super::BeginPlay();
+	FTimerHandle TimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UPlaneMovementComponent::CalculateAcceleration, 0.05f,
 	                                       true);
 }
@@ -118,12 +119,15 @@ void UPlaneMovementComponent::SetPawn(APlayerPawn* Pawn)
 	PlayerPawn = Pawn;
 }
 
-void UPlaneMovementComponent::StopInput()
+void UPlaneMovementComponent::DashForward()
 {
-	//float Speed = FMath::Clamp(ThrustAcceleration * Acceleration, ThrustMinSpeed, ThrustMaxSpeed);
-	//FVector Velocity = PlayerPawn->GetVelocity() + PlayerMesh->GetForwardVector() * (Speed / 5);
-	//PlayerMesh->SetPhysicsLinearVelocity(PlayerMesh->GetForwardVector() * (Speed / 5), true, FName());
-	//PlayerPawn->LaunchPawn(PlayerMesh->GetForwardVector() * DashImpact, true, true);
+	if(DashesLeft <= 0)
+	{
+		return;
+	}
+	
+	PlayerMesh->AddForce(PlayerMesh->GetForwardVector() * DashImpact, FName(), true);
+	DashesLeft--;
 }
 
 void UPlaneMovementComponent::CalculateAerodynamic(float DeltaTime)

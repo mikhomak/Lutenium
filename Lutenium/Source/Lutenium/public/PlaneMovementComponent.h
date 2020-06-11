@@ -42,7 +42,7 @@ public:
 	void RollInput(float Val);
 
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
-	void StopInput();
+	void DashForward();
 
 	UFUNCTION(BlueprintCallable, Category = "Pawn", meta = (AdvancedDisplay = "2"))
 	void SetMesh(USkeletalMeshComponent* Mesh);
@@ -50,6 +50,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Pawn", meta = (AdvancedDisplay = "2"))
 	void SetPawn(APlayerPawn* Pawn);
 
+	UPROPERTY(Category = "Dash", EditAnywhere)
+	float MaxDashes;
 
 private:
 
@@ -77,7 +79,7 @@ private:
 	UPROPERTY(Category = Speed, EditAnywhere)
 	float ThrustMinSpeed;
 
-	UPROPERTY(Category = Speed, EditAnywhere)
+	UPROPERTY(Category = "Dash", EditAnywhere)
 	float DashImpact;
 
 	UPROPERTY(Category = Speed, EditAnywhere)
@@ -100,9 +102,11 @@ private:
 
 	float MaxThrustDownAcceleration;
 
-	FTimerHandle TimerHandle;
+	
 
 	float Dot;
+
+	float DashesLeft;
 
 	void AddTorqueToThePlane(FVector Direction, float InputVal) const;
 
