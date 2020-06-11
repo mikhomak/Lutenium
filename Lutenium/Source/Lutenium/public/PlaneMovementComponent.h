@@ -102,8 +102,6 @@ private:
 
 	float MaxThrustDownAcceleration;
 
-	
-
 	float Dot;
 
 	float DashesLeft;
