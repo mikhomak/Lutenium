@@ -106,6 +106,10 @@ private:
 
 	float DashesLeft;
 
+	bool CanDash;
+
+	bool ClampSpeed;
+
 	void AddTorqueToThePlane(FVector Direction, float InputVal) const;
 
 	void Thrusting(float InputVal);
