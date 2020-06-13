@@ -42,7 +42,8 @@ public:
 	void RollInput(float Val);
 
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
-	void DashForward();
+	void DashInput();
+
 
 	UFUNCTION(BlueprintCallable, Category = "Pawn", meta = (AdvancedDisplay = "2"))
 	void SetMesh(USkeletalMeshComponent* Mesh);
@@ -55,6 +56,9 @@ public:
 
 	UPROPERTY(Category = "Dash", EditAnywhere)
 	float DashCooldown;
+
+	UPROPERTY(Category = "Dash", EditAnywhere)
+	float DashDelay;
 
 private:
 
@@ -129,4 +133,6 @@ private:
     void CalculateAerodynamic(float DeltaTime);
 
 	void ResetClampSpeed();
+
+	void DashForward();
 };

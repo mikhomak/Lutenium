@@ -28,8 +28,8 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 
 	MaxDashes = 3;
 	DashesLeft = MaxDashes;
-	ClampSpeed = true;
 	DashCooldown = 1.f;
+	DashDelay = 0.3f;
 
 	MaxSpeedLerpAlpha = 0.2f;
 }
@@ -97,10 +97,11 @@ void UPlaneMovementComponent::Thrusting(float InputVal)
 void UPlaneMovementComponent::AddThrust(float DeltaTime) const
 {
 	float Speed = CurrentAcceleration;
-	if(CurrentAcceleration > ThrustMaxSpeed)
+	if (CurrentAcceleration > ThrustMaxSpeed)
 	{
 		Speed = FMath::Lerp(ThrustMaxSpeed, CurrentAcceleration, MaxSpeedLerpAlpha);
-	}else
+	}
+	else
 	{
 		Speed = FMath::Clamp(CurrentAcceleration, ThrustMinSpeed, ThrustMaxSpeed);
 	}
@@ -114,10 +115,7 @@ void UPlaneMovementComponent::CalculateAcceleration()
 	if (bThrusting)
 	{
 		CurrentAcceleration += ThrustUp ? ThrustUpAcceleration : ThrustDownAcceleration;
-		if (ClampSpeed)
-		{
-			CurrentAcceleration = FMath::Clamp(CurrentAcceleration, MaxThrustDownAcceleration, MaxThrustUpAcceleration);
-		}
+		CurrentAcceleration = FMath::Clamp(CurrentAcceleration, MaxThrustDownAcceleration, MaxThrustUpAcceleration);
 	}
 }
 
@@ -136,18 +134,26 @@ void UPlaneMovementComponent::SetPawn(APlayerPawn* Pawn)
 	PlayerPawn = Pawn;
 }
 
-void UPlaneMovementComponent::DashForward()
+void UPlaneMovementComponent::DashInput()
 {
 	if (DashesLeft <= 0)
 	{
 		return;
 	}
+	FTimerHandle DashDelayTimer;
+	GetWorld()->GetTimerManager().SetTimer(DashDelayTimer, this, &UPlaneMovementComponent::DashForward, DashDelay);
+}
+
+
+void UPlaneMovementComponent::DashForward()
+{
 	CanDash = false;
-	ClampSpeed = false;
 	PlayerMesh->AddForce(PlayerMesh->GetForwardVector() * DashImpact, FName(), true);
 	DashesLeft--;
-	FTimerHandle DashTimer;
-	GetWorld()->GetTimerManager().SetTimer(DashTimer, this, &UPlaneMovementComponent::ResetClampSpeed, DashCooldown, false);
+	FTimerHandle DashCooldownTimer;
+	GetWorld()->GetTimerManager().SetTimer(DashCooldownTimer, this, &UPlaneMovementComponent::ResetClampSpeed,
+	                                       DashCooldown,
+	                                       false);
 }
 
 void UPlaneMovementComponent::CalculateAerodynamic(float DeltaTime)
@@ -181,6 +187,5 @@ void UPlaneMovementComponent::AddDash()
 void UPlaneMovementComponent::ResetClampSpeed()
 {
 	CanDash = true;
-	ClampSpeed = true;
 	DashesLeft++;
 }
