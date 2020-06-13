@@ -30,6 +30,8 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 	DashesLeft = MaxDashes;
 	ClampSpeed = true;
 	DashCooldown = 1.f;
+
+	MaxSpeedLerpAlpha = 0.2f;
 }
 
 
@@ -94,7 +96,14 @@ void UPlaneMovementComponent::Thrusting(float InputVal)
 
 void UPlaneMovementComponent::AddThrust(float DeltaTime) const
 {
-	const float Speed = FMath::Clamp(CurrentAcceleration, ThrustMinSpeed, ThrustMaxSpeed);
+	float Speed = CurrentAcceleration;
+	if(CurrentAcceleration > ThrustMaxSpeed)
+	{
+		Speed = FMath::Lerp(ThrustMaxSpeed, CurrentAcceleration, MaxSpeedLerpAlpha);
+	}else
+	{
+		Speed = FMath::Clamp(CurrentAcceleration, ThrustMinSpeed, ThrustMaxSpeed);
+	}
 	const FVector Velocity = FMath::Lerp(PlayerMesh->GetPhysicsLinearVelocity(), PlayerMesh->GetForwardVector() * Speed,
 	                                     0.014f);
 	PlayerMesh->SetPhysicsLinearVelocity(Velocity, false, FName());

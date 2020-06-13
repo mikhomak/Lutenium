@@ -82,6 +82,9 @@ private:
 	UPROPERTY(Category = Speed, EditAnywhere)
 	float ThrustMinSpeed;
 
+	UPROPERTY(Category = Speed, EditAnywhere)
+	float MaxSpeedLerpAlpha;
+
 	UPROPERTY(Category = "Dash", EditAnywhere)
 	float DashImpact;
 
@@ -110,8 +113,6 @@ private:
 	int DashesLeft;
 
 	bool CanDash;
-
-	bool ClampSpeed;
 
 	void AddDash();
 
