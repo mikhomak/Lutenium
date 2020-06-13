@@ -25,6 +25,11 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 	Dot = 0;
 	ThrustUpAcceleration = 1.f;
 	ThrustDownAcceleration = 10.f;
+
+	MaxDashes = 3;
+	DashesLeft = MaxDashes;
+	ClampSpeed = true;
+	DashCooldown = 1.f;
 }
 
 
@@ -100,7 +105,10 @@ void UPlaneMovementComponent::CalculateAcceleration()
 	if (bThrusting)
 	{
 		CurrentAcceleration += ThrustUp ? ThrustUpAcceleration : ThrustDownAcceleration;
-		CurrentAcceleration = FMath::Clamp(CurrentAcceleration, MaxThrustDownAcceleration, MaxThrustUpAcceleration);
+		if (ClampSpeed)
+		{
+			CurrentAcceleration = FMath::Clamp(CurrentAcceleration, MaxThrustDownAcceleration, MaxThrustUpAcceleration);
+		}
 	}
 }
 
@@ -121,13 +129,16 @@ void UPlaneMovementComponent::SetPawn(APlayerPawn* Pawn)
 
 void UPlaneMovementComponent::DashForward()
 {
-	if(DashesLeft <= 0)
+	if (DashesLeft <= 0)
 	{
 		return;
 	}
-	
+	CanDash = false;
+	ClampSpeed = false;
 	PlayerMesh->AddForce(PlayerMesh->GetForwardVector() * DashImpact, FName(), true);
 	DashesLeft--;
+	FTimerHandle DashTimer;
+	GetWorld()->GetTimerManager().SetTimer(DashTimer, this, &UPlaneMovementComponent::ResetClampSpeed, DashCooldown, false);
 }
 
 void UPlaneMovementComponent::CalculateAerodynamic(float DeltaTime)
@@ -147,4 +158,20 @@ void UPlaneMovementComponent::CalculateAerodynamic(float DeltaTime)
 		PlayerPawn->DotHasChange();
 	}
 	Dot = DotProduct;
+}
+
+void UPlaneMovementComponent::AddDash()
+{
+	if (DashesLeft > MaxDashes)
+	{
+		return;
+	}
+	DashesLeft++;
+}
+
+void UPlaneMovementComponent::ResetClampSpeed()
+{
+	CanDash = true;
+	ClampSpeed = true;
+	DashesLeft++;
 }

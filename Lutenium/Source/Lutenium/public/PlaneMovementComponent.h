@@ -51,7 +51,10 @@ public:
 	void SetPawn(APlayerPawn* Pawn);
 
 	UPROPERTY(Category = "Dash", EditAnywhere)
-	float MaxDashes;
+	int MaxDashes;
+
+	UPROPERTY(Category = "Dash", EditAnywhere)
+	float DashCooldown;
 
 private:
 
@@ -104,11 +107,13 @@ private:
 
 	float Dot;
 
-	float DashesLeft;
+	int DashesLeft;
 
 	bool CanDash;
 
 	bool ClampSpeed;
+
+	void AddDash();
 
 	void AddTorqueToThePlane(FVector Direction, float InputVal) const;
 
@@ -122,4 +127,5 @@ private:
 
     void CalculateAerodynamic(float DeltaTime);
 
+	void ResetClampSpeed();
 };
