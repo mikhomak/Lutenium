@@ -75,7 +75,7 @@ void APlayerPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAxis("Pitch", PlaneMovement, &UPlaneMovementComponent::PitchInput);
 	PlayerInputComponent->BindAxis("Yawn", PlaneMovement, &UPlaneMovementComponent::YawnInput);
 	PlayerInputComponent->BindAxis("Roll", PlaneMovement, &UPlaneMovementComponent::RollInput);
-	PlayerInputComponent->BindAction("Stop", IE_Pressed, PlaneMovement, &UPlaneMovementComponent::DashInput);
+	PlayerInputComponent->BindAction("Stop", IE_Released, PlaneMovement, &UPlaneMovementComponent::DashInput);
 }
 
 float APlayerPawn::GetYawnInput() const

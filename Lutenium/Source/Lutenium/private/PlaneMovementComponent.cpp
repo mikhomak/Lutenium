@@ -23,15 +23,22 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 	AerodynamicMultiplier = 0.4f;
 	DashImpact = 8000;
 	Dot = 0;
+	NoThrustDeceleration = -3.f;
 	ThrustUpAcceleration = 1.f;
 	ThrustDownAcceleration = 10.f;
 
 	MaxDashes = 3;
 	DashesLeft = MaxDashes;
 	DashCooldown = 1.f;
-	DashDelay = 0.3f;
+	bCanDash = true;
 
 	MaxSpeedLerpAlpha = 0.2f;
+
+
+	MinSpeedToStall = 200.f;
+	StallForce = -1000.f;
+	TimeToEnterStall = 1.1f;
+	bStalling = false;
 }
 
 
@@ -50,8 +57,8 @@ auto UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	PlayerMesh->AddTorqueInDegrees(PlayerMesh->GetPhysicsAngularVelocityInDegrees() * -1.f / 0.5f, FName(), true);
 	AddGravityForce(DeltaTime);
-	CalculateAerodynamic(DeltaTime);
-	AddThrust(DeltaTime);
+	IsAboutToStall();
+	Movement(DeltaTime);
 }
 
 
@@ -75,6 +82,38 @@ void UPlaneMovementComponent::RollInput(const float Val)
 	AddTorqueToThePlane(PlayerPawn->GetActorForwardVector(), Val * RollControl);
 }
 
+void UPlaneMovementComponent::DashInput()
+{
+	if (DashesLeft <= 0)
+	{
+		return;
+	}
+	bCanDash = false;
+	PlayerPawn->DashImpact();
+	PlayerMesh->AddForce(PlayerMesh->GetForwardVector() * DashImpact, FName(), true);
+	CurrentAcceleration = MaxThrustUpAcceleration;
+	DashesLeft--;
+	FTimerHandle DashCooldownTimer;
+	GetWorld()->GetTimerManager().SetTimer(DashCooldownTimer, this, &UPlaneMovementComponent::ResetDashCooldown,
+	                                       DashCooldown,
+	                                       false);
+}
+
+
+void UPlaneMovementComponent::Movement(const float DeltaTime)
+{
+	if (bStalling == false)
+	{
+		CalculateAerodynamic(DeltaTime);
+		AddThrust(DeltaTime);
+	}
+	else
+	{
+		Stalling();
+	}
+}
+
+
 void UPlaneMovementComponent::AddTorqueToThePlane(const FVector Direction, const float InputVal) const
 {
 	if (InputVal != 0)
@@ -88,10 +127,7 @@ void UPlaneMovementComponent::AddTorqueToThePlane(const FVector Direction, const
 void UPlaneMovementComponent::Thrusting(float InputVal)
 {
 	bThrusting = InputVal != 0;
-	if (bThrusting)
-	{
-		ThrustUp = InputVal > 0 ? true : false;
-	}
+	ThrustUp = InputVal > 0 ? true : false;
 }
 
 void UPlaneMovementComponent::AddThrust(float DeltaTime) const
@@ -112,48 +148,15 @@ void UPlaneMovementComponent::AddThrust(float DeltaTime) const
 
 void UPlaneMovementComponent::CalculateAcceleration()
 {
-	if (bThrusting)
-	{
-		CurrentAcceleration += ThrustUp ? ThrustUpAcceleration : ThrustDownAcceleration;
-		CurrentAcceleration = FMath::Clamp(CurrentAcceleration, MaxThrustDownAcceleration, MaxThrustUpAcceleration);
-	}
+	CurrentAcceleration += ThrustUp
+		                       ? ThrustUpAcceleration
+		                       : (bThrusting ? ThrustDownAcceleration : NoThrustDeceleration);
+	CurrentAcceleration = FMath::Clamp(CurrentAcceleration, MaxThrustDownAcceleration, MaxThrustUpAcceleration);
 }
 
 void UPlaneMovementComponent::AddGravityForce(float DeltaTime) const
 {
 	PlayerMesh->AddForce(FVector(0, 0, CustomGravity), FName(), true);
-}
-
-void UPlaneMovementComponent::SetMesh(USkeletalMeshComponent* Mesh)
-{
-	PlayerMesh = Mesh;
-}
-
-void UPlaneMovementComponent::SetPawn(APlayerPawn* Pawn)
-{
-	PlayerPawn = Pawn;
-}
-
-void UPlaneMovementComponent::DashInput()
-{
-	if (DashesLeft <= 0)
-	{
-		return;
-	}
-	FTimerHandle DashDelayTimer;
-	GetWorld()->GetTimerManager().SetTimer(DashDelayTimer, this, &UPlaneMovementComponent::DashForward, DashDelay);
-}
-
-
-void UPlaneMovementComponent::DashForward()
-{
-	CanDash = false;
-	PlayerMesh->AddForce(PlayerMesh->GetForwardVector() * DashImpact, FName(), true);
-	DashesLeft--;
-	FTimerHandle DashCooldownTimer;
-	GetWorld()->GetTimerManager().SetTimer(DashCooldownTimer, this, &UPlaneMovementComponent::ResetClampSpeed,
-	                                       DashCooldown,
-	                                       false);
 }
 
 void UPlaneMovementComponent::CalculateAerodynamic(float DeltaTime)
@@ -175,17 +178,62 @@ void UPlaneMovementComponent::CalculateAerodynamic(float DeltaTime)
 	Dot = DotProduct;
 }
 
-void UPlaneMovementComponent::AddDash()
+
+void UPlaneMovementComponent::ResetDashCooldown()
 {
-	if (DashesLeft > MaxDashes)
+	bCanDash = true;
+	if (DashesLeft < MaxDashes)
 	{
-		return;
+		DashesLeft++;
 	}
-	DashesLeft++;
 }
 
-void UPlaneMovementComponent::ResetClampSpeed()
+void UPlaneMovementComponent::IsAboutToStall()
 {
-	CanDash = true;
-	DashesLeft++;
+	if (bStalling)
+	{
+		if ((MinSpeedToStall >= PlayerMesh->GetPhysicsLinearVelocity().Size() && AccelerationToExitStall <=
+			CurrentAcceleration) || MinSpeedToStall <= PlayerMesh->GetPhysicsLinearVelocity().Size())
+		{
+			bStalling = false;
+		}
+	}
+	if (MinSpeedToStall >= PlayerMesh->GetPhysicsLinearVelocity().Size() && !bStalling)
+	{
+		bStalling = true;
+		GetWorld()->GetTimerManager().SetTimer(StallTimer, this, &UPlaneMovementComponent::EnterStallingTimer,
+		                                       TimeToEnterStall);
+	}
+}
+
+void UPlaneMovementComponent::EnterStallingTimer()
+{
+	if (MinSpeedToStall >= PlayerMesh->GetPhysicsLinearVelocity().Size() && AccelerationToExitStall >=
+		CurrentAcceleration)
+	{
+		bStalling = true;
+	}
+	else if (MinSpeedToStall >= PlayerMesh->GetPhysicsLinearVelocity().Size() && AccelerationToExitStall <=
+		CurrentAcceleration)
+	{
+		bStalling = false;
+		GetWorld()->GetTimerManager().ClearTimer(StallTimer);
+	}
+}
+
+
+void UPlaneMovementComponent::Stalling() const
+{
+	PlayerMesh->AddForce(FVector(0, 0, StallForce), FName(), true);
+}
+
+
+void UPlaneMovementComponent::SetMesh(USkeletalMeshComponent* Mesh)
+{
+	PlayerMesh = Mesh;
+}
+
+void UPlaneMovementComponent::SetPawn(APlayerPawn* Pawn)
+{
+	PlayerPawn = Pawn;
 }

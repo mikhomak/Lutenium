@@ -44,7 +44,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
 	void DashInput();
 
-
 	UFUNCTION(BlueprintCallable, Category = "Pawn", meta = (AdvancedDisplay = "2"))
 	void SetMesh(USkeletalMeshComponent* Mesh);
 
@@ -57,8 +56,8 @@ public:
 	UPROPERTY(Category = "Dash", EditAnywhere)
 	float DashCooldown;
 
-	UPROPERTY(Category = "Dash", EditAnywhere)
-	float DashDelay;
+	UPROPERTY(Category = Speed, BlueprintReadWrite, EditAnywhere)
+	bool bStalling;
 
 private:
 
@@ -76,6 +75,15 @@ private:
 
 	UPROPERTY(Category = Control, EditAnywhere)
 	float AerodynamicMultiplier;
+
+	UPROPERTY(Category = Stall, EditAnywhere)
+	float MinSpeedToStall;
+
+	UPROPERTY(Category = Stall, EditAnywhere)
+	float AccelerationToExitStall;
+
+	UPROPERTY(Category = Stall, EditAnywhere)
+	float TimeToEnterStall;
 
 	UPROPERTY(Category = Speed, EditAnywhere)
 	float MaxThrustUpAcceleration;
@@ -101,8 +109,14 @@ private:
 	UPROPERTY(Category = Speed, EditAnywhere)
 	float ThrustDownAcceleration;
 
+	UPROPERTY(Category = Speed, EditAnywhere)
+	float NoThrustDeceleration;
+
 	UPROPERTY(Category = CustomPhysics, EditAnywhere)
 	float CustomGravity;
+
+	UPROPERTY(Category = CustomPhysics, EditAnywhere)
+	float StallForce;
 
 	float CurrentThrust;
 
@@ -116,9 +130,10 @@ private:
 
 	int DashesLeft;
 
-	bool CanDash;
+	bool bCanDash;
 
-	void AddDash();
+
+	FTimerHandle StallTimer;
 
 	void AddTorqueToThePlane(FVector Direction, float InputVal) const;
 
@@ -132,7 +147,13 @@ private:
 
     void CalculateAerodynamic(float DeltaTime);
 
-	void ResetClampSpeed();
+	void ResetDashCooldown();
 
-	void DashForward();
+	void Stalling() const;
+
+	void IsAboutToStall();
+
+	void Movement(const float DeltaTime);
+
+	void EnterStallingTimer();
 };
