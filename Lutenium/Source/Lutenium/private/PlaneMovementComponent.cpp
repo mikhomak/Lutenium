@@ -69,7 +69,8 @@ void UPlaneMovementComponent::ThrustInput(const float Val)
 
 void UPlaneMovementComponent::PitchInput(const float Val)
 {
-	AddTorqueToThePlane(PlayerPawn->GetActorRightVector(), Val * PitchControl);
+	const float AppliedPitch = !bThrustUp ? Val * 2 : Val;
+	AddTorqueToThePlane(PlayerPawn->GetActorRightVector(), AppliedPitch * PitchControl);
 }
 
 void UPlaneMovementComponent::YawnInput(const float Val)
@@ -127,7 +128,7 @@ void UPlaneMovementComponent::AddTorqueToThePlane(const FVector Direction, const
 void UPlaneMovementComponent::Thrusting(float InputVal)
 {
 	bThrusting = InputVal != 0;
-	ThrustUp = InputVal > 0 ? true : false;
+	bThrustUp = InputVal > 0 ? true : false;
 }
 
 
@@ -145,7 +146,7 @@ void UPlaneMovementComponent::AddThrust(float DeltaTime) const
 
 void UPlaneMovementComponent::CalculateAcceleration()
 {
-	CurrentSpeed += ThrustUp
+	CurrentSpeed += bThrustUp
 		                ? ThrustUpAcceleration
 		                : (bThrusting ? ThrustDownAcceleration : NoThrustDeceleration);
 	CurrentSpeed = FMath::Clamp(CurrentSpeed, MaxThrustDownAcceleration, MaxThrustUpAcceleration);
@@ -173,10 +174,12 @@ void UPlaneMovementComponent::CalculateAerodynamic(float DeltaTime)
 	HasDotChangedEventCaller(DotProduct);
 }
 
-void UPlaneMovementComponent::HasDotChangedEventCaller(const float DotProduct) {
+void UPlaneMovementComponent::HasDotChangedEventCaller(const float DotProduct)
+{
 	const float AbsPreviousDot = Dot < 0 ? Dot * -1.f : Dot;
 	const float AbsDot = DotProduct < 0 ? DotProduct * -1.f : DotProduct;
-	if ((AbsPreviousDot > 0.6f && AbsDot < 0.6f) || (AbsPreviousDot < 0.6f && AbsDot > 0.6f)) {
+	if ((AbsPreviousDot > 0.6f && AbsDot < 0.6f) || (AbsPreviousDot < 0.6f && AbsDot > 0.6f))
+	{
 		PlayerPawn->DotHasChange();
 	}
 	Dot = DotProduct;

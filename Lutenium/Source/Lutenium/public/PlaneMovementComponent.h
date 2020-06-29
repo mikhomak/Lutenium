@@ -120,7 +120,7 @@ private:
 
 	float CurrentThrust;
 
-	bool ThrustUp;
+	bool bThrustUp;
 
 	bool bThrusting;
 
