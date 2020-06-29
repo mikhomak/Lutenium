@@ -56,52 +56,52 @@ public:
 	UPROPERTY(Category = "Dash", EditAnywhere)
 	float DashCooldown;
 
-	UPROPERTY(Category = Speed, BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(Category = Control, BlueprintReadWrite, EditAnywhere)
 	bool bStalling;
 
 private:
 
-	UPROPERTY(Category = Control, EditAnywhere)
+	UPROPERTY(Category = Control, EditDefaultsOnly)
 	float AirControl;
 
-	UPROPERTY(Category = Control, EditAnywhere)
+	UPROPERTY(Category = Control, EditDefaultsOnly)
 	float YawnControl;
 
-	UPROPERTY(Category = Control, EditAnywhere)
+	UPROPERTY(Category = Control, EditDefaultsOnly)
 	float PitchControl;
 
-	UPROPERTY(Category = Control, EditAnywhere)
+	UPROPERTY(Category = Control, EditDefaultsOnly)
 	float RollControl;
 
-	UPROPERTY(Category = Control, EditAnywhere)
+	UPROPERTY(Category = Control, EditDefaultsOnly)
 	float AerodynamicMultiplier;
 
-	UPROPERTY(Category = Stall, EditAnywhere)
+	UPROPERTY(Category = Stall, EditDefaultsOnly)
 	float MinSpeedToStall;
 
-	UPROPERTY(Category = Stall, EditAnywhere)
+	UPROPERTY(Category = Stall, EditDefaultsOnly)
 	float AccelerationToExitStall;
 
-	UPROPERTY(Category = Stall, EditAnywhere)
+	UPROPERTY(Category = Stall, EditDefaultsOnly)
 	float TimeToEnterStall;
 
-	UPROPERTY(Category = Speed, EditAnywhere)
+	UPROPERTY(Category = Speed, EditDefaultsOnly)
 	float MaxThrustUpAcceleration;
 
-	UPROPERTY(Category = Speed, EditAnywhere)
+	UPROPERTY(Category = Speed, EditDefaultsOnly)
 	float ThrustMaxSpeed;
 
-	UPROPERTY(Category = Speed, EditAnywhere)
+	UPROPERTY(Category = Speed, EditDefaultsOnly)
 	float ThrustMinSpeed;
 
-	UPROPERTY(Category = Speed, EditAnywhere)
+	UPROPERTY(Category = Speed, EditDefaultsOnly)
 	float MaxSpeedLerpAlpha;
 
-	UPROPERTY(Category = "Dash", EditAnywhere)
-	float DashImpact;
+	UPROPERTY(Category = Dash, EditDefaultsOnly)
+	float DashImpactForce;
 
 	UPROPERTY(Category = Speed, EditAnywhere)
-	float CurrentAcceleration;
+	float CurrentSpeed;
 
 	UPROPERTY(Category = Speed, EditAnywhere)
 	float ThrustUpAcceleration;
@@ -144,8 +144,9 @@ private:
 	void CalculateAcceleration();
 
 	void AddGravityForce(float DeltaTime) const;
+	void HasDotChangedEventCaller(float DotProduct);
 
-    void CalculateAerodynamic(float DeltaTime);
+	void CalculateAerodynamic(float DeltaTime);
 
 	void ResetDashCooldown();
 
