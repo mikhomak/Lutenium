@@ -101,7 +101,7 @@ private:
 	float DashImpactForce;
 
 	UPROPERTY(Category = Speed, EditAnywhere)
-	float CurrentSpeed;
+	float CurrentAcceleration;
 
 	UPROPERTY(Category = Speed, EditAnywhere)
 	float ThrustUpAcceleration;
@@ -113,8 +113,11 @@ private:
 	float NoThrustDeceleration;
 
 	UPROPERTY(Category = CustomPhysics, EditAnywhere)
-	float CustomGravity;
+	float CustomMaxGravity;
 
+	UPROPERTY(Category = CustomPhysics, EditAnywhere)
+	float CustomMinGravity;
+	
 	UPROPERTY(Category = CustomPhysics, EditAnywhere)
 	float StallForce;
 
@@ -131,7 +134,6 @@ private:
 	int DashesLeft;
 
 	bool bCanDash;
-
 
 	FTimerHandle StallTimer;
 

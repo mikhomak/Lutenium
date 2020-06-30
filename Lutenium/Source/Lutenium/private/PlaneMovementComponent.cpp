@@ -6,6 +6,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Math/UnrealMathUtility.h"
 #include "TimerManager.h"
+#include "GameFramework/SpringArmComponent.h"
 
 UPlaneMovementComponent::UPlaneMovementComponent()
 {
@@ -15,18 +16,23 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 	MaxThrustUpAcceleration = 3000.f;
 	ThrustMaxSpeed = 8000.f;
 	ThrustMinSpeed = 50.f;
-	AirControl = 0.1f;
-	CustomGravity = -600.f;
-	YawnControl = 0.5f;
-	PitchControl = 1.f;
-	RollControl = 1.f;
-	AerodynamicMultiplier = 0.4f;
-	DashImpactForce = 8000;
-	Dot = 0;
+	
 	NoThrustDeceleration = -3.f;
 	ThrustUpAcceleration = 1.f;
 	ThrustDownAcceleration = 10.f;
 
+	CustomMaxGravity = -800.f;
+	CustomMinGravity = -100.f;
+
+	
+	AirControl = 0.1f;
+	YawnControl = 0.5f;
+	PitchControl = 1.4f;
+	RollControl = 1.f;
+	AerodynamicMultiplier = 0.4f;
+
+	Dot = 0;
+	DashImpactForce = 8000;
 	MaxDashes = 3;
 	DashesLeft = MaxDashes;
 	DashCooldown = 1.f;
@@ -39,6 +45,7 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 	StallForce = -1000.f;
 	TimeToEnterStall = 1.1f;
 	bStalling = false;
+
 }
 
 
@@ -92,7 +99,7 @@ void UPlaneMovementComponent::DashInput()
 	bCanDash = false;
 	PlayerPawn->DashImpact();
 	PlayerMesh->AddForce(PlayerMesh->GetForwardVector() * DashImpactForce, FName(), true);
-	CurrentSpeed = MaxThrustUpAcceleration;
+	CurrentAcceleration = MaxThrustUpAcceleration;
 	DashesLeft--;
 	FTimerHandle DashCooldownTimer;
 	GetWorld()->GetTimerManager().SetTimer(DashCooldownTimer, this, &UPlaneMovementComponent::ResetDashCooldown,
@@ -135,9 +142,9 @@ void UPlaneMovementComponent::Thrusting(float InputVal)
 // Lerping the speed to the maximum if the current acceleration is greater than MaxSpeed(Allows dashing), and in other case clamping it to the maxSpeed
 void UPlaneMovementComponent::AddThrust(float DeltaTime) const
 {
-	const float Speed = CurrentSpeed > ThrustMaxSpeed
-		                    ? FMath::Lerp(ThrustMaxSpeed, CurrentSpeed, MaxSpeedLerpAlpha)
-		                    : FMath::Clamp(CurrentSpeed, ThrustMinSpeed, ThrustMaxSpeed);
+	const float Speed = CurrentAcceleration > ThrustMaxSpeed
+		                    ? FMath::Lerp(ThrustMaxSpeed, CurrentAcceleration, MaxSpeedLerpAlpha)
+		                    : FMath::Clamp(CurrentAcceleration, ThrustMinSpeed, ThrustMaxSpeed);
 
 	const FVector Velocity = FMath::Lerp(PlayerMesh->GetPhysicsLinearVelocity(), PlayerMesh->GetForwardVector() * Speed,
 	                                     0.014f);
@@ -146,17 +153,20 @@ void UPlaneMovementComponent::AddThrust(float DeltaTime) const
 
 void UPlaneMovementComponent::CalculateAcceleration()
 {
-	CurrentSpeed += bThrustUp
+	CurrentAcceleration += bThrustUp
 		                ? ThrustUpAcceleration
 		                : (bThrusting ? ThrustDownAcceleration : NoThrustDeceleration);
-	CurrentSpeed = FMath::Clamp(CurrentSpeed, MaxThrustDownAcceleration, MaxThrustUpAcceleration);
+	CurrentAcceleration = FMath::Clamp(CurrentAcceleration, MaxThrustDownAcceleration, MaxThrustUpAcceleration);
 }
 
 void UPlaneMovementComponent::AddGravityForce(float DeltaTime) const
 {
 	// The faster we travel, the less gravity is applied
-	const float AppliedGravity = FMath::GetMappedRangeValueClamped(FVector2D(ThrustMinSpeed, ThrustMaxSpeed),
-	                                                               FVector2D(CustomGravity, 0), CurrentSpeed);
+	const float GravityDependingOnSpeed = FMath::GetMappedRangeValueClamped(FVector2D(ThrustMinSpeed, ThrustMaxSpeed),
+	                                                               FVector2D(CustomMaxGravity, CustomMinGravity), CurrentAcceleration);
+	FVector MeshUpVectorNormalized = PlayerMesh->GetUpVector();
+	MeshUpVectorNormalized.Normalize();
+	const float AppliedGravity = FVector::DotProduct(MeshUpVectorNormalized, FVector(0, 0, 1)) * GravityDependingOnSpeed;
 	PlayerMesh->AddForce(FVector(0, 0, AppliedGravity), FName(), true);
 }
 
@@ -199,7 +209,7 @@ void UPlaneMovementComponent::IsAboutToStall()
 	if (bStalling)
 	{
 		if ((MinSpeedToStall >= PlayerMesh->GetPhysicsLinearVelocity().Size() && AccelerationToExitStall <=
-			CurrentSpeed) || MinSpeedToStall <= PlayerMesh->GetPhysicsLinearVelocity().Size())
+			CurrentAcceleration) || MinSpeedToStall <= PlayerMesh->GetPhysicsLinearVelocity().Size())
 		{
 			bStalling = false;
 		}
@@ -215,12 +225,12 @@ void UPlaneMovementComponent::IsAboutToStall()
 void UPlaneMovementComponent::EnterStallingTimer()
 {
 	if (MinSpeedToStall >= PlayerMesh->GetPhysicsLinearVelocity().Size() && AccelerationToExitStall >=
-		CurrentSpeed)
+		CurrentAcceleration)
 	{
 		bStalling = true;
 	}
 	else if (MinSpeedToStall >= PlayerMesh->GetPhysicsLinearVelocity().Size() && AccelerationToExitStall <=
-		CurrentSpeed)
+		CurrentAcceleration)
 	{
 		bStalling = false;
 		GetWorld()->GetTimerManager().ClearTimer(StallTimer);
