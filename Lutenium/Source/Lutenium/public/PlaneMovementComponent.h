@@ -50,6 +50,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Pawn", meta = (AdvancedDisplay = "2"))
 	void SetPawn(APlayerPawn* Pawn);
 
+	UFUNCTION(BlueprintCallable, Category = "Control", meta = (AdvancedDisplay = "2"))
+	float GetCurrentAcceleration() const;
+
 	UPROPERTY(Category = "Dash", EditAnywhere)
 	int MaxDashes;
 
@@ -58,6 +61,12 @@ public:
 
 	UPROPERTY(Category = Control, BlueprintReadWrite, EditAnywhere)
 	bool bStalling;
+
+	UPROPERTY(Category = Speed, BlueprintReadOnly, EditDefaultsOnly)
+	float MaxThrustUpAcceleration;
+
+	UPROPERTY(Category = Speed, BlueprintReadOnly, EditDefaultsOnly)
+	float MaxThrustDownAcceleration;
 
 private:
 
@@ -84,9 +93,6 @@ private:
 
 	UPROPERTY(Category = Stall, EditDefaultsOnly)
 	float TimeToEnterStall;
-
-	UPROPERTY(Category = Speed, EditDefaultsOnly)
-	float MaxThrustUpAcceleration;
 
 	UPROPERTY(Category = Speed, EditDefaultsOnly)
 	float ThrustMaxSpeed;
@@ -121,13 +127,13 @@ private:
 	UPROPERTY(Category = CustomPhysics, EditAnywhere)
 	float StallForce;
 
+
 	float CurrentThrust;
 
 	bool bThrustUp;
 
 	bool bThrusting;
 
-	float MaxThrustDownAcceleration;
 
 	float Dot;
 

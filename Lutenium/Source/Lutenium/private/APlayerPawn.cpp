@@ -78,6 +78,14 @@ void APlayerPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAction("Stop", IE_Released, PlaneMovement, &UPlaneMovementComponent::DashInput);
 }
 
+float APlayerPawn::GetThrustInput() const {
+	if (InputComponent) {
+		check(InputComponent);
+		return InputComponent->GetAxisValue("Thrust");
+	}
+	return 0.f;
+}
+
 float APlayerPawn::GetYawnInput() const
 {
 	if (InputComponent)

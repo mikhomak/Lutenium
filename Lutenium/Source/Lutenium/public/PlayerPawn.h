@@ -40,6 +40,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
 	float GetPitchInput() const;
 
+	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
+	float GetThrustInput() const;
+
+
 	UFUNCTION(BlueprintImplementableEvent, Category = "PlaneMovement")
 	void DotHasChange();
 

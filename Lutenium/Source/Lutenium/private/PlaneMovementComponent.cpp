@@ -16,7 +16,7 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 	MaxThrustUpAcceleration = 3000.f;
 	ThrustMaxSpeed = 8000.f;
 	ThrustMinSpeed = 50.f;
-	
+
 	NoThrustDeceleration = -3.f;
 	ThrustUpAcceleration = 1.f;
 	ThrustDownAcceleration = 10.f;
@@ -24,7 +24,7 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 	CustomMaxGravity = -800.f;
 	CustomMinGravity = -100.f;
 
-	
+
 	AirControl = 0.1f;
 	YawnControl = 0.5f;
 	PitchControl = 1.4f;
@@ -45,7 +45,6 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 	StallForce = -1000.f;
 	TimeToEnterStall = 1.1f;
 	bStalling = false;
-
 }
 
 
@@ -154,8 +153,8 @@ void UPlaneMovementComponent::AddThrust(float DeltaTime) const
 void UPlaneMovementComponent::CalculateAcceleration()
 {
 	CurrentAcceleration += bThrustUp
-		                ? ThrustUpAcceleration
-		                : (bThrusting ? ThrustDownAcceleration : NoThrustDeceleration);
+		                       ? ThrustUpAcceleration
+		                       : (bThrusting ? ThrustDownAcceleration : NoThrustDeceleration);
 	CurrentAcceleration = FMath::Clamp(CurrentAcceleration, MaxThrustDownAcceleration, MaxThrustUpAcceleration);
 }
 
@@ -163,10 +162,13 @@ void UPlaneMovementComponent::AddGravityForce(float DeltaTime) const
 {
 	// The faster we travel, the less gravity is applied
 	const float GravityDependingOnSpeed = FMath::GetMappedRangeValueClamped(FVector2D(ThrustMinSpeed, ThrustMaxSpeed),
-	                                                               FVector2D(CustomMaxGravity, CustomMinGravity), CurrentAcceleration);
+	                                                                        FVector2D(CustomMaxGravity,
+	                                                                                  CustomMinGravity),
+	                                                                        CurrentAcceleration);
 	FVector MeshUpVectorNormalized = PlayerMesh->GetUpVector();
 	MeshUpVectorNormalized.Normalize();
-	const float AppliedGravity = FVector::DotProduct(MeshUpVectorNormalized, FVector(0, 0, 1)) * GravityDependingOnSpeed;
+	const float AppliedGravity = FVector::DotProduct(MeshUpVectorNormalized, FVector(0, 0, 1)) *
+		GravityDependingOnSpeed;
 	PlayerMesh->AddForce(FVector(0, 0, AppliedGravity), FName(), true);
 }
 
@@ -252,4 +254,9 @@ void UPlaneMovementComponent::SetMesh(USkeletalMeshComponent* Mesh)
 void UPlaneMovementComponent::SetPawn(APlayerPawn* Pawn)
 {
 	PlayerPawn = Pawn;
+}
+
+float UPlaneMovementComponent::GetCurrentAcceleration() const
+{
+	return CurrentAcceleration;
 }
