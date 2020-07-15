@@ -1,34 +1,81 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+#include "../../public/Monster/EnemyMonsterPawn.h"
+#include "../../public/Monster/MonsterLeg.h"
 
-
-#include "EnemyMonsterPawn.h"
-
-// Sets default values
 AEnemyMonsterPawn::AEnemyMonsterPawn()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
+    PrimaryActorTick.bCanEverTick = true;
 }
 
-// Called when the game starts or when spawned
 void AEnemyMonsterPawn::BeginPlay()
 {
-	Super::BeginPlay();
-	
+    Super::BeginPlay();
 }
 
-// Called every frame
 void AEnemyMonsterPawn::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
-
+    Super::Tick(DeltaTime);
 }
 
-// Called to bind functionality to input
-void AEnemyMonsterPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+FVector AEnemyMonsterPawn::CalculateLegPosition(const EMonsterLeg Leg)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+    FVector* CurrentPosition = nullptr;
+    FTimeline* CurrentTimeline;
+    FVector* CurrentRaycastPosition = nullptr;
 
+    switch (Leg)
+    {
+    case FrontRight:
+        CurrentPosition = &CurrentFrontRightPosition;
+        CurrentTimeline = &FrontRightLegTimeline;
+        CurrentRaycastPosition = &RaycastFrontRightPosition;
+        break;
+    case FrontLeft:
+        CurrentPosition = &CurrentFrontLeftPosition;
+        CurrentTimeline = &FrontLeftLegTimeline;
+        CurrentRaycastPosition = &RaycastFrontLeftPosition;
+        break;
+    case RearRight:
+        CurrentPosition = &CurrentFrontRightPosition;
+        CurrentTimeline = &FrontRightLegTimeline;
+        CurrentRaycastPosition = &RaycastFrontRightPosition;
+        break;
+    case RearLeft:
+        CurrentPosition = &CurrentFrontLeftPosition;
+        CurrentTimeline = &FrontLeftLegTimeline;
+        CurrentRaycastPosition = &RaycastFrontLeftPosition;
+        break;
+    }
+    FHitResult HitResult;
+    const FVector RaycastStart = *CurrentRaycastPosition;
+    const FVector RaycastEndLocation = RaycastStart - (FVector::DownVector * RaycastDownLength);
+
+    GetWorld()->LineTraceSingleByChannel(
+        HitResult,
+        RaycastStart,
+        RaycastEndLocation,
+        ECollisionChannel::ECC_WorldDynamic);
+
+    FVector HitLocation = HitResult.bBlockingHit ? HitResult.ImpactPoint : FVector();
+
+    if (FVector::Distance(*CurrentPosition, HitLocation) >= DistanceBetweenLegsToMove)
+    {
+    }
+
+    return FVector(0, 0, 0);
 }
 
+FVector AEnemyMonsterPawn::GetLegPosition(const EMonsterLeg Leg) const
+{
+    switch (Leg)
+    {
+    case RearLeft:
+        return CurrentRearLeftPosition;
+    case RearRight:
+        return CurrentRearRightPosition;
+    case FrontLeft:
+        return CurrentFrontLeftPosition;
+    case FrontRight:
+        return CurrentFrontRightPosition;
+    }
+    return FVector(0, 0, 0);
+}
