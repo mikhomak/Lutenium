@@ -32,9 +32,11 @@ public:
 
 	FVector RaycastLocation;
 
-	struct FTimeline Timeline;
+	struct FTimeline LegTimeline;
 
 	FVector CurrentPosition;
+
+	bool bCanMove;
 
 private:
 
