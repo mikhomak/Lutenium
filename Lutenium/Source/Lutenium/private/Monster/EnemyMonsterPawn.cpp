@@ -59,23 +59,10 @@ FVector AEnemyMonsterPawn::CalculateLegPosition(const EMonsterLeg Leg)
 
     if (FVector::Distance(*CurrentPosition, HitLocation) >= DistanceBetweenLegsToMove)
     {
+        
     }
 
     return FVector(0, 0, 0);
 }
 
-FVector AEnemyMonsterPawn::GetLegPosition(const EMonsterLeg Leg) const
-{
-    switch (Leg)
-    {
-    case RearLeft:
-        return CurrentRearLeftPosition;
-    case RearRight:
-        return CurrentRearRightPosition;
-    case FrontLeft:
-        return CurrentFrontLeftPosition;
-    case FrontRight:
-        return CurrentFrontRightPosition;
-    }
-    return FVector(0, 0, 0);
-}
+
