@@ -193,11 +193,9 @@ void UPlaneMovementComponent::CalculateAerodynamic(float DeltaTime)
     HasDotChangedEventCaller(DotProduct);
 }
 
-///<summary>
 ///		Checks if the dot value(aerodynamics) has reached the change value
 ///		If so, calls the DotHasChange method of PlayerPawn
 ///		In blueprint activates VFX when it happens
-///</summary>
 void UPlaneMovementComponent::HasDotChangedEventCaller(const float DotProduct)
 {
     const float AbsPreviousDot = Dot < 0 ? Dot * -1.f : Dot;
