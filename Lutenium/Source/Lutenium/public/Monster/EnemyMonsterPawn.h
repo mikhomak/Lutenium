@@ -50,5 +50,5 @@ public:
     UCurveFloat* LegFloatCurve;
 
     UFUNCTION(BlueprintCallable)
-    FVector GetLegLocation(EMonsterLeg Leg);
+    FVector GetLegLocation(EMonsterLeg Leg) const;
 };

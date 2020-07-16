@@ -7,18 +7,19 @@ UMonsterLegComponent::UMonsterLegComponent()
     PrimaryComponentTick.TickGroup = TG_PostPhysics;
     
 
-    Curve->GetTimeRange(MinTimeCurve, MaxTimeCurve);
 }
 
 
 void UMonsterLegComponent::BeginPlay()
 {
     Super::BeginPlay();
-    Curve = Curve == nullptr ? EnemyMonsterPawn->LegFloatCurve : *Curve;
+    Curve = Curve == nullptr ? EnemyMonsterPawn->LegFloatCurve : Curve;
     DistanceBetweenLegsToMove = EnemyMonsterPawn->DistanceBetweenLegsToMove;
     RaycastDownLength = EnemyMonsterPawn->RaycastDownLength;
     HighestPoint = EnemyMonsterPawn->HighestPoint;
     LerpValue = EnemyMonsterPawn->LerpValue;
+    Curve->GetTimeRange(MinTimeCurve, MaxTimeCurve);
+
 }
 
 
@@ -80,7 +81,7 @@ void UMonsterLegComponent::TimelineCallback()
 
     CurrentPosition = FMath::Lerp(
         CurrentPosition,
-        FVector(GetCurrentValueForAxis(true), YValue, GetCurrentValueForAxis(false))
+        FVector(GetCurrentValueForAxis(true), YValue, GetCurrentValueForAxis(false)),
         LerpValue);
 }
 
@@ -105,7 +106,7 @@ void UMonsterLegComponent::SetRaycastLocation(const FVector& Location)
     RaycastLocation = Location;
 }
 
-FVector UMonsterLegComponent::GeCurrentPosition() const
+FVector UMonsterLegComponent::GetCurrentPosition() const
 {
     return CurrentPosition;
 }

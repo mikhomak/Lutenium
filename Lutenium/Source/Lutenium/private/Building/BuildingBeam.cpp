@@ -2,8 +2,6 @@
 
 #include "Components/StaticMeshComponent.h"
 #include "../../public/Building/BuildingBeam.h"
-#include "Components/SplineComponent.h"
-#include "Components/SplineMeshComponent.h"
 
 // Sets default values
 ABuildingBeam::ABuildingBeam() {

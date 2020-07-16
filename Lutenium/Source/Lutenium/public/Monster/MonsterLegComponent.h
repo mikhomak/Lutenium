@@ -38,7 +38,7 @@ public:
     void SetRaycastLocation(const FVector& Location);
 
     UFUNCTION(BlueprintCallable, meta = (AdvancedDisplay = "2"))
-    FVector GeCurrentPosition() const;
+    FVector GetCurrentPosition() const;
 
     UFUNCTION(BlueprintCallable, meta = (AdvancedDisplay = "2"))
     void SetEnemyMonsterPawn(AEnemyMonsterPawn* MonsterPawn);
