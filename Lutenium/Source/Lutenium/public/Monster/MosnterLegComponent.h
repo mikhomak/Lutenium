@@ -38,6 +38,12 @@ public:
 
 	bool bCanMove;
 
+	float TimelineValue;
+
+	float CurrentFloatTimelineValue;
+
+	float HighPointBetweenSteps;
+
 private:
 
 	void RaycastLeg();

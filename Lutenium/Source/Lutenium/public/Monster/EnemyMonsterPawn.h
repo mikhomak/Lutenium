@@ -29,4 +29,7 @@ public:
 
     UPROPERTY(EditAnywhere, Category="Legs movement")
     float RaycastDownLength;
+
+    UPROPERTY(EditAnywhere, Category="Legs movement")
+    float BetweenStepHigh;
 };

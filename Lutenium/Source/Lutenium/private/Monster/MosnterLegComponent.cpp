@@ -1,5 +1,7 @@
 #include "../../public/Monster/MosnterLegComponent.h"
 
+#include "Profiler/Private/Widgets/SDataGraph.h"
+
 UMosnterLegComponent::UMosnterLegComponent()
 {
     PrimaryComponentTick.bCanEverTick = true;
@@ -45,14 +47,20 @@ void UMosnterLegComponent::RaycastLeg()
     if (FVector::Distance(CurrentPosition, HitLocation) >= EnemyMonsterPawn.DistanceBetweenLegsToMove && bCanMove)
     {
         LegTimeline.Play();
+        HighPointBetweenSteps = (HitLocation - CurrentPosition).Z + EnemyMonsterPawn.BetweenStepHigh;
         bCanMove = false;
     }
 }
 
 void UMosnterLegComponent::TimelineCallback()
 {
+    TimelineValue = LegTimeline.GetPlaybackPosition();
+    
+    CurrentFloatTimelineValue = Curve->GetFloatValue(TimelineValue);
+    
 }
 
 void UMosnterLegComponent::TimelineFinish()
 {
+    bCanMove = true;
 }
