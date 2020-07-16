@@ -28,7 +28,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	class UCurveFloat *Curve;
 
-	class AEnemyMonsterPawn EnemyMonsterPawn;
+	class AEnemyMonsterPawn* EnemyMonsterPawn;
 	
 	UFUNCTION(BlueprintCallable)
 	void SetRaycastLocation(const FVector& Location);
@@ -36,6 +36,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FVector GeCurrentPosition() const;
 
+	UFUNCTION(BlueprintCallable)
+	void SetEnemyMonsterPawn(AEnemyMonsterPawn* MonsterPawn);
+	
 	
 private:
 
@@ -61,11 +64,17 @@ private:
 
 	float CurrentFloatTimelineValue;
 
+	float HighestPoint;
+
 	float HighPointBetweenSteps;
 
 	float LowestPointBetweenSteps;
 
 	float LerpValue;
+
+	float DistanceBetweenLegsToMove;
+
+	float RaycastDownLength;
 
 	FVector StartPosition;
 

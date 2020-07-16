@@ -21,15 +21,31 @@ protected:
 public:
     virtual void Tick(float DeltaTime) override;
 
-    UPROPERTY(EditAnywhere, Category="Legs movement")
+    UPROPERTY(EditDefaultsOnly, Category="Legs movement")
     UCurveFloat* LegFloatCurve;
 
-    UPROPERTY(EditAnywhere, Category="Legs movement")
+    UPROPERTY(EditDefaultsOnly, Category="Legs movement")
     float DistanceBetweenLegsToMove;
 
-    UPROPERTY(EditAnywhere, Category="Legs movement")
+    UPROPERTY(EditDefaultsOnly, Category="Legs movement")
     float RaycastDownLength;
 
-    UPROPERTY(EditAnywhere, Category="Legs movement")
-    float BetweenStepHigh;
+    UPROPERTY(EditDefaultsOnly, Category="Legs movement")
+    float HighestPoint;
+
+    UPROPERTY(EditDefaultsOnly, Category="Legs movement")
+    float LerpValue;
+
+    UPROPERTY(EditDefaultsOnly, Category="Legs")
+    class UMonsterLegComponent* RearLeftLeg;
+
+    UPROPERTY(EditDefaultsOnly, Category="Legs")
+    class UMonsterLegComponent* RearRightLeg;
+
+    UPROPERTY(EditDefaultsOnly, Category="Legs")
+    class UMonsterLegComponent* FrontLeftLeg;
+
+    UPROPERTY(EditDefaultsOnly, Category="Legs")
+    class UMonsterLegComponent* FrontRightLeg;
+
 };

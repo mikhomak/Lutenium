@@ -5,14 +5,21 @@
 UMosnterLegComponent::UMosnterLegComponent()
 {
     PrimaryComponentTick.bCanEverTick = true;
+    PrimaryComponentTick.TickGroup = TG_PostPhysics;
+    
+
+    Curve->GetTimeRange(MinTimeCurve, MaxTimeCurve);
 }
 
 
 void UMosnterLegComponent::BeginPlay()
 {
     Super::BeginPlay();
-    
-    Curve->GetTimeRange(MinTimeCurve, MaxTimeCurve);
+    Curve = Curve == nullptr ? EnemyMonsterPawn->LegFloatCurve : *Curve;
+    DistanceBetweenLegsToMove = EnemyMonsterPawn->DistanceBetweenLegsToMove;
+    RaycastDownLength = EnemyMonsterPawn->RaycastDownLength;
+    HighestPoint = EnemyMonsterPawn->HighestPoint;
+    LerpValue = EnemyMonsterPawn->LerpValue;
 }
 
 
@@ -37,7 +44,7 @@ void UMosnterLegComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 void UMosnterLegComponent::RaycastLeg()
 {
     FHitResult HitResult;
-    const FVector RaycastEndLocation = RaycastLocation - (FVector::DownVector * EnemyMonsterPawn.RaycastDownLength);
+    const FVector RaycastEndLocation = RaycastLocation - (FVector::DownVector * RaycastDownLength);
 
     GetWorld()->LineTraceSingleByChannel(
         HitResult,
@@ -48,12 +55,12 @@ void UMosnterLegComponent::RaycastLeg()
     const FVector HitLocation = HitResult.bBlockingHit ? HitResult.ImpactPoint : FVector();
 
     if (HitResult.bBlockingHit &&
-        FVector::Distance(CurrentPosition, HitLocation) >= EnemyMonsterPawn.DistanceBetweenLegsToMove &&
+        FVector::Distance(CurrentPosition, HitLocation) >= DistanceBetweenLegsToMove &&
         bCanMove)
     {
         StartPosition = CurrentPosition;
         FinishPosition = HitLocation;
-        HighPointBetweenSteps = (HitLocation - CurrentPosition).Z + EnemyMonsterPawn.BetweenStepHigh;
+        HighPointBetweenSteps = (HitLocation - CurrentPosition).Z + HighestPoint;
         LowestPointBetweenSteps = FMath::Min(HitLocation.Z, CurrentPosition.Z);
         bCanMove = false;
         LegTimeline.Play();
@@ -94,7 +101,7 @@ float UMosnterLegComponent::GetCurrentValueForAxis(const bool IsX)
 }
 
 
-void UMosnterLegComponent::SetRaycastLocation(const FVector Location)
+void UMosnterLegComponent::SetRaycastLocation(const FVector& Location)
 {
     RaycastLocation = Location;
 }
@@ -102,4 +109,9 @@ void UMosnterLegComponent::SetRaycastLocation(const FVector Location)
 FVector UMosnterLegComponent::GeCurrentPosition() const
 {
     return CurrentPosition;
+}
+
+void UMosnterLegComponent::SetEnemyMonsterPawn(AEnemyMonsterPawn* MonsterPawn)
+{
+    EnemyMonsterPawn = MonsterPawn;
 }
