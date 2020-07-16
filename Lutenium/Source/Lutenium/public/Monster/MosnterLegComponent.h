@@ -29,10 +29,29 @@ public:
 	class UCurveFloat *Curve;
 
 	class AEnemyMonsterPawn EnemyMonsterPawn;
+	
+	UFUNCTION(BlueprintCallable)
+	void SetRaycastLocation(const FVector& Location);
+
+	UFUNCTION(BlueprintCallable)
+	FVector GeCurrentPosition() const;
+
+	
+private:
 
 	FVector RaycastLocation;
 
+	void RaycastLeg();
+	
+	void TimelineCallback();
+
+	void TimelineFinish();
+
 	struct FTimeline LegTimeline;
+
+	float MinTimeCurve;
+
+	float MaxTimeCurve;
 
 	FVector CurrentPosition;
 
@@ -44,11 +63,15 @@ public:
 
 	float HighPointBetweenSteps;
 
-private:
+	float LowestPointBetweenSteps;
 
-	void RaycastLeg();
-	
-	void TimelineCallback();
+	float LerpValue;
 
-	void TimelineFinish();
+	FVector StartPosition;
+
+	FVector FinishPosition;
+
+	float GetCurrentValueForAxis(bool IsX);
 };
+
+
