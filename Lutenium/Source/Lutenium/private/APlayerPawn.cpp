@@ -6,7 +6,6 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Engine/StaticMesh.h"
 #include "../public/PlaneMovementComponent.h"
 #include "Components/PrimitiveComponent.h"
 

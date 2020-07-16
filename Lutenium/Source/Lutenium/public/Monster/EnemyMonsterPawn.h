@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include  "MonsterLeg.h"
 #include "EnemyMonsterPawn.generated.h"
 
 UCLASS()
@@ -12,6 +13,18 @@ class LUTENIUM_API AEnemyMonsterPawn : public APawn
     UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     class USkeletalMeshComponent* MonsterMesh;
 
+    UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    class UMonsterLegComponent* RearLeftLeg;
+
+    UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    class UMonsterLegComponent* RearRightLeg;
+
+    UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    class UMonsterLegComponent* FrontLeftLeg;
+
+    UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    class UMonsterLegComponent* FrontRightLeg;
+
 public:
     AEnemyMonsterPawn();
 
@@ -20,9 +33,6 @@ protected:
 
 public:
     virtual void Tick(float DeltaTime) override;
-
-    UPROPERTY(EditDefaultsOnly, Category="Legs movement")
-    UCurveFloat* LegFloatCurve;
 
     UPROPERTY(EditDefaultsOnly, Category="Legs movement")
     float DistanceBetweenLegsToMove;
@@ -36,16 +46,9 @@ public:
     UPROPERTY(EditDefaultsOnly, Category="Legs movement")
     float LerpValue;
 
-    UPROPERTY(EditDefaultsOnly, Category="Legs")
-    class UMonsterLegComponent* RearLeftLeg;
+    UPROPERTY(EditDefaultsOnly, Category="Legs movement")
+    UCurveFloat* LegFloatCurve;
 
-    UPROPERTY(EditDefaultsOnly, Category="Legs")
-    class UMonsterLegComponent* RearRightLeg;
-
-    UPROPERTY(EditDefaultsOnly, Category="Legs")
-    class UMonsterLegComponent* FrontLeftLeg;
-
-    UPROPERTY(EditDefaultsOnly, Category="Legs")
-    class UMonsterLegComponent* FrontRightLeg;
-
+    UFUNCTION(BlueprintCallable)
+    FVector GetLegLocation(EMonsterLeg Leg);
 };

@@ -1,8 +1,7 @@
-#include "../../public/Monster/MosnterLegComponent.h"
+#include "../../public/Monster/MonsterLegComponent.h"
+#include "../../public/Monster/EnemyMonsterPawn.h"
 
-#include "Profiler/Private/Widgets/SDataGraph.h"
-
-UMosnterLegComponent::UMosnterLegComponent()
+UMonsterLegComponent::UMonsterLegComponent()
 {
     PrimaryComponentTick.bCanEverTick = true;
     PrimaryComponentTick.TickGroup = TG_PostPhysics;
@@ -12,7 +11,7 @@ UMosnterLegComponent::UMosnterLegComponent()
 }
 
 
-void UMosnterLegComponent::BeginPlay()
+void UMonsterLegComponent::BeginPlay()
 {
     Super::BeginPlay();
     Curve = Curve == nullptr ? EnemyMonsterPawn->LegFloatCurve : *Curve;
@@ -23,7 +22,7 @@ void UMosnterLegComponent::BeginPlay()
 }
 
 
-void UMosnterLegComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+void UMonsterLegComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                          FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -41,7 +40,7 @@ void UMosnterLegComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 }
 
 
-void UMosnterLegComponent::RaycastLeg()
+void UMonsterLegComponent::RaycastLeg()
 {
     FHitResult HitResult;
     const FVector RaycastEndLocation = RaycastLocation - (FVector::DownVector * RaycastDownLength);
@@ -67,7 +66,7 @@ void UMosnterLegComponent::RaycastLeg()
     }
 }
 
-void UMosnterLegComponent::TimelineCallback()
+void UMonsterLegComponent::TimelineCallback()
 {
     TimelineValue = LegTimeline.GetPlaybackPosition();
 
@@ -85,12 +84,12 @@ void UMosnterLegComponent::TimelineCallback()
         LerpValue);
 }
 
-void UMosnterLegComponent::TimelineFinish()
+void UMonsterLegComponent::TimelineFinish()
 {
     bCanMove = true;
 }
 
-float UMosnterLegComponent::GetCurrentValueForAxis(const bool IsX)
+float UMonsterLegComponent::GetCurrentValueForAxis(const bool IsX)
 {
     const float MinValue = IsX ? StartPosition.X : StartPosition.Y;
     const float MaxValue = IsX ? FinishPosition.X : FinishPosition.Y;
@@ -101,17 +100,17 @@ float UMosnterLegComponent::GetCurrentValueForAxis(const bool IsX)
 }
 
 
-void UMosnterLegComponent::SetRaycastLocation(const FVector& Location)
+void UMonsterLegComponent::SetRaycastLocation(const FVector& Location)
 {
     RaycastLocation = Location;
 }
 
-FVector UMosnterLegComponent::GeCurrentPosition() const
+FVector UMonsterLegComponent::GeCurrentPosition() const
 {
     return CurrentPosition;
 }
 
-void UMosnterLegComponent::SetEnemyMonsterPawn(AEnemyMonsterPawn* MonsterPawn)
+void UMonsterLegComponent::SetEnemyMonsterPawn(AEnemyMonsterPawn* MonsterPawn)
 {
     EnemyMonsterPawn = MonsterPawn;
 }

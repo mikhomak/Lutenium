@@ -1,0 +1,88 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "EnemyMonsterPawn.h"
+#include "Components/ActorComponent.h"
+#include "Components/TimelineComponent.h"
+
+#include "MonsterLegComponent.generated.h"
+
+
+UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+class LUTENIUM_API UMonsterLegComponent : public UActorComponent
+{
+    GENERATED_BODY()
+
+public:
+    UMonsterLegComponent();
+
+    class AEnemyMonsterPawn* EnemyMonsterPawn;
+
+    UPROPERTY(EditAnywhere)
+    class UCurveFloat* Curve;
+
+
+protected:
+    virtual void BeginPlay() override;
+
+public:
+    virtual void TickComponent(float DeltaTime, ELevelTick TickType,
+                               FActorComponentTickFunction* ThisTickFunction) override;
+
+
+
+
+    UFUNCTION(BlueprintCallable, meta = (AdvancedDisplay = "2"))
+    void SetRaycastLocation(const FVector& Location);
+
+    UFUNCTION(BlueprintCallable, meta = (AdvancedDisplay = "2"))
+    FVector GeCurrentPosition() const;
+
+    UFUNCTION(BlueprintCallable, meta = (AdvancedDisplay = "2"))
+    void SetEnemyMonsterPawn(AEnemyMonsterPawn* MonsterPawn);
+
+
+private:
+
+    FVector RaycastLocation;
+
+    void RaycastLeg();
+
+    void TimelineCallback();
+
+    void TimelineFinish();
+
+    struct FTimeline LegTimeline;
+
+    float MinTimeCurve;
+
+    float MaxTimeCurve;
+
+    FVector CurrentPosition;
+
+    bool bCanMove;
+
+    float TimelineValue;
+
+    float CurrentFloatTimelineValue;
+
+    float HighestPoint;
+
+    float HighPointBetweenSteps;
+
+    float LowestPointBetweenSteps;
+
+    float LerpValue;
+
+    float DistanceBetweenLegsToMove;
+
+    float RaycastDownLength;
+
+    FVector StartPosition;
+
+    FVector FinishPosition;
+
+    float GetCurrentValueForAxis(bool IsX);
+};
