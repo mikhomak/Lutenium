@@ -17,15 +17,19 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
     
     RearLeftLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Rear Left Leg"));
     RearLeftLeg->SetEnemyMonsterPawn(this);
+    RearLeftLeg->SetMonsterLegType(RearLeft);
 
     RearRightLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Rear Right Leg"));
     RearRightLeg->SetEnemyMonsterPawn(this);
+    RearRightLeg->SetMonsterLegType(RearRight);
 
     FrontLeftLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Front Left Leg"));
     FrontLeftLeg->SetEnemyMonsterPawn(this);
+    FrontLeftLeg->SetMonsterLegType(FrontLeft);
 
     FrontRightLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Front Right Leg"));
     FrontRightLeg->SetEnemyMonsterPawn(this);
+    FrontRightLeg->SetMonsterLegType(FrontRight);
 }
 
 void AEnemyMonsterPawn::BeginPlay()
@@ -52,4 +56,9 @@ FVector AEnemyMonsterPawn::GetLegLocation(const EMonsterLeg Leg) const
         return RearRightLeg->GetCurrentPosition();
     }
     return FVector();
+}
+
+void AEnemyMonsterPawn::LegHasMovedEventCaller(const EMonsterLeg MonsterLeg)
+{
+    LegHasMoved(MonsterLeg);
 }

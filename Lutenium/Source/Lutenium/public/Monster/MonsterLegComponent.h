@@ -46,8 +46,12 @@ public:
 
     UFUNCTION()
     void TimelineFinished();
-    
+
+    void SetMonsterLegType(EMonsterLeg LegType);
+
 private:
+
+    EMonsterLeg MonsterLegType;
 
     FVector RaycastLocation;
 

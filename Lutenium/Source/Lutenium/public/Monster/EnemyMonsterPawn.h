@@ -51,4 +51,10 @@ public:
 
     UFUNCTION(BlueprintCallable)
     FVector GetLegLocation(EMonsterLeg Leg) const;
+
+    void LegHasMovedEventCaller(EMonsterLeg MonsterLeg);
+    
+    UFUNCTION(BlueprintImplementableEvent)
+    void LegHasMoved(EMonsterLeg Leg);
+    
 };

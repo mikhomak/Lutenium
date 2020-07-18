@@ -87,15 +87,16 @@ void UMonsterLegComponent::TimelineCallback()
         CurrentPosition,
         FVector(GetCurrentValueForAxis(true), GetCurrentValueForAxis(false), ZValue),
         LerpValue);
-    UE_LOG(LogTemp, Warning, TEXT("CALCULAGTED THE POSITION"));
 }
 
 void UMonsterLegComponent::TimelineFinished()
 {
-    UE_LOG(LogTemp, Warning, TEXT("TIMELINE IS FINISHED MY GUY"));
 
     bCanMove = true;
+    EnemyMonsterPawn->LegHasMovedEventCaller(MonsterLegType);
 }
+
+
 
 float UMonsterLegComponent::GetCurrentValueForAxis(const bool IsX)
 {
@@ -114,10 +115,6 @@ void UMonsterLegComponent::CalculateZValue(float& ZValue)
         FVector2D(0, 1),
         FVector2D(LowestPointBetweenSteps, HighPointBetweenSteps),
         CurrentFloatTimelineValue);
-    FString one = FString::SanitizeFloat(LowestPointBetweenSteps);
-    FString two = FString::SanitizeFloat(HighPointBetweenSteps);
-    GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Red, *one);
-    GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Red, *two);
     if (ZValue > HighPointBetweenSteps - 50.f)
     {
         bHasReachedHighestPoint = true;
@@ -141,4 +138,9 @@ FVector UMonsterLegComponent::GetCurrentPosition() const
 void UMonsterLegComponent::SetEnemyMonsterPawn(AEnemyMonsterPawn* MonsterPawn)
 {
     EnemyMonsterPawn = MonsterPawn;
+}
+
+void UMonsterLegComponent::SetMonsterLegType(EMonsterLeg LegType)
+{
+    MonsterLegType = LegType;
 }
