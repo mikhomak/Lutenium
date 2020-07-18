@@ -1,11 +1,20 @@
 #include "../../public/Monster/EnemyMonsterPawn.h"
 #include "../../public/Monster/MonsterLeg.h"
 #include "../../public/Monster/MonsterLegComponent.h"
+#include "Components/SkeletalMeshComponent.h"
+
 
 AEnemyMonsterPawn::AEnemyMonsterPawn()
 {
     PrimaryActorTick.bCanEverTick = true;
 
+
+    MonsterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
+    MonsterMesh->SetEnableGravity(false);
+    MonsterMesh->SetSimulatePhysics(true);
+    MonsterMesh->SetTickGroup(TG_PostPhysics);
+    RootComponent = MonsterMesh;
+    
     RearLeftLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Rear Left Leg"));
     RearLeftLeg->SetEnemyMonsterPawn(this);
 
@@ -29,7 +38,7 @@ void AEnemyMonsterPawn::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
-FVector AEnemyMonsterPawn::GetLegLocation(EMonsterLeg Leg) const
+FVector AEnemyMonsterPawn::GetLegLocation(const EMonsterLeg Leg) const
 {
     switch (Leg)
     {

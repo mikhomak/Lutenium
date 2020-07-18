@@ -1,12 +1,11 @@
 #include "../../public/Monster/MonsterLegComponent.h"
 #include "../../public/Monster/EnemyMonsterPawn.h"
+#include "Components/TimelineComponent.h"
 
 UMonsterLegComponent::UMonsterLegComponent()
 {
     PrimaryComponentTick.bCanEverTick = true;
-    PrimaryComponentTick.TickGroup = TG_PostPhysics;
-    
-
+    bCanMove = true;
 }
 
 
@@ -20,20 +19,13 @@ void UMonsterLegComponent::BeginPlay()
     LerpValue = EnemyMonsterPawn->LerpValue;
     Curve->GetTimeRange(MinTimeCurve, MaxTimeCurve);
 
-}
-
-
-void UMonsterLegComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-                                         FActorComponentTickFunction* ThisTickFunction)
-{
-    Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
     if (Curve)
     {
         FOnTimelineFloat TimelineCallback;
         FOnTimelineEventStatic TimelineFinishedCallback;
 
         TimelineCallback.BindUFunction(this, FName("TimelineCallback"));
-        TimelineFinishedCallback.BindUFunction(this, FName("TimelineFinish"));
+        TimelineFinishedCallback.BindUFunction(this, {FName("TimelineFinished")});
 
         LegTimeline.AddInterpFloat(Curve, TimelineCallback);
         LegTimeline.SetTimelineFinishedFunc(TimelineFinishedCallback);
@@ -41,31 +33,45 @@ void UMonsterLegComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 }
 
 
+void UMonsterLegComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+                                         FActorComponentTickFunction* ThisTickFunction)
+{
+    Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+    LegTimeline.TickTimeline(DeltaTime);
+    RaycastLeg();
+}
+
+
 void UMonsterLegComponent::RaycastLeg()
 {
+    if (!bCanMove)
+    {
+        return;
+    }
+
     FHitResult HitResult;
-    const FVector RaycastEndLocation = RaycastLocation - (FVector::DownVector * RaycastDownLength);
+    const FVector RaycastEndLocation = RaycastLocation + (FVector::DownVector * RaycastDownLength);
 
     GetWorld()->LineTraceSingleByChannel(
         HitResult,
         RaycastLocation,
         RaycastEndLocation,
-        ECollisionChannel::ECC_WorldDynamic);
+        ECollisionChannel::ECC_WorldStatic);
 
     const FVector HitLocation = HitResult.bBlockingHit ? HitResult.ImpactPoint : FVector();
-
     if (HitResult.bBlockingHit &&
-        FVector::Distance(CurrentPosition, HitLocation) >= DistanceBetweenLegsToMove &&
-        bCanMove)
+        FVector::Distance(CurrentPosition, HitLocation) >= DistanceBetweenLegsToMove)
     {
         StartPosition = CurrentPosition;
         FinishPosition = HitLocation;
-        HighPointBetweenSteps = (HitLocation - CurrentPosition).Z + HighestPoint;
+        HighPointBetweenSteps = FMath::Max(HitLocation.Z, CurrentPosition.Z) + HighestPoint;
         LowestPointBetweenSteps = FMath::Min(HitLocation.Z, CurrentPosition.Z);
         bCanMove = false;
-        LegTimeline.Play();
+        bHasReachedHighestPoint = false;
+        LegTimeline.PlayFromStart();
     }
 }
+
 
 void UMonsterLegComponent::TimelineCallback()
 {
@@ -74,19 +80,20 @@ void UMonsterLegComponent::TimelineCallback()
     CurrentFloatTimelineValue = Curve->GetFloatValue(TimelineValue);
 
 
-    const float YValue = FMath::GetMappedRangeValueUnclamped(
-        FVector2D(0, 1),
-        FVector2D(LowestPointBetweenSteps, HighPointBetweenSteps),
-        CurrentFloatTimelineValue);
+    float ZValue;
+    CalculateZValue(ZValue);
 
     CurrentPosition = FMath::Lerp(
         CurrentPosition,
-        FVector(GetCurrentValueForAxis(true), YValue, GetCurrentValueForAxis(false)),
+        FVector(GetCurrentValueForAxis(true), GetCurrentValueForAxis(false), ZValue),
         LerpValue);
+    UE_LOG(LogTemp, Warning, TEXT("CALCULAGTED THE POSITION"));
 }
 
-void UMonsterLegComponent::TimelineFinish()
+void UMonsterLegComponent::TimelineFinished()
 {
+    UE_LOG(LogTemp, Warning, TEXT("TIMELINE IS FINISHED MY GUY"));
+
     bCanMove = true;
 }
 
@@ -95,11 +102,31 @@ float UMonsterLegComponent::GetCurrentValueForAxis(const bool IsX)
     const float MinValue = IsX ? StartPosition.X : StartPosition.Y;
     const float MaxValue = IsX ? FinishPosition.X : FinishPosition.Y;
     return FMath::GetMappedRangeValueClamped(
-        FVector2D(MinTimeCurve, MaxTimeCurve),
+        FVector2D(0, 1),
         FVector2D(MinValue, MaxValue),
-        CurrentFloatTimelineValue);
+        TimelineValue);
 }
 
+
+void UMonsterLegComponent::CalculateZValue(float& ZValue)
+{
+    ZValue = FMath::GetMappedRangeValueUnclamped(
+        FVector2D(0, 1),
+        FVector2D(LowestPointBetweenSteps, HighPointBetweenSteps),
+        CurrentFloatTimelineValue);
+    FString one = FString::SanitizeFloat(LowestPointBetweenSteps);
+    FString two = FString::SanitizeFloat(HighPointBetweenSteps);
+    GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Red, *one);
+    GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Red, *two);
+    if (ZValue > HighPointBetweenSteps - 50.f)
+    {
+        bHasReachedHighestPoint = true;
+    }
+    if (bHasReachedHighestPoint && ZValue < FinishPosition.Z)
+    {
+        ZValue = FinishPosition.Z;
+    }
+}
 
 void UMonsterLegComponent::SetRaycastLocation(const FVector& Location)
 {

@@ -32,8 +32,6 @@ public:
                                FActorComponentTickFunction* ThisTickFunction) override;
 
 
-
-
     UFUNCTION(BlueprintCallable, meta = (AdvancedDisplay = "2"))
     void SetRaycastLocation(const FVector& Location);
 
@@ -43,16 +41,19 @@ public:
     UFUNCTION(BlueprintCallable, meta = (AdvancedDisplay = "2"))
     void SetEnemyMonsterPawn(AEnemyMonsterPawn* MonsterPawn);
 
+    UFUNCTION()
+    void TimelineCallback();
 
+    UFUNCTION()
+    void TimelineFinished();
+    
 private:
 
     FVector RaycastLocation;
 
     void RaycastLeg();
 
-    void TimelineCallback();
-
-    void TimelineFinish();
+    void CalculateZValue(float& ZValue);
 
     struct FTimeline LegTimeline;
 
@@ -69,6 +70,8 @@ private:
     float CurrentFloatTimelineValue;
 
     float HighestPoint;
+
+    bool bHasReachedHighestPoint;
 
     float HighPointBetweenSteps;
 
