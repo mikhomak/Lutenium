@@ -68,6 +68,7 @@ void UMonsterLegComponent::RaycastLeg()
         LowestPointBetweenSteps = FMath::Min(HitLocation.Z, CurrentPosition.Z);
         bCanMove = false;
         bHasReachedHighestPoint = false;
+        bGrounded=false;
         LegTimeline.PlayFromStart();
     }
 }
@@ -91,7 +92,7 @@ void UMonsterLegComponent::TimelineCallback()
 
 void UMonsterLegComponent::TimelineFinished()
 {
-
+    bGrounded = true;
     bCanMove = true;
     EnemyMonsterPawn->LegHasMovedEventCaller(MonsterLegType);
 }
@@ -143,4 +144,9 @@ void UMonsterLegComponent::SetEnemyMonsterPawn(AEnemyMonsterPawn* MonsterPawn)
 void UMonsterLegComponent::SetMonsterLegType(EMonsterLeg LegType)
 {
     MonsterLegType = LegType;
+}
+
+bool UMonsterLegComponent::IsGrounded() const
+{
+    return bGrounded;
 }

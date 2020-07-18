@@ -49,6 +49,8 @@ public:
 
     void SetMonsterLegType(EMonsterLeg LegType);
 
+    bool IsGrounded() const;
+
 private:
 
     EMonsterLeg MonsterLegType;
@@ -68,6 +70,8 @@ private:
     FVector CurrentPosition;
 
     bool bCanMove;
+
+    bool bGrounded;
 
     float TimelineValue;
 

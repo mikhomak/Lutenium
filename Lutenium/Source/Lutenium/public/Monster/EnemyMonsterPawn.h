@@ -56,5 +56,8 @@ public:
     
     UFUNCTION(BlueprintImplementableEvent)
     void LegHasMoved(EMonsterLeg Leg);
+
+    UFUNCTION(BlueprintCallable)
+    bool IsGrounded(EMonsterLeg Leg) const;
     
 };
