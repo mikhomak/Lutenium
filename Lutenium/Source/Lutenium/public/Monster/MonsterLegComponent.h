@@ -51,6 +51,8 @@ public:
 
     bool IsGrounded() const;
 
+    void SetCanMove(const bool CanMove);
+
 private:
 
     EMonsterLeg MonsterLegType;
@@ -68,6 +70,8 @@ private:
     float MaxTimeCurve;
 
     FVector CurrentPosition;
+
+    bool bMoving;
 
     bool bCanMove;
 

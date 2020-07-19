@@ -53,11 +53,14 @@ public:
     FVector GetLegLocation(EMonsterLeg Leg) const;
 
     void LegHasMovedEventCaller(EMonsterLeg MonsterLeg);
-    
+
     UFUNCTION(BlueprintImplementableEvent)
     void LegHasMoved(EMonsterLeg Leg);
 
     UFUNCTION(BlueprintCallable)
     bool IsGrounded(EMonsterLeg Leg) const;
-    
+
+private:
+
+    void ToggleWhatLegsShouldMove(bool Left) const;
 };

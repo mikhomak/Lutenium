@@ -5,7 +5,7 @@
 UMonsterLegComponent::UMonsterLegComponent()
 {
     PrimaryComponentTick.bCanEverTick = true;
-    bCanMove = true;
+    bMoving = false;
 }
 
 
@@ -44,7 +44,7 @@ void UMonsterLegComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UMonsterLegComponent::RaycastLeg()
 {
-    if (!bCanMove)
+    if (bMoving || !bCanMove)
     {
         return;
     }
@@ -66,7 +66,7 @@ void UMonsterLegComponent::RaycastLeg()
         FinishPosition = HitLocation;
         HighPointBetweenSteps = FMath::Max(HitLocation.Z, CurrentPosition.Z) + HighestPoint;
         LowestPointBetweenSteps = FMath::Min(HitLocation.Z, CurrentPosition.Z);
-        bCanMove = false;
+        bMoving = true;
         bHasReachedHighestPoint = false;
         bGrounded=false;
         LegTimeline.PlayFromStart();
@@ -93,7 +93,7 @@ void UMonsterLegComponent::TimelineCallback()
 void UMonsterLegComponent::TimelineFinished()
 {
     bGrounded = true;
-    bCanMove = true;
+    bMoving = false;
     EnemyMonsterPawn->LegHasMovedEventCaller(MonsterLegType);
 }
 
@@ -149,4 +149,9 @@ void UMonsterLegComponent::SetMonsterLegType(EMonsterLeg LegType)
 bool UMonsterLegComponent::IsGrounded() const
 {
     return bGrounded;
+}
+
+void UMonsterLegComponent::SetCanMove(const bool CanMove)
+{
+    bCanMove = CanMove;
 }

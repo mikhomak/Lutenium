@@ -14,7 +14,7 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
     MonsterMesh->SetSimulatePhysics(true);
     MonsterMesh->SetTickGroup(TG_PostPhysics);
     RootComponent = MonsterMesh;
-    
+
     RearLeftLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Rear Left Leg"));
     RearLeftLeg->SetEnemyMonsterPawn(this);
     RearLeftLeg->SetMonsterLegType(RearLeft);
@@ -30,6 +30,8 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
     FrontRightLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Front Right Leg"));
     FrontRightLeg->SetEnemyMonsterPawn(this);
     FrontRightLeg->SetMonsterLegType(FrontRight);
+
+    ToggleWhatLegsShouldMove(true);
 }
 
 void AEnemyMonsterPawn::BeginPlay()
@@ -60,6 +62,7 @@ FVector AEnemyMonsterPawn::GetLegLocation(const EMonsterLeg Leg) const
 
 void AEnemyMonsterPawn::LegHasMovedEventCaller(const EMonsterLeg MonsterLeg)
 {
+    ToggleWhatLegsShouldMove(MonsterLeg == FrontLeft || MonsterLeg == RearRight);
     LegHasMoved(MonsterLeg);
 }
 
@@ -77,4 +80,12 @@ bool AEnemyMonsterPawn::IsGrounded(const EMonsterLeg Leg) const
         return RearRightLeg->IsGrounded();
     }
     return false;
+}
+
+void AEnemyMonsterPawn::ToggleWhatLegsShouldMove(const bool Left) const
+{
+    FrontLeftLeg->SetCanMove(!Left);
+    RearRightLeg->SetCanMove(!Left);
+    FrontRightLeg->SetCanMove(Left);
+    RearLeftLeg->SetCanMove(Left);
 }
