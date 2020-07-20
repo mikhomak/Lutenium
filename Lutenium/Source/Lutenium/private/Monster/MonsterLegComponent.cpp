@@ -68,7 +68,7 @@ void UMonsterLegComponent::RaycastLeg()
         LowestPointBetweenSteps = FMath::Min(HitLocation.Z, CurrentPosition.Z);
         bMoving = true;
         bHasReachedHighestPoint = false;
-        bGrounded=false;
+        bGrounded = false;
         LegTimeline.PlayFromStart();
     }
 }
@@ -98,7 +98,6 @@ void UMonsterLegComponent::TimelineFinished()
 }
 
 
-
 float UMonsterLegComponent::GetCurrentValueForAxis(const bool IsX)
 {
     const float MinValue = IsX ? StartPosition.X : StartPosition.Y;
@@ -112,18 +111,28 @@ float UMonsterLegComponent::GetCurrentValueForAxis(const bool IsX)
 
 void UMonsterLegComponent::CalculateZValue(float& ZValue)
 {
-    ZValue = FMath::GetMappedRangeValueUnclamped(
-        FVector2D(0, 1),
-        FVector2D(LowestPointBetweenSteps, HighPointBetweenSteps),
-        CurrentFloatTimelineValue);
-    if (ZValue > HighPointBetweenSteps - 50.f)
+
+    if (StartPosition.Z == HighPointBetweenSteps - HighestPoint &&
+        ZValue < StartPosition.Z)
     {
-        bHasReachedHighestPoint = true;
-    }
-    if (bHasReachedHighestPoint && ZValue < FinishPosition.Z)
+        ZValue = HighPointBetweenSteps - HighestPoint - LowestPointBetweenSteps;
+    }else
     {
-        ZValue = FinishPosition.Z;
+        ZValue = FMath::GetMappedRangeValueUnclamped(
+            FVector2D(0, 1),
+            FVector2D(LowestPointBetweenSteps, HighPointBetweenSteps),
+            CurrentFloatTimelineValue);
+
+        if (ZValue > HighPointBetweenSteps - 50.f)
+        {
+            bHasReachedHighestPoint = true;
+        }
+        if (bHasReachedHighestPoint && ZValue < FinishPosition.Z)
+        {
+            ZValue = FinishPosition.Z;
+        }
     }
+   
 }
 
 void UMonsterLegComponent::SetRaycastLocation(const FVector& Location)
