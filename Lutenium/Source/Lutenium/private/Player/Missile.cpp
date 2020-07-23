@@ -13,20 +13,19 @@ AMissile::AMissile()
     RootComponent = CapsuleCollider;
 
 
-    ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
-    ProjectileMovementComponent->SetUpdatedComponent(CapsuleCollider);
-    ProjectileMovementComponent->InitialSpeed = InitialSpeed;
-    ProjectileMovementComponent->MaxSpeed = MaxSpeed;
-    ProjectileMovementComponent->bRotationFollowsVelocity = true;
-    ProjectileMovementComponent->bShouldBounce = true;
-    ProjectileMovementComponent->Bounciness = 0.3f;
+    ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
+    ProjectileMovement->SetUpdatedComponent(CapsuleCollider);
+    ProjectileMovement->InitialSpeed = InitialSpeed;
+    ProjectileMovement->MaxSpeed = MaxSpeed;
+    ProjectileMovement->bRotationFollowsVelocity = true;
+    ProjectileMovement->bShouldBounce = true;
+    ProjectileMovement->Bounciness = 0.3f;
 }
 
 void AMissile::BeginPlay()
 {
     Super::BeginPlay();
-    FTimerHandle TimerHandle;
-    GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AMissile::StartFlying, TimeBeforeFly, false);
+
 }
 
 void AMissile::Tick(float DeltaTime)
@@ -48,6 +47,9 @@ void AMissile::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Ot
 void AMissile::SetDirection(const FVector& ShootDirection)
 {
     Direction = ShootDirection;
+    FTimerHandle TimerHandle;
+    GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AMissile::StartFlying, TimeBeforeFly, false);
+    AfterInstantiate();
 }
 
 
@@ -61,5 +63,6 @@ void AMissile::BeginFlying_Implementation()
 
 void AMissile::StartFlying()
 {
-    ProjectileMovementComponent->Velocity = Direction * ProjectileMovementComponent->InitialSpeed;
+    ProjectileMovement->Velocity = Direction * InitialSpeed;
+    BeginFlying();
 }

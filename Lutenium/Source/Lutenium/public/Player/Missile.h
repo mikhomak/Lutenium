@@ -27,7 +27,7 @@ public:
 	class UCapsuleComponent* CapsuleCollider;
 
 	UPROPERTY(VisibleAnywhere, Category = Movement)
-    class UProjectileMovementComponent* ProjectileMovementComponent;
+    class UProjectileMovementComponent* ProjectileMovement;
 	
 	UPROPERTY(EditAnywhere)
 	float InitialSpeed;
