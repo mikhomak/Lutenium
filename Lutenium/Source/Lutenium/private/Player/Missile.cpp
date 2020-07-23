@@ -3,14 +3,27 @@
 
 #include "../../public/Player/Missile.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 
 AMissile::AMissile()
 {
     PrimaryActorTick.bCanEverTick = true;
     PrimaryActorTick.TickGroup = TG_PostPhysics;
+    CapsuleCollider = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capcule collider"));
+    RootComponent = CapsuleCollider;
     MissileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Missile Mesh"));
     MissileMesh->SetSimulatePhysics(false);
     MissileMesh->SetEnableGravity(true);
+
+
+    ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
+    ProjectileMovementComponent->SetUpdatedComponent(CapsuleCollider);
+    ProjectileMovementComponent->InitialSpeed = 3000.0f;
+    ProjectileMovementComponent->MaxSpeed = 3000.0f;
+    ProjectileMovementComponent->bRotationFollowsVelocity = true;
+    ProjectileMovementComponent->bShouldBounce = true;
+    ProjectileMovementComponent->Bounciness = 0.3f;
 }
 
 void AMissile::BeginPlay()
@@ -34,6 +47,11 @@ void AMissile::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Ot
         OtherActor->TakeDamage(Damage, FDamageEvent(), nullptr, this);
         Destroy();
     }
+}
+
+void AMissile::FireInDirection(const FVector& ShootDirection)
+{
+    ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
 }
 
 void AMissile::SetPawn(APawn* NewPawn)

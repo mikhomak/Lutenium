@@ -75,6 +75,12 @@ void APlayerPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAxis("Yawn", PlaneMovement, &UPlaneMovementComponent::YawnInput);
 	PlayerInputComponent->BindAxis("Roll", PlaneMovement, &UPlaneMovementComponent::RollInput);
 	PlayerInputComponent->BindAction("Stop", IE_Released, PlaneMovement, &UPlaneMovementComponent::DashInput);
+	PlayerInputComponent->BindAction("Fire", IE_Released, this, &APlayerPawn::FireMissile);
+}
+
+void APlayerPawn::FireMissile()
+{
+	
 }
 
 float APlayerPawn::GetThrustInput() const {

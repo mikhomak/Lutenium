@@ -43,13 +43,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
 	float GetThrustInput() const;
 
-
 	UFUNCTION(BlueprintImplementableEvent, Category = "PlaneMovement")
 	void DotHasChange();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "PlaneMovement")
 	void DashImpact();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+	FVector MissileOffset;
+
+	UPROPERTY(EditDefaultsOnly, Category = Missile)
+	TSubclassOf<class AMissile> MissileClass;
+	
 protected:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
@@ -57,7 +62,9 @@ protected:
 private: 
 	UInputComponent* InputComponent;
 
-
+	UFUNCTION()
+	void FireMissile();
+	
 public:
 	FORCEINLINE class USkeletalMeshComponent* GetPlaneMesh() const { return PlaneMesh; }
 	FORCEINLINE class USpringArmComponent* GetSpringArm() const { return SpringArm; }
