@@ -23,18 +23,17 @@ public:
 	UFUNCTION()
     void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-
 	UPROPERTY(EditDefaultsOnly, Category = Missile)
 	class UCapsuleComponent* CapsuleCollider;
-
-	UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UStaticMeshComponent* MissileMesh;
 
 	UPROPERTY(VisibleAnywhere, Category = Movement)
     class UProjectileMovementComponent* ProjectileMovementComponent;
 	
 	UPROPERTY(EditAnywhere)
-	float Speed;
+	float InitialSpeed;
+
+	UPROPERTY(EditAnywhere)
+	float MaxSpeed;
 
 	UPROPERTY(EditAnywhere)
 	FVector Direction;
@@ -43,16 +42,10 @@ public:
 	float Damage;
 
 	UPROPERTY(EditAnywhere)
-	APawn* Pawn;
-
-	UPROPERTY(EditAnywhere)
 	float TimeBeforeFly;
 	
 	UFUNCTION(BlueprintCallable)
-	void FireInDirection(const FVector& ShootDirection);
-
-	UFUNCTION(BlueprintCallable)
-	void SetPawn(APawn* NewPawn);
+	void SetDirection(const FVector& ShootDirection);
 
 	UFUNCTION(BlueprintNativeEvent)
 	void AfterInstantiate();
@@ -61,9 +54,6 @@ public:
     void BeginFlying();
 	
 private:
-
-	bool bFlying;
-	
 	void StartFlying();
 };
 
