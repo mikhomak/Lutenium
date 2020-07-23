@@ -83,21 +83,16 @@ void APlayerPawn::FireMissile()
 {
     if (MissileClass)
     {
-
         UWorld* World = GetWorld();
         if (World)
         {
-            const FRotator MuzzleRotation = GetActorRotation();
-            const FVector MuzzleLocation = GetActorLocation() + MissileOffset;
             FActorSpawnParameters SpawnParams;
             SpawnParams.Owner = this;
             SpawnParams.Instigator = this;
-            AMissile* Missile = World->SpawnActor<AMissile>(MissileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+            AMissile* Missile = World->SpawnActor<AMissile>(MissileClass, PlaneMesh->GetSocketLocation("MissileMuzzle"), GetActorRotation(), SpawnParams);
             if (Missile)
             {
-                
-                const FVector LaunchDirection = GetActorForwardVector();
-                Missile->SetDirection(LaunchDirection);
+                Missile->SetDirection(GetActorForwardVector());
             }
         }
     }
