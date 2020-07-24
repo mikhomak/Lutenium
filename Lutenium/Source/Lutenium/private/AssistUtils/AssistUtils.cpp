@@ -4,7 +4,9 @@
 #include "Kismet/KismetSystemLibrary.h"
 
 bool FAssistUtils::bHasApplied = false;
-
+float FAssistUtils::RaycastMissileTarget_Length = 500000.f;
+float FAssistUtils::RaycastMissile_First_Radius = 750.f;
+float FAssistUtils::RaycastMissile_Second_Radius = 1500.f;
 void FAssistUtils::ApplyTakeOffAcceleration(UPlaneMovementComponent* PlaneMovementComponent, const FVector& Velocity,
                                             const float MinTakeOffVelocity, const float AddedAcceleration)
 {
@@ -26,7 +28,7 @@ FVector FAssistUtils::RaycastMissileTarget(const UWorld* World, const FVector& S
     {
         FHitResult FirstHitResult;
 
-        const FVector EndLocation = StartLocation + ForwardVector * RaycastMissileTarget_Length;
+        const FVector EndLocation = StartLocation + ForwardVector * FAssistUtils::RaycastMissileTarget_Length;
         const bool bFirstHit = World->SweepSingleByChannel(FirstHitResult,
                                                            StartLocation,
                                                            EndLocation,
