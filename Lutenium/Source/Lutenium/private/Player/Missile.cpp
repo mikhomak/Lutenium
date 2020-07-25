@@ -10,6 +10,9 @@ AMissile::AMissile()
     PrimaryActorTick.bCanEverTick = true;
     PrimaryActorTick.TickGroup = TG_PostPhysics;
     CapsuleCollider = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capcule collider"));
+    FRotator Rotator;
+    Rotator.Pitch=90.f;
+    CapsuleCollider->SetWorldRotation(Rotator);
     RootComponent = CapsuleCollider;
 
 
