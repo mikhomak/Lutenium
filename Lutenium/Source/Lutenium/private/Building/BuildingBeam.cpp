@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Components/StaticMeshComponent.h"
 #include "../../public/Building/BuildingBeam.h"
+#include "Components/StaticMeshComponent.h"
 
 // Sets default values
 ABuildingBeam::ABuildingBeam() {
@@ -11,7 +11,6 @@ ABuildingBeam::ABuildingBeam() {
 	PlatformStart = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlatformStart"));
 	RootComponent = PlatformStart;
 	PlatformEnd = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlatformEnd"));
-	bRunConstructionScriptOnDrag = false;
 	Points = 2;
 }
 
