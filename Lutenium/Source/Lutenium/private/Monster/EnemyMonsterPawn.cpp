@@ -66,21 +66,6 @@ void AEnemyMonsterPawn::LegHasMovedEventCaller(const EMonsterLeg MonsterLeg)
     LegHasMoved(MonsterLeg);
 }
 
-bool AEnemyMonsterPawn::IsGrounded(const EMonsterLeg Leg) const
-{
-    switch (Leg)
-    {
-    case FrontLeft:
-        return FrontLeftLeg->IsGrounded();
-    case FrontRight:
-        return FrontRightLeg->IsGrounded();
-    case RearLeft:
-        return RearLeftLeg->IsGrounded();
-    case RearRight:
-        return RearRightLeg->IsGrounded();
-    }
-    return false;
-}
 
 void AEnemyMonsterPawn::ToggleWhatLegsShouldMove(const bool Left) const
 {

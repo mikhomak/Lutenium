@@ -49,7 +49,6 @@ public:
 
     void SetMonsterLegType(EMonsterLeg LegType);
 
-    bool IsGrounded() const;
 
     void SetCanMove(const bool CanMove);
 
@@ -74,8 +73,6 @@ private:
     bool bMoving;
 
     bool bCanMove;
-
-    bool bGrounded;
 
     float TimelineValue;
 
