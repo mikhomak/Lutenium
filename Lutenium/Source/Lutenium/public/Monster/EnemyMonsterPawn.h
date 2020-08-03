@@ -57,7 +57,10 @@ public:
     UFUNCTION(BlueprintImplementableEvent)
     void LegHasMoved(EMonsterLeg Leg);
 
+    virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
 private:
 
     void ToggleWhatLegsShouldMove(bool Left) const;
 };
+    

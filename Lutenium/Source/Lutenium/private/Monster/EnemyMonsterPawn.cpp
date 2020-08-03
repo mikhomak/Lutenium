@@ -67,6 +67,12 @@ void AEnemyMonsterPawn::LegHasMovedEventCaller(const EMonsterLeg MonsterLeg)
 }
 
 
+float AEnemyMonsterPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
+    AActor* DamageCauser)
+{
+    return 0;
+}
+
 void AEnemyMonsterPawn::ToggleWhatLegsShouldMove(const bool Left) const
 {
     FrontLeftLeg->SetCanMove(!Left);

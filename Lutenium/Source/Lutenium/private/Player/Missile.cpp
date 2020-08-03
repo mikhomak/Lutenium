@@ -11,7 +11,7 @@ AMissile::AMissile()
     PrimaryActorTick.TickGroup = TG_PostPhysics;
     CapsuleCollider = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capcule collider"));
     FRotator Rotator;
-    Rotator.Pitch=90.f;
+    Rotator.Pitch = 90.f;
     CapsuleCollider->SetWorldRotation(Rotator);
     RootComponent = CapsuleCollider;
 
@@ -28,7 +28,6 @@ AMissile::AMissile()
 void AMissile::BeginPlay()
 {
     Super::BeginPlay();
-
 }
 
 void AMissile::Tick(float DeltaTime)
@@ -42,7 +41,12 @@ void AMissile::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Ot
 {
     if (OtherActor)
     {
-        OtherActor->TakeDamage(Damage, FDamageEvent(), nullptr, this);
+        ProjectileMovement->Velocity.Normalize();
+        ProjectileMovement->Velocity *= -1;
+        OtherActor->TakeDamage(Damage,
+                               FPointDamageEvent(Damage, SweepResult, ProjectileMovement->Velocity,
+                                                 UDamageType::StaticClass()),
+                               nullptr, this);
         Destroy();
     }
 }
