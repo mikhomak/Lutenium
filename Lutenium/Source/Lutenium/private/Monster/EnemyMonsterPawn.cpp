@@ -70,7 +70,14 @@ void AEnemyMonsterPawn::LegHasMovedEventCaller(const EMonsterLeg MonsterLeg)
 float AEnemyMonsterPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
     AActor* DamageCauser)
 {
-    return 0;
+    FHitResult HitResult;
+    FVector ImpulseDir;
+    DamageEvent.GetBestHitInfo(this,DamageCauser,HitResult,ImpulseDir);
+    ImpulseDir.Normalize();
+
+    MissileCollide(HitResult.Location, ImpulseDir, Damage);
+    
+    return Damage;
 }
 
 void AEnemyMonsterPawn::ToggleWhatLegsShouldMove(const bool Left) const

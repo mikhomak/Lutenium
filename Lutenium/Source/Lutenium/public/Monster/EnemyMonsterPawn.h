@@ -57,6 +57,9 @@ public:
     UFUNCTION(BlueprintImplementableEvent)
     void LegHasMoved(EMonsterLeg Leg);
 
+    UFUNCTION(BlueprintImplementableEvent)
+    void MissileCollide(const FVector& HitLocation, const FVector& NormalizedDirection, const float DamageApplied);
+    
     virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 private:
