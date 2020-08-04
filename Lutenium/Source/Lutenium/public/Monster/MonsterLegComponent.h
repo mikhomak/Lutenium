@@ -49,52 +49,56 @@ public:
 
     void SetMonsterLegType(EMonsterLeg LegType);
 
-
     void SetCanMove(const bool CanMove);
 
 private:
 
     EMonsterLeg MonsterLegType;
 
-    FVector RaycastLocation;
+    FVector RaycastLocation; // Location for raycast facing down (should be higher than a leg)
 
     void RaycastLeg();
 
     void CalculateZValue(float& ZValue);
 
+    /*
+     * Timeline Step
+     * Time of the timeline - speed of the leg
+     * Max Y value of the timeline - the highest point of the leg
+     */
     struct FTimeline LegTimeline;
 
     float MinTimeCurve;
 
     float MaxTimeCurve;
 
-    FVector CurrentPosition;
+    float TimelineValue; // Y value of the leg - Current value of the timeline(0-1 unclamped)
 
-    bool bMoving;
+    float CurrentFloatTimelineValue; // X value of the leg - Current execution time 
 
-    bool bCanMove;
+    FVector CurrentPosition; // Current position of the leg
 
-    float TimelineValue;
+    bool bMoving; // Is leg moving
 
-    float CurrentFloatTimelineValue;
+    bool bCanMove; // Can the leg move when its grounded
 
-    float HighestPoint;
+    float AddedYValue; // Y value added to the highest point in the step
 
-    bool bHasReachedHighestPoint;
+    bool bHasReachedHighestPoint; // if the leg has reached the highest point
 
-    float HighPointBetweenSteps;
+    float HighPointBetweenSteps; // Highest point in the step
 
-    float LowestPointBetweenSteps;
+    float LowestPointBetweenSteps; // Lowest point in the step
 
-    float LerpValue;
+    float LerpValue; // LerpValue to lerp the position
 
-    float DistanceBetweenLegsToMove;
+    float DistanceBetweenLegsToMove;// Needed distance between the leg and the raycast to activate the timeline for moving
 
-    float RaycastDownLength;
+    float RaycastDownLength; // Down length of the vector of the raycast
 
-    FVector StartPosition;
+    FVector StartPosition; // Start position of the step
 
-    FVector FinishPosition;
+    FVector FinishPosition; // Finish position of the step
 
     float GetCurrentValueForAxis(bool IsX);
 };
