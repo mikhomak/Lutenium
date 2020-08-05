@@ -71,5 +71,6 @@ void AMissile::BeginFlying_Implementation()
 void AMissile::StartFlying()
 {
     ProjectileMovement->Velocity = Direction * InitialSpeed;
+    ProjectileMovement->Targe
     BeginFlying();
 }

@@ -33,7 +33,7 @@ FVector FAssistUtils::RaycastMissileTarget(const UWorld* World, const FVector& S
                                                            StartLocation,
                                                            EndLocation,
                                                            FQuat::Identity,
-                                                           ECollisionChannel::ECC_GameTraceChannel1,
+                                                           ECollisionChannel::ECC_Pawn,
                                                            FCollisionShape::MakeSphere(RaycastMissile_First_Radius));
         if (bFirstHit)
         {
@@ -45,7 +45,7 @@ FVector FAssistUtils::RaycastMissileTarget(const UWorld* World, const FVector& S
                                                             StartLocation,
                                                             EndLocation,
                                                             FQuat::Identity,
-                                                            ECollisionChannel::ECC_GameTraceChannel1,
+                                                            ECollisionChannel::ECC_Pawn,
                                                             FCollisionShape::MakeSphere(RaycastMissile_Second_Radius));
         if (bSecondHit)
         {
