@@ -4,6 +4,8 @@
 #include "GameFramework/Pawn.h"
 #include  "MonsterLeg.h"
 #include "EnemyMonsterPawn.generated.h"
+#include "Components/TimelineComponent.h"
+
 
 UCLASS()
 class LUTENIUM_API AEnemyMonsterPawn : public APawn
@@ -25,13 +27,13 @@ class LUTENIUM_API AEnemyMonsterPawn : public APawn
     UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     class UMonsterLegComponent* FrontRightLeg;
 
-public:
-    AEnemyMonsterPawn();
-
 protected:
     virtual void BeginPlay() override;
 
 public:
+
+    AEnemyMonsterPawn();
+
     virtual void Tick(float DeltaTime) override;
 
     UPROPERTY(EditDefaultsOnly, Category="Legs movement")
@@ -62,8 +64,18 @@ public:
     
     virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
+    UFUNCTION()
+    void BodyTimelineMovement();
+
 private:
 
+
     void ToggleWhatLegsShouldMove(bool Left) const;
+
+    struct FTimeline BodyTimeline;
+   
+    TArray<FName> LetTopSocketLocations;
+
+    void CheckBodyAltitudeDependingOnLegs();
 };
     

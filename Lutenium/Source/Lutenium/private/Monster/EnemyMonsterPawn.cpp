@@ -80,6 +80,16 @@ float AEnemyMonsterPawn::TakeDamage(float Damage, FDamageEvent const& DamageEven
     return Damage;
 }
 
+void AEnemyMonsterPawn::BodyTimelineMovement()
+{
+}
+
+void AEnemyMonsterPawn::CheckBodyAltitudeDependingOnLegs()
+{
+    FArray<> LegsSocketsNames;
+    MonsterMesh->GetSocketLocation()
+}
+
 void AEnemyMonsterPawn::ToggleWhatLegsShouldMove(const bool Left) const
 {
     FrontLeftLeg->SetCanMove(!Left);
