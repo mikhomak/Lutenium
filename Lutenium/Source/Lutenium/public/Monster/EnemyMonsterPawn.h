@@ -67,14 +67,24 @@ public:
     UFUNCTION()
     void BodyTimelineMovement();
 
+    UFUNCTION()
+    void BodyTimelineMovementFinish();
+
 private:
 
 
+    /**
+     *    BODY MOVEMENT WHEN THERE IS AN OVERLAP FROM THE BODY TO THE LEGS 
+     **/
     void ToggleWhatLegsShouldMove(bool Left) const;
 
     struct FTimeline BodyTimeline;
    
-    TArray<FName> LetTopSocketLocations;
+    TArray<FName> TopSocketLocationNames;
+
+    bool bBodyMoving;
+
+    FName BodySocketName;
 
     void CheckBodyAltitudeDependingOnLegs();
 };

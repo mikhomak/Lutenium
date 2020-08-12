@@ -68,15 +68,15 @@ void AEnemyMonsterPawn::LegHasMovedEventCaller(const EMonsterLeg MonsterLeg)
 
 
 float AEnemyMonsterPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
-    AActor* DamageCauser)
+                                    AActor* DamageCauser)
 {
     FHitResult HitResult;
     FVector ImpulseDir;
-    DamageEvent.GetBestHitInfo(this,DamageCauser,HitResult,ImpulseDir);
+    DamageEvent.GetBestHitInfo(this, DamageCauser, HitResult, ImpulseDir);
     ImpulseDir.Normalize();
 
     MissileCollide(HitResult.Location, ImpulseDir, Damage);
-    
+
     return Damage;
 }
 
@@ -84,10 +84,30 @@ void AEnemyMonsterPawn::BodyTimelineMovement()
 {
 }
 
+void AEnemyMonsterPawn::BodyTimelineMovementFinish()
+{
+}
+
 void AEnemyMonsterPawn::CheckBodyAltitudeDependingOnLegs()
 {
-    FArray<> LegsSocketsNames;
-    MonsterMesh->GetSocketLocation()
+    const FVector BodySocketLocation = MonsterMesh->GetSocketLocation(BodySocketName);
+    for (const auto SocketName : TopSocketLocationNames)
+    {
+        const FVector SocketLocation = MonsterMesh->GetSocketLocation(SocketName);
+        FHitResult HitResult;
+
+        GetWorld()->LineTraceSingleByChannel(
+            HitResult,
+            BodySocketLocation,
+            SocketLocation,
+            ECollisionChannel::ECC_WorldStatic);
+
+        if (HitResult.bBlockingHit && !bBodyMoving)
+        {
+            BodyTimeline.PlayFromStart();
+            bBodyMoving = true;
+        }
+    }
 }
 
 void AEnemyMonsterPawn::ToggleWhatLegsShouldMove(const bool Left) const
