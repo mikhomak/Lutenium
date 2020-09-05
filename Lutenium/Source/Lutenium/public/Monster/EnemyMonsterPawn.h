@@ -3,8 +3,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include  "MonsterLeg.h"
-#include "EnemyMonsterPawn.generated.h"
 #include "Components/TimelineComponent.h"
+#include "EnemyMonsterPawn.generated.h"
 
 
 UCLASS()
