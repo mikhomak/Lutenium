@@ -1,5 +1,5 @@
-#include "../public/PlaneMovementComponent.h"
-#include "../public/PlayerPawn.h"
+#include "../public/Player/PlaneMovementComponent.h"
+#include "../public/Player/PlayerPawn.h"
 #include "../public/AssistUtils/AssistUtils.h"
 #include "Camera/CameraComponent.h"
 #include "Engine/World.h"
@@ -23,7 +23,7 @@ UPlaneMovementComponent::UPlaneMovementComponent()
     ThrustDownAcceleration = -2000.f;
     NoThrustDeceleration = -500.f;
 
-    MaxSpeedUntillTakeOff = 500.f;
+    MaxSpeedUntilTakeOff = 500.f;
 
     CustomMaxGravity = -800.f;
     CustomMinGravity = -100.f;
@@ -139,7 +139,7 @@ void UPlaneMovementComponent::Thrusting(float InputVal)
     bThrustUp = InputVal > 0 ? true : false;
     if(bThrusting)
     {
-        FAssistUtils::ApplyTakeOffAcceleration(this, PlayerMesh->GetPhysicsLinearVelocity(), MaxSpeedUntillTakeOff,
+        FAssistUtils::ApplyTakeOffAcceleration(this, PlayerMesh->GetPhysicsLinearVelocity(), MaxSpeedUntilTakeOff,
                                                1000.f);
     }
 }

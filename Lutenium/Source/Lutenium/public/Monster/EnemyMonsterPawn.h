@@ -36,6 +36,9 @@ public:
 
     virtual void Tick(float DeltaTime) override;
 
+    /*
+     * Leg related components
+     */
     UPROPERTY(EditDefaultsOnly, Category="Legs movement")
     float DistanceBetweenLegsToMove;
 
@@ -59,6 +62,9 @@ public:
     UFUNCTION(BlueprintImplementableEvent)
     void LegHasMoved(EMonsterLeg Leg);
 
+    /*
+     * Damage components
+     */
     UFUNCTION(BlueprintImplementableEvent)
     void MissileCollide(const FVector& HitLocation, const FVector& NormalizedDirection, const float DamageApplied);
     

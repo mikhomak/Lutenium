@@ -48,7 +48,6 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "PlaneMovement")
 	void DashImpact();
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 	FVector MissileOffset;
 

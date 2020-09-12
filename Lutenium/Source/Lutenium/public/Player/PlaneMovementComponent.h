@@ -28,6 +28,9 @@ public:
                                FActorComponentTickFunction* ThisTickFunction) override;
 
 
+    /*
+     *  INPUT METHODS
+     */
     UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
     void ThrustInput(float Val);
 
@@ -43,13 +46,19 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
     void DashInput();
 
+    /*
+     * Player setters
+     */
     UFUNCTION(BlueprintCallable, Category = "Pawn", meta = (AdvancedDisplay = "2"))
     void SetMesh(USkeletalMeshComponent* Mesh);
 
     UFUNCTION(BlueprintCallable, Category = "Pawn", meta = (AdvancedDisplay = "2"))
     void SetPawn(APlayerPawn* Pawn);
 
-    UFUNCTION(BlueprintCallable, Category = "Control", meta = (AdvancedDisplay = "2"))
+    /*
+     * Movement 
+     */
+    UFUNCTION(BlueprintCallable, Category = "Control")
     float GetCurrentAcceleration() const;
 
     UPROPERTY(Category = "Dash", EditAnywhere)
@@ -71,6 +80,9 @@ public:
 
 private:
 
+    // ------------------------------------------------------------------
+    // CONTROLS
+    // ------------------------------------------------------------------
     UPROPERTY(Category = Control, EditDefaultsOnly)
     float AirControl;
 
@@ -83,67 +95,68 @@ private:
     UPROPERTY(Category = Control, EditDefaultsOnly)
     float RollControl;
 
-    UPROPERTY(Category = Control, EditDefaultsOnly)
-    float AerodynamicMultiplier;
-
+    // ------------------------------------------------------------------
+    // STALLING
+    // ------------------------------------------------------------------
+    
+    /* Min speed to start stalling */
     UPROPERTY(Category = Stall, EditDefaultsOnly)
     float MinSpeedToStall;
 
+    /* Acceleration(Not the velocity) to exit stalling */
     UPROPERTY(Category = Stall, EditDefaultsOnly)
     float AccelerationToExitStall;
 
+    /* Time needed, while the speed is below MinSpeedToStall, to start stalling */
     UPROPERTY(Category = Stall, EditDefaultsOnly)
     float TimeToEnterStall;
 
+    UPROPERTY(Category = CustomPhysics, EditDefaultsOnly)
+    float StallForce;
+
+    FTimerHandle StallTimer;
+    
+    void Stalling() const;
+
+    void IsAboutToStall();
+
+    void EnterStallingTimer();
+
+    
+    // ------------------------------------------------------------------
+    // SPEED
+    // ------------------------------------------------------------------
+ 
     UPROPERTY(Category = Speed, EditDefaultsOnly)
     float MaxSpeed;
 
     UPROPERTY(Category = Speed, EditDefaultsOnly)
     float MinSpeed;
 
+    /* Alpha to lerp the speed when the value is above MaxSpeed(could happen with dash) */
     UPROPERTY(Category = Speed, EditDefaultsOnly)
     float MaxSpeedLerpAlpha;
-
-    UPROPERTY(Category = Dash, EditDefaultsOnly)
-    float DashImpactForce;
 
     UPROPERTY(Category = Speed, EditAnywhere)
     float CurrentAcceleration;
 
+    /* Added acceleration while thrusting */
     UPROPERTY(Category = Speed, EditAnywhere)
     float ThrustUpAcceleration;
 
+    /* Added acceleration while stopping */
     UPROPERTY(Category = Speed, EditAnywhere)
     float ThrustDownAcceleration;
 
+    /* Deceleration while no thrust is applied */
     UPROPERTY(Category = Speed, EditAnywhere)
     float NoThrustDeceleration;
-
-    UPROPERTY(Category = Assist, EditAnywhere)
-    float MaxSpeedUntillTakeOff;
-
-    UPROPERTY(Category = CustomPhysics, EditAnywhere)
-    float CustomMaxGravity;
-
-    UPROPERTY(Category = CustomPhysics, EditAnywhere)
-    float CustomMinGravity;
-
-    UPROPERTY(Category = CustomPhysics, EditAnywhere)
-    float StallForce;
 
     float CurrentThrust;
 
     bool bThrustUp;
 
     bool bThrusting;
-
-    float Dot;
-
-    int DashesLeft;
-
-    bool bCanDash;
-
-    FTimerHandle StallTimer;
 
     void AddTorqueToThePlane(FVector Direction, float InputVal) const;
 
@@ -152,19 +165,52 @@ private:
     void AddThrust(float DeltaTime) const;
 
     void CalculateAcceleration();
+    
+    /* Main movement method */
+    void Movement(const float DeltaTime);
+
+    // ------------------------------------------------------------------
+    // DASH
+    // ------------------------------------------------------------------
+    UPROPERTY(Category = Dash, EditDefaultsOnly)
+    float DashImpactForce;
+
+    int DashesLeft;
+
+    bool bCanDash;
+
+    void ResetDashCooldown();
+
+
+    // ------------------------------------------------------------------
+    // PHYSICS
+    // ------------------------------------------------------------------
+
+    /* If the speed is below this value, the acceleration "kicks in" faster*/
+    UPROPERTY(Category = Assist, EditAnywhere)
+    float MaxSpeedUntilTakeOff;
+
+    /* Gravity depends on the speed, the faster the plane is moving the less gravity is applied */
+    UPROPERTY(Category = CustomPhysics, EditAnywhere)
+    float CustomMaxGravity;
+
+    UPROPERTY(Category = CustomPhysics, EditAnywhere)
+    float CustomMinGravity;
+
+    
+    /* Aerodynamic is applied all the time */
+    /* Aerodynamic vector =  Opposite velocity vector * Multiplier*/
+    UPROPERTY(Category = Control, EditDefaultsOnly)
+    float AerodynamicMultiplier;
+
+    float Dot;
 
     void AddGravityForce(float DeltaTime) const;
+
+    /* Fires the event when Dot value changes drastically to enable VFX in blueprints */
     void HasDotChangedEventCaller(float DotProduct);
 
     void CalculateAerodynamic(float DeltaTime);
 
-    void ResetDashCooldown();
 
-    void Stalling() const;
-
-    void IsAboutToStall();
-
-    void Movement(const float DeltaTime);
-
-    void EnterStallingTimer();
 };

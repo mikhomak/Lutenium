@@ -1,7 +1,7 @@
 // Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
 
 #include "../public/LuteniumGameMode.h"
-#include "../public/PlayerPawn.h"
+#include "../public/Player/PlayerPawn.h"
 
 ALuteniumGameMode::ALuteniumGameMode()
 {
