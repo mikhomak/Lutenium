@@ -16,20 +16,15 @@ class LUTENIUM_API AMonsterAIController : public AAIController
 
 public:
 
-	/*AMonsterAIController();
+	AMonsterAIController();
 	
+	 virtual void OnPossess(APawn* InPawn) override;
 
-
-	/*Behavior component#1#
 	class UBehaviorTreeComponent* BehaviorComp;
 
-	/*Blackboard component#1#
 	class UBlackboardComponent* BlackboardComp;
 
-
-	/*Returns the blackboard component for this controller#1#
 	FORCEINLINE UBlackboardComponent* GetBlackboardComp() { return BlackboardComp; }
 
-	/*Returns the behavior tree component for this controller#1#
-	FORCEINLINE UBehaviorTreeComponent* GetBehaviorTreeComp() { return BehaviorComp; }*/
+	FORCEINLINE UBehaviorTreeComponent* GetBehaviorTreeComp() { return BehaviorComp; }
 };

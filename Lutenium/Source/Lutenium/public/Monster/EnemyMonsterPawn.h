@@ -76,6 +76,11 @@ public:
     UFUNCTION()
     void BodyTimelineMovementFinish();
 
+    
+    /*Behavior Tree for the current monster*/
+    UPROPERTY(EditAnywhere, Category = "AI")
+    class UBehaviorTree* BehaviorTree;
+
 private:
 
 
