@@ -11,7 +11,7 @@ AMonsterAIController::AMonsterAIController()
 {
     BehaviorComp = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("Behavior Tree"));
 
-    BlackboardComp = CreateDefaultSubobject<UBlackboardComponent>(TEXT("Blacboard"));
+    BlackboardComp = CreateDefaultSubobject<UBlackboardComponent>(TEXT("Blackboard"));
 }
 
 
