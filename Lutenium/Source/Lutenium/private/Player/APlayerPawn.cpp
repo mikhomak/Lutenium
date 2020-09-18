@@ -9,6 +9,7 @@
 #include "../public/Player/PlaneMovementComponent.h"
 #include "Components/PrimitiveComponent.h"
 #include "../public/Player/Missile.h"
+#include "AssistUtils/AssistUtils.h"
 
 APlayerPawn::APlayerPawn()
 {
@@ -49,6 +50,9 @@ APlayerPawn::APlayerPawn()
     PlaneMovement = CreateDefaultSubobject<UPlaneMovementComponent>(TEXT("Plane Movement"));
     PlaneMovement->SetMesh(PlaneMesh);
     PlaneMovement->SetPawn(this);
+
+
+    MissileTraceLength=5000.f;
 }
 
 void APlayerPawn::Tick(float DeltaSeconds)
@@ -89,10 +93,19 @@ void APlayerPawn::FireMissile()
             FActorSpawnParameters SpawnParams;
             SpawnParams.Owner = this;
             SpawnParams.Instigator = this;
-            AMissile* Missile = World->SpawnActor<AMissile>(MissileClass, PlaneMesh->GetSocketLocation("MissileMuzzle"), GetActorRotation(), SpawnParams);
+
+             FVector SpawnLocation = PlaneMesh->GetSocketLocation("MissileMuzzle");
+            
+            AMissile* Missile = World->SpawnActor<AMissile>(MissileClass, SpawnLocation, GetActorRotation(), SpawnParams);
             if (Missile)
             {
-                Missile->SetDirection(GetActorForwardVector());
+                Missile->SetParentPawn(this);
+
+
+                FVector MissileDirection;
+                USceneComponent* Target = FAssistUtils::RaycastMissileTarget(this, GetWorld(), SpawnLocation, GetActorForwardVector(), MissileTraceLength, MissileDirection );
+                MissileDirection.Normalize();
+                Missile->SetTargetOrDirection(Target,GetActorForwardVector());
             }
         }
     }

@@ -4,7 +4,6 @@
 #include "Kismet/KismetSystemLibrary.h"
 
 bool FAssistUtils::bHasApplied = false;
-float FAssistUtils::RaycastMissileTarget_Length = 500000.f;
 float FAssistUtils::RaycastMissile_First_Radius = 750.f;
 float FAssistUtils::RaycastMissile_Second_Radius = 1500.f;
 
@@ -22,38 +21,78 @@ void FAssistUtils::ApplyTakeOffAcceleration(UPlaneMovementComponent* PlaneMoveme
     }
 }
 
-FVector FAssistUtils::RaycastMissileTarget(const UWorld* World, const FVector& StartLocation,
-                                           const FVector& ForwardVector)
+USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const UWorld* World,
+                                                                   const FVector& StartLocation,
+                                                                   const FVector& ForwardVector,
+                                                                   const float& TraceLength,
+                                                                   FVector& HitLocation)
 {
+    const FVector EndLocation = StartLocation + ForwardVector * TraceLength;
     if (World)
     {
-        FHitResult FirstHitResult;
+        // Ignoring the actor
+        FCollisionQueryParams Params;
+        Params.AddIgnoredActor(Actor);
 
-        const FVector EndLocation = StartLocation + ForwardVector * FAssistUtils::RaycastMissileTarget_Length;
+
+        /*
+         * Raycasting the first Sphere
+         * The smallest one
+         * Only searching for pawns 
+         */
+        FHitResult FirstHitResult;
         const bool bFirstHit = World->SweepSingleByChannel(FirstHitResult,
                                                            StartLocation,
                                                            EndLocation,
                                                            FQuat::Identity,
                                                            ECollisionChannel::ECC_Pawn,
-                                                           FCollisionShape::MakeSphere(RaycastMissile_First_Radius));
-        if (bFirstHit)
+                                                           FCollisionShape::MakeSphere(RaycastMissile_First_Radius),
+                                                           Params);
+        if (bFirstHit && FirstHitResult.GetComponent())
         {
-            return FirstHitResult.Location;
+            HitLocation = FirstHitResult.Location;
+            return FirstHitResult.GetComponent();
         }
 
+        /*
+        * Raycasting the second Sphere
+        * If the first raycast failed, then we are raycasting the bigger area
+        * The biggest one
+        * Only searching for pawns 
+        */
         FHitResult SecondHitResult;
         const bool bSecondHit = World->SweepSingleByChannel(SecondHitResult,
                                                             StartLocation,
                                                             EndLocation,
                                                             FQuat::Identity,
                                                             ECollisionChannel::ECC_Pawn,
-                                                            FCollisionShape::MakeSphere(RaycastMissile_Second_Radius));
-        if (bSecondHit)
+                                                            FCollisionShape::MakeSphere(RaycastMissile_Second_Radius),
+                                                            Params);
+        if (bSecondHit && SecondHitResult.GetComponent())
         {
-            return SecondHitResult.Location;
+            HitLocation = SecondHitResult.Location;
+            return SecondHitResult.GetComponent();
         }
 
-        return EndLocation;
+        /*
+         * Raycasting only forward line
+         * If the second one is failed (probably the enemy pawns are too far from the initial missile forward vector)
+         * Returning nullptr in any case
+         * Setting the location if we hit something or just the EndLocation(going on a straight line)
+         * Channel is Visibility
+         */
+
+
+        FHitResult FinalHitResult;
+        const bool bFinalHit = World->LineTraceSingleByChannel(FinalHitResult,
+                                                               StartLocation,
+                                                               EndLocation,
+                                                               ECollisionChannel::ECC_Visibility,
+                                                               Params);
+
+        HitLocation = bFinalHit ? FinalHitResult.Location : EndLocation;
+        return nullptr;
     }
-    return FVector();
+    HitLocation = EndLocation;
+    return nullptr;
 }

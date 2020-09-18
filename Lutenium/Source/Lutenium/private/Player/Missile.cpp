@@ -2,27 +2,26 @@
 
 
 #include "../../public/Player/Missile.h"
-#include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 AMissile::AMissile()
 {
     PrimaryActorTick.bCanEverTick = true;
     PrimaryActorTick.TickGroup = TG_PostPhysics;
-    CapsuleCollider = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capcule collider"));
-    FRotator Rotator;
-    Rotator.Pitch = 90.f;
-    CapsuleCollider->SetWorldRotation(Rotator);
-    RootComponent = CapsuleCollider;
+    SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Capcule collider"));
+    RootComponent = SphereComponent;
 
 
     ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
-    ProjectileMovement->SetUpdatedComponent(CapsuleCollider);
     ProjectileMovement->InitialSpeed = InitialSpeed;
     ProjectileMovement->MaxSpeed = MaxSpeed;
     ProjectileMovement->bRotationFollowsVelocity = true;
-    ProjectileMovement->bShouldBounce = true;
-    ProjectileMovement->Bounciness = 0.3f;
+
+
+    ExplosionRadius = 700.f;
+    Damage = 150.f;
 }
 
 void AMissile::BeginPlay()
@@ -35,24 +34,30 @@ void AMissile::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
-void AMissile::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-                                 const FHitResult& SweepResult)
+void AMissile::NotifyActorBeginOverlap(AActor* OtherActor)
 {
-    if (OtherActor)
+    Super::NotifyActorBeginOverlap(OtherActor);
+    if (OtherActor && ParentPawn)
     {
-        ProjectileMovement->Velocity.Normalize();
-        ProjectileMovement->Velocity *= -1;
-        OtherActor->TakeDamage(Damage,
-                               FPointDamageEvent(Damage, SweepResult, ProjectileMovement->Velocity,
-                                                 UDamageType::StaticClass()),
-                               nullptr, this);
+        // Ignoring ourselves
+        TArray<AActor*> IgnoredActors;
+        IgnoredActors.Add(this);
+
+        UGameplayStatics::ApplyRadialDamage(this, Damage,
+                                            GetActorLocation(), ExplosionRadius,
+                                            nullptr, IgnoredActors, this,
+                                            ParentPawn->GetController(), true);
         Destroy();
     }
 }
 
-void AMissile::SetDirection(const FVector& ShootDirection)
+void AMissile::SetTargetOrDirection(USceneComponent* Target, const FVector& ShootDirection)
 {
+    if (Target != nullptr)
+    {
+        ProjectileMovement->bIsHomingProjectile = true;
+        ProjectileMovement->HomingTargetComponent = Target;
+    }
     Direction = ShootDirection;
     FTimerHandle TimerHandle;
     GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AMissile::StartFlying, TimeBeforeFly, false);
@@ -70,7 +75,10 @@ void AMissile::BeginFlying_Implementation()
 
 void AMissile::StartFlying()
 {
-    ProjectileMovement->Velocity = Direction * InitialSpeed;
+    if (!ProjectileMovement->bIsHomingProjectile)
+    {
+        ProjectileMovement->Velocity = Direction * InitialSpeed;
+    }
     //ProjectileMovement->Targe
     BeginFlying();
 }

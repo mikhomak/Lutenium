@@ -9,12 +9,10 @@ public:
     static void ApplyTakeOffAcceleration(UPlaneMovementComponent* PlaneMovementComponent, const FVector& Velocity,
                                          const float MinTakeOffVelocity, const float AddedAcceleration);
 
-    static FVector RaycastMissileTarget(const UWorld* World, const FVector& StartLocation,
-                                        const FVector& ForwardVector);
+    static class USceneComponent* RaycastMissileTarget(const AActor* Actor, const UWorld* World, const FVector& StartLocation,
+                                        const FVector& ForwardVector, const float& TraceLength,  FVector& HitLocation);
 private:
     static bool bHasApplied;
-
-    static float RaycastMissileTarget_Length;
 
     static float RaycastMissile_First_Radius;
 

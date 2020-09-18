@@ -48,11 +48,18 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "PlaneMovement")
 	void DashImpact();
+
+	// ------------------------------------------------------------------
+	// Missile
+	// ------------------------------------------------------------------
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 	FVector MissileOffset;
 
 	UPROPERTY(EditDefaultsOnly, Category = Missile)
 	TSubclassOf<class AMissile> MissileClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = Missile)
+	float MissileTraceLength;
 	
 protected:
 

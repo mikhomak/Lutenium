@@ -16,44 +16,54 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	
+	UPROPERTY(VisibleDefaultsOnly, Category = Missile)
+	class USphereComponent* SphereComponent;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = Movement)
+    class UProjectileMovementComponent* ProjectileMovement;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+	class UStaticMeshComponent* MeshComp;
+
+	class APawn* ParentPawn;
 
 public:	
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION()
-    void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
-	UPROPERTY(EditDefaultsOnly, Category = Missile)
-	class UCapsuleComponent* CapsuleCollider;
-
-	UPROPERTY(VisibleAnywhere, Category = Movement)
-    class UProjectileMovementComponent* ProjectileMovement;
-	
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	float InitialSpeed;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	float MaxSpeed;
+
+	UPROPERTY(EditDefaultsOnly)
+	float ExplosionRadius;
 
 	UPROPERTY(EditAnywhere)
 	FVector Direction;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	float Damage;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	float TimeBeforeFly;
 	
-	UFUNCTION(BlueprintCallable)
-	void SetDirection(const FVector& ShootDirection);
+	UFUNCTION()
+	void SetTargetOrDirection(USceneComponent* Target, const FVector& ShootDirection);
 
 	UFUNCTION(BlueprintNativeEvent)
 	void AfterInstantiate();
 
 	UFUNCTION(BlueprintNativeEvent)
     void BeginFlying();
-	
+
+	FORCEINLINE void SetParentPawn(APawn* Pawn){ ParentPawn = Pawn;}
+
 private:
 	void StartFlying();
+
 };
 
