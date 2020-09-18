@@ -52,9 +52,9 @@ APlayerPawn::APlayerPawn()
     PlaneMovement->SetPawn(this);
 
 
-    MissileTraceLength=50000.f;
-    FirstRaytraceRadius=20000.f;
-    SecondRaytraceRadius=40000.f;
+    MissileTraceLength = 50000.f;
+    FirstRaytraceRadius = 20000.f;
+    SecondRaytraceRadius = 40000.f;
 }
 
 void APlayerPawn::Tick(float DeltaSeconds)
@@ -96,18 +96,26 @@ void APlayerPawn::FireMissile()
             SpawnParams.Owner = this;
             SpawnParams.Instigator = this;
 
-             FVector SpawnLocation = PlaneMesh->GetSocketLocation("MissileMuzzle");
-            
-            AMissile* Missile = World->SpawnActor<AMissile>(MissileClass, SpawnLocation, GetActorRotation(), SpawnParams);
+            FVector SpawnLocation = PlaneMesh->GetSocketLocation("MissileMuzzle");
+
+            AMissile* Missile = World->SpawnActor<AMissile>(MissileClass, SpawnLocation, GetActorRotation(),
+                                                            SpawnParams);
             if (Missile)
             {
                 Missile->SetParentPawn(this);
 
 
                 FVector MissileDirection;
-                USceneComponent* Target = FAssistUtils::RaycastMissileTarget(this, GetWorld(), SpawnLocation, GetActorForwardVector(), MissileTraceLength, MissileDirection );
+                USceneComponent* Target = FAssistUtils::RaycastMissileTarget(this,
+                                                                             GetWorld(),
+                                                                             SpawnLocation,
+                                                                             GetActorForwardVector(),
+                                                                             MissileTraceLength,
+                                                                             FirstRaytraceRadius,
+                                                                             SecondRaytraceRadius,
+                                                                             MissileDirection);
                 MissileDirection.Normalize();
-                Missile->SetTargetOrDirection(Target,GetActorForwardVector());
+                Missile->SetTargetOrDirection(Target, GetActorForwardVector());
             }
         }
     }
