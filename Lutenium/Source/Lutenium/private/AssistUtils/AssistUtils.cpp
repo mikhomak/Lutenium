@@ -4,8 +4,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 
 bool FAssistUtils::bHasApplied = false;
-float FAssistUtils::RaycastMissile_First_Radius = 750.f;
-float FAssistUtils::RaycastMissile_Second_Radius = 1500.f;
+
 
 void FAssistUtils::ApplyTakeOffAcceleration(UPlaneMovementComponent* PlaneMovementComponent, const FVector& Velocity,
                                             const float MaxSpeedUntilTakeOff, const float AddedAcceleration)
@@ -25,6 +24,8 @@ USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const U
                                                                    const FVector& StartLocation,
                                                                    const FVector& ForwardVector,
                                                                    const float& TraceLength,
+                                                                   const float& FirstRaycastRadius,
+                                                                   const float& SecondRaycastRadius,
                                                                    FVector& HitLocation)
 {
     const FVector EndLocation = StartLocation + ForwardVector * TraceLength;
@@ -46,7 +47,7 @@ USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const U
                                                            EndLocation,
                                                            FQuat::Identity,
                                                            ECollisionChannel::ECC_Pawn,
-                                                           FCollisionShape::MakeSphere(RaycastMissile_First_Radius),
+                                                           FCollisionShape::MakeSphere(FirstRaycastRadius),
                                                            Params);
         if (bFirstHit && FirstHitResult.GetComponent())
         {
@@ -66,7 +67,7 @@ USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const U
                                                             EndLocation,
                                                             FQuat::Identity,
                                                             ECollisionChannel::ECC_Pawn,
-                                                            FCollisionShape::MakeSphere(RaycastMissile_Second_Radius),
+                                                            FCollisionShape::MakeSphere(SecondRaycastRadius),
                                                             Params);
         if (bSecondHit && SecondHitResult.GetComponent())
         {

@@ -61,6 +61,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = Missile)
 	float MissileTraceLength;
 	
+	UPROPERTY(EditDefaultsOnly, Category = Missile)
+	float FirstRaytraceRadius;
+	
+	UPROPERTY(EditDefaultsOnly, Category = Missile)
+	float SecondRaytraceRadius;
+	
 protected:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;

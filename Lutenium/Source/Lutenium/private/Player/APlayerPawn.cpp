@@ -52,7 +52,9 @@ APlayerPawn::APlayerPawn()
     PlaneMovement->SetPawn(this);
 
 
-    MissileTraceLength=5000.f;
+    MissileTraceLength=50000.f;
+    FirstRaytraceRadius=20000.f;
+    SecondRaytraceRadius=40000.f;
 }
 
 void APlayerPawn::Tick(float DeltaSeconds)
