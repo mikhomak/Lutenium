@@ -24,9 +24,7 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
 	if (Monster && Monster->BehaviorTree->BlackboardAsset)
 	{
 		BlackboardComp->InitializeBlackboard(*Monster->BehaviorTree->BlackboardAsset);
-		GLog->Log("Initialized blackboard.");
 		BehaviorComp->StartTree(*Monster->BehaviorTree);
-
 	}
 
 }

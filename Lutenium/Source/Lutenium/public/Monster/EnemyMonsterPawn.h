@@ -15,6 +15,20 @@ class LUTENIUM_API AEnemyMonsterPawn : public APawn
     UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     class USkeletalMeshComponent* MonsterMesh;
 
+    
+
+
+
+public:
+
+    AEnemyMonsterPawn();
+
+    virtual void Tick(float DeltaTime) override;
+
+    // ------------------------------------------------------------------
+    // Legs
+    // ------------------------------------------------------------------
+
     UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     class UMonsterLegComponent* RearLeftLeg;
 
@@ -26,19 +40,7 @@ class LUTENIUM_API AEnemyMonsterPawn : public APawn
 
     UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     class UMonsterLegComponent* FrontRightLeg;
-
-protected:
-    virtual void BeginPlay() override;
-
-public:
-
-    AEnemyMonsterPawn();
-
-    virtual void Tick(float DeltaTime) override;
-
-    /*
-     * Leg related components
-     */
+    
     UPROPERTY(EditDefaultsOnly, Category="Legs movement")
     float DistanceBetweenLegsToMove;
 
@@ -62,9 +64,9 @@ public:
     UFUNCTION(BlueprintImplementableEvent)
     void LegHasMoved(EMonsterLeg Leg);
 
-    /*
-     * Damage components
-     */
+    // ------------------------------------------------------------------
+    // Damage
+    // ------------------------------------------------------------------
     UFUNCTION(BlueprintImplementableEvent)
     void MissileCollide(const FVector& HitLocation, const FVector& NormalizedDirection, const float DamageApplied);
     
@@ -77,16 +79,34 @@ public:
     void BodyTimelineMovementFinish();
 
     
-    /*Behavior Tree for the current monster*/
+    // ------------------------------------------------------------------
+    // AI
+    // ------------------------------------------------------------------
+
     UPROPERTY(EditAnywhere, Category = "AI")
     class UBehaviorTree* BehaviorTree;
 
+    UPROPERTY(VisibleAnywhere, Category = "AI")
+    class UPawnSensingComponent* PawnSensingComp;
+
+
+protected:
+    virtual void BeginPlay() override;
+    
+    UFUNCTION()
+    void OnSeePlayer(APawn* Pawn);
+	
+    UFUNCTION()
+    void OnHearNoise(APawn* PawnInstigator, const FVector& Location, float Volume);
+    
 private:
 
 
-    /**
-     *    BODY MOVEMENT WHEN THERE IS AN OVERLAP FROM THE BODY TO THE LEGS 
-     **/
+
+    // ------------------------------------------------------------------
+    // BODY MOVEMENT WHEN THERE IS AN OVERLAP FROM THE BODY TO THE LEGS 
+    // ------------------------------------------------------------------
+
     void ToggleWhatLegsShouldMove(bool Left) const;
 
     struct FTimeline BodyTimeline;

@@ -1,6 +1,7 @@
 #include "../../public/Monster/EnemyMonsterPawn.h"
 #include "../../public/Monster/MonsterLeg.h"
 #include "../../public/Monster/MonsterLegComponent.h"
+#include "Perception/PawnSensingComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 
 
@@ -15,6 +16,8 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
     MonsterMesh->SetTickGroup(TG_PostPhysics);
     RootComponent = MonsterMesh;
 
+
+    /* Initialize legs */
     RearLeftLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Rear Left Leg"));
     RearLeftLeg->SetEnemyMonsterPawn(this);
     RearLeftLeg->SetMonsterLegType(RearLeft);
@@ -32,11 +35,34 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
     FrontRightLeg->SetMonsterLegType(FrontRight);
 
     ToggleWhatLegsShouldMove(true);
+
+    /* Don't forget to set the Controller in Blueprint! */
+
+    /* Initialize sensing */
+    PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
+    PawnSensingComp->SetPeripheralVisionAngle(60.0f);
+    PawnSensingComp->SightRadius = 2000;
+    PawnSensingComp->HearingThreshold = 600;
+    PawnSensingComp->LOSHearingThreshold = 1200;
 }
 
 void AEnemyMonsterPawn::BeginPlay()
 {
     Super::BeginPlay();
+
+    if (PawnSensingComp)
+    {
+        PawnSensingComp->OnSeePawn.AddDynamic(this, &AEnemyMonsterPawn::OnSeePlayer);
+        PawnSensingComp->OnHearNoise.AddDynamic(this, &AEnemyMonsterPawn::OnHearNoise);
+    }
+}
+
+void AEnemyMonsterPawn::OnSeePlayer(APawn* Pawn)
+{
+}
+
+void AEnemyMonsterPawn::OnHearNoise(APawn* PawnInstigator, const FVector& Location, float Volume)
+{
 }
 
 void AEnemyMonsterPawn::Tick(float DeltaTime)
@@ -44,6 +70,9 @@ void AEnemyMonsterPawn::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
+/*
+ * Get leg location to use in animation blueprint
+ */
 FVector AEnemyMonsterPawn::GetLegLocation(const EMonsterLeg Leg) const
 {
     switch (Leg)
