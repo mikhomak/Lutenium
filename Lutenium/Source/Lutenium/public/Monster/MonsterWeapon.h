@@ -27,16 +27,19 @@ public:
     // ------------------------------------------------------------------
 
     UPROPERTY(EditDefaultsOnly, Category=Siren)
-    TSubclassOf<class AMissile> SirenClass;
+    TSubclassOf<class UScream> SirenClass;
 
     UPROPERTY(EditDefaultsOnly, Category=Siren)
     FName SirenSocketName;
+
+    UFUNCTION(BlueprintCallable, Category=Damage)
+    void DoSiren() const;
     
 protected:
     virtual void BeginPlay() override;
 
 
 public:
-    FORCEINLINE void SetPlaneMesh(class USkeletalMeshComponent* Mesh) { MonsterMesh = Mesh; }
+    FORCEINLINE void SetMonsterMesh(class USkeletalMeshComponent* Mesh) { MonsterMesh = Mesh; }
     FORCEINLINE void SetMonsterPawn(class AEnemyMonsterPawn* Pawn) { MonsterPawn = Pawn; }
 };

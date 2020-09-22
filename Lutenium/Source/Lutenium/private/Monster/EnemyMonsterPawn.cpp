@@ -1,6 +1,7 @@
 #include "../../public/Monster/EnemyMonsterPawn.h"
 #include "../../public/Monster/MonsterLeg.h"
 #include "../../public/Monster/MonsterLegComponent.h"
+#include "../../public/Monster/MonsterWeapon.h"
 #include "Perception/PawnSensingComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 
@@ -44,6 +45,11 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
     PawnSensingComp->SightRadius = 2000;
     PawnSensingComp->HearingThreshold = 600;
     PawnSensingComp->LOSHearingThreshold = 1200;
+
+    /* Initialize weapons*/
+    MonsterWeapon = CreateDefaultSubobject<UMonsterWeapon>(TEXT("Monster weapons"));
+    MonsterWeapon->SetMonsterMesh(MonsterMesh);
+    MonsterWeapon->SetMonsterPawn(this);
 }
 
 void AEnemyMonsterPawn::BeginPlay()

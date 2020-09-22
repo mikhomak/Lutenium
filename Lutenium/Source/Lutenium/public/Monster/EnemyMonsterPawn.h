@@ -15,10 +15,6 @@ class LUTENIUM_API AEnemyMonsterPawn : public APawn
     UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     class USkeletalMeshComponent* MonsterMesh;
 
-    
-
-
-
 public:
 
     AEnemyMonsterPawn();
@@ -40,7 +36,7 @@ public:
 
     UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     class UMonsterLegComponent* FrontRightLeg;
-    
+
     UPROPERTY(EditDefaultsOnly, Category="Legs movement")
     float DistanceBetweenLegsToMove;
 
@@ -67,10 +63,15 @@ public:
     // ------------------------------------------------------------------
     // Damage
     // ------------------------------------------------------------------
+
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"),Category="Weapons")
+    class UMonsterWeapon* MonsterWeapon;
+    
     UFUNCTION(BlueprintImplementableEvent)
     void MissileCollide(const FVector& HitLocation, const FVector& NormalizedDirection, const float DamageApplied);
-    
-    virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
+    virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
+                             AActor* DamageCauser) override;
 
     UFUNCTION()
     void BodyTimelineMovement();
@@ -78,7 +79,7 @@ public:
     UFUNCTION()
     void BodyTimelineMovementFinish();
 
-    
+
     // ------------------------------------------------------------------
     // AI
     // ------------------------------------------------------------------
@@ -92,15 +93,14 @@ public:
 
 protected:
     virtual void BeginPlay() override;
-    
+
     UFUNCTION()
     void OnSeePlayer(APawn* Pawn);
-	
+
     UFUNCTION()
     void OnHearNoise(APawn* PawnInstigator, const FVector& Location, float Volume);
-    
-private:
 
+private:
 
 
     // ------------------------------------------------------------------
@@ -110,7 +110,7 @@ private:
     void ToggleWhatLegsShouldMove(bool Left) const;
 
     struct FTimeline BodyTimeline;
-   
+
     TArray<FName> TopSocketLocationNames;
 
     bool bBodyMoving;
@@ -119,4 +119,3 @@ private:
 
     void CheckBodyAltitudeDependingOnLegs();
 };
-    
