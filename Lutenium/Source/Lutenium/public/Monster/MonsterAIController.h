@@ -12,19 +12,19 @@
 UCLASS()
 class LUTENIUM_API AMonsterAIController : public AAIController
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
 
-	AMonsterAIController();
-	
-	 virtual void OnPossess(APawn* InPawn) override;
+    AMonsterAIController();
 
-	class UBehaviorTreeComponent* BehaviorComp;
+    virtual void OnPossess(APawn* InPawn) override;
 
-	class UBlackboardComponent* BlackboardComp;
+    class UBehaviorTreeComponent* BehaviorComp;
 
-	FORCEINLINE UBlackboardComponent* GetBlackboardComp() { return BlackboardComp; }
+    class UBlackboardComponent* BlackboardComp;
 
-	FORCEINLINE UBehaviorTreeComponent* GetBehaviorTreeComp() { return BehaviorComp; }
+    FORCEINLINE UBlackboardComponent* GetBlackboardComp() { return BlackboardComp; }
+
+    FORCEINLINE UBehaviorTreeComponent* GetBehaviorTreeComp() { return BehaviorComp; }
 };

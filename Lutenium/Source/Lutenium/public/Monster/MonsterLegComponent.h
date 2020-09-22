@@ -6,7 +6,6 @@
 #include "EnemyMonsterPawn.h"
 #include "Components/ActorComponent.h"
 #include "Components/TimelineComponent.h"
-
 #include "MonsterLegComponent.generated.h"
 
 
@@ -23,11 +22,6 @@ public:
     UPROPERTY(EditAnywhere)
     class UCurveFloat* Curve;
 
-
-protected:
-    virtual void BeginPlay() override;
-
-public:
     virtual void TickComponent(float DeltaTime, ELevelTick TickType,
                                FActorComponentTickFunction* ThisTickFunction) override;
 
@@ -50,6 +44,10 @@ public:
     void SetMonsterLegType(EMonsterLeg LegType);
 
     void SetCanMove(const bool CanMove);
+
+protected:
+    virtual void BeginPlay() override;
+
 
 private:
 
@@ -92,7 +90,8 @@ private:
 
     float LerpValue; // LerpValue to lerp the position
 
-    float DistanceBetweenLegsToMove;// Needed distance between the leg and the raycast to activate the timeline for moving
+    float DistanceBetweenLegsToMove;
+    // Needed distance between the leg and the raycast to activate the timeline for moving
 
     float RaycastDownLength; // Down length of the vector of the raycast
 
