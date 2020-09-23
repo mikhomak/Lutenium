@@ -66,7 +66,7 @@ public:
 
     UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"),Category="Weapons")
     class UMonsterWeapon* MonsterWeapon;
-    
+
     UFUNCTION(BlueprintImplementableEvent)
     void MissileCollide(const FVector& HitLocation, const FVector& NormalizedDirection, const float DamageApplied);
 
@@ -104,7 +104,7 @@ private:
 
 
     // ------------------------------------------------------------------
-    // BODY MOVEMENT WHEN THERE IS AN OVERLAP FROM THE BODY TO THE LEGS 
+    // BODY MOVEMENT WHEN THERE IS AN OVERLAP FROM THE BODY TO THE LEGS
     // ------------------------------------------------------------------
 
     void ToggleWhatLegsShouldMove(bool Left) const;

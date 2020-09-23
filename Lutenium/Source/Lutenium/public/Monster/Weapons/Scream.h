@@ -3,17 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "GameFramework/Actor.h"
 #include "Scream.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class LUTENIUM_API UScream : public UActorComponent
+UCLASS( )
+class LUTENIUM_API AScream : public AActor
 {
 	GENERATED_BODY()
 
-public:	
-	UScream();
+public:
+	AScream();
 
 
 	UPROPERTY(EditDefaultsOnly, Category=Mesh)
@@ -27,10 +27,10 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:	
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+public:
+	virtual void Tick(float DeltaTime) override;
 
 	FORCEINLINE void SetDamage(float& NewDamage) { Damage = NewDamage;}
 	FORCEINLINE void SetExpansionSpeed(float& NewExpansionSpeed) { ExpansionSpeed = NewExpansionSpeed;}
-	
+
 };

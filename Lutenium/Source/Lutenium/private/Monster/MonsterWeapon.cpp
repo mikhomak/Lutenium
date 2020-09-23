@@ -20,7 +20,7 @@ void UMonsterWeapon::DoSiren() const
 
         FVector SpawnLocation = MonsterMesh->GetSocketLocation(SirenSocketName);
 
-        UScream* Scream = World->SpawnActor<UScream>(SirenClass, SpawnLocation, FRotator::ZeroRotator,
+        AScream* Scream = World->SpawnActor<AScream>(SirenClass, SpawnLocation, FRotator::ZeroRotator,
                                                       SpawnParams);
         if (Scream)
         {

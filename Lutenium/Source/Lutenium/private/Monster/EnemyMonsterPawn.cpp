@@ -9,8 +9,6 @@
 AEnemyMonsterPawn::AEnemyMonsterPawn()
 {
     PrimaryActorTick.bCanEverTick = true;
-
-
     MonsterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
     MonsterMesh->SetEnableGravity(false);
     MonsterMesh->SetSimulatePhysics(true);

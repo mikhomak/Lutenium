@@ -2,25 +2,23 @@
 
 #include "../../../public/Monster/Weapons/Scream.h"
 
-UScream::UScream()
+AScream::AScream()
 {
-	PrimaryComponentTick.bCanEverTick = true;
 
 }
 
 
-void UScream::BeginPlay()
+void AScream::BeginPlay()
 {
 	Super::BeginPlay();
 
 	
 }
 
-
-void UScream::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void AScream::Tick(float DeltaTime)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
 }
+
+
 
 

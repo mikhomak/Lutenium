@@ -27,7 +27,7 @@ public:
     // ------------------------------------------------------------------
 
     UPROPERTY(EditDefaultsOnly, Category=Siren)
-    TSubclassOf<class UScream> SirenClass;
+    TSubclassOf<class AScream> SirenClass;
 
     UPROPERTY(EditDefaultsOnly, Category=Siren)
     FName SirenSocketName;
