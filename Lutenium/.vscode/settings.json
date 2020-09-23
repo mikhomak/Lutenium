@@ -1,0 +1,12 @@
+{
+	"files.exclude": {
+		"O:/Projects/Unreal Engine/Lutenium/Lutenium/.idea": true,
+		"O:/Projects/Unreal Engine/Lutenium/Lutenium/.vs": true,
+		"O:/Projects/Unreal Engine/Lutenium/Lutenium/.vscode": true,
+		"O:/Projects/Unreal Engine/Lutenium/Lutenium/Content": true,
+		"O:/Projects/Unreal Engine/Lutenium/Lutenium/DerivedDataCache": true,
+		"O:/Projects/Unreal Engine/Lutenium/Lutenium/Intermediate": true,
+		"O:/Projects/Unreal Engine/Lutenium/Lutenium/Saved": true
+	},
+	"C_Cpp.errorSquiggles": "Enabled"
+}

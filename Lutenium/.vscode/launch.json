@@ -1,0 +1,128 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Lutenium (Debug)",
+			"request": "launch",
+			"preLaunchTask": "Lutenium Win64 Debug Build",
+			"program": "O:\\Projects\\Unreal Engine\\Lutenium\\Lutenium\\Binaries\\Win64\\UE4-Win64-Debug.exe",
+			"args": [
+			],
+			"cwd": "O:\\Programs\\Unreal Engine\\UE_4.25",
+			"stopAtEntry": false,
+			"externalConsole": true,
+			"type": "cppvsdbg",
+			"visualizerFile": "O:\\Programs\\Unreal Engine\\UE_4.25\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+		},
+		{
+			"name": "Lutenium (DebugGame)",
+			"request": "launch",
+			"preLaunchTask": "Lutenium Win64 DebugGame Build",
+			"program": "O:\\Projects\\Unreal Engine\\Lutenium\\Lutenium\\Binaries\\Win64\\UE4-Win64-DebugGame.exe",
+			"args": [
+			],
+			"cwd": "O:\\Programs\\Unreal Engine\\UE_4.25",
+			"stopAtEntry": false,
+			"externalConsole": true,
+			"type": "cppvsdbg",
+			"visualizerFile": "O:\\Programs\\Unreal Engine\\UE_4.25\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+		},
+		{
+			"name": "Lutenium (Development)",
+			"request": "launch",
+			"preLaunchTask": "Lutenium Win64 Development Build",
+			"program": "O:\\Projects\\Unreal Engine\\Lutenium\\Lutenium\\Binaries\\Win64\\UE4.exe",
+			"args": [
+			],
+			"cwd": "O:\\Programs\\Unreal Engine\\UE_4.25",
+			"stopAtEntry": false,
+			"externalConsole": true,
+			"type": "cppvsdbg",
+			"visualizerFile": "O:\\Programs\\Unreal Engine\\UE_4.25\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+		},
+		{
+			"name": "Lutenium (Shipping)",
+			"request": "launch",
+			"preLaunchTask": "Lutenium Win64 Shipping Build",
+			"program": "O:\\Projects\\Unreal Engine\\Lutenium\\Lutenium\\Binaries\\Win64\\UE4-Win64-Shipping.exe",
+			"args": [
+			],
+			"cwd": "O:\\Programs\\Unreal Engine\\UE_4.25",
+			"stopAtEntry": false,
+			"externalConsole": true,
+			"type": "cppvsdbg",
+			"visualizerFile": "O:\\Programs\\Unreal Engine\\UE_4.25\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+		},
+		{
+			"name": "Lutenium (Test)",
+			"request": "launch",
+			"preLaunchTask": "Lutenium Win64 Test Build",
+			"program": "O:\\Projects\\Unreal Engine\\Lutenium\\Lutenium\\Binaries\\Win64\\UE4-Win64-Test.exe",
+			"args": [
+			],
+			"cwd": "O:\\Programs\\Unreal Engine\\UE_4.25",
+			"stopAtEntry": false,
+			"externalConsole": true,
+			"type": "cppvsdbg",
+			"visualizerFile": "O:\\Programs\\Unreal Engine\\UE_4.25\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+		},
+		{
+			"name": "LuteniumEditor (Debug)",
+			"request": "launch",
+			"preLaunchTask": "LuteniumEditor Win64 Debug Build",
+			"program": "O:\\Programs\\Unreal Engine\\UE_4.25\\Engine\\Binaries\\Win64\\UE4Editor-Win64-Debug.exe",
+			"args": [
+				"O:\\Projects\\Unreal Engine\\Lutenium\\Lutenium\\Lutenium.uproject"
+			],
+			"cwd": "O:\\Programs\\Unreal Engine\\UE_4.25",
+			"stopAtEntry": false,
+			"externalConsole": true,
+			"type": "cppvsdbg",
+			"visualizerFile": "O:\\Programs\\Unreal Engine\\UE_4.25\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+		},
+		{
+			"name": "LuteniumEditor (DebugGame)",
+			"request": "launch",
+			"preLaunchTask": "LuteniumEditor Win64 DebugGame Build",
+			"program": "O:\\Programs\\Unreal Engine\\UE_4.25\\Engine\\Binaries\\Win64\\UE4Editor-Win64-DebugGame.exe",
+			"args": [
+				"O:\\Projects\\Unreal Engine\\Lutenium\\Lutenium\\Lutenium.uproject"
+			],
+			"cwd": "O:\\Programs\\Unreal Engine\\UE_4.25",
+			"stopAtEntry": false,
+			"externalConsole": true,
+			"type": "cppvsdbg",
+			"visualizerFile": "O:\\Programs\\Unreal Engine\\UE_4.25\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+		},
+		{
+			"name": "LuteniumEditor (Development)",
+			"request": "launch",
+			"preLaunchTask": "LuteniumEditor Win64 Development Build",
+			"program": "O:\\Programs\\Unreal Engine\\UE_4.25\\Engine\\Binaries\\Win64\\UE4Editor.exe",
+			"args": [
+				"O:\\Projects\\Unreal Engine\\Lutenium\\Lutenium\\Lutenium.uproject"
+			],
+			"cwd": "O:\\Programs\\Unreal Engine\\UE_4.25",
+			"stopAtEntry": false,
+			"externalConsole": true,
+			"type": "cppvsdbg",
+			"visualizerFile": "O:\\Programs\\Unreal Engine\\UE_4.25\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+		},
+		{
+			"name": "Generate Project Files",
+			"type": "clr",
+			"request": "launch",
+			"program": "O:\\Programs\\Unreal Engine\\UE_4.25\\Engine\\Binaries\\DotNET\\UnrealBuildTool.exe",
+			"console": "externalTerminal",
+			"args": [
+				"-projectfiles",
+				"-vscode",
+				"-project=\"O:\\Projects\\Unreal Engine\\Lutenium\\Lutenium\\Lutenium.uproject\"",
+				"-game",
+				"-engine"
+			],
+			"internalConsoleOptions": "openOnSessionStart",
+			"cwd": "O:\\Programs\\Unreal Engine\\UE_4.25"
+		}
+	]
+}
