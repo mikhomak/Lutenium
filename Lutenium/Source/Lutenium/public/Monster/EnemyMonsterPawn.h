@@ -64,6 +64,9 @@ public:
     // Damage
     // ------------------------------------------------------------------
 
+    UFUNCTION(BlueprintCallable)
+    void DoScream();
+
     UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"),Category="Weapons")
     class UMonsterWeapon* MonsterWeapon;
 
@@ -72,6 +75,12 @@ public:
 
     virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
                              AActor* DamageCauser) override;
+
+
+    // ------------------------------------------------------------------
+    // Body Movement
+    // ------------------------------------------------------------------
+
 
     UFUNCTION()
     void BodyTimelineMovement();

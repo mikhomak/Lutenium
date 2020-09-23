@@ -19,6 +19,15 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category=Mesh)
 	class UStaticMeshComponent* Mesh;
 
+	UPROPERTY(EditDefaultsOnly, Category=Mesh)
+	class USphereComponent* MainSphereComp;
+
+	UPROPERTY(EditDefaultsOnly, Category=Mesh)
+	class USphereComponent* FirstSphereComp;
+
+	UPROPERTY(EditDefaultsOnly, Category=Mesh)
+	class USphereComponent* SecondSphereComp;
+
 	UPROPERTY(EditDefaultsOnly, Category=Damage)
 	float Damage;
 

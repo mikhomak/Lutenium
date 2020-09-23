@@ -150,3 +150,8 @@ void AEnemyMonsterPawn::ToggleWhatLegsShouldMove(const bool Left) const
     FrontRightLeg->SetCanMove(Left);
     RearLeftLeg->SetCanMove(Left);
 }
+
+void AEnemyMonsterPawn::DoScream()
+{
+
+}
