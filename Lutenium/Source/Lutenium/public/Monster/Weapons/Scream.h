@@ -20,10 +20,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category=Mesh)
 	class USphereComponent* MainSphereComp;
 
-	UPROPERTY(EditDefaultsOnly, Category=Mesh)
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category=Mesh)
 	class UStaticMeshComponent* FirstWaveMesh;
 
-	UPROPERTY(EditDefaultsOnly, Category=Mesh)
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category=Mesh)
 	class UStaticMeshComponent* SecondWaveMesh;
 
 	UPROPERTY(EditDefaultsOnly, Category=Damage)
