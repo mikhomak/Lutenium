@@ -18,7 +18,7 @@ AScream::AScream()
 	SecondWaveMesh->AttachToComponent(MainSphereComp, FAttachmentTransformRules::KeepWorldTransform);
 	SecondWaveMesh->SetGenerateOverlapEvents(true);
 	WavesLifeSpan = 10.f;
-	ScalingSpeed=1.01f;
+	ScalingSpeed = 1.01f;
 }
 
 void AScream::BeginPlay()
@@ -31,9 +31,8 @@ void AScream::BeginPlay()
 void AScream::Tick(float DeltaTime)
 {
 	const FVector FirstWaveCurrentScale = FirstWaveMesh->GetComponentScale();
-	const FVector FirstWaveBiggerScale = FVector(FirstWaveCurrentScale.X, FirstWaveCurrentScale.Y,0 ) * ScalingSpeed + FVector::UpVector;
-	const FVector FirstWaveFinalScale = FMath::Lerp(FirstWaveCurrentScale, FirstWaveBiggerScale, 0.5f);
-	FirstWaveMesh->SetWorldScale3D(FirstWaveFinalScale);
+	const FVector FirstWaveNewScale = FVector(FirstWaveCurrentScale.X + ScalingSpeed, FirstWaveCurrentScale.Y + ScalingSpeed, 1);
+	FirstWaveMesh->SetWorldScale3D(FirstWaveNewScale);
 }
 
 void AScream::FirstWaveOverlap(
