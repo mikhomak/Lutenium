@@ -48,8 +48,11 @@ UPlaneMovementComponent::UPlaneMovementComponent()
     TimeToEnterStall = 3.f;
     AccelerationToExitStall = 1000.f;
     bStalling = false;
-}
 
+    DragMovementEffect = FDragMovementEffect(PlayerPawn, PlayerMesh, this);
+    MovementEffects.Init(DragMovementEffect, 1);
+    
+}
 
 void UPlaneMovementComponent::BeginPlay()
 {
@@ -57,6 +60,13 @@ void UPlaneMovementComponent::BeginPlay()
     FTimerHandle TimerHandle;
     GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UPlaneMovementComponent::CalculateAcceleration, 0.05f,
                                            true);
+}
+
+void UPlaneMovementComponent::UninitializeComponent()
+{
+    Super::UninitializeComponent();
+    MovementEffects.Empty();
+    DragMovementEffect.~FDragMovementEffect();
 }
 
 auto UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -67,6 +77,10 @@ auto UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
     AddGravityForce(DeltaTime);
     IsAboutToStall();
     Movement(DeltaTime);
+    for(FMovementEffect MovementEffect : MovementEffects)
+    {
+        MovementEffect->ApplyEffect();
+    }
 }
 
 

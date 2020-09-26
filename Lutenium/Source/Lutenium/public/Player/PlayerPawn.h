@@ -71,12 +71,12 @@ protected:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
-private: 
+private:
 	UInputComponent* InputComponent;
 
 	UFUNCTION()
 	void FireMissile();
-	
+
 public:
 	FORCEINLINE class USkeletalMeshComponent* GetPlaneMesh() const { return PlaneMesh; }
 	FORCEINLINE class USpringArmComponent* GetSpringArm() const { return SpringArm; }

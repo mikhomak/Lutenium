@@ -60,9 +60,16 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Waves")
 	float WavesLifeSpan;
 
+	UPROPERTY(EditDefaultsOnly, Category="Waves")
+	float FirstWaveForceImpact;
 protected:
 	virtual void BeginPlay() override;
 
+private:
+
+	void SecondWaveDelayStart();
+
+	bool DidSecondWaveStart;
 public:
 	virtual void Tick(float DeltaTime) override;
 

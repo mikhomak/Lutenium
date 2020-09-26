@@ -1,10 +1,11 @@
-
+#include "../../../public/Monster/Weapons/Scream.h"
+#include "../../../public/Player/PlayerPawn.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/PrimitiveComponent.h"
 #include "GameFramework/Actor.h"
 #include "Math/UnrealMathUtility.h"
-#include "../../../public/Monster/Weapons/Scream.h"
+#include "TimerManager.h"
 
 AScream::AScream()
 {
@@ -19,6 +20,9 @@ AScream::AScream()
 	SecondWaveMesh->SetGenerateOverlapEvents(true);
 	WavesLifeSpan = 10.f;
 	ScalingSpeed = 1.01f;
+	SecondFaveDelay = 1.f;
+
+	FirstWaveForceImpact=9000.f;
 }
 
 void AScream::BeginPlay()
@@ -26,6 +30,9 @@ void AScream::BeginPlay()
 	Super::BeginPlay();
 	/* Add overlap function calls in blueprints! */
 	SetLifeSpan(WavesLifeSpan);
+	FTimerHandle SecondWaveDelayTimerHandler;
+	GetWorld()->GetTimerManager().SetTimer(SecondWaveDelayTimerHandler, this, &AScream::SecondWaveDelayStart, SecondFaveDelay,
+										   false);
 }
 
 void AScream::Tick(float DeltaTime)
@@ -33,6 +40,12 @@ void AScream::Tick(float DeltaTime)
 	const FVector FirstWaveCurrentScale = FirstWaveMesh->GetComponentScale();
 	const FVector FirstWaveNewScale = FVector(FirstWaveCurrentScale.X + ScalingSpeed, FirstWaveCurrentScale.Y + ScalingSpeed, 1);
 	FirstWaveMesh->SetWorldScale3D(FirstWaveNewScale);
+	if (DidSecondWaveStart)
+	{
+		const FVector SecondWaveCurrentScale = SecondWaveMesh->GetComponentScale();
+		const FVector SecondWaveNewScale = FVector(SecondWaveCurrentScale.X + ScalingSpeed, SecondWaveCurrentScale.Y + ScalingSpeed, 1);
+		SecondWaveMesh->SetWorldScale3D(SecondWaveNewScale);
+	}
 }
 
 void AScream::FirstWaveOverlap(
@@ -43,7 +56,12 @@ void AScream::FirstWaveOverlap(
 	bool bFromSweep,
 	const FHitResult &SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("1"))
+	APlayerPawn* PlayerPawn = Cast<APlayerPawn>(OtherActor);
+	if(PlayerPawn)
+	{
+		PlayerPawn->GetPlaneMesh()->AddForce(SweepResult.ImpactNormal * FirstWaveForceImpact);
+		FirstWaveMesh->SetCollisionProfileName(TEXT("IgnoreAll"));
+	}
 }
 
 void AScream::SecondWaveOverlap(
@@ -54,5 +72,14 @@ void AScream::SecondWaveOverlap(
 	bool bFromSweep,
 	const FHitResult &SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("2"))
+	APlayerPawn* PlayerPawn = Cast<APlayerPawn>(OtherActor);
+	if(PlayerPawn)
+	{
+		SecondWaveMesh->SetCollisionProfileName(TEXT("IgnoreAll"));
+	}
+}
+
+void AScream::SecondWaveDelayStart()
+{
+	DidSecondWaveStart = true;
 }

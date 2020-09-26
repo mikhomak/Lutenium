@@ -1,9 +1,12 @@
 {
-	"configurations": [
-		{
-			"name": "LuteniumEditor Editor Win64 Development (Lutenium)",
-			"intelliSenseMode": "msvc-x64",
-			"compileCommands": "O:\\Projects\\Unreal Engine\\Lutenium\\Lutenium\\.vscode\\compileCommands_Lutenium.json"
-		}
-	]
+    "configurations": [
+        {
+            "name": "LuteniumEditor Editor Win64 Development (Lutenium)",
+            "intelliSenseMode": "msvc-x64",
+            "compileCommands": "O:\\Projects\\Unreal Engine\\Lutenium\\Lutenium\\.vscode\\compileCommands_Lutenium.json",
+            "cStandard": "c11",
+            "cppStandard": "c++17"
+        }
+    ],
+    "version": 4
 }

@@ -1,7 +1,7 @@
+#include "../../public/Monster/MonsterWeapon.h"
 #include "../../public/Monster/EnemyMonsterPawn.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "../../public/Monster/Weapons/Scream.h"
-#include "../../public/Monster/MonsterWeapon.h"
 
 UMonsterWeapon::UMonsterWeapon()
 {

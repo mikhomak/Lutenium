@@ -1,6 +1,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MovementEffect/DragMovementEffect.h"
+#include "MovementEffect/MovementEffect.h"
 #include "Components/ActorComponent.h"
 #include "PlaneMovementComponent.generated.h"
 
@@ -16,9 +18,10 @@ class LUTENIUM_API UPlaneMovementComponent final : public UActorComponent
     UPROPERTY(Category = Mesh, EditAnywhere)
     class USkeletalMeshComponent* PlayerMesh;
 
-
 protected:
     virtual void BeginPlay() override;
+
+    virtual void UninitializeComponent() override;
 
 public:
     
@@ -28,9 +31,9 @@ public:
                                FActorComponentTickFunction* ThisTickFunction) override;
 
 
-    /*
-     *  INPUT METHODS
-     */
+    // ------------------------------------------------------------------
+    // Inputs 
+    // ------------------------------------------------------------------
     UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
     void ThrustInput(float Val);
 
@@ -46,18 +49,18 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
     void DashInput();
 
-    /*
-     * Player setters
-     */
+    // ------------------------------------------------------------------
+    // Pawn setters
+    // ------------------------------------------------------------------
     UFUNCTION(BlueprintCallable, Category = "Pawn", meta = (AdvancedDisplay = "2"))
     void SetMesh(USkeletalMeshComponent* Mesh);
 
     UFUNCTION(BlueprintCallable, Category = "Pawn", meta = (AdvancedDisplay = "2"))
     void SetPawn(APlayerPawn* Pawn);
 
-    /*
-     * Movement 
-     */
+    // ------------------------------------------------------------------
+    // Movement
+    // ------------------------------------------------------------------
     UFUNCTION(BlueprintCallable, Category = "Control")
     float GetCurrentAcceleration() const;
 
@@ -78,6 +81,12 @@ public:
 
     void AddAcceleration(float AddedAcceleration);
 
+    // ------------------------------------------------------------------
+    // MovementEffects
+    // ------------------------------------------------------------------
+
+    FDragMovementEffect DragMovementEffect;
+    
 private:
 
     // ------------------------------------------------------------------
@@ -212,5 +221,10 @@ private:
 
     void CalculateAerodynamic(float DeltaTime);
 
+    
+    // ------------------------------------------------------------------
+    // MovementEffects
+    // ------------------------------------------------------------------
+    TArray<FMovementEffect> MovementEffects;
 
 };
