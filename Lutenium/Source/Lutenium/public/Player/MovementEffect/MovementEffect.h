@@ -1,6 +1,6 @@
 #pragma once
 
-class FMovementEffect
+class FMovementEffect 
 {
 public:
 
@@ -8,7 +8,7 @@ public:
 
     virtual void ApplyEffect();
 
-    virtual void Activate(class FMovementEffectBuilder& Builder);
+    virtual void Activate(class FMovementEffectBuilder* Builder);
 protected:
     bool Active = false;
 
@@ -20,3 +20,13 @@ protected:
 public:
     FORCEINLINE void Deactivate() { Active = false; }
 };
+
+inline void FMovementEffect::ApplyEffect()
+{
+    
+}
+
+inline void FMovementEffect::Activate(FMovementEffectBuilder* Builder)
+{
+    Active = true;
+}

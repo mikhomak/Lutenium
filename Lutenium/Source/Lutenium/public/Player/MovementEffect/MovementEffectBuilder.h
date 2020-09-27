@@ -1,6 +1,7 @@
 ﻿#pragma once
 
-struct FMovementEffectBuilder
+class FMovementEffectBuilder
 {
-
+public:
+    virtual ~FMovementEffectBuilder() = default;
 };

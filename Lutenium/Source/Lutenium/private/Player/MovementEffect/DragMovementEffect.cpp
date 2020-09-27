@@ -1,8 +1,13 @@
 #include "../public/Player/MovementEffect/DragMovementEffect.h"
+#include "../public/Player/MovementEffect/MovementEffectBuilder.h"
 #include "../public/Player/PlaneMovementComponent.h"
 #include "../public/Player/PlayerPawn.h"
+#include "../public/Player/MovementEffect/DragMovementEffectBuilder.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "Player/MovementEffect/DragMovementEffectBuilder.h"
+
+FDragMovementEffect::FDragMovementEffect(): DragForce(0)
+{
+}
 
 FDragMovementEffect::FDragMovementEffect(class APlayerPawn* Pawn, class USkeletalMeshComponent* Mesh,
                                          class UPlaneMovementComponent* PlaneMovementComponent): DragForce(0)
@@ -20,9 +25,10 @@ void FDragMovementEffect::ApplyEffect()
     }
 }
 
-void FDragMovementEffect::Activate(FMovementEffectBuilder& Builder)
+void FDragMovementEffect::Activate(FMovementEffectBuilder* Builder)
 {
-    if (FDragMovementEffectBuilder* DragBuilder = dynamic_cast<FDragMovementEffectBuilder*>(Builder))
+    FDragMovementEffectBuilder* DragBuilder = static_cast<FDragMovementEffectBuilder*>(Builder);
+    if (DragBuilder)
     {
         DragForce = DragBuilder->DragForce;
         DragDirection = DragBuilder->DragDirection;

@@ -24,9 +24,9 @@ protected:
     virtual void UninitializeComponent() override;
 
 public:
-    
+
     UPlaneMovementComponent();
-    
+
     virtual void TickComponent(float DeltaTime, ELevelTick TickType,
                                FActorComponentTickFunction* ThisTickFunction) override;
 
@@ -86,7 +86,7 @@ public:
     // ------------------------------------------------------------------
 
     FDragMovementEffect DragMovementEffect;
-    
+
 private:
 
     // ------------------------------------------------------------------
@@ -107,7 +107,7 @@ private:
     // ------------------------------------------------------------------
     // STALLING
     // ------------------------------------------------------------------
-    
+
     /* Min speed to start stalling */
     UPROPERTY(Category = Stall, EditDefaultsOnly)
     float MinSpeedToStall;
@@ -124,18 +124,18 @@ private:
     float StallForce;
 
     FTimerHandle StallTimer;
-    
+
     void Stalling() const;
 
     void IsAboutToStall();
 
     void EnterStallingTimer();
 
-    
+
     // ------------------------------------------------------------------
     // SPEED
     // ------------------------------------------------------------------
- 
+
     UPROPERTY(Category = Speed, EditDefaultsOnly)
     float MaxSpeed;
 
@@ -174,7 +174,7 @@ private:
     void AddThrust(float DeltaTime) const;
 
     void CalculateAcceleration();
-    
+
     /* Main movement method */
     void Movement(const float DeltaTime);
 
@@ -206,7 +206,7 @@ private:
     UPROPERTY(Category = CustomPhysics, EditAnywhere)
     float CustomMinGravity;
 
-    
+
     /* Aerodynamic is applied all the time */
     /* Aerodynamic vector =  Opposite velocity vector * Multiplier*/
     UPROPERTY(Category = Control, EditDefaultsOnly)
@@ -221,10 +221,12 @@ private:
 
     void CalculateAerodynamic(float DeltaTime);
 
-    
+
     // ------------------------------------------------------------------
     // MovementEffects
     // ------------------------------------------------------------------
     TArray<FMovementEffect> MovementEffects;
 
+public:
+    FORCEINLINE FDragMovementEffect* GetDragEffect() { return &DragMovementEffect; }
 };

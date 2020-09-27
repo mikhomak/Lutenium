@@ -1,11 +1,17 @@
 ﻿#pragma once
 #include "MovementEffectBuilder.h"
 
-struct FDragMovementEffectBuilder : FMovementEffectBuilder
+class FDragMovementEffectBuilder : public FMovementEffectBuilder
 {
+public:
+    
     FDragMovementEffectBuilder(float AppliedDragForce, const FVector& AppliedDragDirection);
+
     float DragForce;
+
     FVector DragDirection;
+
+    ~FDragMovementEffectBuilder() override = default;
 };
 
 inline FDragMovementEffectBuilder::FDragMovementEffectBuilder(const float AppliedDragForce,

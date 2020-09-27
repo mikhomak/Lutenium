@@ -1,6 +1,7 @@
 #include "../public/Player/PlaneMovementComponent.h"
 #include "../public/Player/PlayerPawn.h"
 #include "../public/AssistUtils/AssistUtils.h"
+#include "../public/Player/MovementEffect/DragMovementEffect.h"
 #include "Camera/CameraComponent.h"
 #include "Engine/World.h"
 #include "Math/Vector.h"
@@ -79,7 +80,7 @@ auto UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
     Movement(DeltaTime);
     for(FMovementEffect MovementEffect : MovementEffects)
     {
-        MovementEffect->ApplyEffect();
+        MovementEffect.ApplyEffect();
     }
 }
 

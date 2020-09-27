@@ -3,16 +3,18 @@
 #include "MovementEffect.h"
 
 
-class FDragMovementEffect : FMovementEffect
+class FDragMovementEffect : public FMovementEffect
 {
 public:
 
+    FDragMovementEffect();
+    
     FDragMovementEffect(class APlayerPawn* Pawn, class USkeletalMeshComponent* Mesh,
                         class UPlaneMovementComponent* PlaneMovementComponent);
 
-    virtual void ApplyEffect() override;
+    void ApplyEffect() override;
 
-    virtual void Activate(class FMovementEffectBuilder& Builder) override;
+    void Activate(class FMovementEffectBuilder* Builder) override;
 
 private:
     float DragForce;
