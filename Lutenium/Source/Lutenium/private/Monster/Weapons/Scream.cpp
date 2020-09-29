@@ -1,12 +1,12 @@
 #include "../../../public/Monster/Weapons/Scream.h"
 #include "../../../public/Player/PlayerPawn.h"
 #include "../../../public/Player/PlaneMovementComponent.h"
+#include "../../../public/Player/MovementEffect/DragMovementEffect.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/PrimitiveComponent.h"
 #include "GameFramework/Actor.h"
 #include "TimerManager.h"
-#include "Player/MovementEffect/DragMovementEffectBuilder.h"
 
 AScream::AScream()
 {
@@ -63,8 +63,7 @@ void AScream::FirstWaveOverlap(
     {
         FVector DragDirection = PlayerPawn->GetActorLocation() - GetActorLocation();
         DragDirection.Normalize();
-        FDragMovementEffectBuilder DragMovementEffectBuilder = FDragMovementEffectBuilder(FirstWaveDragForce, DragDirection);
-        PlayerPawn->GetPlaneComponent()->GetDragEffect()->Activate(&DragMovementEffectBuilder);
+        PlayerPawn->GetPlaneComponent()->DragMovementEffect->Activate(FirstWaveDragForce, DragDirection);
         FirstWaveMesh->SetCollisionProfileName(TEXT("IgnoreAll"));
     }
 }
@@ -87,7 +86,7 @@ void AScream::FirstWaveOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* O
     APlayerPawn* PlayerPawn = Cast<APlayerPawn>(OtherActor);
     if (PlayerPawn)
     {
-        PlayerPawn->GetPlaneComponent()->GetDragEffect()->Deactivate();
+        PlayerPawn->GetPlaneComponent()->DragMovementEffect->Deactivate();
     }
 }
 

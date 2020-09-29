@@ -1,32 +1,40 @@
 #pragma once
 
-class FMovementEffect 
+#include "CoreMinimal.h"
+#include "../public/Player/PlayerPawn.h"
+#include "MovementEffect.generated.h"
+
+UCLASS(BlueprintType, Blueprintable)
+class LUTENIUM_API UMovementEffect : public UObject
 {
+    GENERATED_BODY()
+
 public:
+    bool Active;
 
-    virtual ~FMovementEffect() = default;
-
+    UFUNCTION(BlueprintCallable, Category="Effect")
     virtual void ApplyEffect();
 
-    virtual void Activate(class FMovementEffectBuilder* Builder);
-protected:
-    bool Active = false;
+    UFUNCTION(BlueprintCallable, Category="Effect")
+    virtual void Deactivate() { Active = false; }
 
+    UFUNCTION(BlueprintCallable, Category="Effect")
+    void InitEffect(APlayerPawn* Pawn);
+
+protected:
     class APlayerPawn* PlayerPawn;
 
     class USkeletalMeshComponent* PlayerMesh;
 
     class UPlaneMovementComponent* PlaneMovementComp;
-public:
-    FORCEINLINE void Deactivate() { Active = false; }
 };
 
-inline void FMovementEffect::ApplyEffect()
-{
-    
-}
 
-inline void FMovementEffect::Activate(FMovementEffectBuilder* Builder)
+inline void UMovementEffect::ApplyEffect(){}
+
+inline void UMovementEffect::InitEffect(APlayerPawn* Pawn)
 {
-    Active = true;
+    PlayerPawn = Pawn;
+    PlayerMesh = PlayerPawn->GetPlaneMesh();
+    PlaneMovementComp = PlayerPawn->GetPlaneComponent();
 }

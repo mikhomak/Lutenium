@@ -1,23 +1,10 @@
-#include "../public/Player/MovementEffect/DragMovementEffect.h"
-#include "../public/Player/MovementEffect/MovementEffectBuilder.h"
+﻿#include "../public/Player/MovementEffect/DragMovementEffect.h"
 #include "../public/Player/PlaneMovementComponent.h"
 #include "../public/Player/PlayerPawn.h"
-#include "../public/Player/MovementEffect/DragMovementEffectBuilder.h"
 #include "Components/SkeletalMeshComponent.h"
 
-FDragMovementEffect::FDragMovementEffect(): DragForce(0)
-{
-}
 
-FDragMovementEffect::FDragMovementEffect(class APlayerPawn* Pawn, class USkeletalMeshComponent* Mesh,
-                                         class UPlaneMovementComponent* PlaneMovementComponent): DragForce(0)
-{
-    PlayerPawn = Pawn;
-    PlayerMesh = Mesh;
-    PlaneMovementComp = PlaneMovementComponent;
-}
-
-void FDragMovementEffect::ApplyEffect()
+void UDragMovementEffect::ApplyEffect()
 {
     if (Active)
     {
@@ -25,17 +12,13 @@ void FDragMovementEffect::ApplyEffect()
     }
 }
 
-void FDragMovementEffect::Activate(FMovementEffectBuilder* Builder)
+void UDragMovementEffect::Activate(const float NewDragForce, FVector& NewDragDirection)
 {
-    FDragMovementEffectBuilder* DragBuilder = static_cast<FDragMovementEffectBuilder*>(Builder);
-    if (DragBuilder)
+    DragForce = NewDragForce;
+    DragDirection = NewDragDirection;
+    if (!DragDirection.IsNormalized())
     {
-        DragForce = DragBuilder->DragForce;
-        DragDirection = DragBuilder->DragDirection;
-        if (!DragDirection.IsNormalized())
-        {
-            DragDirection.Normalize();
-        }
-        Active = true;
+        DragDirection.Normalize();
     }
+    Active = true;
 }

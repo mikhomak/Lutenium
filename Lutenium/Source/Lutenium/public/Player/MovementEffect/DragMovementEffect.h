@@ -1,23 +1,23 @@
-#pragma once
-
+﻿#pragma once
+#include "CoreMinimal.h"
 #include "MovementEffect.h"
+#include "DragMovementEffect.generated.h"
 
-
-class FDragMovementEffect : public FMovementEffect
+UCLASS(BlueprintType, Blueprintable)
+class LUTENIUM_API UDragMovementEffect : public UMovementEffect
 {
+
+    GENERATED_BODY()
 public:
+    UDragMovementEffect(){};
 
-    FDragMovementEffect();
-    
-    FDragMovementEffect(class APlayerPawn* Pawn, class USkeletalMeshComponent* Mesh,
-                        class UPlaneMovementComponent* PlaneMovementComponent);
-
-    void ApplyEffect() override;
-
-    void Activate(class FMovementEffectBuilder* Builder) override;
-
-private:
     float DragForce;
 
     FVector DragDirection;
+
+    void ApplyEffect() override;
+
+    void Activate(const float NewDragForce, FVector& NewDragDirection);
+
+    FORCEINLINE void Deactivate() override { Active = false; }
 };

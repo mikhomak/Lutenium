@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MovementEffect/DragMovementEffect.h"
+//#include "MovementEffect/DragMovementEffect.h"
 #include "MovementEffect/MovementEffect.h"
 #include "Components/ActorComponent.h"
 #include "PlaneMovementComponent.generated.h"
@@ -20,8 +20,6 @@ class LUTENIUM_API UPlaneMovementComponent final : public UActorComponent
 
 protected:
     virtual void BeginPlay() override;
-
-    virtual void UninitializeComponent() override;
 
 public:
 
@@ -85,7 +83,8 @@ public:
     // MovementEffects
     // ------------------------------------------------------------------
 
-    FDragMovementEffect DragMovementEffect;
+    UPROPERTY(Category = Effects, BlueprintReadOnly, EditDefaultsOnly)
+    class UDragMovementEffect* DragMovementEffect;
 
 private:
 
@@ -225,8 +224,6 @@ private:
     // ------------------------------------------------------------------
     // MovementEffects
     // ------------------------------------------------------------------
-    TArray<FMovementEffect> MovementEffects;
+    TArray<UMovementEffect*> MovementEffects;
 
-public:
-    FORCEINLINE FDragMovementEffect* GetDragEffect() { return &DragMovementEffect; }
 };
