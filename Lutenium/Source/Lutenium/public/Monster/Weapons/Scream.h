@@ -35,13 +35,13 @@ public:
     void FirstWaveOverlap(
         class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
         class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
-        bool bFromSweep, const FHitResult& SweepResult) const;
+        bool bFromSweep, const FHitResult& SweepResult);
 
     UFUNCTION(BlueprintCallable)
     void SecondWaveOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
                            class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
                            bool bFromSweep, const FHitResult& SweepResult
-    ) const;
+    );
 
     UFUNCTION(BlueprintCallable)
     void FirstWaveOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,

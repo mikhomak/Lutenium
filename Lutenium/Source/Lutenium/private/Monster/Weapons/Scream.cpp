@@ -56,7 +56,7 @@ void AScream::Tick(float DeltaTime)
 void AScream::FirstWaveOverlap(
     UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
     UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
-    bool bFromSweep, const FHitResult& SweepResult) const
+    bool bFromSweep, const FHitResult& SweepResult) 
 {
     APlayerPawn* PlayerPawn = Cast<APlayerPawn>(OtherActor);
     if (PlayerPawn)
@@ -64,17 +64,19 @@ void AScream::FirstWaveOverlap(
         FVector DragDirection = PlayerPawn->GetActorLocation() - GetActorLocation();
         DragDirection.Normalize();
         PlayerPawn->GetPlaneComponent()->DragMovementEffect->Activate(FirstWaveDragForce, DragDirection);
-        FirstWaveMesh->SetCollisionProfileName(TEXT("IgnoreAll"));
     }
 }
 
 void AScream::SecondWaveOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
-                                bool bFromSweep, const FHitResult& SweepResult) const
+                                bool bFromSweep, const FHitResult& SweepResult)
 {
     APlayerPawn* PlayerPawn = Cast<APlayerPawn>(OtherActor);
     if (PlayerPawn)
     {
+        FVector DragDirection = PlayerPawn->GetActorLocation() - GetActorLocation();
+        DragDirection.Normalize();
+        PlayerPawn->GetPlaneMesh()->AddImpulse(DragDirection * 9000.f, FName(), true);
         SecondWaveMesh->SetCollisionProfileName(TEXT("IgnoreAll"));
     }
 }
