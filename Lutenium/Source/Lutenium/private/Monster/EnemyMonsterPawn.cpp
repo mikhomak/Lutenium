@@ -37,13 +37,6 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
 
     /* Don't forget to set the Controller in Blueprint! */
 
-    /* Initialize sensing */
-    PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
-    PawnSensingComp->SetPeripheralVisionAngle(60.0f);
-    PawnSensingComp->SightRadius = 2000;
-    PawnSensingComp->HearingThreshold = 600;
-    PawnSensingComp->LOSHearingThreshold = 1200;
-
     /* Initialize weapons*/
     MonsterWeapon = CreateDefaultSubobject<UMonsterWeapon>(TEXT("Monster weapons"));
     MonsterWeapon->SetMonsterMesh(MonsterMesh);
@@ -54,20 +47,8 @@ void AEnemyMonsterPawn::BeginPlay()
 {
     Super::BeginPlay();
 
-    if (PawnSensingComp)
-    {
-        PawnSensingComp->OnSeePawn.AddDynamic(this, &AEnemyMonsterPawn::OnSeePlayer);
-        PawnSensingComp->OnHearNoise.AddDynamic(this, &AEnemyMonsterPawn::OnHearNoise);
-    }
 }
 
-void AEnemyMonsterPawn::OnSeePlayer(APawn* Pawn)
-{
-}
-
-void AEnemyMonsterPawn::OnHearNoise(APawn* PawnInstigator, const FVector& Location, float Volume)
-{
-}
 
 void AEnemyMonsterPawn::Tick(float DeltaTime)
 {

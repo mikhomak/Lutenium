@@ -89,28 +89,11 @@ public:
     void BodyTimelineMovementFinish();
 
 
-    // ------------------------------------------------------------------
-    // AI
-    // ------------------------------------------------------------------
-
-    UPROPERTY(EditAnywhere, Category = "AI")
-    class UBehaviorTree* BehaviorTree;
-
-    UPROPERTY(VisibleAnywhere, Category = "AI")
-    class UPawnSensingComponent* PawnSensingComp;
-
-
 protected:
     virtual void BeginPlay() override;
 
-    UFUNCTION()
-    void OnSeePlayer(APawn* Pawn);
-
-    UFUNCTION()
-    void OnHearNoise(APawn* PawnInstigator, const FVector& Location, float Volume);
 
 private:
-
 
     // ------------------------------------------------------------------
     // BODY MOVEMENT WHEN THERE IS AN OVERLAP FROM THE BODY TO THE LEGS

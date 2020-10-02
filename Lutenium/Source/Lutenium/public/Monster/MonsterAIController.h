@@ -27,4 +27,19 @@ public:
     FORCEINLINE UBlackboardComponent* GetBlackboardComp() { return BlackboardComp; }
 
     FORCEINLINE UBehaviorTreeComponent* GetBehaviorTreeComp() { return BehaviorComp; }
+
+    UPROPERTY(EditAnywhere, Category = "AI")
+    class UBehaviorTree* BehaviorTree;
+
+    UPROPERTY(VisibleAnywhere, Category = "AI")
+    class UPawnSensingComponent* PawnSensingComp;
+
+protected:
+    virtual void BeginPlay() override;
+    
+    UFUNCTION()
+    void OnSeePlayer(APawn* SeenPawn);
+
+    UFUNCTION()
+    void OnHearNoise(APawn* PawnInstigator, const FVector& Location, float Volume);
 };

@@ -6,14 +6,39 @@
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "Monster/EnemyMonsterPawn.h"
+#include "Perception/PawnSensingComponent.h"
+
 
 AMonsterAIController::AMonsterAIController()
 {
     BehaviorComp = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("Behavior Tree"));
 
     BlackboardComp = CreateDefaultSubobject<UBlackboardComponent>(TEXT("Blackboard"));
+
+	/* Initialize sensing */
+	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
+	PawnSensingComp->SetPeripheralVisionAngle(60.0f);
+	PawnSensingComp->SightRadius = 2000;
+	PawnSensingComp->HearingThreshold = 600;
+	PawnSensingComp->LOSHearingThreshold = 1200;
 }
 
+void AMonsterAIController::BeginPlay()
+{
+	if (PawnSensingComp)
+	{
+		PawnSensingComp->OnSeePawn.AddDynamic(this, &AMonsterAIController::OnSeePlayer);
+		PawnSensingComp->OnHearNoise.AddDynamic(this, &AMonsterAIController::OnHearNoise);
+	}
+}
+
+void AMonsterAIController::OnSeePlayer(APawn* SeenPawn)
+{
+}
+
+void AMonsterAIController::OnHearNoise(APawn* PawnInstigator, const FVector& Location, float Volume)
+{
+}
 
 void AMonsterAIController::OnPossess(APawn* InPawn)
 {
@@ -21,10 +46,10 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
 
 	AEnemyMonsterPawn* Monster = Cast<AEnemyMonsterPawn>(InPawn);
 
-	if (Monster && Monster->BehaviorTree->BlackboardAsset)
+	if (Monster && BehaviorTree->BlackboardAsset)
 	{
-		BlackboardComp->InitializeBlackboard(*Monster->BehaviorTree->BlackboardAsset);
-		BehaviorComp->StartTree(*Monster->BehaviorTree);
+		BlackboardComp->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
+		BehaviorComp->StartTree(*BehaviorTree);
 	}
 
 }
