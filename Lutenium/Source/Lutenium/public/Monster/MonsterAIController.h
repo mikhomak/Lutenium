@@ -18,29 +18,30 @@ public:
 
     AMonsterAIController();
 
+
+    FORCEINLINE class UBlackboardComponent* GetBlackboardComp() { return BlackboardComp; }
+
+    FORCEINLINE class UBehaviorTreeComponent* GetBehaviorTreeComp() { return BehaviorComp; }
+
+
+protected:
+    virtual void BeginPlay() override;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Perception")
+    class UAIPerceptionComponent* PerceptionComp;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Perception")
+    class UAISenseConfig_Sight* SightConfig;
+
     virtual void OnPossess(APawn* InPawn) override;
 
     class UBehaviorTreeComponent* BehaviorComp;
 
     class UBlackboardComponent* BlackboardComp;
 
-    UPROPERTY(VisibleAnywhere, Category = "AI")
-    class UPawnSensingComponent* PawnSensingComp;
-
     UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
     class AEnemyMonsterPawn* MonsterPawn;
 
-    FORCEINLINE UBlackboardComponent* GetBlackboardComp() { return BlackboardComp; }
-
-    FORCEINLINE UBehaviorTreeComponent* GetBehaviorTreeComp() { return BehaviorComp; }
-
-
-protected:
-    virtual void BeginPlay() override;
-
-    UFUNCTION()
-    void OnSeePlayer(APawn* SeenPawn);
-
-    UFUNCTION()
-    void OnHearNoise(APawn* PawnInstigator, const FVector& Location, float Volume);
+    UFUNCTION(BlueprintCallable)
+    void OnSeePlayer(TArray<class AActor*> Actors);
 };

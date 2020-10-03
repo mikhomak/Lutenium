@@ -6,8 +6,8 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BehaviorTree.h"
-#include "Perception/PawnSensingComponent.h"
-
+#include "Perception/AIPerceptionComponent.h"
+#include "Perception/AISenseConfig_Sight.h"
 
 AMonsterAIController::AMonsterAIController()
 {
@@ -15,34 +15,22 @@ AMonsterAIController::AMonsterAIController()
     BlackboardComp = CreateDefaultSubobject<UBlackboardComponent>(TEXT("Blackboard"));
 
 	/* Initialize sensing */
-	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
-	PawnSensingComp->SetPeripheralVisionAngle(60.0f);
-	PawnSensingComp->SightRadius = 2000;
-	PawnSensingComp->HearingThreshold = 600;
-	PawnSensingComp->LOSHearingThreshold = 1200;
+	PerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerception Component"));
+	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight Config"));
+	PerceptionComponent->ConfigureSense(*SightConfig);
+	PerceptionComponent->SetDominantSense(SightConfig->GetSenseImplementation());
+	/* Add event OnSeePlayer in BP */ 
 }
 
 void AMonsterAIController::BeginPlay()
 {
-	if (PawnSensingComp)
-	{
-		PawnSensingComp->OnSeePawn.AddDynamic(this, &AMonsterAIController::OnSeePlayer);
-		PawnSensingComp->OnHearNoise.AddDynamic(this, &AMonsterAIController::OnHearNoise);
-	}
-}
-
-void AMonsterAIController::OnSeePlayer(APawn* SeenPawn)
-{
 
 }
 
-void AMonsterAIController::OnHearNoise(APawn* PawnInstigator, const FVector& Location, float Volume)
-{
-}
 
 void AMonsterAIController::OnPossess(APawn* InPawn)
 {
-	Super::Possess(InPawn);
+	Super::OnPossess(InPawn);
 	AEnemyMonsterPawn* Monster = Cast<AEnemyMonsterPawn>(InPawn);
 
 	if (Monster && Monster->BehaviorTree->BlackboardAsset)
@@ -52,4 +40,9 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
 		BehaviorComp->StartTree(*Monster->BehaviorTree);
 	}
 
+}
+
+void AMonsterAIController::OnSeePlayer(TArray<AActor*> Actors)
+{
+	MonsterPawn->DoScream();
 }
