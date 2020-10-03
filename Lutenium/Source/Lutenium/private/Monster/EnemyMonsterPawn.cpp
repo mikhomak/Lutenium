@@ -2,6 +2,7 @@
 #include "../../public/Monster/MonsterLeg.h"
 #include "../../public/Monster/MonsterLegComponent.h"
 #include "../../public/Monster/MonsterWeapon.h"
+#include "../../public/Monster/Weapons/Scream.h"
 #include "Perception/PawnSensingComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 
@@ -46,7 +47,6 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
 void AEnemyMonsterPawn::BeginPlay()
 {
     Super::BeginPlay();
-
 }
 
 
@@ -134,5 +134,12 @@ void AEnemyMonsterPawn::ToggleWhatLegsShouldMove(const bool Left) const
 
 void AEnemyMonsterPawn::DoScream()
 {
-
+    UWorld* World = GetWorld();
+    if (World)
+    {
+        FActorSpawnParameters SpawnParams;
+        SpawnParams.Owner = this;
+        SpawnParams.Instigator = this;
+        World->SpawnActor<AScream>(ScreamClass, GetActorLocation(), FRotator::ZeroRotator , SpawnParams);
+    }
 }

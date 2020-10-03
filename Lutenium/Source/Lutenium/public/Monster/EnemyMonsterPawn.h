@@ -66,6 +66,9 @@ public:
 
     UFUNCTION(BlueprintCallable)
     void DoScream();
+    
+    UPROPERTY(EditDefaultsOnly, Category = "Weapons")
+    TSubclassOf<class AScream> ScreamClass;
 
     UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"),Category="Weapons")
     class UMonsterWeapon* MonsterWeapon;
@@ -88,7 +91,15 @@ public:
     UFUNCTION()
     void BodyTimelineMovementFinish();
 
+    
+    // ------------------------------------------------------------------
+    // AI
+    // ------------------------------------------------------------------
 
+    UPROPERTY(EditAnywhere, Category = "AI")
+    class UBehaviorTree* BehaviorTree;
+
+    
 protected:
     virtual void BeginPlay() override;
 

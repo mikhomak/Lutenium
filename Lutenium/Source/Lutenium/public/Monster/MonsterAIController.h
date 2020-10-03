@@ -24,19 +24,20 @@ public:
 
     class UBlackboardComponent* BlackboardComp;
 
+    UPROPERTY(VisibleAnywhere, Category = "AI")
+    class UPawnSensingComponent* PawnSensingComp;
+
+    UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
+    class AEnemyMonsterPawn* MonsterPawn;
+
     FORCEINLINE UBlackboardComponent* GetBlackboardComp() { return BlackboardComp; }
 
     FORCEINLINE UBehaviorTreeComponent* GetBehaviorTreeComp() { return BehaviorComp; }
 
-    UPROPERTY(EditAnywhere, Category = "AI")
-    class UBehaviorTree* BehaviorTree;
-
-    UPROPERTY(VisibleAnywhere, Category = "AI")
-    class UPawnSensingComponent* PawnSensingComp;
 
 protected:
     virtual void BeginPlay() override;
-    
+
     UFUNCTION()
     void OnSeePlayer(APawn* SeenPawn);
 
