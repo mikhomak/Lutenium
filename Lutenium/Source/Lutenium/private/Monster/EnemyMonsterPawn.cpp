@@ -5,18 +5,32 @@
 #include "../../public/Monster/Weapons/Scream.h"
 #include "Perception/PawnSensingComponent.h"
 #include "Components/SkeletalMeshComponent.h"
-
+#include "Components/SphereComponent.h"
+#include "GameFramework/FloatingPawnMovement.h"
 
 AEnemyMonsterPawn::AEnemyMonsterPawn()
 {
+    /* setting the tick values. The tick group is PostPhysics */
     PrimaryActorTick.bCanEverTick = true;
+    PrimaryActorTick.TickGroup = ETickingGroup::TG_PostPhysics;
+
+    /* Setting the attachment rules */
+    const FAttachmentTransformRules AttachmentTransformRules = FAttachmentTransformRules(
+        EAttachmentRule::KeepRelative, true);
+    
+    /* Setting the root component as a sphere */
+    SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("RootComponent"));
+    SphereComponent->SetSimulatePhysics(true);
+    SphereComponent->SetEnableGravity(false);
+    RootComponent = SphereComponent;
+
+    /* Setting the mesh */
     MonsterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
-    MonsterMesh->SetEnableGravity(false);
-    MonsterMesh->SetSimulatePhysics(true);
-    MonsterMesh->SetTickGroup(TG_PostPhysics);
-    RootComponent = MonsterMesh;
+    MonsterMesh->AttachToComponent(SphereComponent, AttachmentTransformRules);
 
-
+    /* Setting the movement  */
+    PawnMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Pawn Floating Movement"));
+    
     /* Initialize legs */
     RearLeftLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Rear Left Leg"));
     RearLeftLeg->SetEnemyMonsterPawn(this);
@@ -140,6 +154,6 @@ void AEnemyMonsterPawn::DoScream()
         FActorSpawnParameters SpawnParams;
         SpawnParams.Owner = this;
         SpawnParams.Instigator = this;
-        World->SpawnActor<AScream>(ScreamClass, GetActorLocation(), FRotator::ZeroRotator , SpawnParams);
+        World->SpawnActor<AScream>(ScreamClass, GetActorLocation(), FRotator::ZeroRotator, SpawnParams);
     }
 }

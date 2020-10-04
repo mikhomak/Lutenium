@@ -12,14 +12,24 @@ class LUTENIUM_API AEnemyMonsterPawn : public APawn
 {
     GENERATED_BODY()
 
-    UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-    class USkeletalMeshComponent* MonsterMesh;
-
 public:
 
     AEnemyMonsterPawn();
 
     virtual void Tick(float DeltaTime) override;
+
+    // ------------------------------------------------------------------
+    // General
+    // ------------------------------------------------------------------
+
+    UPROPERTY(Category = General, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    class USkeletalMeshComponent* MonsterMesh;
+    
+    UPROPERTY(Category = General, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    class USphereComponent* SphereComponent;
+
+    UPROPERTY(Category = General, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    class UFloatingPawnMovement* PawnMovement;
 
     // ------------------------------------------------------------------
     // Legs

@@ -27,11 +27,20 @@ public:
 protected:
     virtual void BeginPlay() override;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Perception")
+    UPROPERTY(EditDefaultsOnly,  BlueprintReadWrite, Category = "Perception")
     class UAIPerceptionComponent* PerceptionComp;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Perception")
     class UAISenseConfig_Sight* SightConfig;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Perception")
+    float SightRadius;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Perception")
+    float SightLooseRadius;
+
+    UPROPERTY(EditDefaultsOnly,  Category = "Perception")
+    float SightAngle;
 
     virtual void OnPossess(APawn* InPawn) override;
 
