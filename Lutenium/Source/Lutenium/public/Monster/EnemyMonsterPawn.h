@@ -91,6 +91,8 @@ public:
     // Body Movement
     // ------------------------------------------------------------------
 
+    UPROPERTY(EditDefaultsOnly, Category = "Body")
+    FName BodySocketName;
 
     UFUNCTION()
     void BodyTimelineMovement();
@@ -112,6 +114,7 @@ protected:
     
     virtual void PostInitializeComponents() override; 
     
+    void GetActorEyesViewPoint(FVector& Location, FRotator& Rotation) const override;
 
 
 private:
@@ -127,8 +130,6 @@ private:
     TArray<FName> TopSocketLocationNames;
 
     bool bBodyMoving;
-
-    FName BodySocketName;
 
     void CheckBodyAltitudeDependingOnLegs();
 };

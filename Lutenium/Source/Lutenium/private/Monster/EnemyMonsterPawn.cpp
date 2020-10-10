@@ -25,6 +25,8 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
     /* Setting the mesh */
     MonsterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
     MonsterMesh->AttachToComponent(SphereComponent, AttachmentTransformRules);
+    
+    BodySocketName = "BodySocket";
 
     /* Setting the movement  */
     PawnMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Pawn Floating Movement"));
@@ -62,6 +64,12 @@ void AEnemyMonsterPawn::PostInitializeComponents()
     Super::PostInitializeComponents();
 }
 
+/* Setting actor eyes view point so AI CONTROLLER will put perception on the body  */
+void AEnemyMonsterPawn::GetActorEyesViewPoint(FVector& Location, FRotator& Rotation) const
+{
+     Location = MonsterMesh->GetSocketLocation(BodySocketName);
+     Rotation = GetActorRotation();
+}
 
 void AEnemyMonsterPawn::Tick(float DeltaTime)
 {
