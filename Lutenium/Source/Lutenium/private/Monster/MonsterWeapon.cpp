@@ -1,36 +1,24 @@
 #include "../../public/Monster/MonsterWeapon.h"
-#include "../../public/Monster/EnemyMonsterPawn.h"
-#include "Components/SkeletalMeshComponent.h"
-#include "../../public/Monster/Weapons/Scream.h"
+#include "Components/SphereComponent.h"
+#include "Components/StaticMeshComponent.h"
 
-UMonsterWeapon::UMonsterWeapon()
+AMonsterWeapon::AMonsterWeapon()
 {
-    PrimaryComponentTick.bCanEverTick = true;
+
+    WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+    RootComponent = WeaponMesh;
+    // set the radius of the hurtbox in bp
+    Hurtbox = CreateDefaultSubobject<USphereComponent>(TEXT("Hurt box"));
+    PrimaryActorTick.bCanEverTick = true;
 }
 
 
-void UMonsterWeapon::DoSiren() const
+void AMonsterWeapon::OnTakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
+    AActor* DamageCauser)
 {
-    UWorld* World = GetWorld();
-    if (World)
-    {
-        FActorSpawnParameters SpawnParams;
-        SpawnParams.Owner = MonsterPawn;
-        SpawnParams.Instigator = MonsterPawn;
-
-        FVector SpawnLocation = MonsterMesh->GetSocketLocation(SirenSocketName);
-
-        AScream* Scream = World->SpawnActor<AScream>(SirenClass, SpawnLocation, FRotator::ZeroRotator,
-                                                      SpawnParams);
-        if (Scream)
-        {
-
-        }
-    }
-
 }
 
-void UMonsterWeapon::BeginPlay()
+void AMonsterWeapon::BeginPlay()
 {
     Super::BeginPlay();
 }

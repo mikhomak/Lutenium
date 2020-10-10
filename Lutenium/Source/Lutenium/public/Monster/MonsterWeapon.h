@@ -3,17 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/SceneComponent.h"
+#include "GameFramework/Actor.h"
+#include "UObject/ObjectMacros.h"
+
 #include "MonsterWeapon.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class LUTENIUM_API UMonsterWeapon : public USceneComponent
+class LUTENIUM_API AMonsterWeapon : public AActor
 {
     GENERATED_BODY()
 
 public:
-    UMonsterWeapon();
+    AMonsterWeapon();
 
     UPROPERTY(VisibleDefaultsOnly, Category=Monster)
     class AEnemyMonsterPawn* MonsterPawn;
@@ -21,20 +23,19 @@ public:
     UPROPERTY(VisibleDefaultsOnly, Category=Monster)
     class USkeletalMeshComponent* MonsterMesh;
 
+    UPROPERTY(VisibleDefaultsOnly, Category=Monster)
+    class UStaticMeshComponent* WeaponMesh;
 
-    // ------------------------------------------------------------------
-    // Siren
-    // ------------------------------------------------------------------
+    UPROPERTY(VisibleDefaultsOnly, Category=Monster)
+    class USphereComponent* Hurtbox;
 
-    UPROPERTY(EditDefaultsOnly, Category=Siren)
-    TSubclassOf<class AScream> SirenClass;
 
-    UPROPERTY(EditDefaultsOnly, Category=Siren)
-    FName SirenSocketName;
-
-    UFUNCTION(BlueprintCallable, Category=Damage)
-    void DoSiren() const;
+    UPROPERTY(VisibleDefaultsOnly, Category=Health)
+    float Health;
     
+    UFUNCTION()
+    virtual void OnTakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
+                      AActor* DamageCauser);
 protected:
     virtual void BeginPlay() override;
 

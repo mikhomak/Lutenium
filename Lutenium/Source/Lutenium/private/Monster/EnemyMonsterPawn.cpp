@@ -1,8 +1,6 @@
 #include "../../public/Monster/EnemyMonsterPawn.h"
 #include "../../public/Monster/MonsterLeg.h"
 #include "../../public/Monster/MonsterLegComponent.h"
-#include "../../public/Monster/MonsterWeapon.h"
-#include "../../public/Monster/Weapons/Scream.h"
 #include "Perception/PawnSensingComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
@@ -52,15 +50,16 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
 
     /* Don't forget to set the Controller in Blueprint! */
 
-    /* Initialize weapons*/
-    MonsterWeapon = CreateDefaultSubobject<UMonsterWeapon>(TEXT("Monster weapons"));
-    MonsterWeapon->SetMonsterMesh(MonsterMesh);
-    MonsterWeapon->SetMonsterPawn(this);
 }
 
 void AEnemyMonsterPawn::BeginPlay()
 {
     Super::BeginPlay();
+}
+
+void AEnemyMonsterPawn::PostInitializeComponents()
+{
+    Super::PostInitializeComponents();
 }
 
 
@@ -144,16 +143,4 @@ void AEnemyMonsterPawn::ToggleWhatLegsShouldMove(const bool Left) const
     RearRightLeg->SetCanMove(!Left);
     FrontRightLeg->SetCanMove(Left);
     RearLeftLeg->SetCanMove(Left);
-}
-
-void AEnemyMonsterPawn::DoScream()
-{
-    UWorld* World = GetWorld();
-    if (World)
-    {
-        FActorSpawnParameters SpawnParams;
-        SpawnParams.Owner = this;
-        SpawnParams.Instigator = this;
-        World->SpawnActor<AScream>(ScreamClass, GetActorLocation(), FRotator::ZeroRotator, SpawnParams);
-    }
 }

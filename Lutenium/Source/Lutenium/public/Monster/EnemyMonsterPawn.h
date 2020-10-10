@@ -74,14 +74,11 @@ public:
     // Damage
     // ------------------------------------------------------------------
 
-    UFUNCTION(BlueprintCallable)
-    void DoScream();
-    
-    UPROPERTY(EditDefaultsOnly, Category = "Weapons")
-    TSubclassOf<class AScream> ScreamClass;
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
+    class ASputnikMW* Sputnik;
 
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"),Category="Weapons")
-    class UMonsterWeapon* MonsterWeapon;
+    UPROPERTY( EditDefaultsOnly, Category ="Weapons")
+    FName SputnikSocketName;
 
     UFUNCTION(BlueprintImplementableEvent)
     void MissileCollide(const FVector& HitLocation, const FVector& NormalizedDirection, const float DamageApplied);
@@ -112,6 +109,9 @@ public:
     
 protected:
     virtual void BeginPlay() override;
+    
+    virtual void PostInitializeComponents() override; 
+    
 
 
 private:

@@ -42,7 +42,5 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
 
 void AMonsterAIController::OnSeePlayer(TArray<AActor*> Actors)
 {
-    if(MonsterPawn){
-        MonsterPawn->DoScream();
-    }
+
 }
