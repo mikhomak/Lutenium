@@ -17,23 +17,19 @@ class LUTENIUM_API UMonsterLegComponent : public UActorComponent
 public:
     UMonsterLegComponent();
 
+    UPROPERTY(VisibleDefaultsOnly)
     class AEnemyMonsterPawn* EnemyMonsterPawn;
+
+    UPROPERTY(VisibleDefaultsOnly)
+    class USkeletalMeshComponent* MonsterMesh;
 
     UPROPERTY(EditAnywhere)
     class UCurveFloat* Curve;
 
     virtual void TickComponent(float DeltaTime, ELevelTick TickType,
                                FActorComponentTickFunction* ThisTickFunction) override;
+    void StartMovingLeg(FVector HitLocation);
 
-
-    UFUNCTION(BlueprintCallable, meta = (AdvancedDisplay = "2"))
-    void SetRaycastLocation(const FVector& Location);
-
-    UFUNCTION(BlueprintCallable, meta = (AdvancedDisplay = "2"))
-    FVector GetCurrentPosition() const;
-
-    UFUNCTION(BlueprintCallable, meta = (AdvancedDisplay = "2"))
-    void SetEnemyMonsterPawn(AEnemyMonsterPawn* MonsterPawn);
 
     UFUNCTION()
     void TimelineCallback();
@@ -41,9 +37,20 @@ public:
     UFUNCTION()
     void TimelineFinished();
 
-    void SetMonsterLegType(EMonsterLeg LegType);
+    UPROPERTY(EditDefaultsOnly)
+    FName FirstJointSocket;
 
-    void SetCanMove(const bool CanMove);
+    UPROPERTY(EditDefaultsOnly)
+    FName SecondJointSocket;
+
+    UPROPERTY(EditDefaultsOnly)
+    FName RaycastSocket;
+
+    FORCEINLINE void SetMonsterMesh(class USkeletalMeshComponent* Mesh) { MonsterMesh = Mesh; }
+    FORCEINLINE void SetEnemyMonsterPawn(class AEnemyMonsterPawn* Pawn) { EnemyMonsterPawn = Pawn; }
+    FORCEINLINE FVector GetCurrentPosition() const { return CurrentPosition; }
+    FORCEINLINE void SetMonsterLegType(EMonsterLeg LegType) { MonsterLegType = LegType; }
+    FORCEINLINE void SetCanMove(const bool CanMove) { bCanMove = CanMove; }
 
 protected:
     virtual void BeginPlay() override;
@@ -53,12 +60,12 @@ private:
 
     EMonsterLeg MonsterLegType;
 
-    FVector RaycastLocation; // Location for raycast facing down (should be higher than a leg)
-
     void RaycastLeg();
 
     void CalculateZValue(float& ZValue);
 
+    FVector RaycastJoint(FVector& StartPos, FVector& EndPos,
+                         FHitResult& HitResult, FCollisionQueryParams& CollisionParams);
     /*
      * Timeline Step
      * Time of the timeline - speed of the leg

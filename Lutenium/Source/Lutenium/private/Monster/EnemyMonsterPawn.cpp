@@ -34,18 +34,22 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
     /* Initialize legs */
     RearLeftLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Rear Left Leg"));
     RearLeftLeg->SetEnemyMonsterPawn(this);
+    RearLeftLeg->SetMonsterMesh(MonsterMesh);
     RearLeftLeg->SetMonsterLegType(RearLeft);
 
     RearRightLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Rear Right Leg"));
     RearRightLeg->SetEnemyMonsterPawn(this);
+    RearRightLeg->SetMonsterMesh(MonsterMesh);
     RearRightLeg->SetMonsterLegType(RearRight);
 
     FrontLeftLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Front Left Leg"));
     FrontLeftLeg->SetEnemyMonsterPawn(this);
+    FrontLeftLeg->SetMonsterMesh(MonsterMesh);
     FrontLeftLeg->SetMonsterLegType(FrontLeft);
 
     FrontRightLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Front Right Leg"));
     FrontRightLeg->SetEnemyMonsterPawn(this);
+    FrontRightLeg->SetMonsterMesh(MonsterMesh);
     FrontRightLeg->SetMonsterLegType(FrontRight);
 
     ToggleWhatLegsShouldMove(true);
