@@ -77,7 +77,7 @@ void UMonsterLegComponent::RaycastLeg()
         FHitResult HitResult;
         FCollisionQueryParams CollisionParams;
         CollisionParams.AddIgnoredActor(EnemyMonsterPawn);
-        FVector RaycastResultLocation = FVector::ZeroVector;
+        FVector RaycastResultLocation;
         FVector FirstJoint = MonsterMesh->GetSocketLocation(FirstJointSocket);
         FVector SecondJoint = MonsterMesh->GetSocketLocation(SecondJointSocket);
 
@@ -86,7 +86,7 @@ void UMonsterLegComponent::RaycastLeg()
                                              SecondJoint,
                                              HitResult, CollisionParams);
 
-        if (!RaycastResultLocation.IsZero())
+        if (HitResult.bBlockingHit)
         {
             /* If there was an obstacle, then move the leg to the impact location with that obstacle */
             StartMovingLeg(RaycastResultLocation);
@@ -99,14 +99,14 @@ void UMonsterLegComponent::RaycastLeg()
                                            HitResult, CollisionParams);
 
         /* If the position wasn't found, do nothing */
-        if (!DownRaycast.IsZero())
+        if (HitResult.bBlockingHit)
         {
             /* Check if there is any obstacles from the second joint to the finish position */
             RaycastResultLocation = RaycastJoint(SecondJoint,
                                                  DownRaycast,
                                                  HitResult, CollisionParams);
             /* If there was an obstacle, then move the leg to the impact location with that obstacle */
-            if (RaycastResultLocation.IsZero())
+            if (HitResult.bBlockingHit)
             {
                 StartMovingLeg(RaycastResultLocation);
                 return;
@@ -126,7 +126,7 @@ FVector UMonsterLegComponent::RaycastJoint(FVector& StartPos, FVector& EndPos, F
         EndPos,
         ECollisionChannel::ECC_WorldStatic,
         CollisionParams);
-    return HitResult.bBlockingHit ? HitResult.ImpactPoint : FVector::ZeroVector;
+    return HitResult.ImpactPoint;
 }
 
 
