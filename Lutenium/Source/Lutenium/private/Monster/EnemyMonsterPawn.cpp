@@ -84,6 +84,10 @@ void AEnemyMonsterPawn::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
     bIsBodyMovingUp=RaycastLegJoints();
+    if(bIsBodyMovingUp)
+    {
+        PawnMovement->AddInputVector(FVector::UpVector, true);
+    }
 }
 
 /*

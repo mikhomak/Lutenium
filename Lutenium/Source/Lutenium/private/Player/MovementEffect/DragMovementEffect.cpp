@@ -12,7 +12,7 @@ void UDragMovementEffect::ApplyEffect()
     }
 }
 
-void UDragMovementEffect::Activate(const float NewDragForce, FVector& NewDragDirection)
+void UDragMovementEffect::Activate(const float NewDragForce, FVector NewDragDirection)
 {
     DragForce = NewDragForce;
     DragDirection = NewDragDirection;

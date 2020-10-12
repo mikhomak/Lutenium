@@ -17,7 +17,8 @@ public:
 
     void ApplyEffect() override;
 
-    void Activate(const float NewDragForce, FVector& NewDragDirection);
+    UFUNCTION(BlueprintCallable, Category="Effect")
+    void Activate(const float NewDragForce, FVector NewDragDirection);
 
     FORCEINLINE void Deactivate() override { Active = false; }
 };

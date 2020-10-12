@@ -7,7 +7,7 @@
 #include "SputnikMW.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class LUTENIUM_API ASputnikMW : public AMonsterWeapon
@@ -16,6 +16,7 @@ class LUTENIUM_API ASputnikMW : public AMonsterWeapon
 public:
 
     ASputnikMW();
-    
+
     void Do_Emp();
+
 };
