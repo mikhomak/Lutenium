@@ -17,10 +17,10 @@ class LUTENIUM_API UMonsterLegComponent : public UActorComponent
 public:
     UMonsterLegComponent();
 
-    UPROPERTY(VisibleDefaultsOnly)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
     class AEnemyMonsterPawn* EnemyMonsterPawn;
 
-    UPROPERTY(VisibleDefaultsOnly)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
     class USkeletalMeshComponent* MonsterMesh;
 
     UPROPERTY(EditAnywhere)
@@ -37,13 +37,13 @@ public:
     UFUNCTION()
     void TimelineFinished();
 
-    UPROPERTY(EditDefaultsOnly)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     FName FirstJointSocket;
 
-    UPROPERTY(EditDefaultsOnly)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     FName SecondJointSocket;
 
-    UPROPERTY(EditDefaultsOnly)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     FName RaycastSocket;
 
     FORCEINLINE void SetMonsterMesh(class USkeletalMeshComponent* Mesh) { MonsterMesh = Mesh; }
@@ -86,6 +86,8 @@ private:
     bool bMoving; // Is leg moving
 
     bool bCanMove; // Can the leg move when its grounded
+
+    bool bStoppedOnObstacleBetweenJointAndDownRaycast; // If there was an obstacle between the second joint and the downraycast position and the leg has reached that position and stopped there
 
     float AddedYValue; // Y value added to the highest point in the step
 

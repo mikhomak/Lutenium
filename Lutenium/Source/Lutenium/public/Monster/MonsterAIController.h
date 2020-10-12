@@ -29,7 +29,7 @@ protected:
 
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Perception")
     class UAIPerceptionComponent* PerceptionComp;
-    
+
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"),  Category = "Perception")
     class UAISenseConfig_Sight* SightConfig;
 

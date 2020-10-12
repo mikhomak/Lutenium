@@ -24,7 +24,7 @@ public:
 
     UPROPERTY(Category = General, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     class USkeletalMeshComponent* MonsterMesh;
-    
+
     UPROPERTY(Category = General, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     class USphereComponent* SphereComponent;
 
@@ -34,6 +34,9 @@ public:
     // ------------------------------------------------------------------
     // Legs
     // ------------------------------------------------------------------
+
+    UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+    TArray<class UMonsterLegComponent*> Legs;
 
     UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     class UMonsterLegComponent* RearLeftLeg;
@@ -91,8 +94,20 @@ public:
     // Body Movement
     // ------------------------------------------------------------------
 
+    UFUNCTION(BlueprintCallable)
+    bool RaycastLegJoints();
+
     UPROPERTY(EditDefaultsOnly, Category = "Body")
     FName BodySocketName;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Body")
+    FVector BodyPosition;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Body")
+    float BodyUpMovementSpeed;
+
+    UPROPERTY(BlueprintReadWrite, Category = "Body")
+    bool bIsBodyMovingUp;
 
     UFUNCTION()
     void BodyTimelineMovement();
@@ -100,7 +115,14 @@ public:
     UFUNCTION()
     void BodyTimelineMovementFinish();
 
-    
+    UPROPERTY(EditDefaultsOnly, Category="Body")
+    UCurveFloat* BodyFloatCurve;
+
+    struct FTimeline BodyTimeline;
+
+    FORCEINLINE FVector GetCurrentBodyPosition() const { return BodyPosition; }
+
+
     // ------------------------------------------------------------------
     // AI
     // ------------------------------------------------------------------
@@ -108,7 +130,7 @@ public:
     UPROPERTY(EditAnywhere, Category = "AI")
     class UBehaviorTree* BehaviorTree;
 
-    
+
 protected:
     virtual void BeginPlay() override;
     
@@ -124,8 +146,6 @@ private:
     // ------------------------------------------------------------------
 
     void ToggleWhatLegsShouldMove(bool Left) const;
-
-    struct FTimeline BodyTimeline;
 
     TArray<FName> TopSocketLocationNames;
 

@@ -78,22 +78,8 @@ void UMonsterLegComponent::RaycastLeg()
         FCollisionQueryParams CollisionParams;
         CollisionParams.AddIgnoredActor(EnemyMonsterPawn);
         FVector RaycastResultLocation;
-        FVector FirstJoint = MonsterMesh->GetSocketLocation(FirstJointSocket);
         FVector SecondJoint = MonsterMesh->GetSocketLocation(SecondJointSocket);
 
-        /* First check if there is any obstacles from the first joint of the leg to the second */
-        RaycastResultLocation = RaycastJoint(FirstJoint,
-                                             SecondJoint,
-                                             HitResult, CollisionParams);
-
-        if (HitResult.bBlockingHit)
-        {
-            /* If there was an obstacle, then move the leg to the impact location with that obstacle */
-            StartMovingLeg(RaycastResultLocation);
-            return;
-        }
-
-        /* If there was none obstacle from the first to the second, raycast the actual position of the next move */
         FVector DownRaycast = RaycastJoint(RaycastLocation,
                                            RaycastEndLocation,
                                            HitResult, CollisionParams);
