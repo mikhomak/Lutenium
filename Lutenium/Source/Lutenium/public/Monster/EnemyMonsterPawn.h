@@ -80,8 +80,14 @@ public:
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
     class ASputnikMW* Sputnik;
 
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
+    class ASirenMW* Siren;
+
     UPROPERTY( EditDefaultsOnly, Category ="Weapons")
     FName SputnikSocketName;
+
+    UPROPERTY( EditDefaultsOnly, Category ="Weapons")
+    FName SirenSocketName;
 
     UFUNCTION(BlueprintImplementableEvent)
     void MissileCollide(const FVector& HitLocation, const FVector& NormalizedDirection, const float DamageApplied);
@@ -133,9 +139,9 @@ public:
 
 protected:
     virtual void BeginPlay() override;
-    
-    virtual void PostInitializeComponents() override; 
-    
+
+    virtual void PostInitializeComponents() override;
+
     void GetActorEyesViewPoint(FVector& Location, FRotator& Rotation) const override;
 
 

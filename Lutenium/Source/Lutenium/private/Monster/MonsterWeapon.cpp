@@ -9,6 +9,7 @@ AMonsterWeapon::AMonsterWeapon()
     RootComponent = WeaponMesh;
     // set the radius of the hurtbox in bp
     Hurtbox = CreateDefaultSubobject<USphereComponent>(TEXT("Hurt box"));
+    Hurtbox->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
     PrimaryActorTick.bCanEverTick = true;
 }
 

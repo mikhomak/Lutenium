@@ -32,7 +32,7 @@ public:
 
     UPROPERTY(VisibleDefaultsOnly, Category=Health)
     float Health;
-    
+
     UFUNCTION()
     virtual void OnTakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
                       AActor* DamageCauser);

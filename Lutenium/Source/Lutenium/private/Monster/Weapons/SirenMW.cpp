@@ -15,6 +15,7 @@ ASirenMW::ASirenMW() : AMonsterWeapon()
 {
     Health = 100.f;
     SirenTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("Siren trigger"));
+    SirenTrigger->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
     /* Set events in BP for overlapping!*/
 }
 
