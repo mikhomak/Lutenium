@@ -38,7 +38,7 @@ APlayerPawn::APlayerPawn()
 
     SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm0"));
     SpringArm->SetupAttachment(RootComponent); // Attach SpringArm to RootComponent
-    SpringArm->TargetArmLength = 700.0f; // The camera follows at this distance behind the character	
+    SpringArm->TargetArmLength = 700.0f; // The camera follows at this distance behind the character
     SpringArm->SocketOffset = FVector(0.f, 0.f, 60.f);
     SpringArm->bEnableCameraLag = true; // Do not allow camera to lag
     SpringArm->CameraLagSpeed = 20.f;

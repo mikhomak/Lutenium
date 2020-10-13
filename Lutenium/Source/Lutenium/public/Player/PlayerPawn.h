@@ -19,7 +19,7 @@ class APlayerPawn : public APawn
 
 	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* Camera;
-	
+
 	UPROPERTY(Category = Movement, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UPlaneMovementComponent* PlaneMovement;
 
@@ -60,13 +60,13 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = Missile)
 	float MissileTraceLength;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = Missile)
 	float FirstRaytraceRadius;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = Missile)
 	float SecondRaytraceRadius;
-	
+
 protected:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;

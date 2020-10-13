@@ -17,6 +17,7 @@ public:
 
     ASputnikMW();
 
-    void Do_Emp();
+    UFUNCTION(BlueprintCallable)
+    void DoEmp();
 
 };

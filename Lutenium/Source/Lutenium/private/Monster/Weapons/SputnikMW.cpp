@@ -9,7 +9,7 @@ ASputnikMW::ASputnikMW() : AMonsterWeapon()
     Health = 100.f;
 }
 
-void ASputnikMW::Do_Emp()
+void ASputnikMW::DoEmp()
 {
     
 }

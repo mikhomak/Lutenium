@@ -17,7 +17,11 @@ public:
 
     ASirenMW();
 
-    void Do_Siren();
+    UFUNCTION(BlueprintCallable)
+    void DoSiren();
+
+    UPROPERTY(EditDefaultsOnly, Category = "Siren")
+	TSubclassOf<class AScream> ScreamClass;
 
     UPROPERTY(EditDefaultsOnly, Category="Siren trigger")
     float SirenForce;

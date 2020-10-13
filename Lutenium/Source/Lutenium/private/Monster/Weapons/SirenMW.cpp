@@ -2,6 +2,8 @@
 
 
 #include "../../../public/Monster/Weapons/SirenMW.h"
+#include "../../../public/Monster/Weapons/Scream.h"
+#include "../../../public/Monster/EnemyMonsterPawn.h"
 #include "../../../public/Player/PlayerPawn.h"
 #include "../../../public/Player/PlaneMovementComponent.h"
 #include "../../../public/Player/MovementEffect/DragMovementEffect.h"
@@ -19,9 +21,20 @@ ASirenMW::ASirenMW() : AMonsterWeapon()
     /* Set events in BP for overlapping!*/
 }
 
-void ASirenMW::Do_Siren()
+void ASirenMW::DoSiren()
 {
-
+    if (ScreamClass)
+    {
+        UWorld* World = GetWorld();
+        if (World)
+        {
+            FActorSpawnParameters SpawnParams;
+            SpawnParams.Owner = MonsterPawn;
+            SpawnParams.Instigator = MonsterPawn;
+            AScream* Scream = World->SpawnActor<AScream>(ScreamClass, SirenTrigger->GetComponentTransform().GetLocation(), GetActorRotation(),
+                                                            SpawnParams);
+        }
+    }
 }
 
 void ASirenMW::SirenTriggerOverlap(
@@ -32,7 +45,7 @@ void ASirenMW::SirenTriggerOverlap(
     APlayerPawn* PlayerPawn = Cast<APlayerPawn>(OtherActor);
     if (PlayerPawn)
     {
-        FVector DragDirection = PlayerPawn->GetActorLocation() - GetActorLocation();
+        FVector DragDirection = PlayerPawn->GetActorLocation() - SirenTrigger->GetComponentTransform().GetLocation();
         DragDirection.Normalize();
         PlayerPawn->GetPlaneComponent()->DragMovementEffect->Activate(SirenForce, DragDirection);
     }
