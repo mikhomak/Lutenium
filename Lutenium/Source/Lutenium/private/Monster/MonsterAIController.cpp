@@ -24,6 +24,7 @@ AMonsterAIController::AMonsterAIController()
 
 void AMonsterAIController::BeginPlay()
 {
+    Super::BeginPlay();
 }
 
 
