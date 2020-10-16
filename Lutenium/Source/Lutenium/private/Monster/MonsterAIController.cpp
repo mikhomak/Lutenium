@@ -11,6 +11,8 @@
 
 AMonsterAIController::AMonsterAIController()
 {
+    PrimaryActorTick.bCanEverTick = true;
+
     BehaviorComp = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("Behavior Tree"));
     BlackboardComp = CreateDefaultSubobject<UBlackboardComponent>(TEXT("Blackboard"));
 
@@ -27,7 +29,10 @@ void AMonsterAIController::BeginPlay()
     Super::BeginPlay();
 }
 
-
+void AMonsterAIController::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+}
 void AMonsterAIController::OnPossess(APawn* InPawn)
 {
     Super::OnPossess(InPawn);

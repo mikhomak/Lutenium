@@ -27,6 +27,8 @@ public:
 protected:
     virtual void BeginPlay() override;
 
+    virtual void Tick(float DeltaTime) override;
+
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Perception")
     class UAIPerceptionComponent* PerceptionComp;
 
