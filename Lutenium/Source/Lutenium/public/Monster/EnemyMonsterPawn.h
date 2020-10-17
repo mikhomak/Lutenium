@@ -89,11 +89,17 @@ public:
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
     class APipeMw* Pipe;
 
-    UPROPERTY( EditDefaultsOnly, Category ="Weapons")
+    UPROPERTY( EditDefaultsOnly,BlueprintReadOnly, Category ="Weapons")
     FName SputnikSocketName;
 
-    UPROPERTY( EditDefaultsOnly, Category ="Weapons")
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category ="Weapons")
     FName SirenSocketName;
+
+    UPROPERTY( EditDefaultsOnly,BlueprintReadOnly, Category ="Weapons")
+    FName PipeSocketName;
+
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category ="Weapons")
+    FName TrafficLightSocketName;
 
     UFUNCTION(BlueprintImplementableEvent)
     void MissileCollide(const FVector& HitLocation, const FVector& NormalizedDirection, const float DamageApplied);
