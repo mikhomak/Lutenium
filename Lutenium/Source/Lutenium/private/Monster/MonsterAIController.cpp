@@ -43,6 +43,7 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
         MonsterPawn = Monster;
         BlackboardComp->InitializeBlackboard(*Monster->BehaviorTree->BlackboardAsset);
         BehaviorComp->StartTree(*Monster->BehaviorTree);
+        MonsterMesh = Monster->MonsterMesh;
     }
 }
 

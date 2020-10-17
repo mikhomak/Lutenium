@@ -45,6 +45,16 @@ protected:
     UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
     class AEnemyMonsterPawn* MonsterPawn;
 
+    UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
+    class USkeletalMeshComponent* MonsterMesh;
+
+    UPROPERTY( EditDefaultsOnly, Category ="Behaviour")
+    FName FirstLevelSocket;
+
+    UPROPERTY( EditDefaultsOnly, Category ="Behaviour")
+    FName SecondLevelSocket;
+
+
     UFUNCTION(BlueprintCallable)
     void OnSeePlayer(TArray<class AActor*> Actors);
 };
