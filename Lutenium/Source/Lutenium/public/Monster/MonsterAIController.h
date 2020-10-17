@@ -48,10 +48,10 @@ protected:
     UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
     class USkeletalMeshComponent* MonsterMesh;
 
-    UPROPERTY( EditDefaultsOnly, Category ="Behaviour")
+    UPROPERTY( EditDefaultsOnly,BlueprintReadOnly, Category ="Behaviour")
     FName FirstLevelSocket;
 
-    UPROPERTY( EditDefaultsOnly, Category ="Behaviour")
+    UPROPERTY( EditDefaultsOnly,BlueprintReadOnly, Category ="Behaviour")
     FName SecondLevelSocket;
 
 

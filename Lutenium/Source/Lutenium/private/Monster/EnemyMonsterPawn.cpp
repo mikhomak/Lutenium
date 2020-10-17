@@ -61,6 +61,7 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
     ToggleWhatLegsShouldMove(true);
 
     /* Don't forget to set the Controller in Blueprint! */
+    /* Don't forget to spawn weapons in Blueprint! */
 }
 
 void AEnemyMonsterPawn::BeginPlay()

@@ -83,6 +83,12 @@ public:
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
     class ASirenMW* Siren;
 
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
+    class ATrafficLightMW* TrafficLight;
+
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
+    class APipeMw* Pipe;
+
     UPROPERTY( EditDefaultsOnly, Category ="Weapons")
     FName SputnikSocketName;
 
