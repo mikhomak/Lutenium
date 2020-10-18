@@ -44,12 +44,6 @@ UPlaneMovementComponent::UPlaneMovementComponent()
     bCanDash = true;
 
 
-    MinSpeedToStall = 1000.f;
-    StallForce = -3800.f;
-    TimeToEnterStall = 3.f;
-    AccelerationToExitStall = 1000.f;
-    bStalling = false;
-
 
 }
 
@@ -71,7 +65,6 @@ auto UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
     PlayerMesh->AddTorqueInDegrees(PlayerMesh->GetPhysicsAngularVelocityInDegrees() * -1.f / 0.5f, FName(), true);
     AddGravityForce(DeltaTime);
-    IsAboutToStall();
     Movement(DeltaTime);
     for (UMovementEffect* MovementEffect : MovementEffects)
     {
@@ -121,15 +114,9 @@ void UPlaneMovementComponent::DashInput()
 
 void UPlaneMovementComponent::Movement(const float DeltaTime)
 {
-    if (bStalling == false)
-    {
-        CalculateAerodynamic(DeltaTime);
-        AddThrust(DeltaTime);
-    }
-    else
-    {
-        Stalling();
-    }
+
+    CalculateAerodynamic(DeltaTime);
+    AddThrust(DeltaTime);
 }
 
 
@@ -225,46 +212,6 @@ void UPlaneMovementComponent::ResetDashCooldown()
         DashesLeft++;
     }
 }
-
-void UPlaneMovementComponent::IsAboutToStall()
-{
-    if (bStalling)
-    {
-        if ((MinSpeedToStall >= PlayerMesh->GetPhysicsLinearVelocity().Size() && AccelerationToExitStall <=
-            CurrentAcceleration) || MinSpeedToStall <= PlayerMesh->GetPhysicsLinearVelocity().Size())
-        {
-            bStalling = false;
-        }
-    }
-    if (MinSpeedToStall >= PlayerMesh->GetPhysicsLinearVelocity().Size() && !bStalling)
-    {
-        bStalling = true;
-        GetWorld()->GetTimerManager().SetTimer(StallTimer, this, &UPlaneMovementComponent::EnterStallingTimer,
-                                               TimeToEnterStall);
-    }
-}
-
-void UPlaneMovementComponent::EnterStallingTimer()
-{
-    if (MinSpeedToStall >= PlayerMesh->GetPhysicsLinearVelocity().Size() && AccelerationToExitStall >=
-        CurrentAcceleration)
-    {
-        bStalling = true;
-    }
-    else if (MinSpeedToStall >= PlayerMesh->GetPhysicsLinearVelocity().Size() && AccelerationToExitStall <=
-        CurrentAcceleration)
-    {
-        bStalling = false;
-        GetWorld()->GetTimerManager().ClearTimer(StallTimer);
-    }
-}
-
-
-void UPlaneMovementComponent::Stalling() const
-{
-    PlayerMesh->AddForce(FVector(0, 0, StallForce), FName(), true);
-}
-
 
 void UPlaneMovementComponent::SetMesh(USkeletalMeshComponent* Mesh)
 {

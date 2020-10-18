@@ -30,7 +30,7 @@ public:
 
 
     // ------------------------------------------------------------------
-    // Inputs 
+    // Inputs
     // ------------------------------------------------------------------
     UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
     void ThrustInput(float Val);
@@ -102,34 +102,6 @@ private:
 
     UPROPERTY(Category = Control, EditDefaultsOnly)
     float RollControl;
-
-    // ------------------------------------------------------------------
-    // STALLING
-    // ------------------------------------------------------------------
-
-    /* Min speed to start stalling */
-    UPROPERTY(Category = Stall, EditDefaultsOnly)
-    float MinSpeedToStall;
-
-    /* Acceleration(Not the velocity) to exit stalling */
-    UPROPERTY(Category = Stall, EditDefaultsOnly)
-    float AccelerationToExitStall;
-
-    /* Time needed, while the speed is below MinSpeedToStall, to start stalling */
-    UPROPERTY(Category = Stall, EditDefaultsOnly)
-    float TimeToEnterStall;
-
-    UPROPERTY(Category = CustomPhysics, EditDefaultsOnly)
-    float StallForce;
-
-    FTimerHandle StallTimer;
-
-    void Stalling() const;
-
-    void IsAboutToStall();
-
-    void EnterStallingTimer();
-
 
     // ------------------------------------------------------------------
     // SPEED
