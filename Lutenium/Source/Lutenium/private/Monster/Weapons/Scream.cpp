@@ -40,6 +40,8 @@ void AScream::BeginPlay()
 
 void AScream::Tick(float DeltaTime)
 {
+    Super::Tick(DeltaTime);
+
     const FVector FirstWaveCurrentScale = FirstWaveMesh->GetComponentScale();
     const FVector FirstWaveNewScale = FVector(FirstWaveCurrentScale.X + ScalingSpeed,
                                               FirstWaveCurrentScale.Y + ScalingSpeed, 1);
