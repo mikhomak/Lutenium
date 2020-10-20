@@ -31,6 +31,8 @@ public:
     UPROPERTY(EditDefaultsOnly, Category=Damage)
     float ExpansionSpeed;
 
+
+
     UFUNCTION(BlueprintCallable)
     void FirstWaveOverlap(
         class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
@@ -50,6 +52,9 @@ public:
     UFUNCTION(BlueprintCallable)
     void SecondWaveOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
                               class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+    UPROPERTY(EditDefaultsOnly,BlueprintReadWrite)
+    FVector ScalingMultiplier;
 
     UPROPERTY(EditDefaultsOnly, Category="Waves")
     float ScalingSpeed;
