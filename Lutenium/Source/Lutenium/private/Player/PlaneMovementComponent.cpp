@@ -2,6 +2,7 @@
 #include "../public/Player/PlayerPawn.h"
 #include "../public/AssistUtils/AssistUtils.h"
 #include "../public/Player/MovementEffect/DragMovementEffect.h"
+#include "../public/Player/MovementEffect/EmpMovementEffect.h"
 #include "Camera/CameraComponent.h"
 #include "Engine/World.h"
 #include "Math/Vector.h"
@@ -24,6 +25,7 @@ UPlaneMovementComponent::UPlaneMovementComponent()
     ThrustDownAcceleration = -2000.f;
     NoThrustDeceleration = -500.f;
 
+    ExitStallAcceleration = 20000.f;
     MaxSpeedUntilTakeOff = 500.f;
 
     CustomMaxGravity = -800.f;
@@ -55,8 +57,10 @@ void UPlaneMovementComponent::BeginPlay()
                                            true);
     DragMovementEffect = NewObject<UDragMovementEffect>();
     DragMovementEffect->InitEffect(PlayerPawn);
+    EmpMovementEffect = NewObject<UEmpMovementEffect>();
+    EmpMovementEffect->InitEffect(PlayerPawn);
     MovementEffects.Init(DragMovementEffect, 1);
-
+    MovementEffects.Add(EmpMovementEffect);
 }
 
 auto UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -64,8 +68,19 @@ auto UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
     PlayerMesh->AddTorqueInDegrees(PlayerMesh->GetPhysicsAngularVelocityInDegrees() * -1.f / 0.5f, FName(), true);
-    AddGravityForce(DeltaTime);
-    Movement(DeltaTime);
+    if(!bStalling)
+    {
+        AddGravityForce(DeltaTime);
+        Movement(DeltaTime);
+    }
+    else
+    {
+        if(CurrentAcceleration > ExitStallAcceleration)
+        {
+            EmpMovementEffect->Deactivate();
+            bStalling = false;
+        }
+    }
     for (UMovementEffect* MovementEffect : MovementEffects)
     {
         MovementEffect->ApplyEffect();

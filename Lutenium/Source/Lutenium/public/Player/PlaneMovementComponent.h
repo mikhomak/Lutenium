@@ -62,6 +62,8 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Control")
     float GetCurrentAcceleration() const;
 
+    FORCEINLINE void ResetCurrentAcceleration() { CurrentAcceleration = 0;}
+
     UPROPERTY(Category = "Dash", EditAnywhere)
     int MaxDashes;
 
@@ -79,12 +81,19 @@ public:
 
     void AddAcceleration(float AddedAcceleration);
 
+    UPROPERTY(Category = Speed, BlueprintReadWrite, EditDefaultsOnly)
+    float ExitStallAcceleration;
+
+
     // ------------------------------------------------------------------
     // MovementEffects
     // ------------------------------------------------------------------
 
     UPROPERTY(Category = Effects, BlueprintReadOnly, EditDefaultsOnly)
     class UDragMovementEffect* DragMovementEffect;
+
+    UPROPERTY(Category = Effects, BlueprintReadOnly, EditDefaultsOnly)
+    class UEmpMovementEffect* EmpMovementEffect;
 
 private:
 
