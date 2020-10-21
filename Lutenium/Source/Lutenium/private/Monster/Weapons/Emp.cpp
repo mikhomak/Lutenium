@@ -1,0 +1,65 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "../../../public/Monster/Weapons/Emp.h"
+#include "../../../public/Player/PlayerPawn.h"
+#include "../../../public/Player/PlaneMovementComponent.h"
+#include "../../../public/Player/MovementEffect/EmpMovementEffect.h"
+#include "Components/StaticMeshComponent.h"
+#include "Components/SphereComponent.h"
+#include "Components/PrimitiveComponent.h"
+#include "GameFramework/Actor.h"
+#include "Math/UnrealMathUtility.h"
+#include "Math/Vector.h"
+
+
+AEmp::AEmp()
+{
+	PrimaryActorTick.bCanEverTick = true;
+	MainSphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("Main Sphere"));
+    RootComponent = MainSphereComp;
+
+	EmpMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("First Wave"));
+    EmpMesh->AttachToComponent(MainSphereComp, FAttachmentTransformRules::KeepWorldTransform);
+    EmpMesh->SetGenerateOverlapEvents(true);
+
+	EmpRotationForce = 80.f;
+
+    ScalingMultiplier = FVector(1.f, 1.f, 0.f);
+    ScalingSpeed = 0.1f;
+
+	EmpLifeTime=15.f;
+}
+
+void AEmp::BeginPlay()
+{
+	Super::BeginPlay();
+    /* Add overlap function calls in blueprints! */
+    SetLifeSpan(EmpLifeTime);
+
+}
+
+void AEmp::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+    const FVector EmpCurrentScale = FirstWaveMesh->GetComponentScale();
+    const FVector EmpNewScale = EmpCurrentScale + ScalingMultiplier * ScalingSpeed;
+    EmpMesh->SetWorldScale3D(EmpNewScale);
+}
+
+void AScream::EmpOverlap(
+    UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+    UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+    bool bFromSweep, const FHitResult& SweepResult)
+{
+    APlayerPawn* PlayerPawn = Cast<APlayerPawn>(OtherActor);
+    if (PlayerPawn)
+    {
+		const FVector RandomRotation = FVector(
+			FMath::RandRange(0.f, 1.f),
+			FMath::RandRange(0.f, 1.f),
+			FMath::RandRange(0.f, 1.f)
+		);
+        PlayerPawn->GetPlaneComponent()->EmpMovementEffect->Activate(0.f, RandomRotation, EmpRotationForce);
+    }
+}

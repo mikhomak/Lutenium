@@ -15,7 +15,6 @@ class LUTENIUM_API AScream : public AActor
 public:
     AScream();
 
-
     UPROPERTY(EditDefaultsOnly, Category=Mesh)
     class USphereComponent* MainSphereComp;
 
@@ -30,7 +29,6 @@ public:
 
     UPROPERTY(EditDefaultsOnly, Category=Damage)
     float ExpansionSpeed;
-
 
 
     UFUNCTION(BlueprintCallable)

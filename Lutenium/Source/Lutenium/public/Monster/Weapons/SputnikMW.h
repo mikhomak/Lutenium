@@ -20,4 +20,9 @@ public:
     UFUNCTION(BlueprintCallable)
     void DoEmp();
 
+    UFUNCTION(BlueprintCallable)
+    void DoShoot();
+
+    UPROPERTY(EditDefaultsOnly, Category = "Emp")
+	TSubclassOf<class AEmp> EmpClass;
 };
