@@ -25,4 +25,8 @@ public:
 
     UPROPERTY(EditDefaultsOnly, Category = "Emp")
 	TSubclassOf<class AEmp> EmpClass;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly,  Category = "Emp")
+    FName EmpSocket;
+
 };

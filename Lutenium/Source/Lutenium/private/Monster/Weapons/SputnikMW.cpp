@@ -6,7 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "Components/PrimitiveComponent.h"
 
-
 ASputnikMW::ASputnikMW() : AMonsterWeapon()
 {
     Health = 100.f;
@@ -16,19 +15,18 @@ void ASputnikMW::DoEmp()
 {
     if (EmpClass)
     {
-        UWorld* World = GetWorld();
+        UWorld *World = GetWorld();
         if (World)
         {
             FActorSpawnParameters SpawnParams;
             SpawnParams.Owner = MonsterPawn;
             SpawnParams.Instigator = MonsterPawn;
-            AEmp* Emp = World->SpawnActor<AEmp>(EmpClass, GetActorLocation(), GetActorRotation(),
-                                                            SpawnParams);
+            AEmp *Emp = World->SpawnActor<AEmp>(EmpClass, WeaponMesh->GetSocketLocation(EmpSocket),
+                                                WeaponMesh->GetSocketRotation(EmpSocket), SpawnParams);
         }
     }
 }
 
 void ASputnikMW::DoShoot()
 {
-
 }
