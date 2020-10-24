@@ -126,20 +126,30 @@ private:
     UPROPERTY(Category = Speed, EditDefaultsOnly)
     float MaxSpeedLerpAlpha;
 
-    UPROPERTY(Category = Speed, EditAnywhere)
+    UPROPERTY(Category = Speed, EditDefaultsOnly)
     float CurrentAcceleration;
 
     /* Added acceleration while thrusting */
-    UPROPERTY(Category = Speed, EditAnywhere)
+    UPROPERTY(Category = Speed, EditDefaultsOnly)
     float ThrustUpAcceleration;
 
     /* Added acceleration while stopping */
-    UPROPERTY(Category = Speed, EditAnywhere)
+    UPROPERTY(Category = Speed, EditDefaultsOnly)
     float ThrustDownAcceleration;
 
     /* Deceleration while no thrust is applied */
-    UPROPERTY(Category = Speed, EditAnywhere)
+    UPROPERTY(Category = Speed, EditDefaultsOnly)
     float NoThrustDeceleration;
+
+    /* If the speed is below this value, the acceleration "kicks in" faster*/
+    UPROPERTY(Category = Speed, EditDefaultsOnly)
+    float MaxAccelerationUntilTakeOff;
+
+    /* If the speed is below this value, the acceleration "kicks in" faster*/
+    UPROPERTY(Category = Speed, EditDefaultsOnly)
+    float TakeOffAddedAcceleration;
+
+    bool bHasAppliedTakeOffAcceleration;
 
     float CurrentThrust;
 
@@ -175,9 +185,6 @@ private:
     // PHYSICS
     // ------------------------------------------------------------------
 
-    /* If the speed is below this value, the acceleration "kicks in" faster*/
-    UPROPERTY(Category = Assist, EditAnywhere)
-    float MaxSpeedUntilTakeOff;
 
     /* Gravity depends on the speed, the faster the plane is moving the less gravity is applied */
     UPROPERTY(Category = CustomPhysics, EditAnywhere)

@@ -3,22 +3,6 @@
 #include "Math/Vector.h"
 #include "Kismet/KismetSystemLibrary.h"
 
-bool FAssistUtils::bHasApplied = false;
-
-
-void FAssistUtils::ApplyTakeOffAcceleration(UPlaneMovementComponent* PlaneMovementComponent, const FVector& Velocity,
-                                            const float MaxSpeedUntilTakeOff, const float AddedAcceleration)
-{
-    if (!FAssistUtils::bHasApplied && Velocity.Size() < MaxSpeedUntilTakeOff)
-    {
-        PlaneMovementComponent->AddAcceleration(AddedAcceleration);
-        bHasApplied = true;
-    }
-    else if (Velocity.Size() > MaxSpeedUntilTakeOff)
-    {
-        FAssistUtils::bHasApplied = false;
-    }
-}
 
 USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const UWorld* World,
                                                                    const FVector& StartLocation,

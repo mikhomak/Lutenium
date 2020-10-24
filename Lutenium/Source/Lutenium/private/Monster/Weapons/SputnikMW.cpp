@@ -22,7 +22,7 @@ void ASputnikMW::DoEmp()
             FActorSpawnParameters SpawnParams;
             SpawnParams.Owner = MonsterPawn;
             SpawnParams.Instigator = MonsterPawn;
-            AEmpClass* Emp = World->SpawnActor<EmpClass>(EmpClass, SirenTrigger->GetComponentTransform().GetLocation(), GetActorRotation(),
+            AEmp* Emp = World->SpawnActor<AEmp>(EmpClass, GetActorLocation(), GetActorRotation(),
                                                             SpawnParams);
         }
     }

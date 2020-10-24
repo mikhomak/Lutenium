@@ -26,7 +26,8 @@ UPlaneMovementComponent::UPlaneMovementComponent()
     NoThrustDeceleration = -500.f;
 
     ExitStallAcceleration = 20000.f;
-    MaxSpeedUntilTakeOff = 500.f;
+    MaxAccelerationUntilTakeOff = 1000.f;
+    TakeOffAddedAcceleration=800.f;
 
     CustomMaxGravity = -800.f;
     CustomMinGravity = -100.f;
@@ -149,10 +150,14 @@ void UPlaneMovementComponent::Thrusting(float InputVal)
 {
     bThrusting = InputVal != 0;
     bThrustUp = InputVal > 0 ? true : false;
-    if (bThrusting)
+    if (bThrusting && CurrentAcceleration < MaxAccelerationUntilTakeOff  && !bHasAppliedTakeOffAcceleration)
     {
-        FAssistUtils::ApplyTakeOffAcceleration(this, PlayerMesh->GetPhysicsLinearVelocity(), MaxSpeedUntilTakeOff,
-                                               1000.f);
+        CurrentAcceleration += TakeOffAddedAcceleration;
+        bHasAppliedTakeOffAcceleration = true;
+    }
+    else if(CurrentAcceleration > MaxAccelerationUntilTakeOff)
+    {
+        bHasAppliedTakeOffAcceleration = false;
     }
 }
 

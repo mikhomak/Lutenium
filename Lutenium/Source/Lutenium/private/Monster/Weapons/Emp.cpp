@@ -42,12 +42,12 @@ void AEmp::BeginPlay()
 void AEmp::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-    const FVector EmpCurrentScale = FirstWaveMesh->GetComponentScale();
+    const FVector EmpCurrentScale = EmpMesh->GetComponentScale();
     const FVector EmpNewScale = EmpCurrentScale + ScalingMultiplier * ScalingSpeed;
     EmpMesh->SetWorldScale3D(EmpNewScale);
 }
 
-void AScream::EmpOverlap(
+void AEmp::EmpOverlap(
     UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
     UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
     bool bFromSweep, const FHitResult& SweepResult)

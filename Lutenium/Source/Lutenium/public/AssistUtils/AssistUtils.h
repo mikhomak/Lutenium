@@ -6,8 +6,6 @@ struct FVector;
 class FAssistUtils
 {
 public:
-    static void ApplyTakeOffAcceleration(UPlaneMovementComponent* PlaneMovementComponent, const FVector& Velocity,
-                                         const float MinTakeOffVelocity, const float AddedAcceleration);
 
     static class USceneComponent* RaycastMissileTarget(const AActor* Actor,
                                                        const UWorld* World,
@@ -18,5 +16,4 @@ public:
                                                        const float& SecondRaycastRadius,
                                                        FVector& HitLocation);
 private:
-    static bool bHasApplied;
 };
