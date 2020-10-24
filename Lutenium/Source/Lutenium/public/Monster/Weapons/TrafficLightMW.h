@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "TrafficLight.h"
+#include "TrafficLightPosition.h"
 #include "Monster/MonsterWeapon.h"
 #include "TrafficLightMW.generated.h"
 
@@ -17,47 +19,75 @@ public:
 
     ATrafficLightMW();
 
-    UFUNCTION(BlueprintCallable)
-    void DoRedLight();
+
+    // ------------------------------------------------------------------
+    // Light Collisions
+    // ------------------------------------------------------------------
+
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    class USphereComponent* LeftLight;
+
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    class USphereComponent* RightLight;
+
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    class USphereComponent* CenterLight;
+
+
+    // ------------------------------------------------------------------
+    // Lights Meshes
+    // ------------------------------------------------------------------
+
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    class UStaticMeshComponent* LeftLightMesh;
+
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    class UStaticMeshComponent* RightLightMesh;
+
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    class UStaticMeshComponent* CenterLightMesh;
+
+    // ------------------------------------------------------------------
+    // Change light
+    // ------------------------------------------------------------------
 
     UFUNCTION(BlueprintCallable)
-    void DoYellowLight();
+    void ChangeLight(ETrafficLightPosition Position, ETrafficLight Light);
 
-    UFUNCTION(BlueprintCallable)
-    void DoGreenLight();
-
+	UFUNCTION(BlueprintImplementableEvent, Category="Light")
+	void OnLightChanged(const ETrafficLightPosition Position, const ETrafficLight Light);
 
     // ------------------------------------------------------------------
     // Lights overlaps
     // ------------------------------------------------------------------
 
     UFUNCTION(BlueprintCallable)
-    void RedTriggerOverlap(
+    void RightTriggerOverlap(
         class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
         class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
         bool bFromSweep, const FHitResult& SweepResult);
 
     UFUNCTION(BlueprintCallable)
-    void RedTriggerOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
+    void RightTriggerOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
                              class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
     UFUNCTION(BlueprintCallable)
-    void YellowTriggerOverlap(
+    void LeftTriggerOverlap(
         class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
         class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
         bool bFromSweep, const FHitResult& SweepResult);
 
     UFUNCTION(BlueprintCallable)
-    void YellowTriggerOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
+    void LeftTriggerOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
                              class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
     UFUNCTION(BlueprintCallable)
-    void GreenTriggerOverlap(
+    void CenterTriggerOverlap(
         class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
         class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
         bool bFromSweep, const FHitResult& SweepResult);
 
     UFUNCTION(BlueprintCallable)
-    void GreenTriggerOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
+    void CenterTriggerOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
                              class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 };
