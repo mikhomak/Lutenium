@@ -69,6 +69,7 @@ public:
 
     UPROPERTY(BlueprintReadWrite, Category="Light")
     ETrafficLight CenterLightStatus;
+
     // ------------------------------------------------------------------
     // Lights overlaps
     // ------------------------------------------------------------------

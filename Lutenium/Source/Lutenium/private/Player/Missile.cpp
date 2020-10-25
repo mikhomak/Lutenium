@@ -3,6 +3,7 @@
 
 #include "../../public/Player/Missile.h"
 #include "Components/SphereComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -13,14 +14,13 @@ AMissile::AMissile()
     SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Capcule collider"));
     RootComponent = SphereComponent;
 
+    MissileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Missile Mesh"));
+    MissileMesh->AttachToComponent(SphereComponent, FAttachmentTransformRules::KeepWorldTransform);
 
     ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
-    ProjectileMovement->InitialSpeed = InitialSpeed;
-    ProjectileMovement->MaxSpeed = MaxSpeed;
     ProjectileMovement->bRotationFollowsVelocity = true;
 
 
-    ExplosionRadius = 700.f;
     Damage = 150.f;
 }
 
@@ -34,23 +34,6 @@ void AMissile::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
-void AMissile::NotifyActorBeginOverlap(AActor* OtherActor)
-{
-    Super::NotifyActorBeginOverlap(OtherActor);
-    if (OtherActor && ParentPawn)
-    {
-        // Ignoring ourselves
-        TArray<AActor*> IgnoredActors;
-        IgnoredActors.Add(this);
-
-        UGameplayStatics::ApplyRadialDamage(this, Damage,
-                                            GetActorLocation(), ExplosionRadius,
-                                            nullptr, IgnoredActors, this,
-                                            ParentPawn->GetController(), true);
-        Destroy();
-    }
-}
-
 void AMissile::SetTargetOrDirection(USceneComponent* Target, const FVector& ShootDirection)
 {
     if (Target != nullptr)
@@ -59,26 +42,6 @@ void AMissile::SetTargetOrDirection(USceneComponent* Target, const FVector& Shoo
         ProjectileMovement->HomingTargetComponent = Target;
     }
     Direction = ShootDirection;
-    FTimerHandle TimerHandle;
-    GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AMissile::StartFlying, TimeBeforeFly, false);
-    AfterInstantiate();
 }
 
 
-void AMissile::AfterInstantiate_Implementation()
-{
-}
-
-void AMissile::BeginFlying_Implementation()
-{
-}
-
-void AMissile::StartFlying()
-{
-    if (!ProjectileMovement->bIsHomingProjectile)
-    {
-        ProjectileMovement->Velocity = Direction * InitialSpeed;
-    }
-    //ProjectileMovement->Targe
-    BeginFlying();
-}
