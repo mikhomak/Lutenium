@@ -1,6 +1,6 @@
 ﻿#pragma once
 UENUM (BlueprintType)
-enum EMonsterLeg
+enum class EMonsterLeg : uint8
 {
     RearLeft UMETA(DisplayName = "Rear Left"),
     RearRight UMETA(DisplayName = "Raer Right"),

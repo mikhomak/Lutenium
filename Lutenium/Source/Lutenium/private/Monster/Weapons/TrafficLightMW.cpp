@@ -13,27 +13,24 @@ ATrafficLightMW::ATrafficLightMW() : AMonsterWeapon()
 {
     Health = 100.f;
 
-    /* Setting the attachment rules */
-    const FAttachmentTransformRules AttachmentTransformRules = FAttachmentTransformRules(
-        EAttachmentRule::KeepRelative, true);
 
     /* Creating Lights triggers */
     LeftLight = CreateDefaultSubobject<USphereComponent>(TEXT("Left Light"));
     RightLight = CreateDefaultSubobject<USphereComponent>(TEXT("Right Light"));
     CenterLight = CreateDefaultSubobject<USphereComponent>(TEXT("Center Light"));
 
-    LeftLight->AttachToComponent(MonsterMesh, AttachmentTransformRules);
-    RightLight->AttachToComponent(MonsterMesh, AttachmentTransformRules);
-    CenterLight->AttachToComponent(MonsterMesh, AttachmentTransformRules);
+    LeftLight->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
+    RightLight->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
+    CenterLight->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
 
     /* Creating Lights meshes */
     LeftLightMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Left Light Mesh"));
     RightLightMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Right Light Mesh"));
     CenterLightMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Center Light Mesh"));
 
-    LeftLightMesh->AttachToComponent(MonsterMesh, AttachmentTransformRules);
-    RightLightMesh->AttachToComponent(MonsterMesh, AttachmentTransformRules);
-    CenterLightMesh->AttachToComponent(MonsterMesh, AttachmentTransformRules);
+    LeftLightMesh->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
+    RightLightMesh->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
+    CenterLightMesh->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
 }
 
 void ATrafficLightMW::ChangeLight(ETrafficLightPosition Position, ETrafficLight Light)

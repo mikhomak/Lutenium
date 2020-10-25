@@ -24,13 +24,13 @@ public:
     // Light Collisions
     // ------------------------------------------------------------------
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     class USphereComponent* LeftLight;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     class USphereComponent* RightLight;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     class USphereComponent* CenterLight;
 
 
@@ -38,13 +38,13 @@ public:
     // Lights Meshes
     // ------------------------------------------------------------------
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     class UStaticMeshComponent* LeftLightMesh;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     class UStaticMeshComponent* RightLightMesh;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     class UStaticMeshComponent* CenterLightMesh;
 
     // ------------------------------------------------------------------
@@ -57,6 +57,18 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category="Light")
 	void OnLightChanged(const ETrafficLightPosition Position, const ETrafficLight Light);
 
+    // ------------------------------------------------------------------
+    // Lights status
+    // ------------------------------------------------------------------
+
+    UPROPERTY(BlueprintReadWrite, Category="Light")
+    ETrafficLight LeftLightStatus;
+
+    UPROPERTY(BlueprintReadWrite, Category="Light")
+    ETrafficLight RightLightStatus;
+
+    UPROPERTY(BlueprintReadWrite, Category="Light")
+    ETrafficLight CenterLightStatus;
     // ------------------------------------------------------------------
     // Lights overlaps
     // ------------------------------------------------------------------

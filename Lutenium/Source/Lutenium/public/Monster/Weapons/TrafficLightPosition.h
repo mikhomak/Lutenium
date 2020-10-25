@@ -1,6 +1,6 @@
 #pragma once
 UENUM (BlueprintType)
-enum ETrafficLightPosition
+enum class ETrafficLightPosition : uint8
 {
     Right UMETA(DisplayName = "Right"),
     Left UMETA(DisplayName = "Left"),

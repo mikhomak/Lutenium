@@ -37,25 +37,25 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
     RearLeftLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Rear Left Leg"));
     RearLeftLeg->SetEnemyMonsterPawn(this);
     RearLeftLeg->SetMonsterMesh(MonsterMesh);
-    RearLeftLeg->SetMonsterLegType(RearLeft);
+    RearLeftLeg->SetMonsterLegType(EMonsterLeg::RearLeft);
     Legs.Add(RearLeftLeg);
 
     RearRightLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Rear Right Leg"));
     RearRightLeg->SetEnemyMonsterPawn(this);
     RearRightLeg->SetMonsterMesh(MonsterMesh);
-    RearRightLeg->SetMonsterLegType(RearRight);
+    RearRightLeg->SetMonsterLegType(EMonsterLeg::RearRight);
     Legs.Add(RearRightLeg);
 
     FrontLeftLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Front Left Leg"));
     FrontLeftLeg->SetEnemyMonsterPawn(this);
     FrontLeftLeg->SetMonsterMesh(MonsterMesh);
-    FrontLeftLeg->SetMonsterLegType(FrontLeft);
+    FrontLeftLeg->SetMonsterLegType(EMonsterLeg::FrontLeft);
     Legs.Add(FrontLeftLeg);
 
     FrontRightLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Front Right Leg"));
     FrontRightLeg->SetEnemyMonsterPawn(this);
     FrontRightLeg->SetMonsterMesh(MonsterMesh);
-    FrontRightLeg->SetMonsterLegType(FrontRight);
+    FrontRightLeg->SetMonsterLegType(EMonsterLeg::FrontRight);
     Legs.Add(FrontRightLeg);
 
     ToggleWhatLegsShouldMove(true);
@@ -98,13 +98,13 @@ FVector AEnemyMonsterPawn::GetLegLocation(const EMonsterLeg Leg) const
 {
     switch (Leg)
     {
-    case FrontLeft:
+    case EMonsterLeg::FrontLeft:
         return FrontLeftLeg->GetCurrentPosition();
-    case FrontRight:
+    case EMonsterLeg::FrontRight:
         return FrontRightLeg->GetCurrentPosition();
-    case RearLeft:
+    case EMonsterLeg::RearLeft:
         return RearLeftLeg->GetCurrentPosition();
-    case RearRight:
+    case EMonsterLeg::RearRight:
         return RearRightLeg->GetCurrentPosition();
     }
     return FVector();
@@ -112,7 +112,7 @@ FVector AEnemyMonsterPawn::GetLegLocation(const EMonsterLeg Leg) const
 
 void AEnemyMonsterPawn::LegHasMovedEventCaller(const EMonsterLeg MonsterLeg)
 {
-    ToggleWhatLegsShouldMove(MonsterLeg == FrontLeft || MonsterLeg == RearRight);
+    ToggleWhatLegsShouldMove(MonsterLeg == EMonsterLeg::FrontLeft || MonsterLeg == EMonsterLeg::RearRight);
     LegHasMoved(MonsterLeg);
 }
 
