@@ -17,11 +17,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = Missile)
-	class USphereComponent* SphereComponent;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = Movement)
-    class UProjectileMovementComponent* ProjectileMovement;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 	class UStaticMeshComponent* MissileMesh;
@@ -31,19 +27,30 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Missile)
+	class USphereComponent* SphereComponent;
+
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Movement)
+    class UProjectileMovementComponent* ProjectileMovement;
+
+
 	UPROPERTY(EditAnywhere)
 	FVector Direction;
 
 	UPROPERTY(EditDefaultsOnly)
 	float Damage;
 
+	UPROPERTY(EditDefaultsOnly)
+	float WavesLifeSpan;
+
+	UFUNCTION(BlueprintCallable)
+	void ThrowMissile(FVector Direction, float ForceAmount);
+
 	UFUNCTION()
 	void SetTargetOrDirection(USceneComponent* Target, const FVector& ShootDirection);
 
 	FORCEINLINE void SetParentPawn(APawn* Pawn){ ParentPawn = Pawn;}
 
-private:
-	void StartFlying();
 
 };
 

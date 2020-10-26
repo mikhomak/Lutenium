@@ -19,7 +19,11 @@ public:
 
     ATrafficLightMW();
 
-
+    // ------------------------------------------------------------------
+    // General
+    // ------------------------------------------------------------------
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Impact")
+    float MissileThrowForce;
     // ------------------------------------------------------------------
     // Lights Meshes
     // ------------------------------------------------------------------
@@ -59,6 +63,8 @@ public:
     // ------------------------------------------------------------------
     // Lights overlaps
     // ------------------------------------------------------------------
+    UFUNCTION(BlueprintCallable)
+    void LightBeginOverlap(class AActor* Actor, const ETrafficLight TrafficLightStatus, const ETrafficLightPosition TrafficLightPosition);
 
     UFUNCTION(BlueprintCallable)
     void RightTriggerOverlap(
@@ -89,4 +95,5 @@ public:
     UFUNCTION(BlueprintCallable)
     void CenterTriggerOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
                              class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
 };

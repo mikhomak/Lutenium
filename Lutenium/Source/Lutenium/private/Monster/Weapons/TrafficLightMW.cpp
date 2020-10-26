@@ -3,6 +3,7 @@
 #include "../../../public/Monster/Weapons/TrafficLightMW.h"
 #include "../../../public/Monster/Weapons/TrafficLight.h"
 #include "../../../public/Monster/Weapons/TrafficLightPosition.h"
+#include "../../../public/Player/Missile.h"
 #include "Components/PrimitiveComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -22,6 +23,8 @@ ATrafficLightMW::ATrafficLightMW() : AMonsterWeapon()
     LeftLightMesh->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
     RightLightMesh->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
     CenterLightMesh->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
+
+    MissileThrowForce = 6000.f;
 }
 
 void ATrafficLightMW::ChangeLight(ETrafficLightPosition Position, ETrafficLight Light)
@@ -64,4 +67,29 @@ void ATrafficLightMW::CenterTriggerOverlap(
 void ATrafficLightMW::CenterTriggerOverlapEnd(class UPrimitiveComponent *OverlappedComp, class AActor *OtherActor,
                                               class UPrimitiveComponent *OtherComp, int32 OtherBodyIndex)
 {
+}
+
+void ATrafficLightMW::LightBeginOverlap(class AActor* Actor, const ETrafficLight TrafficLightStatus, const ETrafficLightPosition TrafficLightPosition)
+{
+    FVector Position;
+    switch(TrafficLightPosition){
+        case ETrafficLightPosition::Right:
+            Position = RightLightMesh->GetComponentLocation();
+        break;
+        case ETrafficLightPosition::Left:
+            Position = LeftLightMesh->GetComponentLocation();
+        break;
+        case ETrafficLightPosition::Center:
+            Position = CenterLightMesh->GetComponentLocation();
+        break;
+        default:
+            Position = GetActorLocation();
+    }
+    AMissile* Missile = Cast<AMissile>(Actor);
+    if(Missile)
+    {
+        Position = Missile->GetActorLocation() - Position;
+        Position.Normalize();
+        Missile->ThrowMissile(Position, MissileThrowForce);
+    }
 }

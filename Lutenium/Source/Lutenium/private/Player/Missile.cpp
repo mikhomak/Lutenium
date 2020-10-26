@@ -12,6 +12,7 @@ AMissile::AMissile()
     PrimaryActorTick.bCanEverTick = true;
     PrimaryActorTick.TickGroup = TG_PostPhysics;
     SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Capcule collider"));
+    SphereCopmonent->SetSimulatePhysics(true);
     RootComponent = SphereComponent;
 
     MissileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Missile Mesh"));
@@ -22,11 +23,13 @@ AMissile::AMissile()
 
 
     Damage = 150.f;
+    WavesLifeSpan = 20.f;
 }
 
 void AMissile::BeginPlay()
 {
     Super::BeginPlay();
+    SetLifeSpan(WavesLifeSpan);
 }
 
 void AMissile::Tick(float DeltaTime)
@@ -42,6 +45,13 @@ void AMissile::SetTargetOrDirection(USceneComponent* Target, const FVector& Shoo
         ProjectileMovement->HomingTargetComponent = Target;
     }
     Direction = ShootDirection;
+}
+
+
+void AMissile::ThrowMissile(FVector Direction, float ForceAmount)
+{
+    ProjectileMovement->MaxSpeed = 0.f;
+    SphereComponent->AddImpulse(Direction * ForceAmount, FName(), true);
 }
 
 
