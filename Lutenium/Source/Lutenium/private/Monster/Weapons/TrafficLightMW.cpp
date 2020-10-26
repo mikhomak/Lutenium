@@ -14,15 +14,6 @@ ATrafficLightMW::ATrafficLightMW() : AMonsterWeapon()
     Health = 100.f;
 
 
-    /* Creating Lights triggers */
-    LeftLight = CreateDefaultSubobject<USphereComponent>(TEXT("Left Light"));
-    RightLight = CreateDefaultSubobject<USphereComponent>(TEXT("Right Light"));
-    CenterLight = CreateDefaultSubobject<USphereComponent>(TEXT("Center Light"));
-
-    LeftLight->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
-    RightLight->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
-    CenterLight->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
-
     /* Creating Lights meshes */
     LeftLightMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Left Light Mesh"));
     RightLightMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Right Light Mesh"));

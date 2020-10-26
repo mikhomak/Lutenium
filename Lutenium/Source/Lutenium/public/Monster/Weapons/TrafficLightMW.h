@@ -21,20 +21,6 @@ public:
 
 
     // ------------------------------------------------------------------
-    // Light Collisions
-    // ------------------------------------------------------------------
-
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-    class USphereComponent* LeftLight;
-
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-    class USphereComponent* RightLight;
-
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-    class USphereComponent* CenterLight;
-
-
-    // ------------------------------------------------------------------
     // Lights Meshes
     // ------------------------------------------------------------------
 
