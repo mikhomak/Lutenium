@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "../../public/Player/Missile.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -12,7 +11,7 @@ AMissile::AMissile()
     PrimaryActorTick.bCanEverTick = true;
     PrimaryActorTick.TickGroup = TG_PostPhysics;
     SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Capcule collider"));
-    SphereCopmonent->SetSimulatePhysics(true);
+    SphereComponent->SetSimulatePhysics(true);
     RootComponent = SphereComponent;
 
     MissileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Missile Mesh"));
@@ -20,7 +19,6 @@ AMissile::AMissile()
 
     ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
     ProjectileMovement->bRotationFollowsVelocity = true;
-
 
     Damage = 150.f;
     WavesLifeSpan = 20.f;
@@ -37,7 +35,7 @@ void AMissile::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
-void AMissile::SetTargetOrDirection(USceneComponent* Target, const FVector& ShootDirection)
+void AMissile::SetTargetOrDirection(USceneComponent *Target, const FVector &ShootDirection)
 {
     if (Target != nullptr)
     {
@@ -47,11 +45,8 @@ void AMissile::SetTargetOrDirection(USceneComponent* Target, const FVector& Shoo
     Direction = ShootDirection;
 }
 
-
-void AMissile::ThrowMissile(FVector Direction, float ForceAmount)
+void AMissile::ThrowMissile(FVector ThrownDirection, float ForceAmount)
 {
     ProjectileMovement->MaxSpeed = 0.f;
-    SphereComponent->AddImpulse(Direction * ForceAmount, FName(), true);
+    SphereComponent->AddImpulse(ThrownDirection * ForceAmount, FName(), true);
 }
-
-

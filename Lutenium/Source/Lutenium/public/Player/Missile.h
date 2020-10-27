@@ -44,7 +44,7 @@ public:
 	float WavesLifeSpan;
 
 	UFUNCTION(BlueprintCallable)
-	void ThrowMissile(FVector Direction, float ForceAmount);
+	void ThrowMissile(FVector ThrownDirection, float ForceAmount);
 
 	UFUNCTION()
 	void SetTargetOrDirection(USceneComponent* Target, const FVector& ShootDirection);
