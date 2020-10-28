@@ -49,4 +49,5 @@ void AMissile::ThrowMissile(FVector ThrownDirection, float ForceAmount)
 {
     ProjectileMovement->MaxSpeed = 0.f;
     SphereComponent->AddImpulse(ThrownDirection * ForceAmount, FName(), true);
+    bIsDefected = true;
 }

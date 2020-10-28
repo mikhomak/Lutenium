@@ -36,6 +36,7 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 	class UStaticMeshComponent* MissileMesh;
 
+	UPROPERTY(BlueprintReadOnly)
 	class APawn* ParentPawn;
 
 	virtual void Tick(float DeltaTime) override;
@@ -48,7 +49,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	float WavesLifeSpan;
 
-
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	bool bIsDefected;
 
 
 };
