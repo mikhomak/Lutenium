@@ -95,7 +95,7 @@ public:
     UPROPERTY(Category = Effects, BlueprintReadOnly, EditDefaultsOnly)
     class UEmpMovementEffect* EmpMovementEffect;
 
-private:
+protected:
 
     // ------------------------------------------------------------------
     // CONTROLS

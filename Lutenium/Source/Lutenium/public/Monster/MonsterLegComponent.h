@@ -55,9 +55,6 @@ public:
 protected:
     virtual void BeginPlay() override;
 
-
-private:
-
     EMonsterLeg MonsterLegType;
 
     void RaycastLeg();
@@ -79,7 +76,7 @@ private:
 
     float TimelineValue; // Y value of the leg - Current value of the timeline(0-1 unclamped)
 
-    float CurrentFloatTimelineValue; // X value of the leg - Current execution time 
+    float CurrentFloatTimelineValue; // X value of the leg - Current execution time
 
     FVector CurrentPosition; // Current position of the leg
 

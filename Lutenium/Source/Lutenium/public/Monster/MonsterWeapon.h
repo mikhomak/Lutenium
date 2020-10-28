@@ -17,27 +17,26 @@ class LUTENIUM_API AMonsterWeapon : public AActor
 public:
     AMonsterWeapon();
 
-    UPROPERTY(VisibleDefaultsOnly, Category=Monster)
+    UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category=Monster)
     class AEnemyMonsterPawn* MonsterPawn;
 
-    UPROPERTY(VisibleDefaultsOnly, Category=Monster)
+    UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category=Monster)
     class USkeletalMeshComponent* MonsterMesh;
 
-    UPROPERTY(VisibleDefaultsOnly, Category=Monster)
+    UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category=Monster)
     class UStaticMeshComponent* WeaponMesh;
 
-    UPROPERTY(VisibleDefaultsOnly, Category=Monster)
+    UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category=Monster)
     class USphereComponent* Hurtbox;
-
-
-    UPROPERTY(VisibleDefaultsOnly, Category=Health)
-    float Health;
 
     UFUNCTION()
     virtual void OnTakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
                       AActor* DamageCauser);
 protected:
     virtual void BeginPlay() override;
+
+    UPROPERTY(BlueprintReadWrite, VisibleDefaultsOnly, Category=Health)
+    float Health;
 
 
 public:

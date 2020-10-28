@@ -35,20 +35,8 @@ public:
     // Legs
     // ------------------------------------------------------------------
 
-    UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-    TArray<class UMonsterLegComponent*> Legs;
-
-    UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-    class UMonsterLegComponent* RearLeftLeg;
-
-    UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-    class UMonsterLegComponent* RearRightLeg;
-
-    UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-    class UMonsterLegComponent* FrontLeftLeg;
-
-    UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-    class UMonsterLegComponent* FrontRightLeg;
+    UFUNCTION(BlueprintCallable)
+    FVector GetLegLocation(EMonsterLeg Leg) const;
 
     UPROPERTY(EditDefaultsOnly, Category="Legs movement")
     float DistanceBetweenLegsToMove;
@@ -65,13 +53,8 @@ public:
     UPROPERTY(EditDefaultsOnly, Category="Legs movement")
     UCurveFloat* LegFloatCurve;
 
-    UFUNCTION(BlueprintCallable)
-    FVector GetLegLocation(EMonsterLeg Leg) const;
-
     void LegHasMovedEventCaller(EMonsterLeg MonsterLeg);
 
-    UFUNCTION(BlueprintImplementableEvent)
-    void LegHasMoved(EMonsterLeg Leg);
 
     // ------------------------------------------------------------------
     // Damage
@@ -89,24 +72,49 @@ public:
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
     class APipeMw* Pipe;
 
-    UPROPERTY( EditDefaultsOnly,BlueprintReadOnly, Category ="Weapons")
-    FName SputnikSocketName;
-
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category ="Weapons")
-    FName SirenSocketName;
-
-    UPROPERTY( EditDefaultsOnly,BlueprintReadOnly, Category ="Weapons")
-    FName PipeSocketName;
-
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category ="Weapons")
-    FName TrafficLightSocketName;
-
     UFUNCTION(BlueprintImplementableEvent)
     void MissileCollide(const FVector& HitLocation, const FVector& NormalizedDirection, const float DamageApplied);
 
     virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
                              AActor* DamageCauser) override;
 
+
+    // ------------------------------------------------------------------
+    // AI
+    // ------------------------------------------------------------------
+
+    UPROPERTY(EditAnywhere, Category = "AI")
+    class UBehaviorTree* BehaviorTree;
+
+
+protected:
+    virtual void BeginPlay() override;
+
+    virtual void PostInitializeComponents() override;
+
+    void GetActorEyesViewPoint(FVector& Location, FRotator& Rotation) const override;
+
+    // ------------------------------------------------------------------
+    // Legs
+    // ------------------------------------------------------------------
+
+    UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+    TArray<class UMonsterLegComponent*> Legs;
+
+    UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    class UMonsterLegComponent* RearLeftLeg;
+
+    UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    class UMonsterLegComponent* RearRightLeg;
+
+    UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    class UMonsterLegComponent* FrontLeftLeg;
+
+    UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    class UMonsterLegComponent* FrontRightLeg;
+
+    UFUNCTION(BlueprintImplementableEvent)
+    void LegHasMoved(EMonsterLeg Leg);
 
     // ------------------------------------------------------------------
     // Body Movement
@@ -140,25 +148,6 @@ public:
 
     FORCEINLINE FVector GetCurrentBodyPosition() const { return BodyPosition; }
 
-
-    // ------------------------------------------------------------------
-    // AI
-    // ------------------------------------------------------------------
-
-    UPROPERTY(EditAnywhere, Category = "AI")
-    class UBehaviorTree* BehaviorTree;
-
-
-protected:
-    virtual void BeginPlay() override;
-
-    virtual void PostInitializeComponents() override;
-
-    void GetActorEyesViewPoint(FVector& Location, FRotator& Rotation) const override;
-
-
-private:
-
     // ------------------------------------------------------------------
     // BODY MOVEMENT WHEN THERE IS AN OVERLAP FROM THE BODY TO THE LEGS
     // ------------------------------------------------------------------
@@ -170,4 +159,21 @@ private:
     bool bBodyMoving;
 
     void CheckBodyAltitudeDependingOnLegs();
+
+
+    // ------------------------------------------------------------------
+    // Weapons
+    // ------------------------------------------------------------------
+
+    UPROPERTY( EditDefaultsOnly,BlueprintReadOnly, Category ="Weapons")
+    FName SputnikSocketName;
+
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category ="Weapons")
+    FName SirenSocketName;
+
+    UPROPERTY( EditDefaultsOnly,BlueprintReadOnly, Category ="Weapons")
+    FName PipeSocketName;
+
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category ="Weapons")
+    FName TrafficLightSocketName;
 };

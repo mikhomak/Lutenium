@@ -11,11 +11,6 @@ class LUTENIUM_API UEmpMovementEffect : public UMovementEffect
 public:
     UEmpMovementEffect(){};
 
-    float EmpTime;
-
-    FVector RotationDirection;
-
-    float RotationForce;
 
     void ApplyEffect() override;
 
@@ -23,4 +18,11 @@ public:
     void Activate(const float NewEmpTime, FVector NewRotationDirection, const float NewRotationForce);
 
     FORCEINLINE void Deactivate() override { Active = false; }
+protected:
+
+    float EmpTime;
+
+    FVector RotationDirection;
+
+    float RotationForce;
 };
