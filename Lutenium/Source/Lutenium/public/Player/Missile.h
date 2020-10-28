@@ -49,9 +49,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	float WavesLifeSpan;
 
+	UPROPERTY(EditDefaultsOnly)
+	float DistanceToThePlayerWhenTheDefectedMissileIsAboutToBlowUp;
+
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	bool bIsDefected;
 
+	UFUNCTION()
+	void DefectedMissileGravity();
 
+	UFUNCTION()
+	void DefectedMissileImpulse();
 };
 

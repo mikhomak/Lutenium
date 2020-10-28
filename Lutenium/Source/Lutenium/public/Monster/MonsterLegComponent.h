@@ -96,8 +96,7 @@ protected:
 
     float LerpValue; // LerpValue to lerp the position
 
-    float DistanceBetweenLegsToMove;
-    // Needed distance between the leg and the raycast to activate the timeline for moving
+    float DistanceBetweenLegsToMove;// Needed distance between the leg and the raycast to activate the timeline for moving
 
     float RaycastDownLength; // Down length of the vector of the raycast
 

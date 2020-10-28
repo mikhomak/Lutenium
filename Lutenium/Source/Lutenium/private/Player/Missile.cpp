@@ -50,4 +50,16 @@ void AMissile::ThrowMissile(FVector ThrownDirection, float ForceAmount)
     ProjectileMovement->MaxSpeed = 0.f;
     SphereComponent->AddImpulse(ThrownDirection * ForceAmount, FName(), true);
     bIsDefected = true;
+    FTimerHandle TimerHandle;
+    GetWorld()->GetTimerManager().SetTiemr()
+}
+
+void AMissile::DefectedMissileGravity()
+{
+
+}
+
+void AMissile::DefectedMissileImpulse()
+{
+
 }
