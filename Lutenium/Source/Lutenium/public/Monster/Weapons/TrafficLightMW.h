@@ -20,24 +20,6 @@ public:
     ATrafficLightMW();
 
     // ------------------------------------------------------------------
-    // General
-    // ------------------------------------------------------------------
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Impact")
-    float MissileThrowForce;
-    // ------------------------------------------------------------------
-    // Lights Meshes
-    // ------------------------------------------------------------------
-
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-    class UStaticMeshComponent* LeftLightMesh;
-
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-    class UStaticMeshComponent* RightLightMesh;
-
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-    class UStaticMeshComponent* CenterLightMesh;
-
-    // ------------------------------------------------------------------
     // Change light
     // ------------------------------------------------------------------
 
@@ -60,40 +42,32 @@ public:
     UPROPERTY(BlueprintReadWrite, Category="Light")
     ETrafficLight CenterLightStatus;
 
+
+protected:
+    // ------------------------------------------------------------------
+    // General
+    // ------------------------------------------------------------------
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Impact")
+    float MissileThrowForce;
+
+
     // ------------------------------------------------------------------
     // Lights overlaps
     // ------------------------------------------------------------------
     UFUNCTION(BlueprintCallable)
     void LightBeginOverlap(class AActor* Actor, const ETrafficLight TrafficLightStatus, const ETrafficLightPosition TrafficLightPosition);
 
-    UFUNCTION(BlueprintCallable)
-    void RightTriggerOverlap(
-        class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
-        class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
-        bool bFromSweep, const FHitResult& SweepResult);
+    // ------------------------------------------------------------------
+    // Lights Meshes
+    // ------------------------------------------------------------------
 
-    UFUNCTION(BlueprintCallable)
-    void RightTriggerOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
-                             class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    class UStaticMeshComponent* LeftLightMesh;
 
-    UFUNCTION(BlueprintCallable)
-    void LeftTriggerOverlap(
-        class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
-        class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
-        bool bFromSweep, const FHitResult& SweepResult);
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    class UStaticMeshComponent* RightLightMesh;
 
-    UFUNCTION(BlueprintCallable)
-    void LeftTriggerOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
-                             class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-    UFUNCTION(BlueprintCallable)
-    void CenterTriggerOverlap(
-        class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
-        class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
-        bool bFromSweep, const FHitResult& SweepResult);
-
-    UFUNCTION(BlueprintCallable)
-    void CenterTriggerOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
-                             class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    class UStaticMeshComponent* CenterLightMesh;
 
 };

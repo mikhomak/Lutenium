@@ -14,9 +14,23 @@ class LUTENIUM_API AMissile : public AActor
 public:
 	AMissile();
 
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Missile)
+	class USphereComponent* SphereComponent;
+
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Movement)
+    class UProjectileMovementComponent* ProjectileMovement;
+
+	UFUNCTION(BlueprintCallable)
+	void ThrowMissile(FVector ThrownDirection, float ForceAmount);
+
+	UFUNCTION()
+	void SetTargetOrDirection(USceneComponent* Target, const FVector& ShootDirection);
+
+	FORCEINLINE void SetParentPawn(APawn* Pawn){ ParentPawn = Pawn;}
+
+
 protected:
 	virtual void BeginPlay() override;
-
 
 
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
@@ -24,16 +38,7 @@ protected:
 
 	class APawn* ParentPawn;
 
-public:
 	virtual void Tick(float DeltaTime) override;
-
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Missile)
-	class USphereComponent* SphereComponent;
-
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Movement)
-    class UProjectileMovementComponent* ProjectileMovement;
-
-
 	UPROPERTY(EditAnywhere)
 	FVector Direction;
 
@@ -43,13 +48,7 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	float WavesLifeSpan;
 
-	UFUNCTION(BlueprintCallable)
-	void ThrowMissile(FVector ThrownDirection, float ForceAmount);
 
-	UFUNCTION()
-	void SetTargetOrDirection(USceneComponent* Target, const FVector& ShootDirection);
-
-	FORCEINLINE void SetParentPawn(APawn* Pawn){ ParentPawn = Pawn;}
 
 
 };

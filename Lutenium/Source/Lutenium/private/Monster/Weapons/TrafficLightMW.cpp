@@ -33,42 +33,6 @@ void ATrafficLightMW::ChangeLight(ETrafficLightPosition Position, ETrafficLight 
 }
 
 
-void ATrafficLightMW::RightTriggerOverlap(
-    class UPrimitiveComponent *OverlappedComp, class AActor *OtherActor,
-    class UPrimitiveComponent *OtherComp, int32 OtherBodyIndex,
-    bool bFromSweep, const FHitResult &SweepResult)
-{
-}
-
-void ATrafficLightMW::RightTriggerOverlapEnd(class UPrimitiveComponent *OverlappedComp, class AActor *OtherActor,
-                                             class UPrimitiveComponent *OtherComp, int32 OtherBodyIndex)
-{
-}
-
-void ATrafficLightMW::LeftTriggerOverlap(
-    class UPrimitiveComponent *OverlappedComp, class AActor *OtherActor,
-    class UPrimitiveComponent *OtherComp, int32 OtherBodyIndex,
-    bool bFromSweep, const FHitResult &SweepResult)
-{
-}
-
-void ATrafficLightMW::LeftTriggerOverlapEnd(class UPrimitiveComponent *OverlappedComp, class AActor *OtherActor,
-                                            class UPrimitiveComponent *OtherComp, int32 OtherBodyIndex)
-{
-}
-
-void ATrafficLightMW::CenterTriggerOverlap(
-    class UPrimitiveComponent *OverlappedComp, class AActor *OtherActor,
-    class UPrimitiveComponent *OtherComp, int32 OtherBodyIndex,
-    bool bFromSweep, const FHitResult &SweepResult)
-{
-}
-
-void ATrafficLightMW::CenterTriggerOverlapEnd(class UPrimitiveComponent *OverlappedComp, class AActor *OtherActor,
-                                              class UPrimitiveComponent *OtherComp, int32 OtherBodyIndex)
-{
-}
-
 void ATrafficLightMW::LightBeginOverlap(class AActor* Actor, const ETrafficLight TrafficLightStatus, const ETrafficLightPosition TrafficLightPosition)
 {
     FVector Position;
