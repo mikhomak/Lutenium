@@ -8,6 +8,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "../public/Player/PlaneMovementComponent.h"
 #include "Components/PrimitiveComponent.h"
+#include "Components/BoxComponent.h"
 #include "../public/Player/Missile.h"
 #include "AssistUtils/AssistUtils.h"
 
@@ -28,13 +29,16 @@ APlayerPawn::APlayerPawn()
     PrimaryActorTick.bCanEverTick = true;
     PrimaryActorTick.TickGroup = TG_PostPhysics;
 
+    PlaneBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Comp"));
+    PlaneBox->SetSimulatePhysics(true);
+    PlaneBox->SetEnableGravity(false);
+    PlaneBox->SetTickGroup(TG_PostUpdateWork);
+    PlaneBox->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+    RootComponent = PlaneBox;
+
     PlaneMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("PlaneMesh0"));
     PlaneMesh->SetSkeletalMesh(ConstructorStatics.PlaneMesh.Get());
-    PlaneMesh->SetSimulatePhysics(true);
-    PlaneMesh->SetEnableGravity(false);
-    PlaneMesh->SetTickGroup(TG_PostUpdateWork);
-    PlaneMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-    RootComponent = PlaneMesh;
+    PlaneMesh->AttachToComponent(PlaneBox, FAttachmentTransformRules::KeepWorldTransform);
 
     SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm0"));
     SpringArm->SetupAttachment(RootComponent); // Attach SpringArm to RootComponent
@@ -48,7 +52,7 @@ APlayerPawn::APlayerPawn()
     Camera->bUsePawnControlRotation = false; // Don't rotate camera with controller
 
     PlaneMovement = CreateDefaultSubobject<UPlaneMovementComponent>(TEXT("Plane Movement"));
-    PlaneMovement->SetMesh(PlaneMesh);
+    PlaneMovement->SetBox(PlaneBox);
     PlaneMovement->SetPawn(this);
 
 

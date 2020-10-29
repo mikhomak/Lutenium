@@ -12,16 +12,17 @@ class LUTENIUM_API UPlaneMovementComponent final : public UActorComponent
 {
     GENERATED_BODY()
 
-    UPROPERTY(Category = Player, EditAnywhere, meta = (AllowPrivateAccess = "true"))
-    class APlayerPawn* PlayerPawn;
 
-    UPROPERTY(Category = Mesh, EditAnywhere)
-    class USkeletalMeshComponent* PlayerMesh;
 
 protected:
     virtual void BeginPlay() override;
 
 public:
+    UPROPERTY(BlueprintReadWrite, Category = Player, EditAnywhere, meta = (AllowPrivateAccess = "true"))
+    class APlayerPawn* PlayerPawn;
+
+    UPROPERTY(BlueprintReadWrite, Category = Mesh, EditAnywhere)
+    class UBoxComponent* PlayerBox;
 
     UPlaneMovementComponent();
 
@@ -50,17 +51,15 @@ public:
     // ------------------------------------------------------------------
     // Pawn setters
     // ------------------------------------------------------------------
-    UFUNCTION(BlueprintCallable, Category = "Pawn", meta = (AdvancedDisplay = "2"))
-    void SetMesh(USkeletalMeshComponent* Mesh);
-
-    UFUNCTION(BlueprintCallable, Category = "Pawn", meta = (AdvancedDisplay = "2"))
-    void SetPawn(APlayerPawn* Pawn);
+    FORCEINLINE UFUNCTION(Category="General")
+    void SetBox(class UBoxComponent* Mesh){ PlayerBox = Mesh; }
+    FORCEINLINE UFUNCTION(Category="General")
+    void SetPawn(class APlayerPawn* Pawn){ PlayerPawn = Pawn; }
 
     // ------------------------------------------------------------------
     // Movement
     // ------------------------------------------------------------------
-    UFUNCTION(BlueprintCallable, Category = "Control")
-    float GetCurrentAcceleration() const;
+    FORCEINLINE float GetCurrentAcceleration() {return CurrentAcceleration;}
 
     FORCEINLINE void ResetCurrentAcceleration() { CurrentAcceleration = 0;}
 

@@ -1,14 +1,14 @@
 ﻿#include "../public/Player/MovementEffect/DragMovementEffect.h"
 #include "../public/Player/PlaneMovementComponent.h"
 #include "../public/Player/PlayerPawn.h"
-#include "Components/SkeletalMeshComponent.h"
+#include "Components/BoxComponent.h"
 
 
 void UDragMovementEffect::ApplyEffect()
 {
     if (Active)
     {
-        PlayerMesh->AddForce(DragDirection * DragForce, FName(), true);
+        PlayerBox->AddForce(DragDirection * DragForce, FName(), true);
     }
 }
 

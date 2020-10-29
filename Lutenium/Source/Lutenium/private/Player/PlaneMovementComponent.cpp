@@ -6,7 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "Engine/World.h"
 #include "Math/Vector.h"
-#include "Components/SkeletalMeshComponent.h"
+#include "Components/BoxComponent.h"
 #include "Math/UnrealMathUtility.h"
 #include "TimerManager.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -68,7 +68,7 @@ auto UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
                                             FActorComponentTickFunction* ThisTickFunction) -> void
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-    PlayerMesh->AddTorqueInDegrees(PlayerMesh->GetPhysicsAngularVelocityInDegrees() * -1.f / 0.5f, FName(), true);
+    PlayerBox->AddTorqueInDegrees(PlayerBox->GetPhysicsAngularVelocityInDegrees() * -1.f / 0.5f, FName(), true);
     if(!bStalling)
     {
         AddGravityForce(DeltaTime);
@@ -118,7 +118,7 @@ void UPlaneMovementComponent::DashInput()
     }
     bCanDash = false;
     PlayerPawn->DashImpact();
-    PlayerMesh->AddForce(PlayerMesh->GetForwardVector() * DashImpactForce, FName(), true);
+    PlayerBox->AddForce(PlayerBox->GetForwardVector() * DashImpactForce, FName(), true);
     CurrentAcceleration = MaxThrustUpAcceleration;
     DashesLeft--;
     FTimerHandle DashCooldownTimer;
@@ -142,7 +142,7 @@ void UPlaneMovementComponent::AddTorqueToThePlane(const FVector Direction, const
     {
         const FVector ZeroVector;
         const FVector DirectionToTilt = FMath::Lerp(ZeroVector, Direction * InputVal * AirControl, 0.1f);
-        PlayerMesh->AddTorqueInRadians(DirectionToTilt, FName(), true);
+        PlayerBox->AddTorqueInRadians(DirectionToTilt, FName(), true);
     }
 }
 
@@ -169,9 +169,9 @@ void UPlaneMovementComponent::AddThrust(float DeltaTime) const
                             ? FMath::Lerp(MaxSpeed, CurrentAcceleration, MaxSpeedLerpAlpha)
                             : FMath::Clamp(CurrentAcceleration, MinSpeed, MaxSpeed);
 
-    const FVector Velocity = FMath::Lerp(PlayerMesh->GetPhysicsLinearVelocity(), PlayerMesh->GetForwardVector() * Speed,
+    const FVector Velocity = FMath::Lerp(PlayerBox->GetPhysicsLinearVelocity(), PlayerBox->GetForwardVector() * Speed,
                                          0.014f);
-    PlayerMesh->SetPhysicsLinearVelocity(Velocity, false, FName());
+    PlayerBox->SetPhysicsLinearVelocity(Velocity, false, FName());
 }
 
 void UPlaneMovementComponent::CalculateAcceleration()
@@ -189,11 +189,11 @@ void UPlaneMovementComponent::AddGravityForce(float DeltaTime) const
                                                                             FVector2D(CustomMaxGravity,
                                                                                       CustomMinGravity),
                                                                             CurrentAcceleration);
-    FVector MeshUpVectorNormalized = PlayerMesh->GetUpVector();
-    MeshUpVectorNormalized.Normalize();
-    const float AppliedGravity = FVector::DotProduct(MeshUpVectorNormalized, FVector(0, 0, 1)) *
+    FVector UpVectorNormalized = PlayerBox->GetUpVector();
+    UpVectorNormalized.Normalize();
+    const float AppliedGravity = FVector::DotProduct(UpVectorNormalized, FVector(0, 0, 1)) *
         GravityDependingOnSpeed;
-    PlayerMesh->AddForce(FVector(0, 0, AppliedGravity), FName(), true);
+    PlayerBox->AddForce(FVector(0, 0, AppliedGravity), FName(), true);
 }
 
 
@@ -205,7 +205,7 @@ void UPlaneMovementComponent::CalculateAerodynamic(float DeltaTime)
     const float DotProduct = FVector::DotProduct(UpVector, Velocity);
     if (DotProduct < 0)
     {
-        PlayerMesh->AddForce(Velocity * DotProduct * AerodynamicMultiplier, FName(), true);
+        PlayerBox->AddForce(Velocity * DotProduct * AerodynamicMultiplier, FName(), true);
     }
     HasDotChangedEventCaller(DotProduct);
 }
@@ -231,21 +231,6 @@ void UPlaneMovementComponent::ResetDashCooldown()
     {
         DashesLeft++;
     }
-}
-
-void UPlaneMovementComponent::SetMesh(USkeletalMeshComponent* Mesh)
-{
-    PlayerMesh = Mesh;
-}
-
-void UPlaneMovementComponent::SetPawn(APlayerPawn* Pawn)
-{
-    PlayerPawn = Pawn;
-}
-
-float UPlaneMovementComponent::GetCurrentAcceleration() const
-{
-    return CurrentAcceleration;
 }
 
 void UPlaneMovementComponent::AddAcceleration(const float AddedAcceleration)
