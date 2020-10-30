@@ -51,7 +51,7 @@ void AMissile::ThrowMissile(FVector ThrownDirection, float ForceAmount)
     SphereComponent->AddImpulse(ThrownDirection * ForceAmount, FName(), true);
     bIsDefected = true;
     FTimerHandle TimerHandle;
-    GetWorld()->GetTimerManager().SetTiemr()
+    //GetWorld()->GetTimerManager().SetTiemr()
 }
 
 void AMissile::DefectedMissileGravity()
