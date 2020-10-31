@@ -58,7 +58,8 @@ public:
     // ------------------------------------------------------------------
     // Movement
     // ------------------------------------------------------------------
-    FORCEINLINE float GetCurrentAcceleration() {return CurrentAcceleration;}
+    FORCEINLINE UFUNCTION(Category ="Speed")
+    float GetCurrentAcceleration() {return CurrentAcceleration;}
 
     FORCEINLINE void ResetCurrentAcceleration() { CurrentAcceleration = 0;}
 
@@ -117,14 +118,14 @@ protected:
     // SPEED
     // ------------------------------------------------------------------
 
-    UPROPERTY(Category = Speed, EditDefaultsOnly)
+    UPROPERTY(Category = Speed, EditDefaultsOnly, BlueprintReadOnly)
     float MaxSpeed;
 
-    UPROPERTY(Category = Speed, EditDefaultsOnly)
+    UPROPERTY(Category = Speed, EditDefaultsOnly, BlueprintReadOnly)
     float MinSpeed;
 
     /* Alpha to lerp the speed when the value is above MaxSpeed(could happen with dash) */
-    UPROPERTY(Category = Speed, EditDefaultsOnly)
+    UPROPERTY(Category = Speed, EditDefaultsOnly, BlueprintReadOnly)
     float MaxSpeedLerpAlpha;
 
     UPROPERTY(Category = Speed, EditDefaultsOnly)
