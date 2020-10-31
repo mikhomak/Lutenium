@@ -46,8 +46,6 @@ UPlaneMovementComponent::UPlaneMovementComponent()
     DashCooldown = 3.f;
     bCanDash = true;
 
-
-
 }
 
 void UPlaneMovementComponent::BeginPlay()
@@ -64,8 +62,8 @@ void UPlaneMovementComponent::BeginPlay()
     MovementEffects.Add(EmpMovementEffect);
 }
 
-auto UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-                                            FActorComponentTickFunction* ThisTickFunction) -> void
+void UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+                                            FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
     PlayerBox->AddTorqueInDegrees(PlayerBox->GetPhysicsAngularVelocityInDegrees() * -1.f / 0.5f, FName(), true);
@@ -74,13 +72,10 @@ auto UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
         AddGravityForce(DeltaTime);
         Movement(DeltaTime);
     }
-    else
+    else if(CurrentAcceleration > ExitStallAcceleration)
     {
-        if(CurrentAcceleration > ExitStallAcceleration)
-        {
-            EmpMovementEffect->Deactivate();
-            bStalling = false;
-        }
+        EmpMovementEffect->Deactivate();
+        bStalling = false;
     }
     for (UMovementEffect* MovementEffect : MovementEffects)
     {

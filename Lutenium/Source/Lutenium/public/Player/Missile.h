@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/TimelineComponent.h"
 #include "Missile.generated.h"
 
 UCLASS()
@@ -24,9 +25,9 @@ public:
 	void ThrowMissile(FVector ThrownDirection, float ForceAmount);
 
 	UFUNCTION()
-	void SetTargetOrDirection(USceneComponent* Target, const FVector& ShootDirection);
+	void SetTargetOrDirection(class USceneComponent* Target, const FVector& ShootDirection);
 
-	FORCEINLINE void SetParentPawn(APawn* Pawn){ ParentPawn = Pawn;}
+	FORCEINLINE void SetParentPawn(class APlayerPawn* Pawn){ PlayerPawn = Pawn;}
 
 
 protected:
@@ -37,7 +38,7 @@ protected:
 	class UStaticMeshComponent* MissileMesh;
 
 	UPROPERTY(BlueprintReadOnly)
-	class APawn* ParentPawn;
+	class APlayerPawn* PlayerPawn;
 
 	virtual void Tick(float DeltaTime) override;
 	UPROPERTY(EditAnywhere)
@@ -47,18 +48,42 @@ protected:
 	float Damage;
 
 	UPROPERTY(EditDefaultsOnly)
-	float WavesLifeSpan;
+	float MissileLifeSpan;
 
-	UPROPERTY(EditDefaultsOnly)
+	// ------------------------------------------------------------------
+	// Defected
+	// ------------------------------------------------------------------
+	UPROPERTY(EditDefaultsOnly, Category="Defected")
 	float DistanceToThePlayerWhenTheDefectedMissileIsAboutToBlowUp;
 
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category="Defected")
+	struct FTimeline DefectedTimeline;
+
+	UPROPERTY(EditDefaultsOnly, Category="Defected")
+	float DefecteedGravityForceAmount;
+
+	UPROPERTY(EditDefaultsOnly, Category="Defected")
+	float DefecteedImpulseForceAmount;
+
+    UPROPERTY(EditAnywhere, Category="Defected")
+    class UCurveFloat* Curve;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Defected")
 	bool bIsDefected;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Defected")
+	bool bIsPawnGravited;
 
 	UFUNCTION()
 	void DefectedMissileGravity();
 
 	UFUNCTION()
 	void DefectedMissileImpulse();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Defected")
+	void GotDefected();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Defected")
+	void DefectedImpulse();
 };
 

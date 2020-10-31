@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-//#include "MovementEffect/DragMovementEffect.h"
 #include "MovementEffect/MovementEffect.h"
 #include "Components/ActorComponent.h"
 #include "PlaneMovementComponent.generated.h"
@@ -52,7 +51,7 @@ public:
     // Pawn setters
     // ------------------------------------------------------------------
     FORCEINLINE UFUNCTION(Category="General")
-    void SetBox(class UBoxComponent* Mesh){ PlayerBox = Mesh; }
+    void SetBox(class UBoxComponent* Box){ PlayerBox = Box; }
     FORCEINLINE UFUNCTION(Category="General")
     void SetPawn(class APlayerPawn* Pawn){ PlayerPawn = Pawn; }
 

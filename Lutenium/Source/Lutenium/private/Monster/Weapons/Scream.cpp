@@ -4,6 +4,7 @@
 #include "../../../public/Player/MovementEffect/DragMovementEffect.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/SphereComponent.h"
+#include "Components/BoxComponent.h"
 #include "Components/PrimitiveComponent.h"
 #include "GameFramework/Actor.h"
 #include "TimerManager.h"
@@ -77,7 +78,7 @@ void AScream::SecondWaveOverlap(UPrimitiveComponent* OverlappedComp, AActor* Oth
     {
         FVector DragDirection = PlayerPawn->GetActorLocation() - GetActorLocation();
         DragDirection.Normalize();
-        PlayerPawn->GetPlaneMesh()->AddImpulse(DragDirection * 9000.f, FName(), true);
+        PlayerPawn->GetBoxComponent()->AddImpulse(DragDirection * 9000.f, FName(), true);
         SecondWaveMesh->SetCollisionProfileName(TEXT("IgnoreAll"));
     }
 }

@@ -29,25 +29,26 @@ APlayerPawn::APlayerPawn()
     PrimaryActorTick.bCanEverTick = true;
     PrimaryActorTick.TickGroup = TG_PostPhysics;
 
-    PlaneBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Comp"));
+    PlaneBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Plane Box"));
     PlaneBox->SetSimulatePhysics(true);
     PlaneBox->SetEnableGravity(false);
     PlaneBox->SetTickGroup(TG_PostUpdateWork);
     PlaneBox->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
     RootComponent = PlaneBox;
 
-    PlaneMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("PlaneMesh0"));
+    PlaneMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Plane Mesh"));
     PlaneMesh->SetSkeletalMesh(ConstructorStatics.PlaneMesh.Get());
+    PlaneMesh->SetTickGroup(TG_PostUpdateWork);
     PlaneMesh->AttachToComponent(PlaneBox, FAttachmentTransformRules::KeepWorldTransform);
 
-    SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm0"));
+    SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
     SpringArm->SetupAttachment(RootComponent); // Attach SpringArm to RootComponent
     SpringArm->TargetArmLength = 700.0f; // The camera follows at this distance behind the character
     SpringArm->SocketOffset = FVector(0.f, 0.f, 60.f);
-    SpringArm->bEnableCameraLag = true; // Do not allow camera to lag
+    SpringArm->bEnableCameraLag = true; // Allow camera to lag
     SpringArm->CameraLagSpeed = 20.f;
 
-    Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera0"));
+    Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
     Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName); // Attach the camera
     Camera->bUsePawnControlRotation = false; // Don't rotate camera with controller
 
@@ -110,14 +111,10 @@ void APlayerPawn::FireMissile()
 
 
                 FVector MissileDirection;
-                USceneComponent* Target = FAssistUtils::RaycastMissileTarget(this,
-                                                                             GetWorld(),
-                                                                             SpawnLocation,
-                                                                             GetActorForwardVector(),
-                                                                             MissileTraceLength,
-                                                                             FirstRaytraceRadius,
-                                                                             SecondRaytraceRadius,
-                                                                             MissileDirection);
+                USceneComponent* Target = FAssistUtils::RaycastMissileTarget(this,GetWorld(),
+                                                                             SpawnLocation, GetActorForwardVector(),
+                                                                             MissileTraceLength, FirstRaytraceRadius,
+                                                                             SecondRaytraceRadius, MissileDirection);
                 MissileDirection.Normalize();
                 Missile->SetTargetOrDirection(Target, GetActorForwardVector());
             }
