@@ -215,4 +215,9 @@ protected:
     // ------------------------------------------------------------------
     TArray<UMovementEffect*> MovementEffects;
 
+    // ------------------------------------------------------------------
+    // DEBUG
+    // ------------------------------------------------------------------
+    UPROPERTY(Category = Debug, EditDefaultsOnly, BlueprintReadWrite)
+    bool bUsingCppThrustDEBUG;
 };

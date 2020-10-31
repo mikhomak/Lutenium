@@ -48,6 +48,8 @@ UPlaneMovementComponent::UPlaneMovementComponent()
     DashCooldown = 3.f;
     bCanDash = true;
 
+
+    bUsingCppThrustDEBUG = true;
 }
 
 void UPlaneMovementComponent::BeginPlay()
@@ -162,13 +164,16 @@ void UPlaneMovementComponent::Thrusting(float InputVal)
 // Lerping the speed to the maximum if the current acceleration is greater than MaxSpeed(Allows dashing), and in other case clamping it to the maxSpeed
 void UPlaneMovementComponent::AddThrust(float DeltaTime) const
 {
-    const float Speed = CurrentAcceleration > MaxSpeed
-                            ? FMath::Lerp(MaxSpeed, CurrentAcceleration, MaxSpeedLerpAlpha)
-                            : FMath::Clamp(CurrentAcceleration, MinSpeed, MaxSpeed);
+    if(bUsingCppThrustDEBUG)
+    {
+        const float Speed = CurrentAcceleration > MaxSpeed
+                                ? FMath::Lerp(MaxSpeed, CurrentAcceleration, MaxSpeedLerpAlpha)
+                                : FMath::Clamp(CurrentAcceleration, MinSpeed, MaxSpeed);
 
-    const FVector Velocity = FMath::Lerp(PlayerBox->GetPhysicsLinearVelocity(), PlayerBox->GetForwardVector() * Speed,
-                                         LerpVelocity);
-    PlayerBox->SetPhysicsLinearVelocity(Velocity, false, FName());
+        const FVector Velocity = FMath::Lerp(PlayerBox->GetPhysicsLinearVelocity(), PlayerBox->GetForwardVector() * Speed,
+                                            LerpVelocity);
+        PlayerBox->SetPhysicsLinearVelocity(Velocity, false, FName());
+    }
 }
 
 void UPlaneMovementComponent::CalculateAcceleration()
