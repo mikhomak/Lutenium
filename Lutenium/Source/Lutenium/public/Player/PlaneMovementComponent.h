@@ -110,6 +110,9 @@ protected:
     UPROPERTY(Category = Control, EditDefaultsOnly)
     float RollControl;
 
+    UPROPERTY(Category = Control, EditDefaultsOnly)
+    float LerpVelocity;
+
     // ------------------------------------------------------------------
     // SPEED
     // ------------------------------------------------------------------

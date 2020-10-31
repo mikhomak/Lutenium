@@ -16,27 +16,29 @@ UPlaneMovementComponent::UPlaneMovementComponent()
     PrimaryComponentTick.bCanEverTick = true;
     PrimaryComponentTick.TickGroup = TG_PostPhysics;
 
-    MaxThrustUpAcceleration = 250000.f;
+    MaxThrustUpAcceleration = 25000.f;
     MaxThrustDownAcceleration = 5000.f;
-    MaxSpeed = 5000.f;
+    MaxSpeed = 10000.f;
     MinSpeed = 50.f;
     MaxSpeedLerpAlpha = 0.4f;
-    ThrustUpAcceleration = 3500.f;
+    ThrustUpAcceleration = 400.f;
     ThrustDownAcceleration = -2000.f;
-    NoThrustDeceleration = -500.f;
+    NoThrustDeceleration = -1500.f;
 
-    ExitStallAcceleration = 20000.f;
+    LerpVelocity = 0.014f;
+
+    ExitStallAcceleration = 18000.f;
     MaxAccelerationUntilTakeOff = 1000.f;
-    TakeOffAddedAcceleration=800.f;
+    TakeOffAddedAcceleration = 3000.f;
 
     CustomMaxGravity = -800.f;
     CustomMinGravity = -100.f;
 
-    AirControl = 0.1f;
+    AirControl = 40.f;
     YawnControl = 0.5f;
-    PitchControl = 1.4f;
-    RollControl = 1.f;
-    AerodynamicMultiplier = 0.4f;
+    PitchControl = 0.8f;
+    RollControl = 1.4f;
+    AerodynamicMultiplier = 14000.f;
 
     Dot = 0;
 
@@ -165,7 +167,7 @@ void UPlaneMovementComponent::AddThrust(float DeltaTime) const
                             : FMath::Clamp(CurrentAcceleration, MinSpeed, MaxSpeed);
 
     const FVector Velocity = FMath::Lerp(PlayerBox->GetPhysicsLinearVelocity(), PlayerBox->GetForwardVector() * Speed,
-                                         0.014f);
+                                         LerpVelocity);
     PlayerBox->SetPhysicsLinearVelocity(Velocity, false, FName());
 }
 
