@@ -72,6 +72,20 @@ public:
     UPROPERTY(Category = Control, BlueprintReadWrite, EditAnywhere)
     bool bStalling;
 
+    // ------------------------------------------------------------------
+    // SPEED
+    // ------------------------------------------------------------------
+
+    UPROPERTY(Category = Speed, EditDefaultsOnly, BlueprintReadOnly)
+    float MaxSpeed;
+
+    UPROPERTY(Category = Speed, EditDefaultsOnly, BlueprintReadOnly)
+    float MinSpeed;
+
+    /* Alpha to lerp the speed when the value is above MaxSpeed(could happen with dash) */
+    UPROPERTY(Category = Speed, EditDefaultsOnly, BlueprintReadOnly)
+    float MaxSpeedLerpAlpha;
+
     UPROPERTY(Category = Speed, BlueprintReadOnly, EditDefaultsOnly)
     float MaxThrustUpAcceleration;
 
@@ -83,7 +97,8 @@ public:
     UPROPERTY(Category = Speed, BlueprintReadWrite, EditDefaultsOnly)
     float ExitStallAcceleration;
 
-
+    UPROPERTY(Category = Speed, BlueprintReadOnly)
+    float CurrentAcceleration;
     // ------------------------------------------------------------------
     // MovementEffects
     // ------------------------------------------------------------------
@@ -118,18 +133,7 @@ protected:
     // SPEED
     // ------------------------------------------------------------------
 
-    UPROPERTY(Category = Speed, EditDefaultsOnly, BlueprintReadOnly)
-    float MaxSpeed;
 
-    UPROPERTY(Category = Speed, EditDefaultsOnly, BlueprintReadOnly)
-    float MinSpeed;
-
-    /* Alpha to lerp the speed when the value is above MaxSpeed(could happen with dash) */
-    UPROPERTY(Category = Speed, EditDefaultsOnly, BlueprintReadOnly)
-    float MaxSpeedLerpAlpha;
-
-    UPROPERTY(Category = Speed, EditDefaultsOnly)
-    float CurrentAcceleration;
 
     /* Added acceleration while thrusting */
     UPROPERTY(Category = Speed, EditDefaultsOnly)
