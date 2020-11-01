@@ -1,7 +1,7 @@
 #include "../public/Player/MovementEffect/EmpMovementEffect.h"
 #include "../public/Player/PlaneMovementComponent.h"
 #include "../public/Player/PlayerPawn.h"
-#include "Components/BoxComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 
 void UEmpMovementEffect::ApplyEffect()
 {
@@ -9,7 +9,7 @@ void UEmpMovementEffect::ApplyEffect()
     {
         const FVector ZeroVector;
         const FVector DirectionToTilt = FMath::Lerp(ZeroVector, RotationDirection * RotationForce, 0.1f);
-        PlayerBox->AddTorqueInRadians(DirectionToTilt, FName(), true);
+        PlayerMesh->AddTorqueInRadians(DirectionToTilt, FName(), true);
     }
 }
 

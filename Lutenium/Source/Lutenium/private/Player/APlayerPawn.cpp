@@ -29,17 +29,13 @@ APlayerPawn::APlayerPawn()
     PrimaryActorTick.bCanEverTick = true;
     PrimaryActorTick.TickGroup = TG_PostPhysics;
 
-    PlaneBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Plane Box"));
-    PlaneBox->SetSimulatePhysics(true);
-    PlaneBox->SetEnableGravity(false);
-    PlaneBox->SetTickGroup(TG_PostUpdateWork);
-    PlaneBox->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-    RootComponent = PlaneBox;
-
     PlaneMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Plane Mesh"));
+    PlaneMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
     PlaneMesh->SetSkeletalMesh(ConstructorStatics.PlaneMesh.Get());
     PlaneMesh->SetTickGroup(TG_PostUpdateWork);
-    PlaneMesh->AttachToComponent(PlaneBox, FAttachmentTransformRules::KeepWorldTransform);
+    PlaneMesh->SetSimulatePhysics(true);
+    PlaneMesh->SetEnableGravity(false);
+    RootComponent = PlaneMesh;
 
     SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
     SpringArm->SetupAttachment(RootComponent); // Attach SpringArm to RootComponent
@@ -53,8 +49,8 @@ APlayerPawn::APlayerPawn()
     Camera->bUsePawnControlRotation = false; // Don't rotate camera with controller
 
     PlaneMovement = CreateDefaultSubobject<UPlaneMovementComponent>(TEXT("Plane Movement"));
-    PlaneMovement->SetBox(PlaneBox);
     PlaneMovement->SetPawn(this);
+    PlaneMovement->SetMesh(PlaneMesh);
 
 
     MissileTraceLength = 50000.f;

@@ -78,7 +78,7 @@ void AScream::SecondWaveOverlap(UPrimitiveComponent* OverlappedComp, AActor* Oth
     {
         FVector DragDirection = PlayerPawn->GetActorLocation() - GetActorLocation();
         DragDirection.Normalize();
-        PlayerPawn->GetBoxComponent()->AddImpulse(DragDirection * 9000.f, FName(), true);
+        PlayerPawn->GetPlaneMesh()->AddImpulse(DragDirection * 9000.f, FName(), true);
         SecondWaveMesh->SetCollisionProfileName(TEXT("IgnoreAll"));
     }
 }

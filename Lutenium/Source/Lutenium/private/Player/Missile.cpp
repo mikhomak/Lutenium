@@ -93,7 +93,7 @@ void AMissile::DefectedMissileImpulse()
         FVector ImpulseDirection = PlayerPawn->GetActorLocation() - GetActorLocation();
         ImpulseDirection.Normalize();
         ImpulseDirection *= DefecteedImpulseForceAmount;
-        PlayerPawn->GetBoxComponent()->AddImpulse(ImpulseDirection, FName(), true);
+        PlayerPawn->GetPlaneMesh()->AddImpulse(ImpulseDirection, FName(), true);
         Destroy();
     }
 }

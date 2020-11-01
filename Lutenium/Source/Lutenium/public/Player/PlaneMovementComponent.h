@@ -17,11 +17,14 @@ protected:
     virtual void BeginPlay() override;
 
 public:
-    UPROPERTY(BlueprintReadWrite, Category = Player, EditAnywhere, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(BlueprintReadWrite, Category = Player, EditAnywhere)
     class APlayerPawn* PlayerPawn;
 
-    UPROPERTY(BlueprintReadWrite, Category = Mesh, EditAnywhere)
+    UPROPERTY(BlueprintReadWrite, Category = Player, EditAnywhere)
     class UBoxComponent* PlayerBox;
+
+    UPROPERTY(BlueprintReadWrite, Category = Player, EditAnywhere)
+    class USkeletalMeshComponent* PlayerMesh;
 
     UPlaneMovementComponent();
 
@@ -54,6 +57,8 @@ public:
     void SetBox(class UBoxComponent* Box){ PlayerBox = Box; }
     FORCEINLINE UFUNCTION(Category="General")
     void SetPawn(class APlayerPawn* Pawn){ PlayerPawn = Pawn; }
+    FORCEINLINE UFUNCTION(Category="General")
+    void SetMesh(class USkeletalMeshComponent* Mesh){ PlayerMesh = Mesh; }
 
     // ------------------------------------------------------------------
     // Movement
@@ -132,8 +137,6 @@ protected:
     // ------------------------------------------------------------------
     // SPEED
     // ------------------------------------------------------------------
-
-
 
     /* Added acceleration while thrusting */
     UPROPERTY(Category = Speed, EditDefaultsOnly)

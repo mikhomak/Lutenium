@@ -8,7 +8,7 @@ void UDragMovementEffect::ApplyEffect()
 {
     if (Active)
     {
-        PlayerBox->AddForce(DragDirection * DragForce, FName(), true);
+        PlayerMesh->AddForce(DragDirection * DragForce, FName(), true);
     }
 }
 

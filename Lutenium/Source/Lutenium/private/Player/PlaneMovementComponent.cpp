@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "Engine/World.h"
 #include "Math/Vector.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/BoxComponent.h"
 #include "Math/UnrealMathUtility.h"
 #include "TimerManager.h"
@@ -70,7 +71,7 @@ void UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
                                             FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-    PlayerBox->AddTorqueInDegrees(PlayerBox->GetPhysicsAngularVelocityInDegrees() * -1.f / 0.5f, FName(), true);
+    PlayerMesh->AddTorqueInDegrees(PlayerMesh->GetPhysicsAngularVelocityInDegrees() * -1.f / 0.5f, FName(), true);
     if(!bStalling)
     {
         AddGravityForce(DeltaTime);
@@ -117,7 +118,7 @@ void UPlaneMovementComponent::DashInput()
     }
     bCanDash = false;
     PlayerPawn->DashImpact();
-    PlayerBox->AddForce(PlayerBox->GetForwardVector() * DashImpactForce, FName(), true);
+    PlayerMesh->AddForce(PlayerMesh->GetForwardVector() * DashImpactForce, FName(), true);
     CurrentAcceleration = MaxThrustUpAcceleration;
     DashesLeft--;
     FTimerHandle DashCooldownTimer;
@@ -141,7 +142,7 @@ void UPlaneMovementComponent::AddTorqueToThePlane(const FVector Direction, const
     {
         const FVector ZeroVector;
         const FVector DirectionToTilt = FMath::Lerp(ZeroVector, Direction * InputVal * AirControl, 0.1f);
-        PlayerBox->AddTorqueInRadians(DirectionToTilt, FName(), true);
+        PlayerMesh->AddTorqueInRadians(DirectionToTilt, FName(), true);
     }
 }
 
@@ -170,9 +171,9 @@ void UPlaneMovementComponent::AddThrust(float DeltaTime) const
                                 ? FMath::Lerp(MaxSpeed, CurrentAcceleration, MaxSpeedLerpAlpha)
                                 : FMath::Clamp(CurrentAcceleration, MinSpeed, MaxSpeed);
 
-        const FVector Velocity = FMath::Lerp(PlayerBox->GetPhysicsLinearVelocity(), PlayerBox->GetForwardVector() * Speed,
+        const FVector Velocity = FMath::Lerp(PlayerMesh->GetPhysicsLinearVelocity(), PlayerMesh->GetForwardVector() * Speed,
                                             LerpVelocity);
-        PlayerBox->SetPhysicsLinearVelocity(Velocity, false, FName());
+        PlayerMesh->SetPhysicsLinearVelocity(Velocity, false, FName());
     }
 }
 
@@ -191,11 +192,11 @@ void UPlaneMovementComponent::AddGravityForce(float DeltaTime) const
                                                                             FVector2D(CustomMaxGravity,
                                                                                       CustomMinGravity),
                                                                             CurrentAcceleration);
-    FVector UpVectorNormalized = PlayerBox->GetUpVector();
+    FVector UpVectorNormalized = PlayerMesh->GetUpVector();
     UpVectorNormalized.Normalize();
     const float AppliedGravity = FVector::DotProduct(UpVectorNormalized, FVector(0, 0, 1)) *
         GravityDependingOnSpeed;
-    PlayerBox->AddForce(FVector(0, 0, AppliedGravity), FName(), true);
+    PlayerMesh->AddForce(FVector(0, 0, AppliedGravity), FName(), true);
 }
 
 
@@ -207,7 +208,7 @@ void UPlaneMovementComponent::CalculateAerodynamic(float DeltaTime)
     const float DotProduct = FVector::DotProduct(UpVector, Velocity);
     if (DotProduct < 0)
     {
-        PlayerBox->AddForce(Velocity * DotProduct * AerodynamicMultiplier, FName(), true);
+        PlayerMesh->AddForce(Velocity * DotProduct * AerodynamicMultiplier, FName(), true);
     }
     HasDotChangedEventCaller(DotProduct);
 }
