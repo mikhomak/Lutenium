@@ -24,7 +24,7 @@ public:
     class UBoxComponent* PlayerBox;
 
     UPROPERTY(BlueprintReadWrite, Category = Player, EditAnywhere)
-    class USkeletalMeshComponent* PlayerMesh;
+    class UStaticMeshComponent* PlayerMesh;
 
     UPlaneMovementComponent();
 
@@ -58,7 +58,7 @@ public:
     FORCEINLINE UFUNCTION(Category="General")
     void SetPawn(class APlayerPawn* Pawn){ PlayerPawn = Pawn; }
     FORCEINLINE UFUNCTION(Category="General")
-    void SetMesh(class USkeletalMeshComponent* Mesh){ PlayerMesh = Mesh; }
+    void SetMesh(class UStaticMeshComponent* Mesh){ PlayerMesh = Mesh; }
 
     // ------------------------------------------------------------------
     // Movement

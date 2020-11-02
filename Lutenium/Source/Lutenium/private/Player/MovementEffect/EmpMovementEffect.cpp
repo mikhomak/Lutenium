@@ -1,7 +1,6 @@
 #include "../public/Player/MovementEffect/EmpMovementEffect.h"
 #include "../public/Player/PlaneMovementComponent.h"
 #include "../public/Player/PlayerPawn.h"
-#include "Components/SkeletalMeshComponent.h"
 
 void UEmpMovementEffect::ApplyEffect()
 {

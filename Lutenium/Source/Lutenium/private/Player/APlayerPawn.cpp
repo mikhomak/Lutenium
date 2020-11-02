@@ -3,7 +3,7 @@
 #include "../public/Player/PlayerPawn.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
-#include "Components/SkeletalMeshComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "../public/Player/PlaneMovementComponent.h"
@@ -14,24 +14,13 @@
 
 APlayerPawn::APlayerPawn()
 {
-    struct FConstructorStatics
-    {
-        ConstructorHelpers::FObjectFinderOptional<USkeletalMesh> PlaneMesh;
 
-        FConstructorStatics()
-            : PlaneMesh(TEXT("/Game/Art/Models/airplane/airplaneBones.airplaneBones"))
-        {
-        }
-    };
-
-    static FConstructorStatics ConstructorStatics;
 
     PrimaryActorTick.bCanEverTick = true;
     PrimaryActorTick.TickGroup = TG_PostPhysics;
 
-    PlaneMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Plane Mesh"));
+    PlaneMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Plane Mesh"));
     PlaneMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-    PlaneMesh->SetSkeletalMesh(ConstructorStatics.PlaneMesh.Get());
     PlaneMesh->SetTickGroup(TG_PostUpdateWork);
     PlaneMesh->SetSimulatePhysics(true);
     PlaneMesh->SetEnableGravity(false);

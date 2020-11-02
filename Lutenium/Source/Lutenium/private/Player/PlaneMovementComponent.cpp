@@ -6,7 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "Engine/World.h"
 #include "Math/Vector.h"
-#include "Components/SkeletalMeshComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
 #include "Math/UnrealMathUtility.h"
 #include "TimerManager.h"

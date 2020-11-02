@@ -1,7 +1,6 @@
 ﻿#include "../public/Player/MovementEffect/DragMovementEffect.h"
 #include "../public/Player/PlaneMovementComponent.h"
 #include "../public/Player/PlayerPawn.h"
-#include "Components/BoxComponent.h"
 
 
 void UDragMovementEffect::ApplyEffect()

@@ -24,7 +24,7 @@ public:
 protected:
     class APlayerPawn* PlayerPawn;
 
-    class USkeletalMeshComponent* PlayerMesh;
+    class UStaticMeshComponent* PlayerMesh;
 
     class UPlaneMovementComponent* PlaneMovementComp;
 };
