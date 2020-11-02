@@ -15,7 +15,7 @@
 UPlaneMovementComponent::UPlaneMovementComponent()
 {
     PrimaryComponentTick.bCanEverTick = true;
-    PrimaryComponentTick.TickGroup = TG_PostPhysics;
+    //PrimaryComponentTick.TickGroup = TG_PostPhysics;
 
     MaxThrustUpAcceleration = 25000.f;
     MaxThrustDownAcceleration = 5000.f;

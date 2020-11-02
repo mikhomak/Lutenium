@@ -17,11 +17,11 @@ APlayerPawn::APlayerPawn()
 
 
     PrimaryActorTick.bCanEverTick = true;
-    PrimaryActorTick.TickGroup = TG_PostPhysics;
+    //PrimaryActorTick.TickGroup = TG_PostPhysics;
 
     PlaneMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Plane Mesh"));
     PlaneMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-    PlaneMesh->SetTickGroup(TG_PostUpdateWork);
+    //PlaneMesh->SetTickGroup(TG_PostUpdateWork);
     PlaneMesh->SetSimulatePhysics(true);
     PlaneMesh->SetEnableGravity(false);
     RootComponent = PlaneMesh;
