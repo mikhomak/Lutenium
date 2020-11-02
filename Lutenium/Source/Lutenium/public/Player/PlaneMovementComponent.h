@@ -227,5 +227,8 @@ protected:
     // DEBUG
     // ------------------------------------------------------------------
     UPROPERTY(Category = Debug, EditDefaultsOnly, BlueprintReadWrite)
-    bool bUsingCppThrustDEBUG;
+    bool bDeactivateThrust;
+
+    UPROPERTY(Category = Debug, EditDefaultsOnly, BlueprintReadWrite)
+    bool bDeactivateAerodynamics;
 };

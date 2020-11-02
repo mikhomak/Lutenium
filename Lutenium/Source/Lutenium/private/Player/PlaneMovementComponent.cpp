@@ -50,7 +50,6 @@ UPlaneMovementComponent::UPlaneMovementComponent()
     bCanDash = true;
 
 
-    bUsingCppThrustDEBUG = true;
 }
 
 void UPlaneMovementComponent::BeginPlay()
@@ -165,16 +164,17 @@ void UPlaneMovementComponent::Thrusting(float InputVal)
 // Lerping the speed to the maximum if the current acceleration is greater than MaxSpeed(Allows dashing), and in other case clamping it to the maxSpeed
 void UPlaneMovementComponent::AddThrust(float DeltaTime) const
 {
-    if(bUsingCppThrustDEBUG)
+    if(bDeactivateThrust)
     {
-        const float Speed = CurrentAcceleration > MaxSpeed
-                                ? FMath::Lerp(MaxSpeed, CurrentAcceleration, MaxSpeedLerpAlpha)
-                                : FMath::Clamp(CurrentAcceleration, MinSpeed, MaxSpeed);
-
-        const FVector Velocity = FMath::Lerp(PlayerMesh->GetPhysicsLinearVelocity(), PlayerMesh->GetForwardVector() * Speed,
-                                            LerpVelocity);
-        PlayerMesh->SetPhysicsLinearVelocity(Velocity, false, FName());
+        return;
     }
+    const float Speed = CurrentAcceleration > MaxSpeed
+                            ? FMath::Lerp(MaxSpeed, CurrentAcceleration, MaxSpeedLerpAlpha)
+                            : FMath::Clamp(CurrentAcceleration, MinSpeed, MaxSpeed);
+
+    const FVector Velocity = FMath::Lerp(PlayerMesh->GetPhysicsLinearVelocity(), PlayerMesh->GetForwardVector() * Speed,
+                                        LerpVelocity);
+    PlayerMesh->SetPhysicsLinearVelocity(Velocity, false, FName());
 }
 
 void UPlaneMovementComponent::CalculateAcceleration()
@@ -202,6 +202,10 @@ void UPlaneMovementComponent::AddGravityForce(float DeltaTime) const
 
 void UPlaneMovementComponent::CalculateAerodynamic(float DeltaTime)
 {
+    if(bDeactivateAerodynamics)
+    {
+        return;
+    }
     FVector Velocity = PlayerPawn->GetVelocity();
     const FVector UpVector = PlayerPawn->GetActorUpVector();
     Velocity.Normalize();
