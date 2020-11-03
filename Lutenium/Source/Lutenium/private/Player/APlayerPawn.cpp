@@ -18,7 +18,6 @@ APlayerPawn::APlayerPawn()
 
     PlaneMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Plane Mesh"));
     PlaneMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-    PlaneMesh->SetTickGroup(TG_PrePhysics);
     PlaneMesh->SetSimulatePhysics(true);
     PlaneMesh->SetEnableGravity(false);
     RootComponent = PlaneMesh;
@@ -27,8 +26,7 @@ APlayerPawn::APlayerPawn()
     SpringArm->SetupAttachment(RootComponent); // Attach SpringArm to RootComponent
     SpringArm->TargetArmLength = 700.0f; // The camera follows at this distance behind the character
     SpringArm->SocketOffset = FVector(0.f, 0.f, 60.f);
-    SpringArm->bEnableCameraLag = true; // Allow camera to lag
-    SpringArm->CameraLagSpeed = 20.f;
+
 
     Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
     Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName); // Attach the camera
