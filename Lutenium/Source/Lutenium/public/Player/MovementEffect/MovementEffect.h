@@ -24,7 +24,7 @@ public:
 protected:
     class APlayerPawn* PlayerPawn;
 
-    class UStaticMeshComponent* PlayerMesh;
+    class UBoxComponent* PlayerBox;
 
     class UPlaneMovementComponent* PlaneMovementComp;
 };
@@ -35,6 +35,6 @@ inline void UMovementEffect::ApplyEffect(){}
 inline void UMovementEffect::InitEffect(APlayerPawn* Pawn)
 {
     PlayerPawn = Pawn;
-    PlayerMesh = PlayerPawn->GetPlaneMesh();
-    PlaneMovementComp = PlayerPawn->GetPlaneComponent();
+    PlayerBox = PlayerPawn->GetPlaneBox();
+    PlaneMovementComp = PlayerPawn->GetPlaneMovement();
 }

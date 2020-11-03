@@ -16,11 +16,13 @@ APlayerPawn::APlayerPawn()
 {
     PrimaryActorTick.bCanEverTick = true;
 
+    PlaneBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Plane Box"));
+    PlaneBox->SetSimulatePhysics(true);
+    PlaneBox->SetEnableGravity(false);
+    RootComponent = PlaneBox;
+
     PlaneMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Plane Mesh"));
-    PlaneMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-    PlaneMesh->SetSimulatePhysics(true);
-    PlaneMesh->SetEnableGravity(false);
-    RootComponent = PlaneMesh;
+    PlaneMesh->AttachToComponent(PlaneBox, FAttachmentTransformRules::KeepWorldTransform);
 
     SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
     SpringArm->SetupAttachment(RootComponent); // Attach SpringArm to RootComponent
@@ -35,6 +37,7 @@ APlayerPawn::APlayerPawn()
     PlaneMovement = CreateDefaultSubobject<UPlaneMovementComponent>(TEXT("Plane Movement"));
     PlaneMovement->SetPawn(this);
     PlaneMovement->SetMesh(PlaneMesh);
+    PlaneMovement->SetBox(PlaneBox);
 
 
     MissileTraceLength = 50000.f;

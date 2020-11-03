@@ -47,7 +47,7 @@ void ASirenMW::SirenTriggerOverlap(
     {
         FVector DragDirection = PlayerPawn->GetActorLocation() - SirenTrigger->GetComponentTransform().GetLocation();
         DragDirection.Normalize();
-        PlayerPawn->GetPlaneComponent()->DragMovementEffect->Activate(SirenForce, DragDirection);
+        PlayerPawn->GetPlaneMovement()->DragMovementEffect->Activate(SirenForce, DragDirection);
     }
 }
 
@@ -57,6 +57,6 @@ void ASirenMW::SirenTriggerOverlapEnd(class UPrimitiveComponent* OverlappedComp,
     APlayerPawn* PlayerPawn = Cast<APlayerPawn>(OtherActor);
     if (PlayerPawn)
     {
-        PlayerPawn->GetPlaneComponent()->DragMovementEffect->Deactivate();
+        PlayerPawn->GetPlaneMovement()->DragMovementEffect->Deactivate();
     }
 }

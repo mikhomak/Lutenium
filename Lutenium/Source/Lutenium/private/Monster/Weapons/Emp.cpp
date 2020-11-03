@@ -60,6 +60,6 @@ void AEmp::EmpOverlap(
 			FMath::RandRange(0.f, 1.f),
 			FMath::RandRange(0.f, 1.f)
 		);
-        PlayerPawn->GetPlaneComponent()->EmpMovementEffect->Activate(0.f, RandomRotation, EmpRotationForce);
+        PlayerPawn->GetPlaneMovement()->EmpMovementEffect->Activate(0.f, RandomRotation, EmpRotationForce);
     }
 }

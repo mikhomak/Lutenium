@@ -65,7 +65,7 @@ void AScream::FirstWaveOverlap(
     {
         FVector DragDirection = PlayerPawn->GetActorLocation() - GetActorLocation();
         DragDirection.Normalize();
-        PlayerPawn->GetPlaneComponent()->DragMovementEffect->Activate(FirstWaveDragForce, DragDirection);
+        PlayerPawn->GetPlaneMovement()->DragMovementEffect->Activate(FirstWaveDragForce, DragDirection);
     }
 }
 
@@ -78,7 +78,7 @@ void AScream::SecondWaveOverlap(UPrimitiveComponent* OverlappedComp, AActor* Oth
     {
         FVector DragDirection = PlayerPawn->GetActorLocation() - GetActorLocation();
         DragDirection.Normalize();
-        PlayerPawn->GetPlaneMesh()->AddImpulse(DragDirection * 9000.f, FName(), true);
+        PlayerPawn->GetPlaneBox()->AddImpulse(DragDirection * 9000.f, FName(), true);
         SecondWaveMesh->SetCollisionProfileName(TEXT("IgnoreAll"));
     }
 }
@@ -90,7 +90,7 @@ void AScream::FirstWaveOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* O
     APlayerPawn* PlayerPawn = Cast<APlayerPawn>(OtherActor);
     if (PlayerPawn)
     {
-        PlayerPawn->GetPlaneComponent()->DragMovementEffect->Deactivate();
+        PlayerPawn->GetPlaneMovement()->DragMovementEffect->Deactivate();
     }
 }
 

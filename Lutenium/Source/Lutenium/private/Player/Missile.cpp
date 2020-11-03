@@ -12,7 +12,7 @@
 AMissile::AMissile()
 {
     PrimaryActorTick.bCanEverTick = true;
-    PrimaryActorTick.TickGroup = TG_PostPhysics;
+
     SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Capcule collider"));
     SphereComponent->SetSimulatePhysics(true);
     RootComponent = SphereComponent;
@@ -93,7 +93,7 @@ void AMissile::DefectedMissileImpulse()
         FVector ImpulseDirection = PlayerPawn->GetActorLocation() - GetActorLocation();
         ImpulseDirection.Normalize();
         ImpulseDirection *= DefecteedImpulseForceAmount;
-        PlayerPawn->GetPlaneMesh()->AddImpulse(ImpulseDirection, FName(), true);
+        PlayerPawn->GetPlaneBox()->AddImpulse(ImpulseDirection, FName(), true);
         Destroy();
     }
 }

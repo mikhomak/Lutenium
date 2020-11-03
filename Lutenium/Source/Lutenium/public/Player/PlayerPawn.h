@@ -23,6 +23,9 @@ class APlayerPawn : public APawn
 	UPROPERTY(Category = Movement, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UPlaneMovementComponent* PlaneMovement;
 
+	UPROPERTY(Category = Movement, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class UBoxComponent* PlaneBox;
+
 public:
 	APlayerPawn();
 	virtual void Tick(float DeltaSeconds) override;
@@ -78,5 +81,6 @@ public:
 	FORCEINLINE class UStaticMeshComponent* GetPlaneMesh() const { return PlaneMesh; }
 	FORCEINLINE class USpringArmComponent* GetSpringArm() const { return SpringArm; }
 	FORCEINLINE class UCameraComponent* GetCamera() const { return Camera; }
-	FORCEINLINE class UPlaneMovementComponent* GetPlaneComponent() const { return PlaneMovement; }
+	FORCEINLINE class UPlaneMovementComponent* GetPlaneMovement() const { return PlaneMovement; }
+	FORCEINLINE class UBoxComponent* GetPlaneBox() const { return PlaneBox; }
 };
