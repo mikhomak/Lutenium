@@ -231,4 +231,7 @@ protected:
 
     UPROPERTY(Category = Debug, EditDefaultsOnly, BlueprintReadWrite)
     bool bDeactivateAerodynamics;
+
+    UPROPERTY(Category = Debug, EditDefaultsOnly, BlueprintReadWrite)
+    bool bDeactivateGravity;
 };

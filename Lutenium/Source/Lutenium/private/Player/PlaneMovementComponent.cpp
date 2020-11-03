@@ -15,7 +15,6 @@
 UPlaneMovementComponent::UPlaneMovementComponent()
 {
     PrimaryComponentTick.bCanEverTick = true;
-    //PrimaryComponentTick.TickGroup = TG_PostPhysics;
 
     MaxThrustUpAcceleration = 25000.f;
     MaxThrustDownAcceleration = 5000.f;
@@ -187,6 +186,10 @@ void UPlaneMovementComponent::CalculateAcceleration()
 
 void UPlaneMovementComponent::AddGravityForce(float DeltaTime) const
 {
+    if(bDeactivateGravity)
+    {
+        return;
+    }
     // The faster we travel, the less gravity is applied
     const float GravityDependingOnSpeed = FMath::GetMappedRangeValueClamped(FVector2D(MinSpeed, MaxSpeed),
                                                                             FVector2D(CustomMaxGravity,
