@@ -19,7 +19,7 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 
     MaxThrustUpAcceleration = 25000.f;
     MaxThrustDownAcceleration = 5000.f;
-    MaxSpeed = 10000.f;
+    MaxSpeed = 8000.f;
     MinSpeed = 50.f;
     MaxSpeedLerpAlpha = 0.4f;
     ThrustUpAcceleration = 400.f;
