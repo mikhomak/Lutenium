@@ -5,7 +5,6 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/BoxComponent.h"
-#include "Components/PrimitiveComponent.h"
 #include "GameFramework/Actor.h"
 #include "TimerManager.h"
 
