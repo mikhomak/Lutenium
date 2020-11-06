@@ -76,7 +76,7 @@ void AMissile::DefectedMissileGravity()
         FVector GravityDirection = GetActorLocation() - PlayerPawn->GetActorLocation();
         GravityDirection.Normalize();
         GravityDirection *= DefecteedGravityForceAmount;
-        ParentPawn->GetPlaneBox()->AddForce(GravityDirection, FName(), true);
+        PlayerPawn->GetPlaneBox()->AddForce(GravityDirection, FName(), true);
         bIsPawnGravited = true;
     }
     else if(bIsPawnGravited)

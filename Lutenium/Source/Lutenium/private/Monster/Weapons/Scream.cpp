@@ -51,12 +51,12 @@ void AScream::WaveOverlap(AActor* OtherActor)
         // Dragging or impulsing the player aways lel
         if(bDragOrImpulse)
         {
-            PlayerPawn->GetPlaneMovement()->DragMovementEffect->Activate(FirstWaveDragForce, DragDirection);
+            PlayerPawn->GetPlaneMovement()->DragMovementEffect->Activate(DragForce, DragDirection);
         }
         else
         {
             PlayerPawn->GetPlaneBox()->AddImpulse(DragDirection * 9000.f, FName(), true);
-            SecondWaveMesh->SetCollisionProfileName(TEXT("IgnoreAll"));
+            WaveMesh->SetCollisionProfileName(TEXT("IgnoreAll"));
         }
     }
 }
