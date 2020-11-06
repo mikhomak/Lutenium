@@ -54,6 +54,6 @@ void ATrafficLightMW::LightBeginOverlap(class AActor* Actor, const ETrafficLight
     {
         Position = Missile->GetActorLocation() - Position;
         Position.Normalize();
-        Missile->ThrowMissile(Position, MissileThrowForce);
+        Missile->ThrowMissile(Missile->GetActorForwardVector() * -1, MissileThrowForce);
     }
 }
