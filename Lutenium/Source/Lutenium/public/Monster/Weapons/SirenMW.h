@@ -17,8 +17,10 @@ public:
 
     ASirenMW();
 
+    // Spawns dragging/impluse Scream
+    // default drag
     UFUNCTION(BlueprintCallable)
-    void DoSiren();
+    void DoSiren(bool bDragOrImpulse = true);
 
     UPROPERTY(EditDefaultsOnly, Category = "Siren")
 	TSubclassOf<class AScream> ScreamClass;
@@ -30,12 +32,8 @@ public:
     class UBoxComponent* SirenTrigger;
 
     UFUNCTION(BlueprintCallable)
-    void SirenTriggerOverlap(
-        class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
-        class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
-        bool bFromSweep, const FHitResult& SweepResult);
+    void SirenTriggerOverlap(class AActor* OtherActor);
 
     UFUNCTION(BlueprintCallable)
-    void SirenTriggerOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
-                             class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+    void SirenTriggerOverlapEnd(class AActor* OtherActor);
 };

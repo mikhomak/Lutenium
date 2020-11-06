@@ -21,7 +21,7 @@ ASirenMW::ASirenMW() : AMonsterWeapon()
     /* Set events in BP for overlapping!*/
 }
 
-void ASirenMW::DoSiren()
+void ASirenMW::DoSiren(bool bDragOrImpulse)
 {
     if (ScreamClass)
     {
@@ -33,14 +33,15 @@ void ASirenMW::DoSiren()
             SpawnParams.Instigator = MonsterPawn;
             AScream* Scream = World->SpawnActor<AScream>(ScreamClass, SirenTrigger->GetComponentTransform().GetLocation(), GetActorRotation(),
                                                             SpawnParams);
+            if(Scream)
+            {
+                Scream->SetDragOrImpulse(bDragOrImpulse);
+            }
         }
     }
 }
 
-void ASirenMW::SirenTriggerOverlap(
-    class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
-    class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
-    bool bFromSweep, const FHitResult& SweepResult)
+void ASirenMW::SirenTriggerOverlap(class AActor* OtherActor)
 {
     APlayerPawn* PlayerPawn = Cast<APlayerPawn>(OtherActor);
     if (PlayerPawn)
@@ -51,8 +52,7 @@ void ASirenMW::SirenTriggerOverlap(
     }
 }
 
-void ASirenMW::SirenTriggerOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
-                            class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+void ASirenMW::SirenTriggerOverlapEnd(class AActor* OtherActor)
 {
     APlayerPawn* PlayerPawn = Cast<APlayerPawn>(OtherActor);
     if (PlayerPawn)

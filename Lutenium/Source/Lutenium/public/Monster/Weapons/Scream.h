@@ -27,7 +27,7 @@ public:
     UPROPERTY(EditDefaultsOnly, Category=Damage)
     float ExpansionSpeed;
 
-    UPROPERTY(EditDefaultsOnly, Category=Damage)
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category=Damage)
     bool bDragOrImpulse; // true - dragging the player, false - impulse the player away
 
 
@@ -60,4 +60,6 @@ public:
 
     FORCEINLINE void SetDamage(float& NewDamage) { Damage = NewDamage; }
     FORCEINLINE void SetExpansionSpeed(float& NewExpansionSpeed) { ExpansionSpeed = NewExpansionSpeed; }
+    FORCEINLINE UFUNCTION(BlueprintCallable)
+    void SetDragOrImpulse(bool DragOrImpulse) { bDragOrImpulse = DragOrImpulse; }
 };
