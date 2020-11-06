@@ -34,10 +34,7 @@ public:
     float EmpLifeTime;
 
 	UFUNCTION(BlueprintCallable)
-    void EmpOverlap(
-        class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
-        class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
-        bool bFromSweep, const FHitResult& SweepResult);
+    void EmpOverlap(class AActor* OtherActor);
 
 	virtual void Tick(float DeltaTime) override;
 
