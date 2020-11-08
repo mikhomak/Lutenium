@@ -57,7 +57,12 @@ void AMissile::SetTargetOrDirection(USceneComponent *Target, const FVector &Shoo
         ProjectileMovement->bIsHomingProjectile = true;
         ProjectileMovement->HomingTargetComponent = Target;
     }
-    Direction = ShootDirection;
+    else
+    {
+        Direction = ShootDirection;
+        Direction.Normalize();
+        ProjectileMovement->Velocity = Direction;
+    }
 }
 
 void AMissile::ThrowMissile(FVector ThrownDirection, float ForceAmount)
