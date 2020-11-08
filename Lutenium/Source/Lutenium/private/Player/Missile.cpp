@@ -14,7 +14,7 @@ AMissile::AMissile()
     PrimaryActorTick.bCanEverTick = true;
 
     SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Capcule collider"));
-    SphereComponent->SetSimulatePhysics(true);
+    SphereComponent->SetSimulatePhysics(false);
     RootComponent = SphereComponent;
 
     MissileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Missile Mesh"));

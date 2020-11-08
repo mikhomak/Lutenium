@@ -18,7 +18,7 @@ USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const U
         // Ignoring the actor
         FCollisionQueryParams Params;
         Params.AddIgnoredActor(Actor);
-
+        FCollisionObjectQueryParams ObjectQuery(ECC_MonsterWPHurtbox);
 
         /*
          * Raycasting the first Sphere
@@ -26,11 +26,11 @@ USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const U
          * Only searching for pawns
          */
         FHitResult FirstHitResult;
-        const bool bFirstHit = World->SweepSingleByChannel(FirstHitResult,
+        const bool bFirstHit = World->SweepSingleByObjectType(FirstHitResult,
                                                            StartLocation,
                                                            EndLocation,
                                                            FQuat::Identity,
-                                                           ECC_MonsterWPHurtbox,
+                                                           ObjectQuery,
                                                            FCollisionShape::MakeSphere(FirstRaycastRadius),
                                                            Params);
         if (bFirstHit && FirstHitResult.GetComponent())
@@ -46,11 +46,11 @@ USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const U
         * Only searching for pawns
         */
         FHitResult SecondHitResult;
-        const bool bSecondHit = World->SweepSingleByChannel(SecondHitResult,
+        const bool bSecondHit = World->SweepSingleByObjectType(SecondHitResult,
                                                             StartLocation,
                                                             EndLocation,
                                                             FQuat::Identity,
-                                                            ECC_MonsterWPHurtbox,
+                                                            ObjectQuery,
                                                             FCollisionShape::MakeSphere(SecondRaycastRadius),
                                                             Params);
         if (bSecondHit && SecondHitResult.GetComponent())
