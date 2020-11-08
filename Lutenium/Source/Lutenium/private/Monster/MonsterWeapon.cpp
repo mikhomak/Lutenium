@@ -10,6 +10,7 @@ AMonsterWeapon::AMonsterWeapon()
     // set the radius of the hurtbox in bp
     Hurtbox = CreateDefaultSubobject<USphereComponent>(TEXT("Hurt box"));
     Hurtbox->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
+    Hurtbox->SetCollisionProfileName(TEXT("MonsterWPHurtbox"));
     PrimaryActorTick.bCanEverTick = true;
 }
 

@@ -2,7 +2,7 @@
 #include "../../public/Player/PlaneMovementComponent.h"
 #include "Math/Vector.h"
 #include "Kismet/KismetSystemLibrary.h"
-
+#define ECC_MonsterWPHurtbox ECollisionChannel::ECC_GameTraceChannel1
 
 USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const UWorld* World,
                                                                    const FVector& StartLocation,
@@ -23,14 +23,14 @@ USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const U
         /*
          * Raycasting the first Sphere
          * The smallest one
-         * Only searching for pawns 
+         * Only searching for pawns
          */
         FHitResult FirstHitResult;
         const bool bFirstHit = World->SweepSingleByChannel(FirstHitResult,
                                                            StartLocation,
                                                            EndLocation,
                                                            FQuat::Identity,
-                                                           ECollisionChannel::ECC_Pawn,
+                                                           ECC_MonsterWPHurtbox,
                                                            FCollisionShape::MakeSphere(FirstRaycastRadius),
                                                            Params);
         if (bFirstHit && FirstHitResult.GetComponent())
@@ -43,14 +43,14 @@ USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const U
         * Raycasting the second Sphere
         * If the first raycast failed, then we are raycasting the bigger area
         * The biggest one
-        * Only searching for pawns 
+        * Only searching for pawns
         */
         FHitResult SecondHitResult;
         const bool bSecondHit = World->SweepSingleByChannel(SecondHitResult,
                                                             StartLocation,
                                                             EndLocation,
                                                             FQuat::Identity,
-                                                            ECollisionChannel::ECC_Pawn,
+                                                            ECC_MonsterWPHurtbox,
                                                             FCollisionShape::MakeSphere(SecondRaycastRadius),
                                                             Params);
         if (bSecondHit && SecondHitResult.GetComponent())
