@@ -56,7 +56,7 @@ protected:
 	UFUNCTION(BlueprintCallable, Category="Damage")
 	void Explode();
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Defected")
+	UFUNCTION(BlueprintImplementableEvent, Category = "Damage")
 	void OnExplode();
 	// ------------------------------------------------------------------
 	// Defected

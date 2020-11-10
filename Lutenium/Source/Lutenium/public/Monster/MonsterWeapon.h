@@ -29,13 +29,16 @@ public:
     UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category=Monster)
     class USphereComponent* Hurtbox;
 
-    UFUNCTION()
-    virtual void OnTakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
-                      AActor* DamageCauser);
+    UFUNCTION(BlueprintCallable)
+    void OnTakeDamage(float Damage);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Damage")
+    void Disattatch();
+
 protected:
     virtual void BeginPlay() override;
 
-    UPROPERTY(BlueprintReadWrite, VisibleDefaultsOnly, Category=Health)
+    UPROPERTY(BlueprintReadWrite, VisibleDefaultsOnly, Category="Health")
     float Health;
 
 

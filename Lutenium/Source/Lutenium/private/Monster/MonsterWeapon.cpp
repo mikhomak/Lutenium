@@ -12,12 +12,18 @@ AMonsterWeapon::AMonsterWeapon()
     Hurtbox->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
     Hurtbox->SetCollisionProfileName(TEXT("MonsterWPHurtbox"));
     PrimaryActorTick.bCanEverTick = true;
+
+    Health = 100.f;
 }
 
 
-void AMonsterWeapon::OnTakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
-    AActor* DamageCauser)
+void AMonsterWeapon::OnTakeDamage(float Damage)
 {
+    Health -= Damage;
+    if(Health < 0.f)
+    {
+        Disattatch();
+    }
 }
 
 void AMonsterWeapon::BeginPlay()
