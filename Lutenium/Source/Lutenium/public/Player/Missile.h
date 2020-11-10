@@ -44,12 +44,20 @@ protected:
 	UPROPERTY(EditAnywhere)
 	FVector Direction;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Damage")
 	float Damage;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Damage")
+	float ExplosionRadius;
 
 	UPROPERTY(EditDefaultsOnly)
 	float MissileLifeSpan;
 
+	UFUNCTION(BlueprintCallable, Category="Damage")
+	void Explode();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Defected")
+	void OnExplode();
 	// ------------------------------------------------------------------
 	// Defected
 	// ------------------------------------------------------------------

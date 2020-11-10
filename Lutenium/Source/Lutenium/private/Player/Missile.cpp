@@ -24,6 +24,7 @@ AMissile::AMissile()
     ProjectileMovement->bRotationFollowsVelocity = true;
 
     Damage = 150.f;
+    ExplosionRadius = 2000.f;
     MissileLifeSpan = 20.f;
     if (Curve)
     {
@@ -101,4 +102,17 @@ void AMissile::DefectedMissileImpulse()
         PlayerPawn->GetPlaneBox()->AddImpulse(ImpulseDirection, FName(), true);
         Destroy();
     }
+}
+
+void AMissile::Explode()
+{
+    OnExplode();
+    // Spawn VFX in Bp!
+    // Faster to do those shit in BP lol
+    // Also bind this function to Overlap and OnDestroy event
+    UGameplayStatics::ApplyRadialDamage(GetWorld(), Damage,
+                                        GetActorLocation(), ExplosionRadius,
+                                        UD_Invisibility::StaticClass(), TArray<AActor*>(),
+                                        this, (AController*)GetOwner(),
+                                        true, ECC_Visibility);
 }
