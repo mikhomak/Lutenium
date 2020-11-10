@@ -8,6 +8,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/TimelineComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/DamageType.h"
 
 AMissile::AMissile()
 {
@@ -112,7 +113,7 @@ void AMissile::Explode()
     // Also bind this function to Overlap and OnDestroy event
     UGameplayStatics::ApplyRadialDamage(GetWorld(), Damage,
                                         GetActorLocation(), ExplosionRadius,
-                                        UD_Invisibility::StaticClass(), TArray<AActor*>(),
+                                        UDamageType::StaticClass(), TArray<AActor*>(),
                                         this, (AController*)GetOwner(),
                                         true, ECC_Visibility);
 }
