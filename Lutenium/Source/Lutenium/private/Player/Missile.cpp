@@ -70,7 +70,11 @@ void AMissile::SetTargetOrDirection(USceneComponent *Target, const FVector &Shoo
 void AMissile::ThrowMissile(FVector ThrownDirection, float ForceAmount)
 {
     ProjectileMovement->MaxSpeed = 0.f;
-    SphereComponent->AddImpulse(ThrownDirection * ForceAmount, FName(), true);
+    if(ThrownDirection.IsNormalized())
+    {
+        ThrownDirection.Normalize();
+    }
+    ProjectileMovement->Velocity = ThrownDirection;
     bIsDefected = true;
     DefectedTimeline.PlayFromStart();
     GotDefected();
