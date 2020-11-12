@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "MissileTargetHit.h"
 #include "PlayerPawn.generated.h"
 
 
@@ -62,7 +63,7 @@ public:
 	FVector MissileTargetRaycastHitLocation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
-	bool MissileTargetRaycastHitLocation;
+	EMissileTargetHit MissileTargetRaycastHitType;
 
 	UPROPERTY(EditDefaultsOnly, Category = Missile)
 	TSubclassOf<class AMissile> MissileClass;

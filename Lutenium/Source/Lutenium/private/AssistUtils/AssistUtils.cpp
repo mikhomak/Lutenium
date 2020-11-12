@@ -1,5 +1,6 @@
 ﻿#include "../../public/AssistUtils/AssistUtils.h"
 #include "../../public/Player/PlaneMovementComponent.h"
+#include "../../public/Player/MissileTargetHit.h"
 #include "Math/Vector.h"
 #include "Kismet/KismetSystemLibrary.h"
 #define ECC_MonsterWPHurtbox ECollisionChannel::ECC_GameTraceChannel1
@@ -12,7 +13,7 @@ USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const U
                                                                    const float& FirstRaycastRadius,
                                                                    const float& SecondRaycastRadius,
                                                                    FVector& HitLocation,
-                                                                   bool& bMonsterHurtboxOrMonster)
+                                                                   EMissileTargetHit& MissileTargetHitType)
 {
     const FVector EndLocation = StartLocation + ForwardVector * TraceLength;
     if (World)
@@ -47,7 +48,7 @@ USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const U
                                                 Params);
             if(!bVisibilityHit)
             {
-                bMonsterHurtboxOrMonster = true;
+                MissileTargetHitType = EMissileTargetHit::MonsterWPHurtbox;
                 HitLocation = FirstHitResult.Location;
                 return FirstHitResult.GetComponent();
             }
@@ -70,10 +71,12 @@ USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const U
                                                             Params);
         if (bSecondHit && SecondHitResult.GetComponent())
         {
+            MissileTargetHitType = EMissileTargetHit::Monster;
             HitLocation = SecondHitResult.Location;
             return SecondHitResult.GetComponent();
         }
     }
+    MissileTargetHitType = EMissileTargetHit::NoHit;
     HitLocation = FVector::ZeroVector;
     return nullptr;
 }

@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "../Player/MissileTargetHit.h"
 
 class UPlaneMovementComponent;
 struct FVector;
@@ -14,6 +15,7 @@ public:
                                                        const float& TraceLength,
                                                        const float& FirstRaycastRadius,
                                                        const float& SecondRaycastRadius,
-                                                       FVector& HitLocation);
+                                                       FVector& HitLocation,
+                                                       EMissileTargetHit& MissileTargetHitType);
 private:
 };

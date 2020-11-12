@@ -51,7 +51,8 @@ void APlayerPawn::Tick(float DeltaSeconds)
     FAssistUtils::RaycastMissileTarget(this,GetWorld(),
                                         PlaneMesh->GetSocketLocation("MissileMuzzle"), GetActorForwardVector(),
                                         MissileTraceLength, FirstRaytraceRadius,
-                                        SecondRaytraceRadius, MissileTargetRaycastHitLocation);
+                                        SecondRaytraceRadius, MissileTargetRaycastHitLocation,
+                                        MissileTargetRaycastHitType);
 }
 
 void APlayerPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other,
@@ -97,7 +98,8 @@ void APlayerPawn::FireMissile()
                 MissileTarget = FAssistUtils::RaycastMissileTarget(this,GetWorld(),
                                         SpawnLocation, GetActorForwardVector(),
                                         MissileTraceLength, FirstRaytraceRadius,
-                                        SecondRaytraceRadius, MissileTargetRaycastHitLocation);
+                                        SecondRaytraceRadius, MissileTargetRaycastHitLocation,
+                                        MissileTargetRaycastHitType);
                 Missile->SetParentPawn(this);
                 Missile->SetTargetOrDirection(MissileTarget, GetActorForwardVector());
             }
