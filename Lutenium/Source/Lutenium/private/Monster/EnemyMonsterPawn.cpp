@@ -62,6 +62,7 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
 
     /* Don't forget to set the Controller in Blueprint! */
     /* Don't forget to spawn weapons in Blueprint! */
+    /* Don't forget to add them to the array of weapons ya silly*/
 }
 
 void AEnemyMonsterPawn::BeginPlay()
@@ -117,17 +118,10 @@ void AEnemyMonsterPawn::LegHasMovedEventCaller(const EMonsterLeg MonsterLeg)
 }
 
 
-float AEnemyMonsterPawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
-                                    AActor* DamageCauser)
+void AEnemyMonsterPawn::OnTakeDamage(float Damage)
 {
-    FHitResult HitResult;
-    FVector ImpulseDir;
-    DamageEvent.GetBestHitInfo(this, DamageCauser, HitResult, ImpulseDir);
-    ImpulseDir.Normalize();
-
-    MissileCollide(HitResult.Location, ImpulseDir, Damage);
-
-    return Damage;
+    Health -= Damage * ArmourDamageReduction;
+    // TODO win and shit
 }
 
 bool AEnemyMonsterPawn::RaycastLegJoints()

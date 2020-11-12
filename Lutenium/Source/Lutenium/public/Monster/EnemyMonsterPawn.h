@@ -57,8 +57,14 @@ public:
 
 
     // ------------------------------------------------------------------
-    // Damage
+    // Weapons
     // ------------------------------------------------------------------
+
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
+    float Health;
+
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
+    float ArmourDamageReduction;
 
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
     class ASputnikMW* Sputnik;
@@ -70,14 +76,29 @@ public:
     class ATrafficLightMW* TrafficLight;
 
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
-    class APipeMw* Pipe;
+    class APipeMW* Pipe;
 
     UFUNCTION(BlueprintImplementableEvent)
     void MissileCollide(const FVector& HitLocation, const FVector& NormalizedDirection, const float DamageApplied);
 
-    virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
-                             AActor* DamageCauser) override;
+    UFUNCTION(BlueprintCallable)
+    void OnTakeDamage(float Damage);
 
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category ="Weapons")
+    TArray<class AMonsterWeapon*> Weapons;
+
+    /* Use it to get a reference of the weapon if the task/ai controller. Could be nullptr because dissatached */
+    FORCEINLINE UFUNCTION(Category = "Weapons")
+    class ASputnikMW* GetSputnik(){ return Sputnik;}
+
+    FORCEINLINE UFUNCTION(Category = "Weapons")
+    class ASirenMW* GetSiren(){ return Siren;}
+
+    FORCEINLINE UFUNCTION(Category = "Weapons")
+    class APipeMW* GetPipe(){ return Pipe;}
+
+    FORCEINLINE UFUNCTION(Category = "Weapons")
+    class ATrafficLightMW* GetTrafficLight(){ return TrafficLight;}
 
     // ------------------------------------------------------------------
     // AI
