@@ -55,6 +55,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 	FVector MissileOffset;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+	class USceneComponent* MissileTarget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+	FVector MissileTargetRaycastHitLocation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+	bool MissileTargetRaycastHitLocation;
+
 	UPROPERTY(EditDefaultsOnly, Category = Missile)
 	TSubclassOf<class AMissile> MissileClass;
 
