@@ -32,8 +32,11 @@ public:
     UFUNCTION(BlueprintCallable)
     void OnTakeDamage(float Damage);
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Damage")
-    void Disattatch();
+    UFUNCTION(BlueprintCallable)
+    void Die(float Damage);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Health")
+    void DieEvent();
 
 protected:
     virtual void BeginPlay() override;

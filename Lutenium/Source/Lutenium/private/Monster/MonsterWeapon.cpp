@@ -22,11 +22,16 @@ void AMonsterWeapon::OnTakeDamage(float Damage)
     Health -= Damage;
     if(Health < 0.f)
     {
-        Disattatch();
+        DieEvent();
+        Die();
     }
 }
 
 void AMonsterWeapon::BeginPlay()
 {
     Super::BeginPlay();
+}
+
+void AMonsterWeapon::Die(){
+
 }
