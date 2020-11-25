@@ -17,16 +17,16 @@ class LUTENIUM_API AMonsterWeapon : public AActor
 public:
     AMonsterWeapon();
 
-    UPROPERTY(BlueprintReadWrite, VisibleDefaultsOnly, Category=Monster)
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category=Monster)
     class AEnemyMonsterPawn* MonsterPawn;
 
-    UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category=Monster)
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category=Monster)
     class USkeletalMeshComponent* MonsterMesh;
 
-    UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category=Monster)
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category=Monster)
     class UStaticMeshComponent* WeaponMesh;
 
-    UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category=Monster)
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category=Monster)
     class USphereComponent* Hurtbox;
 
     UFUNCTION(BlueprintCallable)
@@ -38,13 +38,13 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Health")
     void DieEvent();
 
-    UPROPERTY(BlueprintReadWrite, VisibleDefaultsOnly, Category=Monster)
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category=Monster)
     bool bDebugDeatch;
 
 protected:
     virtual void BeginPlay() override;
 
-    UPROPERTY(BlueprintReadWrite, VisibleDefaultsOnly, Category="Health")
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Health")
     float Health;
 
     /* Take damage & handle death */

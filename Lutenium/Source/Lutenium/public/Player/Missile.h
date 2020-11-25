@@ -34,7 +34,7 @@ protected:
 	virtual void BeginPlay() override;
 
 
-	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+	UPROPERTY(EditDefaultsOnly, Category = Mesh)
 	class UStaticMeshComponent* MissileMesh;
 
 	UPROPERTY(BlueprintReadOnly)
