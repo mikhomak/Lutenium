@@ -40,5 +40,6 @@ void AMonsterWeapon::BeginPlay()
 
 void AMonsterWeapon::Die()
 {
-    this->DetachRootComponentFromParent();
+    const FDetachmentTransformRules DetachmentTransformRules = FDetachmentTransformRules(EDetachmentRule::KeepWorld, true);
+    WeaponMesh->DetachFromComponent(DetachmentTransformRules);
 }
