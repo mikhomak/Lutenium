@@ -17,7 +17,7 @@ class LUTENIUM_API AMonsterWeapon : public AActor
 public:
     AMonsterWeapon();
 
-    UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category=Monster)
+    UPROPERTY(BlueprintReadWrite, VisibleDefaultsOnly, Category=Monster)
     class AEnemyMonsterPawn* MonsterPawn;
 
     UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category=Monster)
@@ -33,7 +33,7 @@ public:
     void OnTakeDamage(float Damage);
 
     UFUNCTION(BlueprintCallable)
-    void Die(float Damage);
+    void Die();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Health")
     void DieEvent();
@@ -43,6 +43,9 @@ protected:
 
     UPROPERTY(BlueprintReadWrite, VisibleDefaultsOnly, Category="Health")
     float Health;
+
+    /* Take damage & handle death */
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
 
 
 public:

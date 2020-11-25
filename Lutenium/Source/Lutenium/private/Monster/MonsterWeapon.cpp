@@ -16,6 +16,12 @@ AMonsterWeapon::AMonsterWeapon()
     Health = 100.f;
 }
 
+float AMonsterWeapon::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser)
+{
+    OnTakeDamage(Damage);
+    return Damage;
+}
+
 
 void AMonsterWeapon::OnTakeDamage(float Damage)
 {
@@ -32,6 +38,7 @@ void AMonsterWeapon::BeginPlay()
     Super::BeginPlay();
 }
 
-void AMonsterWeapon::Die(){
-
+void AMonsterWeapon::Die()
+{
+    this->DetachRootComponentFromParent();
 }
