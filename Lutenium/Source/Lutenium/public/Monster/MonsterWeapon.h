@@ -38,6 +38,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Health")
     void DieEvent();
 
+    UPROPERTY(BlueprintReadWrite, VisibleDefaultsOnly, Category=Monster)
+    bool bDebugDeatch;
+
 protected:
     virtual void BeginPlay() override;
 

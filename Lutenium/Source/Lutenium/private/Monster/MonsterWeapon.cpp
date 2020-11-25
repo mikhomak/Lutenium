@@ -14,6 +14,8 @@ AMonsterWeapon::AMonsterWeapon()
     PrimaryActorTick.bCanEverTick = true;
 
     Health = 100.f;
+
+    bDebugDeatch=false;
 }
 
 float AMonsterWeapon::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser)
@@ -40,6 +42,10 @@ void AMonsterWeapon::BeginPlay()
 
 void AMonsterWeapon::Die()
 {
+    if(bDebugDeatch)
+    {
+        return;
+    }
     const FDetachmentTransformRules DetachmentTransformRules = FDetachmentTransformRules(EDetachmentRule::KeepWorld, true);
     WeaponMesh->DetachFromComponent(DetachmentTransformRules);
 }
