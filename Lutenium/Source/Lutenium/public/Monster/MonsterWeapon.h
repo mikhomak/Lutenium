@@ -29,6 +29,21 @@ public:
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category=Monster)
     class USphereComponent* Hurtbox;
 
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Debug")
+    bool bDebugDetach;
+
+protected:
+    virtual void BeginPlay() override;
+
+	// ------------------------------------------------------------------
+	// Health & Death
+	// ------------------------------------------------------------------
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Health")
+    float Health;
+
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Heath")
+    float MassInKgAfterDetach;
+
     UFUNCTION(BlueprintCallable)
     void OnTakeDamage(float Damage);
 
@@ -38,17 +53,10 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Health")
     void DieEvent();
 
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category=Monster)
-    bool bDebugDeatch;
-
-protected:
-    virtual void BeginPlay() override;
-
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Health")
-    float Health;
-
     /* Take damage & handle death */
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
+
+
 
 
 public:
