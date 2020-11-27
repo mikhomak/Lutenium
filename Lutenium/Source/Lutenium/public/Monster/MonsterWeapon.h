@@ -32,6 +32,7 @@ public:
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Debug")
     bool bDebugDetach;
 
+
 protected:
     virtual void BeginPlay() override;
 
@@ -57,9 +58,11 @@ protected:
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
 
 
-
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Upgrade")
+    int LevelUpgrade;
 
 public:
     FORCEINLINE void SetMonsterMesh(class USkeletalMeshComponent* Mesh) { MonsterMesh = Mesh; }
     FORCEINLINE void SetMonsterPawn(class AEnemyMonsterPawn* Pawn) { MonsterPawn = Pawn; }
+    FORCEINLINE void UpgradeWeapon() { LevelUpgrade++; }
 };
