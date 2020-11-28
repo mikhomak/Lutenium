@@ -8,7 +8,7 @@
 APipeMW::APipeMW() : AMonsterWeapon()
 {
     Health = 100.f;
-    //WeaponType = EMonsterWeaponType::Pipe;
+    WeaponType = EMonsterWeaponType::Pipe;
 }
 
 void APipeMW::DoPipe()

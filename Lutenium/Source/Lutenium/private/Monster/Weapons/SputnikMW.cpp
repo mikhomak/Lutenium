@@ -11,7 +11,7 @@ ASputnikMW::ASputnikMW() : AMonsterWeapon()
 {
     Health = 100.f;
 
-    //WeaponType = EMonsterWeaponType::Sputnik;
+    WeaponType = EMonsterWeaponType::Sputnik;
 }
 
 void ASputnikMW::DoEmp()

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Weapons/MonsterWeaponType.h"
 #include "GameFramework/Actor.h"
 #include "UObject/ObjectMacros.h"
 
@@ -28,9 +29,9 @@ public:
 
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category=Monster)
     class USphereComponent* Hurtbox;
-/* 
+
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Debug")
-    EMonsterWeaponType WeaponType; */
+    EMonsterWeaponType WeaponType;
 
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Debug")
     bool bDebugDetach;

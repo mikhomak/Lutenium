@@ -16,7 +16,7 @@ ATrafficLightMW::ATrafficLightMW() : AMonsterWeapon()
     Health = 100.f;
 
 
-    //WeaponType = EMonsterWeaponType::TrafficLight;
+    WeaponType = EMonsterWeaponType::TrafficLight;
 
     /* Creating Lights meshes */
     LeftLightMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Left Light Mesh"));

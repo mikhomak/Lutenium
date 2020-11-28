@@ -21,7 +21,7 @@ ASirenMW::ASirenMW() : AMonsterWeapon()
     SirenTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("Siren trigger"));
     SirenTrigger->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
 
-    //WeaponType = EMonsterWeaponType::Siren;
+    WeaponType = EMonsterWeaponType::Siren;
 
     /* Set events in BP for overlapping!*/
 }

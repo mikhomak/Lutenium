@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "Weapons/MonsterWeaponType.h"
 #include "MonsterAIController.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class LUTENIUM_API AMonsterAIController : public AAIController
@@ -24,8 +25,8 @@ public:
     FORCEINLINE class UBehaviorTreeComponent* GetBehaviorTreeComp() { return BehaviorComp; }
 
     /* Caution! Can return nullptr! */
-    /* UFUNCTION(BlueprintCallable)
-    class AMonsterWeapon* GetWeapon(EMonsterWeaponType MonsterWeaponType); */
+    UFUNCTION(BlueprintCallable)
+    class AMonsterWeapon* GetWeapon(EMonsterWeaponType MonsterWeaponType);
 
 protected:
     virtual void BeginPlay() override;
