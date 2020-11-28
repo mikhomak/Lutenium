@@ -65,4 +65,5 @@ public:
     FORCEINLINE void SetMonsterMesh(class USkeletalMeshComponent* Mesh) { MonsterMesh = Mesh; }
     FORCEINLINE void SetMonsterPawn(class AEnemyMonsterPawn* Pawn) { MonsterPawn = Pawn; }
     FORCEINLINE void UpgradeWeapon() { LevelUpgrade++; }
+    FORCEINLINE void SetUpgradeWeapon(int Level) { LevelUpgrade = Level; }
 };

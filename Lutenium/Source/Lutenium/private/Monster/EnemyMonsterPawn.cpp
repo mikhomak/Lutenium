@@ -1,6 +1,11 @@
 #include "../../public/Monster/EnemyMonsterPawn.h"
 #include "../../public/Monster/MonsterLeg.h"
 #include "../../public/Monster/MonsterLegComponent.h"
+#include "../../public/Monster/MonsterWeapon.h"
+#include "../../public/Monster/Weapons/PipeMW.h"
+#include "../../public/Monster/Weapons/SirenMW.h"
+#include "../../public/Monster/Weapons/SputnikMW.h"
+#include "../../public/Monster/Weapons/TrafficLightMW.h"
 #include "Perception/PawnSensingComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
@@ -61,7 +66,7 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
     ToggleWhatLegsShouldMove(true);
 
     /* Don't forget to set the Controller in Blueprint! */
-    /* Don't forget to spawn weapons in Blueprint! */
+    /* Don't forget to spawn weapons in Blueprint and add them to the weapon array! */
     /* Don't forget to add them to the array of weapons ya silly*/
 }
 
@@ -85,8 +90,8 @@ void AEnemyMonsterPawn::GetActorEyesViewPoint(FVector& Location, FRotator& Rotat
 void AEnemyMonsterPawn::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    bIsBodyMovingUp=RaycastLegJoints();
-    if(bIsBodyMovingUp)
+    bIsBodyMovingUp = RaycastLegJoints();
+    if (bIsBodyMovingUp)
     {
         PawnMovement->AddInputVector(FVector::UpVector, true);
     }
@@ -184,4 +189,34 @@ void AEnemyMonsterPawn::ToggleWhatLegsShouldMove(const bool Left) const
     RearRightLeg->SetCanMove(!Left);
     FrontRightLeg->SetCanMove(Left);
     RearLeftLeg->SetCanMove(Left);
+}
+
+void AEnemyMonsterPawn::LooseWeapon(AMonsterWeapon* LostWeapon)
+{
+    Weapons.Remove(LostWeapon);
+
+    UClass* WeaponClass = LostWeapon->GetClass();
+
+    // Removing the reference of the weapon
+    if (WeaponClass == APipeMW::StaticClass())
+    {
+        Pipe = nullptr;
+    }
+    else if (WeaponClass == ASputnikMW::StaticClass())
+    {
+        Sputnik = nullptr;
+    }
+    else if(WeaponClass == ATrafficLightMW::StaticClass())
+    {
+        TrafficLight = nullptr;
+    }
+    else if(WeaponClass == ASirenMW::StaticClass())
+    {
+        Siren = nullptr;
+    }
+    
+    for (AMonsterWeapon* Weapon : Weapons)
+    {
+        Weapon->UpgradeWeapon();
+    }
 }

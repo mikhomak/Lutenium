@@ -66,6 +66,7 @@ public:
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
     float ArmourDamageReduction;
 
+    /* Weapons could be nulltptr when they got destroyed!!! Don't forget to check if its valid in BP */
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
     class ASputnikMW* Sputnik;
 
@@ -83,6 +84,9 @@ public:
 
     UFUNCTION(BlueprintCallable)
     void OnTakeDamage(float Damage);
+
+    UFUNCTION(BlueprintCallable)
+    void LooseWeapon(class AMonsterWeapon* LostWeapon);
 
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category ="Weapons")
     TArray<class AMonsterWeapon*> Weapons;
