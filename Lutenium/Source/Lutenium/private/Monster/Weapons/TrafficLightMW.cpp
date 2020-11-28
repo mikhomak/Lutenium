@@ -3,6 +3,7 @@
 #include "../../../public/Monster/Weapons/TrafficLightMW.h"
 #include "../../../public/Monster/Weapons/TrafficLight.h"
 #include "../../../public/Monster/Weapons/TrafficLightPosition.h"
+#include "../../../public/Monster/Weapons/MonsterWeaponType.h"
 #include "../../../public/Player/Missile.h"
 #include "Components/PrimitiveComponent.h"
 #include "Components/SphereComponent.h"
@@ -14,6 +15,8 @@ ATrafficLightMW::ATrafficLightMW() : AMonsterWeapon()
 {
     Health = 100.f;
 
+
+    //WeaponType = EMonsterWeaponType::TrafficLight;
 
     /* Creating Lights meshes */
     LeftLightMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Left Light Mesh"));

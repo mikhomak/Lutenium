@@ -3,6 +3,8 @@
 
 #include "../../public/Monster/MonsterAIController.h"
 #include "../../public/Monster/EnemyMonsterPawn.h"
+#include "../../public/Monster/Weapon/MonsterWeaponType.h"
+#include "../../public/Monster/MonsterWeapon.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BehaviorTree.h"
@@ -51,3 +53,25 @@ void AMonsterAIController::OnSeePlayer(TArray<AActor*> Actors)
 {
 
 }
+
+/* AMonsterWeapon* AMonsterAIController:: GetWeapon(EMonsterWeaponType MonsterWeaponType)
+{
+    AMonsterWeapon* Weapon = nullptr;
+    switch(MonsterWeaponType)
+    {
+        case EMonsterWeaponType::Pipe:
+            Weapon = MonsterPawn->Pipe;
+        break;
+        case EMonsterWeaponType::Sputnik:
+            Weapon = MonsterPawn->Sputnik;
+        break;
+        case EMonsterWeaponType::TrafficLight:
+            Weapon = MonsterPawn->TrafficLight;
+        break;
+        case EMonsterWeaponType::Siren:
+            Weapon = MonsterPawn->Siren;
+        break;
+    }
+
+    return Weapon;
+} */

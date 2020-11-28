@@ -214,7 +214,7 @@ void AEnemyMonsterPawn::LooseWeapon(AMonsterWeapon* LostWeapon)
     {
         Siren = nullptr;
     }
-    
+
     for (AMonsterWeapon* Weapon : Weapons)
     {
         Weapon->UpgradeWeapon();

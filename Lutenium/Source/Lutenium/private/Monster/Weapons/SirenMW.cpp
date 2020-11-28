@@ -7,6 +7,7 @@
 #include "../../../public/Player/PlayerPawn.h"
 #include "../../../public/Player/PlaneMovementComponent.h"
 #include "../../../public/Player/MovementEffect/DragMovementEffect.h"
+#include "../../../public/Monster/Weapons/MonsterWeaponType.h"
 #include "Components/PrimitiveComponent.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
@@ -19,6 +20,9 @@ ASirenMW::ASirenMW() : AMonsterWeapon()
     Health = 100.f;
     SirenTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("Siren trigger"));
     SirenTrigger->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
+
+    //WeaponType = EMonsterWeaponType::Siren;
+
     /* Set events in BP for overlapping!*/
 }
 

@@ -28,8 +28,11 @@ public:
 
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category=Monster)
     class USphereComponent* Hurtbox;
+/* 
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Debug")
+    EMonsterWeaponType WeaponType; */
 
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Debug")
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Debug")
     bool bDebugDetach;
 
 

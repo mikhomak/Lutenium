@@ -3,12 +3,15 @@
 #include "../../../public/Monster/Weapons/SputnikMW.h"
 #include "../../../public/Monster/Weapons/Emp.h"
 #include "../../../public/Monster/EnemyMonsterPawn.h"
+#include "../../../public/Monster/Weapons/MonsterWeaponType.h"
 #include "GameFramework/Actor.h"
 #include "Components/PrimitiveComponent.h"
 
 ASputnikMW::ASputnikMW() : AMonsterWeapon()
 {
     Health = 100.f;
+
+    //WeaponType = EMonsterWeaponType::Sputnik;
 }
 
 void ASputnikMW::DoEmp()

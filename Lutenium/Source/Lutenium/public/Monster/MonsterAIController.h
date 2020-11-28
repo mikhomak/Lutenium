@@ -23,6 +23,9 @@ public:
 
     FORCEINLINE class UBehaviorTreeComponent* GetBehaviorTreeComp() { return BehaviorComp; }
 
+    /* Caution! Can return nullptr! */
+    /* UFUNCTION(BlueprintCallable)
+    class AMonsterWeapon* GetWeapon(EMonsterWeaponType MonsterWeaponType); */
 
 protected:
     virtual void BeginPlay() override;
