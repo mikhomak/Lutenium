@@ -54,7 +54,8 @@ void AMonsterWeapon::Die()
     WeaponMesh->SetSimulatePhysics(true);
     WeaponMesh->SetMassOverrideInKg(FName(), MassInKgAfterDetach, true);
     WeaponMesh->SetCollisionProfileName(TEXT("BlockAll"));
-
-    MonsterPawn->LooseWeapon(this);
-
+    if(MonsterPawn)
+    {
+        MonsterPawn->LooseWeapon(this);
+    }
 }
