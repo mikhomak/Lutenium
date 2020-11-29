@@ -68,17 +68,43 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
     /* Don't forget to set the Controller in Blueprint! */
     /* Don't forget to spawn weapons in Blueprint and add them to the weapon array! */
     /* Don't forget to add them to the array of weapons ya silly*/
+    PipeSocketName = "PipeSocket";
 }
 
 void AEnemyMonsterPawn::BeginPlay()
 {
     Super::BeginPlay();
+    SpawnWeapons();
 }
 
 void AEnemyMonsterPawn::PostInitializeComponents()
 {
     Super::PostInitializeComponents();
 }
+
+
+void AEnemyMonsterPawn::SpawnWeapons()
+{
+    /* Spawn Params */
+    FActorSpawnParameters SpawnParams;
+
+    SpawnParams.Owner = this;
+    SpawnParams.Instigator = this;
+
+
+    /* PIPE */
+    APipeMW* SpawnedPipe = GetWorld()->SpawnActor<APipeMW>(PipeClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+    if(SpawnedPipe)
+    {
+        Pipe = SpawnedPipe;
+        Pipe->AttachToComponent(MonsterMesh, FAttachmentTransformRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false), PipeSocketName);
+        Pipe->MonsterPawn = this;
+        Pipe->MonsterMesh = MonsterMesh;
+        Weapons.Add(Pipe);
+    }
+}
+
+
 
 /* Setting actor eyes view point so AI CONTROLLER will put perception on the body  */
 void AEnemyMonsterPawn::GetActorEyesViewPoint(FVector& Location, FRotator& Rotation) const

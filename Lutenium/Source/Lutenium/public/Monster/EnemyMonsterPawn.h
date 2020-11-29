@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include  "MonsterLeg.h"
+#include "Weapons/MonsterWeaponType.h"
 #include "Components/TimelineComponent.h"
 #include "EnemyMonsterPawn.generated.h"
 
@@ -201,4 +202,19 @@ protected:
 
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category ="Weapons")
     FName TrafficLightSocketName;
+
+    UFUNCTION(BlueprintCallable)
+    void SpawnWeapons();
+
+    UPROPERTY(EditDefaultsOnly, Category = "Weapons")
+	TSubclassOf<class APipeMW> PipeClass;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Weapons")
+	TSubclassOf<class ASputnikMW> SputnikClass;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Weapons")
+	TSubclassOf<class ASirenMW> SirenClass;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Weapons")
+	TSubclassOf<class ATrafficLightMW> TrafficLightClass;
 };
