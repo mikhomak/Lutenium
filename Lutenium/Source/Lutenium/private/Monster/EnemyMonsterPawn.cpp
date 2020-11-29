@@ -65,10 +65,12 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
 
     ToggleWhatLegsShouldMove(true);
 
-    /* Don't forget to set the Controller in Blueprint! */
-    /* Don't forget to spawn weapons in Blueprint and add them to the weapon array! */
-    /* Don't forget to add them to the array of weapons ya silly*/
     PipeSocketName = "PipeSocket";
+    SputnikSocketName = "SputnikSocket";
+    SirenSocketName = "SirenSocket";
+    TrafficLightSocketName = "TrafficLightSocket";
+
+    /* Don't forget to set the AI Controller in Blueprint! */
 }
 
 void AEnemyMonsterPawn::BeginPlay()
@@ -85,6 +87,7 @@ void AEnemyMonsterPawn::PostInitializeComponents()
 
 void AEnemyMonsterPawn::SpawnWeapons()
 {
+
     /* Spawn Params */
     FActorSpawnParameters SpawnParams;
 
@@ -93,15 +96,61 @@ void AEnemyMonsterPawn::SpawnWeapons()
 
 
     /* PIPE */
-    APipeMW* SpawnedPipe = GetWorld()->SpawnActor<APipeMW>(PipeClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
-    if(SpawnedPipe)
+    if(PipeClass)
     {
-        Pipe = SpawnedPipe;
-        Pipe->AttachToComponent(MonsterMesh, FAttachmentTransformRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false), PipeSocketName);
-        Pipe->MonsterPawn = this;
-        Pipe->MonsterMesh = MonsterMesh;
-        Weapons.Add(Pipe);
+        APipeMW* SpawnedPipe = GetWorld()->SpawnActor<APipeMW>(PipeClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+        if(SpawnedPipe)
+        {
+            Pipe = SpawnedPipe;
+            Pipe->AttachToComponent(MonsterMesh, FAttachmentTransformRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false), PipeSocketName);
+            Pipe->MonsterPawn = this;
+            Pipe->MonsterMesh = MonsterMesh;
+            Weapons.Add(Pipe);
+        }
     }
+
+    /* SPUTNIK */
+    if(SputnikClass)
+    {
+        ASputnikMW* SpawnedSputnik = GetWorld()->SpawnActor<ASputnikMW>(SputnikClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+        if(SpawnedSputnik)
+        {
+            Sputnik = SpawnedSputnik;
+            Sputnik->AttachToComponent(MonsterMesh, FAttachmentTransformRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false), SputnikSocketName);
+            Sputnik->MonsterPawn = this;
+            Sputnik->MonsterMesh = MonsterMesh;
+            Weapons.Add(Sputnik);
+        }
+    }
+
+    /* SIREN */
+    if(SirenClass)
+    {
+        ASirenMW* SpawnedSiren = GetWorld()->SpawnActor<ASirenMW>(SirenClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+        if(SpawnedSiren)
+        {
+            Siren = SpawnedSiren;
+            Siren->AttachToComponent(MonsterMesh, FAttachmentTransformRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false), SirenSocketName);
+            Siren->MonsterPawn = this;
+            Siren->MonsterMesh = MonsterMesh;
+            Weapons.Add(Siren);
+        }
+    }
+
+    /* TRAFFIC LIGHT */
+    if(TrafficLightClass)
+    {
+        ATrafficLightMW* SpawnedTrafficLight = GetWorld()->SpawnActor<ATrafficLightMW>(TrafficLightClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+        if(SpawnedTrafficLight)
+        {
+            TrafficLight = SpawnedTrafficLight;
+            TrafficLight->AttachToComponent(MonsterMesh, FAttachmentTransformRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false), TrafficLightSocketName);
+            TrafficLight->MonsterPawn = this;
+            TrafficLight->MonsterMesh = MonsterMesh;
+            Weapons.Add(TrafficLight);
+        }
+    }
+
 }
 
 

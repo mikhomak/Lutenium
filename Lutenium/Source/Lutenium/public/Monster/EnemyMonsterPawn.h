@@ -206,6 +206,7 @@ protected:
     UFUNCTION(BlueprintCallable)
     void SpawnWeapons();
 
+
     UPROPERTY(EditDefaultsOnly, Category = "Weapons")
 	TSubclassOf<class APipeMW> PipeClass;
 
