@@ -1,4 +1,5 @@
 #include "../../public/Monster/MonsterWeapon.h"
+#include "../../public/Monster/EnemyMonsterPawn.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 
@@ -53,5 +54,7 @@ void AMonsterWeapon::Die()
     WeaponMesh->SetSimulatePhysics(true);
     WeaponMesh->SetMassOverrideInKg(FName(), MassInKgAfterDetach, true);
     WeaponMesh->SetCollisionProfileName(TEXT("BlockAll"));
+
+    MonsterPawn->LooseWeapon(this);
 
 }

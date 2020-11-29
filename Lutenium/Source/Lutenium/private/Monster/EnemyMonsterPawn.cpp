@@ -193,7 +193,7 @@ void AEnemyMonsterPawn::ToggleWhatLegsShouldMove(const bool Left) const
 
 void AEnemyMonsterPawn::LooseWeapon(AMonsterWeapon* LostWeapon)
 {
-    Weapons.Remove(LostWeapon);
+
 
     UClass* WeaponClass = LostWeapon->GetClass();
 
@@ -215,8 +215,14 @@ void AEnemyMonsterPawn::LooseWeapon(AMonsterWeapon* LostWeapon)
         Siren = nullptr;
     }
 
-    for (AMonsterWeapon* Weapon : Weapons)
+    if(Weapons.Num() != 0)
     {
-        Weapon->UpgradeWeapon();
+
+        Weapons.Remove(LostWeapon);
+
+        for (AMonsterWeapon* Weapon : Weapons)
+        {
+            Weapon->UpgradeWeapon();
+        }
     }
 }
