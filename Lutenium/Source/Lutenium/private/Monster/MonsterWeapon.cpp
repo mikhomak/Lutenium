@@ -56,6 +56,6 @@ void AMonsterWeapon::Die()
     WeaponMesh->SetCollisionProfileName(TEXT("BlockAll"));
     if(MonsterPawn)
     {
-        MonsterPawn->LooseWeapon(this);
+        MonsterPawn->LooseWeapon(WeaponType);
     }
 }

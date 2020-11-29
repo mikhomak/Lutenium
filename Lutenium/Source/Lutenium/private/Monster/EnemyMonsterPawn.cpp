@@ -266,38 +266,47 @@ void AEnemyMonsterPawn::ToggleWhatLegsShouldMove(const bool Left) const
     RearLeftLeg->SetCanMove(Left);
 }
 
-void AEnemyMonsterPawn::LooseWeapon(AMonsterWeapon* LostWeapon)
+void AEnemyMonsterPawn::LooseWeapon(EMonsterWeaponType WeaponType)
 {
-
-
-    UClass* WeaponClass = LostWeapon->GetClass();
-
-    // Removing the reference of the weapon
-    if (WeaponClass == APipeMW::StaticClass())
-    {
-        Pipe = nullptr;
-    }
-    else if (WeaponClass == ASputnikMW::StaticClass())
-    {
-        Sputnik = nullptr;
-    }
-    else if(WeaponClass == ATrafficLightMW::StaticClass())
-    {
-        TrafficLight = nullptr;
-    }
-    else if(WeaponClass == ASirenMW::StaticClass())
-    {
-        Siren = nullptr;
-    }
 
     if(Weapons.Num() != 0)
     {
 
-        Weapons.Remove(LostWeapon);
+        int32 RemoveIndex = -1;
 
-        for (AMonsterWeapon* Weapon : Weapons)
+        for (int32 Index = 0; Index < Weapons.Num(); Index++)
         {
-            Weapon->UpgradeWeapon();
+            if(Weapons[Index]->WeaponType == WeaponType)
+            {
+                RemoveIndex = Index;
+            }
+            else
+            {
+                Weapons[Index]->UpgradeWeapon();
+            }
+        }
+
+        if(Weapons.IsValidIndex(RemoveIndex))
+        {
+            Weapons.RemoveAt(RemoveIndex);
         }
     }
+
+    switch(WeaponType)
+    {
+        case EMonsterWeaponType::Pipe:
+            Pipe = nullptr;
+        break;
+        case EMonsterWeaponType::Sputnik:
+            Sputnik = nullptr;
+        break;
+        case EMonsterWeaponType::TrafficLight:
+            TrafficLight = nullptr;
+        break;
+        case EMonsterWeaponType::Siren:
+            Siren = nullptr;
+        break;
+    }
+
+
 }

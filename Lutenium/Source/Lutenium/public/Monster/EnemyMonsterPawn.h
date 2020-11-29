@@ -87,7 +87,7 @@ public:
     void OnTakeDamage(float Damage);
 
     UFUNCTION(BlueprintCallable)
-    void LooseWeapon(class AMonsterWeapon* LostWeapon);
+    void LooseWeapon(EMonsterWeaponType WeaponType);
 
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category ="Weapons")
     TArray<class AMonsterWeapon*> Weapons;
