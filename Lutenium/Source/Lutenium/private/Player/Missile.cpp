@@ -24,9 +24,12 @@ AMissile::AMissile()
     ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
     ProjectileMovement->bRotationFollowsVelocity = true;
 
+    NonTargetSpeed = 500.f;
+
     Damage = 150.f;
     ExplosionRadius = 2000.f;
     MissileLifeSpan = 20.f;
+
     if (Curve)
     {
         FOnTimelineFloat TimelineCallback;
@@ -63,7 +66,7 @@ void AMissile::SetTargetOrDirection(USceneComponent *Target, const FVector &Shoo
     {
         Direction = ShootDirection;
         Direction.Normalize();
-        ProjectileMovement->Velocity = Direction;
+        ProjectileMovement->Velocity = Direction * NonTargetSpeed;
     }
 }
 

@@ -41,8 +41,12 @@ protected:
 	class APlayerPawn* PlayerPawn;
 
 	virtual void Tick(float DeltaTime) override;
+
 	UPROPERTY(EditAnywhere)
 	FVector Direction;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Speed")
+	float NonTargetSpeed;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Damage")
 	float Damage;
