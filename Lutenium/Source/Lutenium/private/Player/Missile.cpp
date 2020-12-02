@@ -69,6 +69,7 @@ void AMissile::SetTargetOrDirection(USceneComponent *Target, const FVector &Shoo
 
 void AMissile::ThrowMissile(FVector ThrownDirection, float ForceAmount)
 {
+    // Enemy could throw the missile and it will explode against the player
     ProjectileMovement->MaxSpeed = 0.f;
     if(ThrownDirection.IsNormalized())
     {
@@ -82,6 +83,7 @@ void AMissile::ThrowMissile(FVector ThrownDirection, float ForceAmount)
 
 void AMissile::DefectedMissileGravity()
 {
+    // While the missile is defected, attaching the player to it
     if(FVector::Distance(GetActorLocation(), PlayerPawn->GetActorLocation()) < DistanceToThePlayerWhenTheDefectedMissileIsAboutToBlowUp)
     {
         FVector GravityDirection = GetActorLocation() - PlayerPawn->GetActorLocation();
@@ -98,6 +100,7 @@ void AMissile::DefectedMissileGravity()
 
 void AMissile::DefectedMissileImpulse()
 {
+    // After some amount of time of being deflected, explodes if the player is close lel
     if(FVector::Distance(GetActorLocation(), PlayerPawn->GetActorLocation()) < DistanceToThePlayerWhenTheDefectedMissileIsAboutToBlowUp)
     {
         DefectedImpulse();

@@ -50,10 +50,15 @@ void AMonsterWeapon::Die()
     }
     const FDetachmentTransformRules DetachmentTransformRules = FDetachmentTransformRules(EDetachmentRule::KeepWorld, true);
     WeaponMesh->DetachFromComponent(DetachmentTransformRules);
-
+    // make this shit fall!
     WeaponMesh->SetSimulatePhysics(true);
     WeaponMesh->SetMassOverrideInKg(FName(), MassInKgAfterDetach, true);
     WeaponMesh->SetCollisionProfileName(TEXT("BlockAll"));
+
+    //disable hurtbox collision so we couldnt target it with the missiles
+    Hurtbox->SetCollisionProfileName(TEXT("NoCollision"));
+
+    //Removes the refernse of the weapons and upgrades all the other ones
     if(MonsterPawn)
     {
         MonsterPawn->LooseWeapon(WeaponType);
