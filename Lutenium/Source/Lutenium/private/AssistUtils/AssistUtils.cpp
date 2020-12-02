@@ -73,7 +73,7 @@ USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const U
         {
             MissileTargetHitType = EMissileTargetHit::Monster;
             HitLocation = SecondHitResult.Location;
-            return SecondHitResult.GetComponent();
+            return nullptr;
         }
     }
     MissileTargetHitType = EMissileTargetHit::NoHit;
