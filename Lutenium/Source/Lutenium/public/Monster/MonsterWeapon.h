@@ -71,12 +71,12 @@ protected:
     /* This method has an execution time so the player will know which attack is coming*/
     /* First calls the BeforeAttackEvent to trigger the telegraphics of the attack(sonds, vfx, so on...)*/
     /* After a delay calls the main function of the weapon(some weapons could have no action function)*/
-    UFUNCTION(BlueprintCallable, , Category="Atack")
+    UFUNCTION(BlueprintCallable, Category="Atack")
     void DoAttack();
 
     /* Main method for executing the attack */
     /* Being executes after a certeain delay*/
-    UFUNCTION(BlueprintCallable, , Category="Atack")
+    UFUNCTION(BlueprintCallable, Category="Atack")
     virtual void ExecuteAttack();
 
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Atack")

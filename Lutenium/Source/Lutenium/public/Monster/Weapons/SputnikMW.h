@@ -17,7 +17,6 @@ public:
 
     ASputnikMW();
 
-    UFUNCTION(BlueprintCallable)
     virtual void ExecuteAttack() override;
 
     UFUNCTION(BlueprintCallable)

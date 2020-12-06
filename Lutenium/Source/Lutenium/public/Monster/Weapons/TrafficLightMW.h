@@ -45,7 +45,6 @@ public:
     // ------------------------------------------------------------------
     // Attack
     // ------------------------------------------------------------------
-    UFUNCTION(BlueprintCallable)
     virtual void ExecuteAttack() override;
 
 

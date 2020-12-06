@@ -17,7 +17,6 @@ public:
 
     APipeMW();
 
-    UFUNCTION(BlueprintCallable)
     virtual void ExecuteAttack() override;
 
 };

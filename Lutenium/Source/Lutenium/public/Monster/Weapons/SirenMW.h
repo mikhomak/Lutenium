@@ -18,7 +18,6 @@ public:
     ASirenMW();
 
 
-    UFUNCTION(BlueprintCallable)
     virtual void ExecuteAttack() override;
 
     UPROPERTY(EditDefaultsOnly, Category = "Siren")
