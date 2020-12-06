@@ -60,3 +60,5 @@ void ATrafficLightMW::LightBeginOverlap(class AActor* Actor, const ETrafficLight
         Missile->ThrowMissile(Missile->GetActorForwardVector() * -1, MissileThrowForce);
     }
 }
+
+void ATrafficLightMW::ExecuteAttack(){}

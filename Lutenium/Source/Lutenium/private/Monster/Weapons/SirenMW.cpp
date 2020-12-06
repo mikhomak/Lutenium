@@ -11,7 +11,6 @@
 #include "Components/PrimitiveComponent.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
-#include "TimerManager.h"
 
 
 
@@ -26,7 +25,7 @@ ASirenMW::ASirenMW() : AMonsterWeapon()
     /* Set events in BP for overlapping!*/
 }
 
-void ASirenMW::DoSiren(bool bDragOrImpulse)
+void ASirenMW::ExecuteAttack()
 {
     if (ScreamClass)
     {

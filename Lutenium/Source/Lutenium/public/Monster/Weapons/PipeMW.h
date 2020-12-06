@@ -18,6 +18,6 @@ public:
     APipeMW();
 
     UFUNCTION(BlueprintCallable)
-    void DoPipe();
+    virtual void ExecuteAttack() override;
 
 };

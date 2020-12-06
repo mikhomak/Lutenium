@@ -2,6 +2,7 @@
 #include "../../public/Monster/EnemyMonsterPawn.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "TimerManager.h"
 
 AMonsterWeapon::AMonsterWeapon()
 {
@@ -16,6 +17,8 @@ AMonsterWeapon::AMonsterWeapon()
 
     Health = 100.f;
     MassInKgAfterDetach = 55000.f;
+
+    TimeBeforeAttack = 0;
 
     bDebugDetach=false;
 }
@@ -63,4 +66,17 @@ void AMonsterWeapon::Die()
     {
         MonsterPawn->LooseWeapon(WeaponType);
     }
+}
+
+void AMonsterWeapon::DoAttack()
+{
+    BeforeAttackEvent();
+
+    FTimerHandle AttackHandler;
+    GetWorldTimerManager().SetTimer(AttackHandler, this, &AMonsterWeapon::ExecuteAttack, TimeBeforeAttack, false);
+}
+
+void AMonsterWeapon::ExecuteAttack(){
+    /* DO NOTHING */
+    /* VIRTUAL METHOD */
 }

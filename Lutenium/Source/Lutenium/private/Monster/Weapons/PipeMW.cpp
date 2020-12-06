@@ -11,7 +11,7 @@ APipeMW::APipeMW() : AMonsterWeapon()
     WeaponType = EMonsterWeaponType::Pipe;
 }
 
-void APipeMW::DoPipe()
+void APipeMW::ExecuteAttack()
 {
 
 }

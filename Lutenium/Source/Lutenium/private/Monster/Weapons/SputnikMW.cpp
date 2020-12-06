@@ -14,7 +14,7 @@ ASputnikMW::ASputnikMW() : AMonsterWeapon()
     WeaponType = EMonsterWeaponType::Sputnik;
 }
 
-void ASputnikMW::DoEmp()
+void ASputnikMW::ExecuteAttack()
 {
     if (EmpClass)
     {

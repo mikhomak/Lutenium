@@ -42,6 +42,12 @@ public:
     UPROPERTY(BlueprintReadWrite, Category="Light")
     ETrafficLight CenterLightStatus;
 
+    // ------------------------------------------------------------------
+    // Attack
+    // ------------------------------------------------------------------
+    UFUNCTION(BlueprintCallable)
+    virtual void ExecuteAttack() override;
+
 
 protected:
     // ------------------------------------------------------------------
