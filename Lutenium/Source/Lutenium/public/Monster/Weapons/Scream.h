@@ -15,21 +15,20 @@ class LUTENIUM_API AScream : public AActor
 public:
     AScream();
 
-    UPROPERTY(EditDefaultsOnly, Category=Mesh)
+    UPROPERTY(EditDefaultsOnly, Category="Mesh")
     class USphereComponent* MainSphereComp;
 
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category=Mesh)
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Mesh")
     class UStaticMeshComponent* WaveMesh;
 
-    UPROPERTY(EditDefaultsOnly, Category=Damage)
+    UPROPERTY(EditDefaultsOnly, Category="Damage")
     float Damage;
 
-    UPROPERTY(EditDefaultsOnly, Category=Damage)
+    UPROPERTY(EditDefaultsOnly, Category="Damage")
     float ExpansionSpeed;
 
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category=Damage)
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Damage")
     bool bDragOrImpulse; // true - dragging the player, false - impulse the player away
-
 
     UFUNCTION(BlueprintCallable)
     void WaveOverlap(class AActor* OtherActor);
