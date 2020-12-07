@@ -89,10 +89,14 @@ protected:
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Upgrade")
     int LevelUpgrade;
 
+    UFUNCTION(BlueprintImplementableEvent, Category = "Upgrade")
+    void OnUpgradeEvent();
+
+
 public:
     FORCEINLINE void SetMonsterMesh(class USkeletalMeshComponent* Mesh) { MonsterMesh = Mesh; }
     FORCEINLINE void SetMonsterPawn(class AEnemyMonsterPawn* Pawn) { MonsterPawn = Pawn; }
-    FORCEINLINE void UpgradeWeapon() { LevelUpgrade++; }
-    FORCEINLINE void SetUpgradeWeapon(int Level) { LevelUpgrade = Level; }
+    FORCEINLINE void UpgradeWeapon() { LevelUpgrade++; OnUpgradeEvent(); }
+    FORCEINLINE void SetUpgradeWeapon(int Level) { LevelUpgrade = Level; if(Level > LevelUpgrade) { OnUpgradeEvent(); } }
     FORCEINLINE int GetUpgradeWeapon() { return LevelUpgrade; }
 };
