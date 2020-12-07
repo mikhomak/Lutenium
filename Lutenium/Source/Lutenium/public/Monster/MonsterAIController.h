@@ -26,7 +26,11 @@ public:
 
     /* Caution! Can return nullptr! */
     UFUNCTION(BlueprintCallable)
-    class AMonsterWeapon* GetWeapon(EMonsterWeaponType MonsterWeaponType);
+    class AMonsterWeapon* GetWeapon(EMonsterWeaponType MonsterWeaponType, Category = "Weapons");
+
+    /* Returns -1 in case if weapon was detatch*/
+    UFUNCTION(BlueprintCallable)
+    class int32 GetWeaponLevel(EMonsterWeaponType MonsterWeaponType, Category = "Weapons");
 
 protected:
     virtual void BeginPlay() override;

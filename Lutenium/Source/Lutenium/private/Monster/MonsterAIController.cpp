@@ -58,7 +58,7 @@ void AMonsterAIController::OnSeePlayer(TArray<AActor*> Actors)
 
 }
 
-AMonsterWeapon* AMonsterAIController:: GetWeapon(EMonsterWeaponType MonsterWeaponType)
+AMonsterWeapon* AMonsterAIController::GetWeapon(EMonsterWeaponType MonsterWeaponType)
 {
     AMonsterWeapon* Weapon = nullptr;
     switch(MonsterWeaponType)
@@ -78,4 +78,14 @@ AMonsterWeapon* AMonsterAIController:: GetWeapon(EMonsterWeaponType MonsterWeapo
     }
 
     return Weapon;
+}
+
+int32 AMonsterAIController::GetWeaponLevel(EMonsterWeaponType MonsterWeaponType)
+{
+    AMonsterWeapon* Weapon = GetWeapon(MonsterWeaponType);
+    if(Weapon != nullptr)
+    {
+        return Weapon->GetUpgradeWeapon();
+    }
+    return -1;
 }
