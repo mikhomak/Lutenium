@@ -31,6 +31,12 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
     MonsterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
     MonsterMesh->AttachToComponent(SphereComponent, AttachmentTransformRules);
 
+    /* Setting Health settings */
+    Health = 500.f;
+    DirectDamageReduction = 0.5f;
+    bHandleDeathInCpp = true;
+
+
     /* Setting up body variables */
     BodySocketName = "BodySocket";
     BodyUpMovementSpeed = 1000.f;
@@ -197,13 +203,6 @@ void AEnemyMonsterPawn::LegHasMovedEventCaller(const EMonsterLeg MonsterLeg)
     LegHasMoved(MonsterLeg);
 }
 
-
-void AEnemyMonsterPawn::OnTakeDamage(float Damage)
-{
-    Health -= Damage * ArmourDamageReduction;
-    // TODO win and shit
-}
-
 bool AEnemyMonsterPawn::RaycastLegJoints()
 {
     FHitResult HitResult;
@@ -236,6 +235,8 @@ void AEnemyMonsterPawn::BodyTimelineMovementFinish()
 {
 }
 
+/* Checks if there is something between body and the first joint of each leg */
+/* If so, start timeline to move the body up*/
 void AEnemyMonsterPawn::CheckBodyAltitudeDependingOnLegs()
 {
     const FVector BodySocketLocation = MonsterMesh->GetSocketLocation(BodySocketName);
@@ -307,6 +308,33 @@ void AEnemyMonsterPawn::LooseWeapon(EMonsterWeaponType WeaponType)
             Siren = nullptr;
         break;
     }
+}
 
 
+float AMonsterWeapon::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser)
+{
+    Damage *= DirectDamageReduction;
+    Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+    TakeNonDirectDamage(Damage);
+    return Damage;
+}
+
+
+void AEnemyMonsterPawn::TakeNonDirectDamage(float Damage)
+{
+    Health -= Damage;
+    if(Health < 0)
+    {
+        Die();
+    }
+    return Damage;
+}
+
+void AEnemyMonsterPawn::Die()
+{
+    OnDieEvent();
+    if(bHandleDeathInCpp)
+    {
+        Destroy();
+    }
 }

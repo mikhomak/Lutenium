@@ -62,9 +62,6 @@ public:
     // ------------------------------------------------------------------
 
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
-    float Health;
-
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
     float ArmourDamageReduction;
 
     /* Weapons could be nulltptr when they got destroyed!!! Don't forget to check if its valid in BP */
@@ -82,9 +79,6 @@ public:
 
     UFUNCTION(BlueprintImplementableEvent)
     void MissileCollide(const FVector& HitLocation, const FVector& NormalizedDirection, const float DamageApplied);
-
-    UFUNCTION(BlueprintCallable)
-    void OnTakeDamage(float Damage);
 
     UFUNCTION(BlueprintCallable)
     void LooseWeapon(EMonsterWeaponType WeaponType);
@@ -112,6 +106,34 @@ public:
     UPROPERTY(EditAnywhere, Category = "AI")
     class UBehaviorTree* BehaviorTree;
 
+    // ------------------------------------------------------------------
+    // DAMAGE & HEALTH
+    // ------------------------------------------------------------------
+
+
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Health")
+    float Health;
+
+    /* Percentage value of the damage that is going to be applied */
+    /* Should be from 0 to 1 */
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Health", meta = (UIMin = "0.0", UIMax = "1.0"))
+    float DirectDamageReduction;
+
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    Die();
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "Health")
+    OnDieEvent();
+
+    /* Handles damage from the weapon. Do not reduce the damage */
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    float TakeNonDirectDamage(float Damage);
+
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Health")
+    bool bHandleDeathInCpp;
+
+    /* Handles direct damage from the player. Reduces the actual damage  */
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
 
 protected:
     virtual void BeginPlay() override;
@@ -208,14 +230,14 @@ protected:
 
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapons")
-	TSubclassOf<class APipeMW> PipeClass;
+    TSubclassOf<class APipeMW> PipeClass;
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapons")
-	TSubclassOf<class ASputnikMW> SputnikClass;
+    TSubclassOf<class ASputnikMW> SputnikClass;
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapons")
-	TSubclassOf<class ASirenMW> SirenClass;
+    TSubclassOf<class ASirenMW> SirenClass;
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapons")
-	TSubclassOf<class ATrafficLightMW> TrafficLightClass;
+    TSubclassOf<class ATrafficLightMW> TrafficLightClass;
 };

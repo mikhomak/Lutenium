@@ -25,6 +25,7 @@ AMonsterWeapon::AMonsterWeapon()
 
 float AMonsterWeapon::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser)
 {
+    Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
     OnTakeDamage(Damage);
     return Damage;
 }
@@ -70,13 +71,16 @@ void AMonsterWeapon::Die()
 
 void AMonsterWeapon::DoAttack()
 {
+    /* Invoking event to add some stuff in BP(sfx, vfx, so on...)*/
     BeforeAttackEvent();
 
+    /* Delays actual attack */
     FTimerHandle AttackHandler;
     GetWorldTimerManager().SetTimer(AttackHandler, this, &AMonsterWeapon::ExecuteAttack, TimeBeforeAttack, false);
 }
 
-void AMonsterWeapon::ExecuteAttack(){
+void AMonsterWeapon::ExecuteAttack()
+{
     /* DO NOTHING */
     /* VIRTUAL METHOD */
 }
