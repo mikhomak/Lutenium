@@ -146,19 +146,19 @@ protected:
     // Legs
     // ------------------------------------------------------------------
 
-    UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
     TArray<class UMonsterLegComponent*> Legs;
 
-    UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
     class UMonsterLegComponent* RearLeftLeg;
 
-    UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
     class UMonsterLegComponent* RearRightLeg;
 
-    UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
     class UMonsterLegComponent* FrontLeftLeg;
 
-    UPROPERTY(Category="Legs",VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
     class UMonsterLegComponent* FrontRightLeg;
 
     UFUNCTION(BlueprintImplementableEvent)
