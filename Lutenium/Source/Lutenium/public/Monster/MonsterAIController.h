@@ -25,22 +25,22 @@ public:
     FORCEINLINE class UBehaviorTreeComponent* GetBehaviorTreeComp() { return BehaviorComp; }
 
     /* Caution! Can return nullptr! */
-    UFUNCTION(BlueprintCallable)
-    class AMonsterWeapon* GetWeapon(EMonsterWeaponType MonsterWeaponType, Category = "Weapons");
+    UFUNCTION(BlueprintCallable, Category = "Weapons")
+    class AMonsterWeapon* GetWeapon(EMonsterWeaponType MonsterWeaponType);
 
     /* Returns -1 in case if weapon was detatch*/
-    UFUNCTION(BlueprintCallable)
-    class int32 GetWeaponLevel(EMonsterWeaponType MonsterWeaponType, Category = "Weapons");
+    UFUNCTION(BlueprintCallable, Category = "Weapons")
+    int32 GetWeaponLevel(EMonsterWeaponType MonsterWeaponType);
 
 protected:
     virtual void BeginPlay() override;
 
     virtual void Tick(float DeltaTime) override;
 
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Perception")
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Perception")
     class UAIPerceptionComponent* PerceptionComp;
 
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"),  Category = "Perception")
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Perception")
     class UAISenseConfig_Sight* SightConfig;
 
 

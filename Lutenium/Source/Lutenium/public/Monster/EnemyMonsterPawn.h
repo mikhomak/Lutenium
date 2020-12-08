@@ -120,14 +120,14 @@ public:
     float DirectDamageReduction;
 
     UFUNCTION(BlueprintCallable, Category = "Health")
-    Die();
+    void Die();
 
     UFUNCTION(BlueprintImplementableEvent, Category = "Health")
-    OnDieEvent();
+    void OnDieEvent();
 
     /* Handles damage from the weapon. Do not reduce the damage */
     UFUNCTION(BlueprintCallable, Category = "Health")
-    float TakeNonDirectDamage(float Damage);
+    void TakeNonDirectDamage(float Damage);
 
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Health")
     bool bHandleDeathInCpp;

@@ -311,7 +311,7 @@ void AEnemyMonsterPawn::LooseWeapon(EMonsterWeaponType WeaponType)
 }
 
 
-float AMonsterWeapon::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser)
+float AEnemyMonsterPawn::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser)
 {
     Damage *= DirectDamageReduction;
     Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
@@ -327,7 +327,6 @@ void AEnemyMonsterPawn::TakeNonDirectDamage(float Damage)
     {
         Die();
     }
-    return Damage;
 }
 
 void AEnemyMonsterPawn::Die()
