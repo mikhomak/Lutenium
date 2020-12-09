@@ -18,7 +18,7 @@ class LUTENIUM_API UBTTask_DoAttack : public UBTTask_BlackboardBase
 
 public:
 
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly)
+    UPROPERTY( EditAnywhere)
     EMonsterWeaponType WeaponType;
 
 };
