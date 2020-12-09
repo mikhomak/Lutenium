@@ -66,7 +66,7 @@ protected:
 	// ATTACK
 	// ------------------------------------------------------------------
 
-
+public:
     /* Main action method */
     /* This method has an execution time so the player will know which attack is coming*/
     /* First calls the BeforeAttackEvent to trigger the telegraphics of the attack(sonds, vfx, so on...)*/
@@ -74,6 +74,7 @@ protected:
     UFUNCTION(BlueprintCallable, Category="Atack")
     void DoAttack();
 
+protected:
     /* Main method for executing the attack */
     /* Being executes after a certeain delay*/
     UFUNCTION(BlueprintCallable, Category="Atack")
