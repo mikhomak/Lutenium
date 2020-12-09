@@ -34,6 +34,14 @@ float AMonsterWeapon::TakeDamage(float Damage, struct FDamageEvent const& Damage
 void AMonsterWeapon::OnTakeDamage(float Damage)
 {
     Health -= Damage;
+
+    // Apply damage to the monster itself
+    if(MonsterPawn)
+    {
+        MonsterPawn->TakeNonDirectDamage(Damage);
+    }
+
+    // ya die if ya die
     if(Health < 0.f)
     {
         DieEvent();
