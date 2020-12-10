@@ -18,15 +18,15 @@ EBTNodeResult::Type UBTTask_DoAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 		return EBTNodeResult::Failed;
 	}
 
-    /* Gets weapon from monster with the WeaponType, fails the task if the weapon is null (probably got destroyed) */
-    AMonsterWeapon* Weapon = MonsterController->GetWeapon(WeaponType);
-    if(Weapon == nullptr)
-    {
-		return EBTNodeResult::Failed;
-    }
+  /* Gets weapon from monster with the WeaponType, fails the task if the weapon is null (probably got destroyed) */
+  AMonsterWeapon* Weapon = MonsterController->GetWeapon(WeaponType);
+  if(Weapon == nullptr)
+  {
+    return EBTNodeResult::Failed;
+  }
 
-    Weapon->DoAttack();
+  Weapon->DoAttack();
 
-    return EBTNodeResult::Succeeded;
+  return EBTNodeResult::Succeeded;
 
 }
