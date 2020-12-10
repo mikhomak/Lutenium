@@ -5,8 +5,12 @@
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyAllTypes.h"
-#include "Kismet/GameplayStatics.h"
 
+
+UBTTask_DoAttack::UBTTask_DoAttack()
+{
+  NodeName = TEXT("Do attack with the weapon");
+}
 
 
 EBTNodeResult::Type UBTTask_DoAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
