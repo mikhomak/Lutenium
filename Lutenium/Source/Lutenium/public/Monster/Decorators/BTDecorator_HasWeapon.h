@@ -1,5 +1,9 @@
+#pragma once
+
+
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTDecorator.h"
+#include "Monster/Weapons/MonsterWeaponType.h"
 #include "BTDecorator_HasWeapon.generated.h"
 
 
