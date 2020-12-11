@@ -27,8 +27,33 @@ ATrafficLightMW::ATrafficLightMW() : AMonsterWeapon()
     MissileThrowForce = 6000.f;
 }
 
+void ATrafficLightMW::BeginPlay()
+{
+    /* Setting up default lights on the begging */
+    ChangeLight(ETrafficLightPosition::Right, ETrafficLight::Green);
+    ChangeLight(ETrafficLightPosition::Center, ETrafficLight::Red);
+    ChangeLight(ETrafficLightPosition::Left, ETrafficLight::Yellow);
+}
+
+/** Changes the light of the mesh light (duh) */
+/** Red - throws defected missile away */
+/** Yellow - throws normal missile away */
+/** Green - allows missile to hit the target */
 void ATrafficLightMW::ChangeLight(ETrafficLightPosition Position, ETrafficLight Light)
 {
+    switch(Position)
+    {
+        case ETrafficLightPosition::Right:
+            CenterLightStatus = Light;
+        break;
+        case ETrafficLightPosition::Left:
+            LeftLightStatus = Light;
+        break;
+        case ETrafficLightPosition::Center:
+            RightLightStatus = Light;
+        break;
+    }
+    /* Change the material of the Light mesh in BP */
     OnLightChanged(Position, Light);
 }
 

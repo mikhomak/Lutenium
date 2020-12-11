@@ -77,4 +77,9 @@ protected:
     UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     class UStaticMeshComponent* CenterLightMesh;
 
+    // ------------------------------------------------------------------
+    // General
+    // ------------------------------------------------------------------
+	virtual void BeginPlay() override;
+
 };
