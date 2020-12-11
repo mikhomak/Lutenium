@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../Player/MissileTargetHit.h"
+#include "Player/MissileTargetHit.h"
 
 class UPlaneMovementComponent;
 struct FVector;
@@ -12,10 +12,17 @@ public:
                                                        const UWorld* World,
                                                        const FVector& StartLocation,
                                                        const FVector& ForwardVector,
-                                                       const float& TraceLength,
-                                                       const float& FirstRaycastRadius,
-                                                       const float& SecondRaycastRadius,
+                                                       const float TraceLength,
+                                                       const float FirstRaycastRadius,
+                                                       const float SecondRaycastRadius,
                                                        FVector& HitLocation,
                                                        EMissileTargetHit& MissileTargetHitType);
-private:
+
+    static class APlayerPawn* RaycastForPlayer(const AActor* OwnerActor,
+                                               const UWorld* World,
+                                               const FVector& StartLocation,
+                                               const FVector& ForwardVector,
+                                               const float TraceLength,
+                                               const float RaycastRadius,
+                                               const FHitResult& HitResult);
 };

@@ -1,17 +1,18 @@
-﻿#include "../../public/AssistUtils/AssistUtils.h"
-#include "../../public/Player/PlaneMovementComponent.h"
-#include "../../public/Player/MissileTargetHit.h"
+﻿#include "AssistUtils/AssistUtils.h"
+#include "Player/PlaneMovementComponent.h"
+#include "Player/MissileTargetHit.h"
 #include "Math/Vector.h"
 #include "Kismet/KismetSystemLibrary.h"
 #define ECC_MonsterWPHurtbox ECollisionChannel::ECC_GameTraceChannel1
 #define ECC_Monster ECollisionChannel::ECC_GameTraceChannel2
+#define ECC_Player ECollisionChannel::ECC_GameTraceChannel3
 
 USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const UWorld* World,
                                                                    const FVector& StartLocation,
                                                                    const FVector& ForwardVector,
-                                                                   const float& TraceLength,
-                                                                   const float& FirstRaycastRadius,
-                                                                   const float& SecondRaycastRadius,
+                                                                   const float TraceLength,
+                                                                   const float FirstRaycastRadius,
+                                                                   const float SecondRaycastRadius,
                                                                    FVector& HitLocation,
                                                                    EMissileTargetHit& MissileTargetHitType)
 {
@@ -78,5 +79,44 @@ USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const U
     }
     MissileTargetHitType = EMissileTargetHit::NoHit;
     HitLocation = FVector::ZeroVector;
+    return nullptr;
+}
+
+/** Racyast the player (use for mosnter) */
+/** Raycast ONLY the player level of collision */
+/** Returns Player and HitResult */
+APlayerPawn* FAssistUtils::RaycastForPlayer(const AActor* OwnerActor,
+                                            const UWorld* World,
+                                            const FVector& StartLocation,
+                                            const FVector& ForwardVector,
+                                            const float TraceLength,
+                                            const float RaycastRadius,
+                                            const FHitResult& HitResult)
+{
+    const FVector EndLocation = StartLocation + ForwardVector * TraceLength;
+    if(World && HitResult != nullptr)
+    {
+        FCollisionQueryParams Params;
+        Params.AddIgnoredActor(OwnerActor);
+
+        FCollisionObjectQueryParams PlayerObjectQuery(ECC_Player);
+
+        const bool bHit = World->SweepSingleByObjectType(HitResult,
+                                                         StartLocation,
+                                                         EndLocation,
+                                                         FQuat::Identity,
+                                                         PlayerObjectQuery,
+                                                         FCollisionShape::MakeSphere(RaycastRadius),
+                                                         Params);
+        if(bHit && HitResult.Actor != nullptr)
+        {
+            APlayerPawn* Player =  Cast<APlayerPawn>(HitResult.Actor);
+            if(Player)
+            {
+                return Player;
+            }
+        }
+    }
+
     return nullptr;
 }
