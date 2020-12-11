@@ -50,11 +50,13 @@ public:
 
 protected:
     // ------------------------------------------------------------------
-    // General
+    // Missile
     // ------------------------------------------------------------------
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Impact")
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Missile")
     float MissileThrowForce;
 
+	UFUNCTION(BlueprintImplementableEvent, Category="Missile")
+	void OnMissileGetThrownAway(const ETrafficLightPosition Position, const ETrafficLight Light, const FVector ImpactPosition, const bool bDefected);
 
     // ------------------------------------------------------------------
     // Lights overlaps

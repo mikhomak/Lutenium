@@ -1,7 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-#include "../../public/Player/Missile.h"
-#include "../../public/Player/PlayerPawn.h"
+#include "Player/Missile.h"
+#include "Player/PlayerPawn.h"
 #include "Components/SphereComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -32,6 +30,7 @@ AMissile::AMissile()
 
     if (Curve)
     {
+        bShouldBeDefected = false;
         FOnTimelineFloat TimelineCallback;
         FOnTimelineEventStatic TimelineFinishedCallback;
 
@@ -79,9 +78,14 @@ void AMissile::ThrowMissile(FVector ThrownDirection, float ForceAmount)
         ThrownDirection.Normalize();
     }
     ProjectileMovement->Velocity = ThrownDirection;
-    bIsDefected = true;
-    DefectedTimeline.PlayFromStart();
-    GotDefected();
+
+    /* Only execute defected logic if the missile was directly set to do it. EG - red traffic light*/
+    if(bShouldBeDefected)
+    {
+        bIsDefected = true;
+        DefectedTimeline.PlayFromStart();
+        GotDefected();
+    }
 }
 
 void AMissile::DefectedMissileGravity()

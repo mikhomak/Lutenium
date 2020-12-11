@@ -30,6 +30,9 @@ public:
 	FORCEINLINE void SetParentPawn(class APlayerPawn* Pawn){ PlayerPawn = Pawn;}
 
 
+	FORCEINLINE UFUNCTION(Category="Defected")
+    void ActivateDefected(){bShouldBeDefected = true;}
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -65,6 +68,11 @@ protected:
 	// ------------------------------------------------------------------
 	// Defected
 	// ------------------------------------------------------------------
+
+	/* Missile still could be thrown but we can disable defected logic*/
+	UPROPERTY(EditDefaultsOnly, Category="Defected")
+	bool bShouldBeDefected;
+
 	UPROPERTY(EditDefaultsOnly, Category="Defected")
 	float DistanceToThePlayerWhenTheDefectedMissileIsAboutToBlowUp;
 
@@ -97,5 +105,7 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Defected")
 	void DefectedImpulse();
+
+
 };
 

@@ -1,15 +1,12 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-#include "../../../public/Monster/Weapons/TrafficLightMW.h"
-#include "../../../public/Monster/Weapons/TrafficLight.h"
-#include "../../../public/Monster/Weapons/TrafficLightPosition.h"
-#include "../../../public/Monster/Weapons/MonsterWeaponType.h"
-#include "../../../public/Player/Missile.h"
+#include "Monster/Weapons/TrafficLightMW.h"
+#include "Monster/Weapons/TrafficLight.h"
+#include "Monster/Weapons/TrafficLightPosition.h"
+#include "Monster/Weapons/MonsterWeaponType.h"
+#include "Player/Missile.h"
 #include "Components/PrimitiveComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/Actor.h"
-#include "TimerManager.h"
 
 ATrafficLightMW::ATrafficLightMW() : AMonsterWeapon()
 {
@@ -39,7 +36,8 @@ void ATrafficLightMW::ChangeLight(ETrafficLightPosition Position, ETrafficLight 
 void ATrafficLightMW::LightBeginOverlap(class AActor* Actor, const ETrafficLight TrafficLightStatus, const ETrafficLightPosition TrafficLightPosition)
 {
     FVector Position;
-    switch(TrafficLightPosition){
+    switch(TrafficLightPosition)
+    {
         case ETrafficLightPosition::Right:
             Position = RightLightMesh->GetComponentLocation();
         break;
@@ -52,12 +50,27 @@ void ATrafficLightMW::LightBeginOverlap(class AActor* Actor, const ETrafficLight
         default:
             Position = GetActorLocation();
     }
+
+
+    /* Handles the missile overlap */
+    /* Missile gets thrown away if the light is not green, otherwise do nothing */
     AMissile* Missile = Cast<AMissile>(Actor);
-    if(Missile)
+    if(TrafficLightStatus != ETrafficLight::Green && Missile)
     {
+        /* If the light is red, the missile should become defected */
+        const bool bDefected = TrafficLightStatus == ETrafficLight::Red;
+
+        /* Creates event to handle some VFX, SFX */
+        OnMissileGetThrownAway(TrafficLightPosition, TrafficLightStatus, Missile->GetActorLocation(), bDefected);
+
+        /* Throws missile in the opposite direction */
         Position = Missile->GetActorLocation() - Position;
         Position.Normalize();
         Missile->ThrowMissile(Missile->GetActorForwardVector() * -1, MissileThrowForce);
+        if(bDefected)
+        {
+            Missile->ActivateDefected();
+        }
     }
 }
 
