@@ -91,10 +91,10 @@ APlayerPawn* FAssistUtils::RaycastForPlayer(const AActor* OwnerActor,
                                             const FVector& ForwardVector,
                                             const float TraceLength,
                                             const float RaycastRadius,
-                                            const FHitResult& HitResult)
+                                            FHitResult& HitResult)
 {
     const FVector EndLocation = StartLocation + ForwardVector * TraceLength;
-    if(World && HitResult != nullptr)
+    if(World)
     {
         FCollisionQueryParams Params;
         Params.AddIgnoredActor(OwnerActor);

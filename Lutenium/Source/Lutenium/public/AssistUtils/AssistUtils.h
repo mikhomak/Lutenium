@@ -24,5 +24,5 @@ public:
                                                const FVector& ForwardVector,
                                                const float TraceLength,
                                                const float RaycastRadius,
-                                               const FHitResult& HitResult);
+                                               FHitResult& HitResult);
 };

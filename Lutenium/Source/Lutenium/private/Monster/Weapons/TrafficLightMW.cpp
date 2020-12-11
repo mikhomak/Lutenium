@@ -109,9 +109,9 @@ void ATrafficLightMW::LightBeginOverlap(class AActor* Actor, const ETrafficLight
     /* Handles player overlap */
     /* If the player overlaps the red light, drags him away from the light */
     APlayerPawn* PlayerPawn = Cast<APlayerPawn>(Actor);
-    if (TraficLightStatus == ETrafficLight::Red && PlayerPawn)
+    if (TrafficLightStatus == ETrafficLight::Red && PlayerPawn)
     {
-        FVector DragDirection = PlayerPawn->GetActorLocation() - Position->GetComponentTransform().GetLocation();
+        FVector DragDirection = PlayerPawn->GetActorLocation() - Position;
         DragDirection.Normalize();
         PlayerPawn->GetPlaneMovement()->DragMovementEffect->Activate(PlayerDragForce, DragDirection);
         return;
