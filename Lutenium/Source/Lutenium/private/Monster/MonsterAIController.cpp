@@ -1,14 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
-#include "../../public/Monster/MonsterAIController.h"
-#include "../../public/Monster/EnemyMonsterPawn.h"
-#include "../../public/Monster/Weapons/MonsterWeaponType.h"
-#include "../../public/Monster/MonsterWeapon.h"
-#include "../../public/Monster/Weapons/PipeMW.h"
-#include "../../public/Monster/Weapons/SirenMW.h"
-#include "../../public/Monster/Weapons/SputnikMW.h"
-#include "../../public/Monster/Weapons/TrafficLightMW.h"
+#include "Monster/MonsterAIController.h"
+#include "Monster/EnemyMonsterPawn.h"
+#include "Monster/Weapons/MonsterWeaponType.h"
+#include "Monster/MonsterWeapon.h"
+#include "Monster/Weapons/PipeMW.h"
+#include "Monster/Weapons/SirenMW.h"
+#include "Monster/Weapons/FanMW.h"
+#include "Monster/Weapons/TrafficLightMW.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BehaviorTree.h"
@@ -66,8 +63,8 @@ AMonsterWeapon* AMonsterAIController::GetWeapon(EMonsterWeaponType MonsterWeapon
         case EMonsterWeaponType::Pipe:
             Weapon = MonsterPawn->Pipe;
         break;
-        case EMonsterWeaponType::Sputnik:
-            Weapon = MonsterPawn->Sputnik;
+        case EMonsterWeaponType::Fan:
+            Weapon = MonsterPawn->Fan;
         break;
         case EMonsterWeaponType::TrafficLight:
             Weapon = MonsterPawn->TrafficLight;

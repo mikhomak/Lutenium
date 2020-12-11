@@ -66,7 +66,7 @@ public:
 
     /* Weapons could be nulltptr when they got destroyed!!! Don't forget to check if its valid in BP */
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
-    class ASputnikMW* Sputnik;
+    class AFanMW* Fan;
 
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
     class ASirenMW* Siren;
@@ -88,7 +88,7 @@ public:
 
     /* Use it to get a reference of the weapon if the task/ai controller. Could be nullptr because dissatached */
     FORCEINLINE UFUNCTION(Category = "Weapons")
-    class ASputnikMW* GetSputnik(){ return Sputnik;}
+    class AFanMW* GetFan(){ return Fan;}
 
     FORCEINLINE UFUNCTION(Category = "Weapons")
     class ASirenMW* GetSiren(){ return Siren;}
@@ -214,7 +214,7 @@ protected:
     // ------------------------------------------------------------------
 
     UPROPERTY( EditDefaultsOnly,BlueprintReadOnly, Category ="Weapons")
-    FName SputnikSocketName;
+    FName FanSocketName;
 
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category ="Weapons")
     FName SirenSocketName;
@@ -233,7 +233,7 @@ protected:
     TSubclassOf<class APipeMW> PipeClass;
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapons")
-    TSubclassOf<class ASputnikMW> SputnikClass;
+    TSubclassOf<class AFanMW> FanClass;
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapons")
     TSubclassOf<class ASirenMW> SirenClass;

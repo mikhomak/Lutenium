@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Monster/MonsterWeapon.h"
-#include "SputnikMW.generated.h"
+#include "FanMW.generated.h"
 
 /**
  *
  */
 UCLASS()
-class LUTENIUM_API ASputnikMW : public AMonsterWeapon
+class LUTENIUM_API AFanMW : public AMonsterWeapon
 {
     GENERATED_BODY()
 public:
 
-    ASputnikMW();
+    AFanMW();
 
     virtual void ExecuteAttack() override;
 

@@ -1,20 +1,18 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-#include "../../../public/Monster/Weapons/SputnikMW.h"
-#include "../../../public/Monster/Weapons/Emp.h"
-#include "../../../public/Monster/EnemyMonsterPawn.h"
-#include "../../../public/Monster/Weapons/MonsterWeaponType.h"
+#include "Monster/Weapons/FanMW.h"
+#include "Monster/Weapons/Emp.h"
+#include "Monster/EnemyMonsterPawn.h"
+#include "Monster/Weapons/MonsterWeaponType.h"
 #include "GameFramework/Actor.h"
 #include "Components/PrimitiveComponent.h"
 
-ASputnikMW::ASputnikMW() : AMonsterWeapon()
+AFanMW::AFanMW() : AMonsterWeapon()
 {
     Health = 100.f;
 
-    WeaponType = EMonsterWeaponType::Sputnik;
+    WeaponType = EMonsterWeaponType::Fan;
 }
 
-void ASputnikMW::ExecuteAttack()
+void AFanMW::ExecuteAttack()
 {
     if (EmpClass)
     {
@@ -30,6 +28,6 @@ void ASputnikMW::ExecuteAttack()
     }
 }
 
-void ASputnikMW::DoShoot()
+void AFanMW::DoShoot()
 {
 }

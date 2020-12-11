@@ -4,7 +4,7 @@
 #include "../../public/Monster/MonsterWeapon.h"
 #include "../../public/Monster/Weapons/PipeMW.h"
 #include "../../public/Monster/Weapons/SirenMW.h"
-#include "../../public/Monster/Weapons/SputnikMW.h"
+#include "../../public/Monster/Weapons/FanMW.h"
 #include "../../public/Monster/Weapons/TrafficLightMW.h"
 #include "Perception/PawnSensingComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -72,7 +72,7 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
     ToggleWhatLegsShouldMove(true);
 
     PipeSocketName = "PipeSocket";
-    SputnikSocketName = "SputnikSocket";
+    FanSocketName = "FanSocket";
     SirenSocketName = "SirenSocket";
     TrafficLightSocketName = "TrafficLightSocket";
 
@@ -115,17 +115,17 @@ void AEnemyMonsterPawn::SpawnWeapons()
         }
     }
 
-    /* SPUTNIK */
-    if(SputnikClass)
+    /* FAN */
+    if(FanClass)
     {
-        ASputnikMW* SpawnedSputnik = GetWorld()->SpawnActor<ASputnikMW>(SputnikClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
-        if(SpawnedSputnik)
+        AFanMW* SpawnedFan = GetWorld()->SpawnActor<AFanMW>(FanClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+        if(SpawnedFan)
         {
-            Sputnik = SpawnedSputnik;
-            Sputnik->AttachToComponent(MonsterMesh, FAttachmentTransformRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false), SputnikSocketName);
-            Sputnik->MonsterPawn = this;
-            Sputnik->MonsterMesh = MonsterMesh;
-            Weapons.Add(Sputnik);
+            Fan = SpawnedFan;
+            Fan->AttachToComponent(MonsterMesh, FAttachmentTransformRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false), FanSocketName);
+            Fan->MonsterPawn = this;
+            Fan->MonsterMesh = MonsterMesh;
+            Weapons.Add(Fan);
         }
     }
 
@@ -298,8 +298,8 @@ void AEnemyMonsterPawn::LooseWeapon(EMonsterWeaponType WeaponType)
         case EMonsterWeaponType::Pipe:
             Pipe = nullptr;
         break;
-        case EMonsterWeaponType::Sputnik:
-            Sputnik = nullptr;
+        case EMonsterWeaponType::Fan:
+            Fan = nullptr;
         break;
         case EMonsterWeaponType::TrafficLight:
             TrafficLight = nullptr;
