@@ -1,13 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
-#include "../../../public/Monster/Weapons/SirenMW.h"
-#include "../../../public/Monster/Weapons/Scream.h"
-#include "../../../public/Monster/EnemyMonsterPawn.h"
-#include "../../../public/Player/PlayerPawn.h"
-#include "../../../public/Player/PlaneMovementComponent.h"
-#include "../../../public/Player/MovementEffect/DragMovementEffect.h"
-#include "../../../public/Monster/Weapons/MonsterWeaponType.h"
+#include "Monster/Weapons/SirenMW.h"
+#include "Monster/Weapons/Scream.h"
+#include "Monster/EnemyMonsterPawn.h"
+#include "Player/PlayerPawn.h"
+#include "Player/PlaneMovementComponent.h"
+#include "Player/MovementEffect/DragMovementEffect.h"
+#include "Monster/Weapons/MonsterWeaponType.h"
 #include "Components/PrimitiveComponent.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"

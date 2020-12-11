@@ -47,12 +47,15 @@ public:
     // ------------------------------------------------------------------
     virtual void ExecuteAttack() override;
 
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Attack")
+    float PlayerDragForce;
+
 
 protected:
     // ------------------------------------------------------------------
     // Missile
     // ------------------------------------------------------------------
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Missile")
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Missile")
     float MissileThrowForce;
 
 	UFUNCTION(BlueprintImplementableEvent, Category="Missile")
@@ -68,13 +71,13 @@ protected:
     // Lights Meshes
     // ------------------------------------------------------------------
 
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
     class UStaticMeshComponent* LeftLightMesh;
 
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
     class UStaticMeshComponent* RightLightMesh;
 
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
     class UStaticMeshComponent* CenterLightMesh;
 
     // ------------------------------------------------------------------

@@ -3,6 +3,9 @@
 #include "Monster/Weapons/TrafficLightPosition.h"
 #include "Monster/Weapons/MonsterWeaponType.h"
 #include "Player/Missile.h"
+#include "Player/PlayerPawn.h"
+#include "Player/PlaneMovementComponent.h"
+#include "Player/MovementEffect/DragMovementEffect.h"
 #include "Components/PrimitiveComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -25,6 +28,8 @@ ATrafficLightMW::ATrafficLightMW() : AMonsterWeapon()
     CenterLightMesh->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
 
     MissileThrowForce = 6000.f;
+    PlayerDragForce = 7000.f;
+
 }
 
 void ATrafficLightMW::BeginPlay()
@@ -96,7 +101,23 @@ void ATrafficLightMW::LightBeginOverlap(class AActor* Actor, const ETrafficLight
         {
             Missile->ActivateDefected();
         }
+        return;
+    }
+
+    /* Handles player overlap */
+    /* If the player overlaps the red light, drags him away from the light */
+    APlayerPawn* PlayerPawn = Cast<APlayerPawn>(Actor);
+    if (TraficLightStatus == ETrafficLight::Red && PlayerPawn)
+    {
+        FVector DragDirection = PlayerPawn->GetActorLocation() - Position->GetComponentTransform().GetLocation();
+        DragDirection.Normalize();
+        PlayerPawn->GetPlaneMovement()->DragMovementEffect->Activate(PlayerDragForce, DragDirection);
+        return;
     }
 }
 
-void ATrafficLightMW::ExecuteAttack(){}
+/* Scales the current red light if facing the player */
+void ATrafficLightMW::ExecuteAttack()
+{
+
+}
