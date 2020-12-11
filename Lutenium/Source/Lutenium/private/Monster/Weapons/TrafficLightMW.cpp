@@ -58,6 +58,8 @@ void ATrafficLightMW::ChangeLight(ETrafficLightPosition Position, ETrafficLight 
             RightLightStatus = Light;
         break;
     }
+    /* Setting the latest red light position so we could use it for the attack */
+    SetLatestRedLightPosition(Light, Position);
     /* Change the material of the Light mesh in BP */
     OnLightChanged(Position, Light);
 }

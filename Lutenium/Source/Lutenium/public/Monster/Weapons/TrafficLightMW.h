@@ -42,6 +42,18 @@ public:
     UPROPERTY(BlueprintReadWrite, Category="Light")
     ETrafficLight CenterLightStatus;
 
+    UPROPERTY(BlueprintReadWrite, Category="Light")
+    ETrafficLightPosition LatestRedLightPosition;
+
+    FORCEINLINE UFUNCTION(Category = "Light")
+    class void SetLatestRedLightPosition(const ETrafficLight TrafficLightStatus, const ETrafficLightPosition TrafficLightPosition)
+    {
+        if(TrafficLightStatus == ETrafficLight::Red)
+        {
+            LatestRedLightPosition = TrafficLightPosition;
+        }
+    }
+
     // ------------------------------------------------------------------
     // Attack
     // ------------------------------------------------------------------
