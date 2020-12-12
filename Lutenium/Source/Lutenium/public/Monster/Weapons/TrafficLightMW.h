@@ -79,6 +79,9 @@ protected:
     UFUNCTION(BlueprintCallable)
     void LightBeginOverlap(class AActor* Actor, const ETrafficLight TrafficLightStatus, const ETrafficLightPosition TrafficLightPosition);
 
+    UFUNCTION(BlueprintCallable)
+    void LightEndOverlap(class AActor* Actor, const ETrafficLight TrafficLightStatus, const ETrafficLightPosition TrafficLightPosition);
+
     // ------------------------------------------------------------------
     // Lights Meshes
     // ------------------------------------------------------------------

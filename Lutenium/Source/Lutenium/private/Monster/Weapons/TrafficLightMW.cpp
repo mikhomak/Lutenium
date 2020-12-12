@@ -123,3 +123,14 @@ void ATrafficLightMW::ExecuteAttack()
 {
 
 }
+
+/** Handles events on end overlap  */
+/** If it's a player then we should deactivate drag (probably it was activated by overlapping with the red light) */
+void ATrafficLightMW::LightEndOverlap(class AActor* Actor, const ETrafficLight TrafficLightStatus, const ETrafficLightPosition TrafficLightPosition)
+{
+    APlayerPawn* PlayerPawn = Cast<APlayerPawn>(Actor);
+    if(PlayerPawn)
+    {
+        PlayerPawn->GetPlaneMovement->DragMovementEffect->Deactivate();
+    }
+}
