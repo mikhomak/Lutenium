@@ -64,7 +64,8 @@ void ATrafficLightMW::ChangeLight(ETrafficLightPosition Position, ETrafficLight 
     OnLightChanged(Position, Light);
 }
 
-
+/** Handles overlaps of the lights */
+/** Handles missile and player */
 void ATrafficLightMW::LightBeginOverlap(class AActor* Actor, const ETrafficLight TrafficLightStatus, const ETrafficLightPosition TrafficLightPosition)
 {
     FVector Position;

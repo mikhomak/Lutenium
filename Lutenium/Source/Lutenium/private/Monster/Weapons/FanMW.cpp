@@ -1,5 +1,5 @@
 #include "Monster/Weapons/FanMW.h"
-#include "Monster/Weapons/Emp.h"
+#include "Monster/Weapons/Spells/Emp.h"
 #include "Monster/EnemyMonsterPawn.h"
 #include "Monster/Weapons/WeaponsUtils/MonsterWeaponType.h"
 #include "GameFramework/Actor.h"

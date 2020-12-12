@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Monster/Weapons/Emp.h"
+#include "Monster/Weapons/Spells/Emp.h"
 #include "Player/PlayerPawn.h"
 #include "Player/PlaneMovementComponent.h"
 #include "Player/MovementEffect/EmpMovementEffect.h"

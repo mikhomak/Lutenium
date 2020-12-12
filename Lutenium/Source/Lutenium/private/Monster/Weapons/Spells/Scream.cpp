@@ -1,4 +1,4 @@
-#include "Monster/Weapons/Scream.h"
+#include "Monster/Weapons/Spells/Scream.h"
 #include "Player/PlayerPawn.h"
 #include "Player/PlaneMovementComponent.h"
 #include "Player/MovementEffect/DragMovementEffect.h"
