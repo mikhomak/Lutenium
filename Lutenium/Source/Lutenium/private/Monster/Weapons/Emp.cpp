@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "../../../public/Monster/Weapons/Emp.h"
-#include "../../../public/Player/PlayerPawn.h"
-#include "../../../public/Player/PlaneMovementComponent.h"
-#include "../../../public/Player/MovementEffect/EmpMovementEffect.h"
+#include "Monster/Weapons/Emp.h"
+#include "Player/PlayerPawn.h"
+#include "Player/PlaneMovementComponent.h"
+#include "Player/MovementEffect/EmpMovementEffect.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/PrimitiveComponent.h"

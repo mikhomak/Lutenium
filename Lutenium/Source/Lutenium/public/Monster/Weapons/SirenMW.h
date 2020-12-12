@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Monster/MonsterWeapon.h"
+#include "Monster/Weapons/MonsterWeapon.h"
 #include "SirenMW.generated.h"
 
 /**

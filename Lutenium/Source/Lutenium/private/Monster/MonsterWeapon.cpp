@@ -1,5 +1,5 @@
-#include "../../public/Monster/MonsterWeapon.h"
-#include "../../public/Monster/EnemyMonsterPawn.h"
+#include "Monster/Weapons/MonsterWeapon.h"
+#include "Monster/EnemyMonsterPawn.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "TimerManager.h"

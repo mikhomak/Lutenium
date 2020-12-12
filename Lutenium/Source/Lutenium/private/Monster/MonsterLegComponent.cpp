@@ -1,5 +1,5 @@
-#include "../../public/Monster/MonsterLegComponent.h"
-#include "../../public/Monster/EnemyMonsterPawn.h"
+#include "Monster/MonsterLegComponent.h"
+#include "Monster/EnemyMonsterPawn.h"
 #include "Components/TimelineComponent.h"
 
 UMonsterLegComponent::UMonsterLegComponent()

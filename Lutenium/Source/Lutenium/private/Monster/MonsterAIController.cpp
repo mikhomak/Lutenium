@@ -1,7 +1,7 @@
 #include "Monster/MonsterAIController.h"
 #include "Monster/EnemyMonsterPawn.h"
 #include "Monster/Weapons/MonsterWeaponType.h"
-#include "Monster/MonsterWeapon.h"
+#include "Monster/Weapons/MonsterWeapon.h"
 #include "Monster/Weapons/PipeMW.h"
 #include "Monster/Weapons/SirenMW.h"
 #include "Monster/Weapons/FanMW.h"

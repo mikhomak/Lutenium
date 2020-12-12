@@ -3,9 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "TrafficLight.h"
-#include "TrafficLightPosition.h"
-#include "Monster/MonsterWeapon.h"
+#include "WeaponsUtils/TrafficLight.h"
+#include "WeaponsUtils/TrafficLightPosition.h"
+#include "Monster/Weapons/MonsterWeapon.h"
 #include "TrafficLightMW.generated.h"
 
 /**

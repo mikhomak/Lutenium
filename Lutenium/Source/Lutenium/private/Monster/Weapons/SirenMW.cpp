@@ -4,7 +4,7 @@
 #include "Player/PlayerPawn.h"
 #include "Player/PlaneMovementComponent.h"
 #include "Player/MovementEffect/DragMovementEffect.h"
-#include "Monster/Weapons/MonsterWeaponType.h"
+#include "Monster/Weapons/WeaponsUtils/MonsterWeaponType.h"
 #include "Components/PrimitiveComponent.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"

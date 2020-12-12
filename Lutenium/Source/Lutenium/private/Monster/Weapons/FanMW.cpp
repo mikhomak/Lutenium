@@ -1,7 +1,7 @@
 #include "Monster/Weapons/FanMW.h"
 #include "Monster/Weapons/Emp.h"
 #include "Monster/EnemyMonsterPawn.h"
-#include "Monster/Weapons/MonsterWeaponType.h"
+#include "Monster/Weapons/WeaponsUtils/MonsterWeaponType.h"
 #include "GameFramework/Actor.h"
 #include "Components/PrimitiveComponent.h"
 

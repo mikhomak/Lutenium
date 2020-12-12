@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Weapons/MonsterWeaponType.h"
+#include "Weapons/WeaponsUtils/MonsterWeaponType.h"
 #include "GameFramework/Actor.h"
 #include "UObject/ObjectMacros.h"
 
@@ -98,6 +98,6 @@ public:
     FORCEINLINE void SetMonsterMesh(class USkeletalMeshComponent* Mesh) { MonsterMesh = Mesh; }
     FORCEINLINE void SetMonsterPawn(class AEnemyMonsterPawn* Pawn) { MonsterPawn = Pawn; }
     FORCEINLINE void UpgradeWeapon() { LevelUpgrade++; OnUpgradeEvent(); }
-    FORCEINLINE void SetUpgradeWeapon(int Level) { LevelUpgrade = Level; if(Level > LevelUpgrade) { OnUpgradeEvent(); } }
-    FORCEINLINE int GetUpgradeWeapon() { return LevelUpgrade; }
+    FORCEINLINE void SetUpgradeWeapon(int32 Level) { LevelUpgrade = Level; if(Level > LevelUpgrade) { OnUpgradeEvent(); } }
+    FORCEINLINE int32 GetUpgradeWeapon() { return LevelUpgrade; }
 };
