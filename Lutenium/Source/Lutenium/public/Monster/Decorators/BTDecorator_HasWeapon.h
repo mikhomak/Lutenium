@@ -3,7 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTDecorator.h"
-#include "Monster/Weapons/MonsterWeaponType.h"
+#include "Monster/Weapons/WeaponsUtils/MonsterWeaponType.h"
 #include "BTDecorator_HasWeapon.generated.h"
 
 

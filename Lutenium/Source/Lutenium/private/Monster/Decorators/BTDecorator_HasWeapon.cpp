@@ -1,7 +1,7 @@
 
 #include "Monster/Decorators/BTDecorator_HasWeapon.h"
 #include "Monster/MonsterAIController.h"
-#include "Monster/MonsterWeapon.h"
+#include "Monster/Weapons/MonsterWeapon.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 

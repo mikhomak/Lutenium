@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Weapons/WeaponsUtils/MonsterWeaponType.h"
+#include "Monster/Weapons/WeaponsUtils/MonsterWeaponType.h"
 #include "GameFramework/Actor.h"
 #include "UObject/ObjectMacros.h"
 

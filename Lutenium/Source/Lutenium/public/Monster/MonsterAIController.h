@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "Weapons/MonsterWeaponType.h"
+#include "Monster/Weapons/WeaponsUtils/MonsterWeaponType.h"
 #include "MonsterAIController.generated.h"
 
 /**

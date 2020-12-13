@@ -132,6 +132,6 @@ void ATrafficLightMW::LightEndOverlap(class AActor* Actor, const ETrafficLight T
     APlayerPawn* PlayerPawn = Cast<APlayerPawn>(Actor);
     if(PlayerPawn)
     {
-        PlayerPawn->GetPlaneMovement->DragMovementEffect->Deactivate();
+        PlayerPawn->GetPlaneMovement()->DragMovementEffect->Deactivate();
     }
 }

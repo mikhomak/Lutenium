@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "MonsterLeg.h"
-#include "Weapons/MonsterWeaponType.h"
+#include "Monster/Weapons/WeaponsUtils/MonsterWeaponType.h"
 #include "Components/TimelineComponent.h"
 #include "EnemyMonsterPawn.generated.h"
 

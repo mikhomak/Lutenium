@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
-#include "Monster/Weapons/MonsterWeaponType.h"
+#include "Monster/Weapons/WeaponsUtils/MonsterWeaponType.h"
 #include "BTTask_DoAttack.generated.h"
 
 /**

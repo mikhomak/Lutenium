@@ -1,7 +1,7 @@
 
 #include "Monster/Tasks/BTTask_DoAttack.h"
 #include "Monster/MonsterAIController.h"
-#include "Monster/MonsterWeapon.h"
+#include "Monster/Weapons/MonsterWeapon.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyAllTypes.h"

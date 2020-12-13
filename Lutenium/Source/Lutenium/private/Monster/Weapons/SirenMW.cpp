@@ -1,5 +1,5 @@
 #include "Monster/Weapons/SirenMW.h"
-#include "Monster/Weapons//SpellsScream.h"
+#include "Monster/Weapons/Spells/Scream.h"
 #include "Monster/Weapons/WeaponsUtils/MonsterWeaponType.h"
 #include "Monster/EnemyMonsterPawn.h"
 #include "Player/PlayerPawn.h"
