@@ -23,6 +23,16 @@ public:
         return Array.Num();
     }
 
+    bool IsValidIndex(int32 Index)
+    {
+        return Array.IsValidIndex(Index);
+    }
+
+    void RemoveAt(int32 Index, int32 Count, bool bAllowShrinking)
+    {
+        Array.RemoveAt(Index, Count, bAllowShrinking);
+    }
+
     FFenceTower2DArray()
     {
         Array.Empty();

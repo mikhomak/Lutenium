@@ -44,6 +44,7 @@ void APowerSystemMW::BeginPlay()
                 /* Setting monster params for the spawned towers*/
                 SpawnedFenceTower->MonsterPawn = MonsterPawn;
                 SpawnedFenceTower->MonsterMesh = MonsterMesh;
+                SpawnedFenceTower->PowerSystem = this;
                 /* Setting indexes for spawned tower so even if we remove one of them from the array, we still would know the original index to adapt behaviour */
                 SpawnedFenceTower->HightIndex = HightIndex;
                 SpawnedFenceTower->PositionIndex = PositionIndex;
