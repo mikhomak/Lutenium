@@ -3,7 +3,7 @@
 #include "FenceTower2DArray.generated.h"
 
 /** Used for 2D array of FenceTowers in PowerSystemMW */
-USTRUCT()
+USTRUCT(Blueprintable)
 struct FFenceTower2DArray
 {
     GENERATED_BODY()
@@ -17,6 +17,10 @@ public:
 
     void Add(class AFenceTowerMW* FenceTower) {
         Array.Add(FenceTower);
+    }
+
+    int32 Num() {
+        return Array.Num();
     }
 
     FFenceTower2DArray()
