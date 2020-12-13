@@ -53,7 +53,7 @@ protected:
     void OnTakeDamage(float Damage);
 
     UFUNCTION(BlueprintCallable)
-    void Die();
+    virtual void Die();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Health")
     void DieEvent();
