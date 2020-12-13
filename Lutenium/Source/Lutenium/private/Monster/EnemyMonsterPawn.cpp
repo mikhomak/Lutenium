@@ -6,6 +6,7 @@
 #include "Monster/Weapons/SirenMW.h"
 #include "Monster/Weapons/FanMW.h"
 #include "Monster/Weapons/TrafficLightMW.h"
+#include "Monster/Weapons/PowerSystemMW.h"
 #include "Perception/PawnSensingComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
@@ -71,10 +72,12 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
 
     ToggleWhatLegsShouldMove(true);
 
+    /* Setting weapons sockets */
     PipeSocketName = "PipeSocket";
     FanSocketName = "FanSocket";
     SirenSocketName = "SirenSocket";
     TrafficLightSocketName = "TrafficLightSocket";
+    PowerSystemSocketName = "PowerSystemSocket";
 
     /* Don't forget to set the AI Controller in Blueprint! */
 }
@@ -104,56 +107,65 @@ void AEnemyMonsterPawn::SpawnWeapons()
     /* PIPE */
     if(PipeClass)
     {
-        APipeMW* SpawnedPipe = GetWorld()->SpawnActor<APipeMW>(PipeClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
-        if(SpawnedPipe)
+        APipeMW* Pipe = GetWorld()->SpawnActor<APipeMW>(PipeClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+        if(Pipe)
         {
-            Pipe = SpawnedPipe;
             Pipe->AttachToComponent(MonsterMesh, FAttachmentTransformRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false), PipeSocketName);
             Pipe->MonsterPawn = this;
             Pipe->MonsterMesh = MonsterMesh;
-            Weapons.Add(Pipe);
+            WeaponMap.Add(EMonsterWeaponType::Pipe, Pipe);
         }
     }
 
     /* FAN */
     if(FanClass)
     {
-        AFanMW* SpawnedFan = GetWorld()->SpawnActor<AFanMW>(FanClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
-        if(SpawnedFan)
+        AFanMW* Fan = GetWorld()->SpawnActor<AFanMW>(FanClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+        if(Fan)
         {
-            Fan = SpawnedFan;
             Fan->AttachToComponent(MonsterMesh, FAttachmentTransformRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false), FanSocketName);
             Fan->MonsterPawn = this;
             Fan->MonsterMesh = MonsterMesh;
-            Weapons.Add(Fan);
+            WeaponMap.Add(EMonsterWeaponType::Fan, Fan);
         }
     }
 
     /* SIREN */
     if(SirenClass)
     {
-        ASirenMW* SpawnedSiren = GetWorld()->SpawnActor<ASirenMW>(SirenClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
-        if(SpawnedSiren)
+        ASirenMW* Siren = GetWorld()->SpawnActor<ASirenMW>(SirenClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+        if(Siren)
         {
-            Siren = SpawnedSiren;
             Siren->AttachToComponent(MonsterMesh, FAttachmentTransformRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false), SirenSocketName);
             Siren->MonsterPawn = this;
             Siren->MonsterMesh = MonsterMesh;
-            Weapons.Add(Siren);
+            WeaponMap.Add(EMonsterWeaponType::Siren, Siren);
         }
     }
 
     /* TRAFFIC LIGHT */
     if(TrafficLightClass)
     {
-        ATrafficLightMW* SpawnedTrafficLight = GetWorld()->SpawnActor<ATrafficLightMW>(TrafficLightClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
-        if(SpawnedTrafficLight)
+        ATrafficLightMW* TrafficLight = GetWorld()->SpawnActor<ATrafficLightMW>(TrafficLightClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+        if(TrafficLight)
         {
-            TrafficLight = SpawnedTrafficLight;
             TrafficLight->AttachToComponent(MonsterMesh, FAttachmentTransformRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false), TrafficLightSocketName);
             TrafficLight->MonsterPawn = this;
             TrafficLight->MonsterMesh = MonsterMesh;
-            Weapons.Add(TrafficLight);
+            WeaponMap.Add(EMonsterWeaponType::TrafficLight, TrafficLight);
+        }
+    }
+
+    /* POWER SYSTEM */
+    if(PowerSystemClass)
+    {
+        APowerSystemMW* PowerSystem = GetWorld()->SpawnActor<APowerSystemMW>(TrafficLightClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+        if(PowerSystem)
+        {
+            PowerSystem->AttachToComponent(MonsterMesh, FAttachmentTransformRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false), PowerSystemSocketName);
+            PowerSystem->MonsterPawn = this;
+            PowerSystem->MonsterMesh = MonsterMesh;
+            WeaponMap.Add(EMonsterWeaponType::PowerSystem, PowerSystem);
         }
     }
 
@@ -267,47 +279,10 @@ void AEnemyMonsterPawn::ToggleWhatLegsShouldMove(const bool Left) const
     RearLeftLeg->SetCanMove(Left);
 }
 
+/** Removes a weapon when it got destroyed */
 void AEnemyMonsterPawn::LooseWeapon(EMonsterWeaponType WeaponType)
 {
-
-    if(Weapons.Num() != 0)
-    {
-
-        int32 RemoveIndex = -1;
-
-        for (int32 Index = 0; Index < Weapons.Num(); Index++)
-        {
-            if(Weapons[Index]->WeaponType == WeaponType)
-            {
-                RemoveIndex = Index;
-            }
-            else
-            {
-                Weapons[Index]->UpgradeWeapon();
-            }
-        }
-
-        if(Weapons.IsValidIndex(RemoveIndex))
-        {
-            Weapons.RemoveAt(RemoveIndex);
-        }
-    }
-
-    switch(WeaponType)
-    {
-        case EMonsterWeaponType::Pipe:
-            Pipe = nullptr;
-        break;
-        case EMonsterWeaponType::Fan:
-            Fan = nullptr;
-        break;
-        case EMonsterWeaponType::TrafficLight:
-            TrafficLight = nullptr;
-        break;
-        case EMonsterWeaponType::Siren:
-            Siren = nullptr;
-        break;
-    }
+    WeaponMap.FindAndRemoveChecked(WeaponType);
 }
 
 

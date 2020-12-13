@@ -2,10 +2,6 @@
 #include "Monster/EnemyMonsterPawn.h"
 #include "Monster/Weapons/WeaponsUtils/MonsterWeaponType.h"
 #include "Monster/Weapons/MonsterWeapon.h"
-#include "Monster/Weapons/PipeMW.h"
-#include "Monster/Weapons/SirenMW.h"
-#include "Monster/Weapons/FanMW.h"
-#include "Monster/Weapons/TrafficLightMW.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BehaviorTree.h"
@@ -55,26 +51,10 @@ void AMonsterAIController::OnSeePlayer(TArray<AActor*> Actors)
 
 }
 
+/** IMPORTANT!!! Could ne null!!! */
 AMonsterWeapon* AMonsterAIController::GetWeapon(EMonsterWeaponType MonsterWeaponType)
 {
-    AMonsterWeapon* Weapon = nullptr;
-    switch(MonsterWeaponType)
-    {
-        case EMonsterWeaponType::Pipe:
-            Weapon = MonsterPawn->Pipe;
-        break;
-        case EMonsterWeaponType::Fan:
-            Weapon = MonsterPawn->Fan;
-        break;
-        case EMonsterWeaponType::TrafficLight:
-            Weapon = MonsterPawn->TrafficLight;
-        break;
-        case EMonsterWeaponType::Siren:
-            Weapon = MonsterPawn->Siren;
-        break;
-    }
-
-    return Weapon;
+    return (AMonsterWeapon*) MonsterPawn->WeaponMap.Find(MonsterWeaponType);
 }
 
 int32 AMonsterAIController::GetWeaponLevel(EMonsterWeaponType MonsterWeaponType)

@@ -64,19 +64,6 @@ public:
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
     float ArmourDamageReduction;
 
-    /* Weapons could be nulltptr when they got destroyed!!! Don't forget to check if its valid in BP */
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
-    class AFanMW* Fan;
-
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
-    class ASirenMW* Siren;
-
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
-    class ATrafficLightMW* TrafficLight;
-
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
-    class APipeMW* Pipe;
-
     UFUNCTION(BlueprintImplementableEvent)
     void MissileCollide(const FVector& HitLocation, const FVector& NormalizedDirection, const float DamageApplied);
 
@@ -84,20 +71,7 @@ public:
     void LooseWeapon(EMonsterWeaponType WeaponType);
 
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category ="Weapons")
-    TArray<class AMonsterWeapon*> Weapons;
-
-    /* Use it to get a reference of the weapon if the task/ai controller. Could be nullptr because dissatached */
-    FORCEINLINE UFUNCTION(Category = "Weapons")
-    class AFanMW* GetFan(){ return Fan;}
-
-    FORCEINLINE UFUNCTION(Category = "Weapons")
-    class ASirenMW* GetSiren(){ return Siren;}
-
-    FORCEINLINE UFUNCTION(Category = "Weapons")
-    class APipeMW* GetPipe(){ return Pipe;}
-
-    FORCEINLINE UFUNCTION(Category = "Weapons")
-    class ATrafficLightMW* GetTrafficLight(){ return TrafficLight;}
+    TMap<EMonsterWeaponType, class AMonsterWeapon*> WeaponMap;
 
     // ------------------------------------------------------------------
     // AI
@@ -225,6 +199,9 @@ protected:
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category ="Weapons")
     FName TrafficLightSocketName;
 
+    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category ="Weapons")
+    FName PowerSystemSocketName;
+
     UFUNCTION(BlueprintCallable)
     void SpawnWeapons();
 
@@ -240,4 +217,7 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapons")
     TSubclassOf<class ATrafficLightMW> TrafficLightClass;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Weapons")
+    TSubclassOf<class APowerSystemMW> PowerSystemClass;
 };
