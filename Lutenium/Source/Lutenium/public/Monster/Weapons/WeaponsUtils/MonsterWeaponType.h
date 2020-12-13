@@ -6,5 +6,6 @@ enum class EMonsterWeaponType : uint8
     Pipe UMETA(DisplayName = "Pipe"),
     TrafficLight UMETA(DisplayName = "Traffic Light"),
     Siren UMETA(DisplayName = "Siren"),
-    FenceTower UMETA(DisplayName = "Fence Tower")
+    FenceTower UMETA(DisplayName = "Fence Tower"),
+    PowerSystem UMETA(DisplayName = "Power System")
 };
