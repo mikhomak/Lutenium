@@ -84,16 +84,14 @@ USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const U
 
 /** Racyast the player (use for mosnter) */
 /** Raycast ONLY the player level of collision */
-/** Returns Player and HitResult */
+/** Returns Player and HitResultOut */
 APlayerPawn* FAssistUtils::RaycastForPlayer(const AActor* OwnerActor,
                                             const UWorld* World,
                                             const FVector& StartLocation,
-                                            const FVector& ForwardVector,
-                                            const float TraceLength,
+                                            const FVector& EndLocation,
                                             const float RaycastRadius,
-                                            FHitResult& HitResult)
+                                            FHitResult& HitResultOut)
 {
-    const FVector EndLocation = StartLocation + ForwardVector * TraceLength;
     if(World)
     {
         FCollisionQueryParams Params;
@@ -101,16 +99,16 @@ APlayerPawn* FAssistUtils::RaycastForPlayer(const AActor* OwnerActor,
 
         FCollisionObjectQueryParams PlayerObjectQuery(ECC_Player);
 
-        const bool bHit = World->SweepSingleByObjectType(HitResult,
+        const bool bHit = World->SweepSingleByObjectType(HitResultOut,
                                                          StartLocation,
                                                          EndLocation,
                                                          FQuat::Identity,
                                                          PlayerObjectQuery,
                                                          FCollisionShape::MakeSphere(RaycastRadius),
                                                          Params);
-        if(bHit && HitResult.Actor != nullptr)
+        if(bHit && HitResultOut.Actor != nullptr)
         {
-            APlayerPawn* Player =  Cast<APlayerPawn>(HitResult.Actor);
+            APlayerPawn* Player =  Cast<APlayerPawn>(HitResultOut.Actor);
             if(Player)
             {
                 return Player;

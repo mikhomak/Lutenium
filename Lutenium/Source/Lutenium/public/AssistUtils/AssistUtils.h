@@ -21,8 +21,7 @@ public:
     static class APlayerPawn* RaycastForPlayer(const AActor* OwnerActor,
                                                const UWorld* World,
                                                const FVector& StartLocation,
-                                               const FVector& ForwardVector,
-                                               const float TraceLength,
+                                               const FVector& EndLocation,
                                                const float RaycastRadius,
-                                               FHitResult& HitResult);
+                                               FHitResult& HitResultOut);
 };

@@ -15,6 +15,8 @@ public:
 
     AFenceTowerMW();
 
+    virtual void Tick(float DeltaTime) override;
+
     // ------------------------------------------------------------------
 	// General
 	// ------------------------------------------------------------------
@@ -47,6 +49,29 @@ public:
     UPROPERTY(BlueprintReadWrite, Category="Beam")
     bool bActiveBeam;
 
+    /** Handles checks whenever the player is in the beam. */
+    /** On player entering the beam we should activate the EMP movement effect */
+    /** On player exitin we should deactivate the EMP effect */
+    /** This variable helps us keeping track of the player position inside the beam */
+    UPROPERTY(BlueprintReadWrite, Category="Beam")
+    bool bIsPlayerInBeam;
+
+    /** Target location where the beam should end */
+    UPROPERTY(BlueprintReadWrite, Category="Beam")
+    FVector BeamTargetLocation;
+
+    /** The radius of the beam and the raycast */
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Beam")
+    float BeamRadius;
+
+    /** The time of emp applied to the player in case he doesn't escape with the speed */
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Beam")
+    float BeamEmpTime;
+
+    /** The force that applied to the emp to the player rotation */
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Beam")
+    float BeamEmpForce;
+
     /** Activates defensive beam */
     /** TargetLocation is the location where we should raycast for the player (should be neighbour tower) */
     /** If the beam is active (bActiveBeam == true), on each tick raycasting from tower to tower for the player */
@@ -63,9 +88,11 @@ public:
             }
             else
             {
+                bIsPlayerInBeam = false; // obligatory disabling player inside the beam variable
                 OnDeactivateBeam(TargetLocation);
             }
             bActiveBeam = bActive;
+            BeamTargetLocation = TargetLocation;
         }
      }
 

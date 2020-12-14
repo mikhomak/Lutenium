@@ -1,15 +1,15 @@
 // Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
 
-#include "../public/Player/PlayerPawn.h"
+#include "Player/PlayerPawn.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "../public/Player/PlaneMovementComponent.h"
+#include "Player/PlaneMovementComponent.h"
 #include "Components/PrimitiveComponent.h"
 #include "Components/BoxComponent.h"
-#include "../public/Player/Missile.h"
+#include "Player/Missile.h"
 #include "AssistUtils/AssistUtils.h"
 
 APlayerPawn::APlayerPawn()

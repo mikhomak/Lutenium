@@ -1,6 +1,6 @@
-#include "../public/Player/MovementEffect/EmpMovementEffect.h"
-#include "../public/Player/PlaneMovementComponent.h"
-#include "../public/Player/PlayerPawn.h"
+#include "Player/MovementEffect/EmpMovementEffect.h"
+#include "Player/PlaneMovementComponent.h"
+#include "Player/PlayerPawn.h"
 #include "Components/BoxComponent.h"
 
 void UEmpMovementEffect::ApplyEffect()

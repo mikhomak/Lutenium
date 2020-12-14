@@ -55,11 +55,6 @@ void APowerSystemMW::BeginPlay()
     }
 }
 
-void APowerSystemMW::Tick(float DeltaTime)
-{
-    Super::Tick(DeltaTime);
-}
-
 FName APowerSystemMW::ConstructSocketName(int32 HightIndex, int32 PositionIndex)
 {
     return FName(FString::Format(*TowerFenceSocketFormat, { HightIndex, PositionIndex }));
