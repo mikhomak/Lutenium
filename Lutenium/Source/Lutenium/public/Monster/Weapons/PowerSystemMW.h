@@ -36,7 +36,7 @@ public:
     /** Second index - Position index */
     /** Indexes should coolorate with the names of the sockets of the monster mesh */
     /** Using that array we can execute the behaviour we want of the whole system (Power System itself doesn't have direct actions)*/
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Fence Towers")
+    UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category="Fence Towers")
     TArray<FFenceTower2DArray> FenceTowers;
 
     /** Activated beam defense on all the hight levels */
@@ -71,7 +71,7 @@ protected:
     /** {} - special symbol to indicate where the index should be */
     /** IMPORTANT!!! First {} is for HIGHT and the second one is for POSITION */
     /** IMPORTANT!!! First index starts with 0!!!! */
-    /** By default the format is FenceTowerHight{}Position{} */
+    /** By default the format is FenceTowerHight{}Position{}Socket */
     /** Example - The third Fence Tower of the second hight level should be attached to FenceTowerHight1Position2 socket of the mesh*/
     /** Don't forget to create the sockets on the mesh AND NAME THEM WITH THE SAME FORMAT */
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Fence Towers Initialization")

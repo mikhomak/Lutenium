@@ -16,7 +16,7 @@ APowerSystemMW::APowerSystemMW() : AMonsterWeapon()
     /* Fence tower array initalization variables */
     FenceTowersHightLevelsAmount = 3;
     FenceTowersPositionsAmount = 4;
-    TowerFenceSocketFormat = "FenceTowerHight{}Position{}";
+    TowerFenceSocketFormat = "FenceTowerHight{}Position{}Socket";
 }
 
 void APowerSystemMW::BeginPlay()

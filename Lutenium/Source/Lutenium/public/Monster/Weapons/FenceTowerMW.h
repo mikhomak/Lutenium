@@ -22,7 +22,7 @@ public:
 	// ------------------------------------------------------------------
 
     /** Reference to the main power system weapon */
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Power System")
+    UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category="Power System")
     class APowerSystemMW* PowerSystem;
 
     // ------------------------------------------------------------------
