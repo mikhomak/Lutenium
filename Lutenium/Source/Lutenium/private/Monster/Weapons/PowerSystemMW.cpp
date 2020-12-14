@@ -55,6 +55,11 @@ void APowerSystemMW::BeginPlay()
     }
 }
 
+void APowerSystemMW::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+}
+
 FName APowerSystemMW::ConstructSocketName(int32 HightIndex, int32 PositionIndex)
 {
     return FName(FString::Format(*TowerFenceSocketFormat, { HightIndex, PositionIndex }));
@@ -71,10 +76,21 @@ void APowerSystemMW::ActivateBeamDefense()
     /* Activates beam defense for every fence tower */
     for(int32 HightIndex = 0; HightIndex < FenceTowers.Num(); HightIndex++)
     {
-        for(int32 PositionIndex = 0; PositionIndex < FenceTowers[HightIndex].Num(); PositionIndex++)
-        {
-            FenceTowers[HightIndex][PositionIndex]->SetActiveBeam(true);
-        }
+        // Numbers are the positions of tower fences on the legs. Monster is the head. Dashes are beams.
+        //
+        //
+        //    0---------------------1
+        //    |      MONSTER
+        //    |
+        //    2                     3
+        SafeActiveBeam(true, FenceTowers[HightIndex][1], FenceTowers[HightIndex][0], FenceTowers[HightIndex][2]);
+
+
+        //    0                     1
+        //           MONSTER        |
+        //                          |
+        //    2---------------------3
+        SafeActiveBeam(true, FenceTowers[HightIndex][3], FenceTowers[HightIndex][0], FenceTowers[HightIndex][2]);
     }
 }
 
@@ -84,10 +100,22 @@ void APowerSystemMW::DeactivateBeamDefense()
     /* Deactivate beam defense for every fence tower */
     for(int32 HightIndex = 0; HightIndex < FenceTowers.Num(); HightIndex++)
     {
-        for(int32 PositionIndex = 0; PositionIndex < FenceTowers[HightIndex].Num(); PositionIndex++)
-        {
-            FenceTowers[HightIndex][PositionIndex]->SetActiveBeam(false);
-        }
+        SafeActiveBeam(false, FenceTowers[HightIndex][1], FenceTowers[HightIndex][0], FenceTowers[HightIndex][2]);
+        SafeActiveBeam(false, FenceTowers[HightIndex][3], FenceTowers[HightIndex][0], FenceTowers[HightIndex][2]);
     }
 }
 
+void APowerSystemMW::SafeActiveBeam(bool bActivate, class AFenceTowerMW* FenceTowerStart, class AFenceTowerMW* FirstTargetFenceTower, class AFenceTowerMW* SecondTargetFenceTower)
+{
+    if(FenceTowerStart)
+    {
+        if(FirstTargetFenceTower)
+        {
+            FenceTowerStart->SetActiveBeam(true, FirstTargetFenceTower->GetActorLocation());
+        }
+        if(SecondTargetFenceTower)
+        {
+            FenceTowerStart->SetActiveBeam(true, SecondTargetFenceTower->GetActorLocation());
+        }
+    }
+}

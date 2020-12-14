@@ -48,21 +48,22 @@ public:
     bool bActiveBeam;
 
     /** Activates defensive beam */
+    /** TargetLocation is the location where we should raycast for the player (should be neighbour tower) */
     /** If the beam is active (bActiveBeam == true), on each tick raycasting from tower to tower for the player */
     /** If the player has been found in the raycast, activates EMP movement effect on him */
     /** Activates event for doing some cool stuff in BP (VFX SFX ya know the drill)*/
     FORCEINLINE UFUNCTION(Category="Beam")
-    void SetActiveBeam(bool bActive)
+    void SetActiveBeam(bool bActive, FVector TargetLocation)
     {
         if(bActiveBeam != bActive)
         {
             if(bActive)
             {
-                OnActivateBeam();
+                OnActivateBeam(TargetLocation);
             }
             else
             {
-                OnDeactivateBeam();
+                OnDeactivateBeam(TargetLocation);
             }
             bActiveBeam = bActive;
         }
@@ -70,11 +71,11 @@ public:
 
     /** Event to activate beam VFX, SFX in BP */
     UFUNCTION(BlueprintImplementableEvent, Category="Beam")
-    void OnActivateBeam();
+    void OnActivateBeam(FVector& TargetLocation);
 
     /** Event to deactivate beam VFX, SFX in BP */
     UFUNCTION(BlueprintImplementableEvent, Category="Beam")
-    void OnDeactivateBeam();
+    void OnDeactivateBeam(FVector& TargetLocation);
 
     // ------------------------------------------------------------------
 	// Overrides of AMonsterWeaapon

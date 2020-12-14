@@ -18,6 +18,9 @@ public:
 
 	virtual void BeginPlay() override;
 
+    virtual void Tick(float DeltaTime) override;
+
+
     // ------------------------------------------------------------------
 	// Overrides of AMonsterWeaapon
 	// ------------------------------------------------------------------
@@ -48,6 +51,18 @@ public:
     void DeactivateBeamDefense();
 
 protected:
+
+    // ------------------------------------------------------------------
+	// Fence Towers
+	// ------------------------------------------------------------------
+
+    /** Safe setting active beam for tower fences */
+    /** Handles destroyed(nullptr) towers */
+    /** FenceTowerStart - the tower from which we should raycast */
+    /** FirstTargetFenceTower - first target tower (we only interested in the presense and position of this tower) to racyast*/
+    /** SecondTargetFenceTower - first target tower (we only interested in the presense and position of this tower) to racyast*/
+    UFUNCTION(BlueprintCallable, Category="Fence Towers")
+    void SafeActiveBeam(bool bActivate, class AFenceTowerMW* FenceTowerStart, class AFenceTowerMW* FirstTargetFenceTower, class AFenceTowerMW* SecondTargetFenceTower);
 
     // ------------------------------------------------------------------
 	// Fence Towers
