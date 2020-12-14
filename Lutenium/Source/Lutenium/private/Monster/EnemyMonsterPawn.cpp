@@ -159,7 +159,7 @@ void AEnemyMonsterPawn::SpawnWeapons()
     /* POWER SYSTEM */
     if(PowerSystemClass)
     {
-        APowerSystemMW* PowerSystem = GetWorld()->SpawnActor<APowerSystemMW>(TrafficLightClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+        APowerSystemMW* PowerSystem = GetWorld()->SpawnActor<APowerSystemMW>(PowerSystemClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
         if(PowerSystem)
         {
             PowerSystem->AttachToComponent(MonsterMesh, FAttachmentTransformRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false), PowerSystemSocketName);

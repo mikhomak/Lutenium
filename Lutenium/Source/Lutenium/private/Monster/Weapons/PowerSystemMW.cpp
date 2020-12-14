@@ -78,14 +78,14 @@ void APowerSystemMW::ActivateBeamDefense()
         //    |      MONSTER
         //    |
         //    2                     3
-        SafeActiveBeam(true, FenceTowers[HightIndex][1], FenceTowers[HightIndex][0], FenceTowers[HightIndex][2]);
+        SafeActiveBeam(true, FenceTowers[HightIndex][0], FenceTowers[HightIndex][1], FenceTowers[HightIndex][2]);
 
 
         //    0                     1
         //           MONSTER        |
         //                          |
         //    2---------------------3
-        SafeActiveBeam(true, FenceTowers[HightIndex][3], FenceTowers[HightIndex][0], FenceTowers[HightIndex][2]);
+        SafeActiveBeam(true, FenceTowers[HightIndex][3], FenceTowers[HightIndex][1], FenceTowers[HightIndex][2]);
     }
 }
 
