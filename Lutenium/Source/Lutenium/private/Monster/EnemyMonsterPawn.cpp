@@ -165,6 +165,7 @@ void AEnemyMonsterPawn::SpawnWeapons()
             PowerSystem->AttachToComponent(MonsterMesh, FAttachmentTransformRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false), PowerSystemSocketName);
             PowerSystem->MonsterPawn = this;
             PowerSystem->MonsterMesh = MonsterMesh;
+            PowerSystem->InitializeTowerFencse(); // do it after setting up monster pawn and mesh
             WeaponMap.Add(EMonsterWeaponType::PowerSystem, PowerSystem);
         }
     }

@@ -16,10 +16,6 @@ public:
 
     APowerSystemMW();
 
-	virtual void BeginPlay() override;
-
-
-
     // ------------------------------------------------------------------
 	// Overrides of AMonsterWeaapon
 	// ------------------------------------------------------------------
@@ -30,6 +26,11 @@ public:
     // ------------------------------------------------------------------
 	// Fence Towers
 	// ------------------------------------------------------------------
+
+    /** Spawn all the tower fences and add them to arrays */
+    /** Usually it would be in BeginPlay, but because this actor is spawned, we have to directly use this function after spawnging it */
+    UFUNCTION(BlueprintCallable, Category="Fence Towers")
+    void InitializeTowerFencse();
 
     /** 2D array of all the fence towers of the monster */
     /** First index - hight index */
@@ -71,7 +72,7 @@ protected:
     /** {} - special symbol to indicate where the index should be */
     /** IMPORTANT!!! First {} is for HIGHT and the second one is for POSITION */
     /** IMPORTANT!!! First index starts with 0!!!! */
-    /** By default the format is FenceTowerHight{}Position{}Socket */
+    /** By default the format is FenceTowerHight{0}Position{1}Socket */
     /** Example - The third Fence Tower of the second hight level should be attached to FenceTowerHight1Position2 socket of the mesh*/
     /** Don't forget to create the sockets on the mesh AND NAME THEM WITH THE SAME FORMAT */
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Fence Towers Initialization")

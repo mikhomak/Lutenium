@@ -49,11 +49,6 @@ void AMonsterWeapon::OnTakeDamage(float Damage)
     }
 }
 
-void AMonsterWeapon::BeginPlay()
-{
-    Super::BeginPlay();
-}
-
 void AMonsterWeapon::Die()
 {
     if(bDebugDetach)
