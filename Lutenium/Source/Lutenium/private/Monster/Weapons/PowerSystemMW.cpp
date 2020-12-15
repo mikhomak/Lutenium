@@ -29,27 +29,29 @@ void APowerSystemMW::BeginPlay()
     SpawnParams.Owner = MonsterPawn;
     SpawnParams.Instigator = MonsterPawn;
 
-
-    for(int32 HightIndex = 0; HightIndex < FenceTowersHightLevelsAmount; HightIndex++)
+    if(FenceTowerClass)
     {
-        FenceTowers.Add(FFenceTower2DArray());
-        for(int32 PositionIndex = 0; HightIndex < FenceTowersPositionsAmount; PositionIndex++)
+        for(int32 HightIndex = 0; HightIndex < FenceTowersHightLevelsAmount; HightIndex++)
         {
-            AFenceTowerMW* SpawnedFenceTower = GetWorld()->SpawnActor<AFenceTowerMW>(FenceTowerClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
-            if(SpawnedFenceTower)
+            FenceTowers.Add(FFenceTower2DArray());
+            for(int32 PositionIndex = 0; PositionIndex < FenceTowersPositionsAmount; PositionIndex++)
             {
-                SpawnedFenceTower->AttachToComponent(MonsterMesh,
-                                                    FAttachmentTransformRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false),
-                                                    ConstructSocketName(HightIndex, PositionIndex)); // Dynmaicly creates socket name
-                /* Setting monster params for the spawned towers*/
-                SpawnedFenceTower->MonsterPawn = MonsterPawn;
-                SpawnedFenceTower->MonsterMesh = MonsterMesh;
-                SpawnedFenceTower->PowerSystem = this;
-                /* Setting indexes for spawned tower so even if we remove one of them from the array, we still would know the original index to adapt behaviour */
-                SpawnedFenceTower->HightIndex = HightIndex;
-                SpawnedFenceTower->PositionIndex = PositionIndex;
-                /* Adds spawned tower to the array of the current hight */
-                FenceTowers[HightIndex].Add(SpawnedFenceTower);
+                AFenceTowerMW* SpawnedFenceTower = GetWorld()->SpawnActor<AFenceTowerMW>(FenceTowerClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+                if(SpawnedFenceTower)
+                {
+                    SpawnedFenceTower->AttachToComponent(MonsterMesh,
+                                                        FAttachmentTransformRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false),
+                                                        ConstructSocketName(HightIndex, PositionIndex)); // Dynmaicly creates socket name
+                    /* Setting monster params for the spawned towers*/
+                    SpawnedFenceTower->MonsterPawn = MonsterPawn;
+                    SpawnedFenceTower->MonsterMesh = MonsterMesh;
+                    SpawnedFenceTower->PowerSystem = this;
+                    /* Setting indexes for spawned tower so even if we remove one of them from the array, we still would know the original index to adapt behaviour */
+                    SpawnedFenceTower->HightIndex = HightIndex;
+                    SpawnedFenceTower->PositionIndex = PositionIndex;
+                    /* Adds spawned tower to the array of the current hight */
+                    FenceTowers[HightIndex].Add(SpawnedFenceTower);
+                }
             }
         }
     }
