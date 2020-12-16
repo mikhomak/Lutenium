@@ -77,19 +77,20 @@ public:
     /** If the beam is active (bActiveBeam == true), on each tick raycasting from tower to tower for the player */
     /** If the player has been found in the raycast, activates EMP movement effect on him */
     /** Activates event for doing some cool stuff in BP (VFX SFX ya know the drill)*/
+    /** TargetIndex - index of the target tower fence. 0 - left, 1 - right */
     FORCEINLINE UFUNCTION(Category="Beam")
-    void SetActiveBeam(bool bActive, FVector TargetLocation)
+    void SetActiveBeam(bool bActive, FVector TargetLocation, int32 TargetIndex)
     {
         if(bActiveBeam != bActive)
         {
             if(bActive)
             {
-                OnActivateBeam(TargetLocation);
+                OnActivateBeam(TargetLocation, TargetIndex);
             }
             else
             {
                 bIsPlayerInBeam = false; // obligatory disabling player inside the beam variable
-                OnDeactivateBeam(TargetLocation);
+                OnDeactivateBeam(TargetLocation, TargetIndex);
             }
             bActiveBeam = bActive;
             BeamTargetLocation = TargetLocation;
@@ -97,12 +98,14 @@ public:
      }
 
     /** Event to activate beam VFX, SFX in BP */
+    /** TargetIndex - index of the target tower fence*/
     UFUNCTION(BlueprintImplementableEvent, Category="Beam")
-    void OnActivateBeam(FVector& TargetLocation);
+    void OnActivateBeam(const FVector& TargetLocation, const int32& TargetIndex);
 
     /** Event to deactivate beam VFX, SFX in BP */
+    /** TargetIndex - index of the target tower fence*/
     UFUNCTION(BlueprintImplementableEvent, Category="Beam")
-    void OnDeactivateBeam(FVector& TargetLocation);
+    void OnDeactivateBeam(const FVector& TargetLocation, const int32& TargetIndex);
 
     // ------------------------------------------------------------------
 	// Overrides of AMonsterWeaapon

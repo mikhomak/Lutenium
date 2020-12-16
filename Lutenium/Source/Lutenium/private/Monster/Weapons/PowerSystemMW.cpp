@@ -97,8 +97,8 @@ void APowerSystemMW::DeactivateBeamDefense()
     /* Deactivate beam defense for every fence tower */
     for(int32 HightIndex = 0; HightIndex < FenceTowers.Num(); HightIndex++)
     {
-        SafeActiveBeam(false, FenceTowers[HightIndex][1], FenceTowers[HightIndex][0], FenceTowers[HightIndex][2]);
-        SafeActiveBeam(false, FenceTowers[HightIndex][3], FenceTowers[HightIndex][0], FenceTowers[HightIndex][2]);
+        SafeActiveBeam(false, FenceTowers[HightIndex][0], FenceTowers[HightIndex][1], FenceTowers[HightIndex][2]);
+        SafeActiveBeam(false, FenceTowers[HightIndex][3], FenceTowers[HightIndex][1], FenceTowers[HightIndex][2]);
     }
 }
 
@@ -108,11 +108,11 @@ void APowerSystemMW::SafeActiveBeam(bool bActivate, class AFenceTowerMW* FenceTo
     {
         if(FirstTargetFenceTower)
         {
-            FenceTowerStart->SetActiveBeam(true, FirstTargetFenceTower->GetActorLocation());
+            FenceTowerStart->SetActiveBeam(true, FirstTargetFenceTower->GetActorLocation(), 0);
         }
         if(SecondTargetFenceTower)
         {
-            FenceTowerStart->SetActiveBeam(true, SecondTargetFenceTower->GetActorLocation());
+            FenceTowerStart->SetActiveBeam(true, SecondTargetFenceTower->GetActorLocation(), 1);
         }
     }
 }
