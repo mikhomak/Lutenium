@@ -19,6 +19,7 @@ APlayerPawn::APlayerPawn()
     PlaneBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Plane Box"));
     PlaneBox->SetSimulatePhysics(true);
     PlaneBox->SetEnableGravity(false);
+    PlaneBox->SetCollisionProfileName(TEXT("Player"));
     RootComponent = PlaneBox;
 
     PlaneMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Plane Mesh"));
