@@ -21,6 +21,9 @@ AMonsterAIController::AMonsterAIController()
     PerceptionComponent->ConfigureSense(*SightConfig);
     PerceptionComponent->SetDominantSense(SightConfig->GetSenseImplementation());
     /* Add event OnSeePlayer in BP */
+
+    /* Set up names for blackboard values */
+    FN_BV_bIsPlayerInRadiusOfBeamDefense = "bIsPlayerInRadiusOfBeamDefense";
 }
 
 void AMonsterAIController::BeginPlay()
@@ -65,4 +68,10 @@ int32 AMonsterAIController::GetWeaponLevel(EMonsterWeaponType MonsterWeaponType)
         return Weapon->GetUpgradeWeapon();
     }
     return -1;
+}
+
+vodi AMonsterAIController::SetIsPlayerInRadiusOfBeamDefense(bool bIsInRadius)
+{
+    bIsPlayerInRadiusOfBeamDefense = bIsInRadius;
+    BlackboardComp->SetValueAsBool(FN_BV_bIsPlayerInRadiusOfBeamDefense, bIsInRadius);
 }

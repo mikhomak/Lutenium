@@ -32,6 +32,21 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Weapons")
     int32 GetWeaponLevel(EMonsterWeaponType MonsterWeaponType);
 
+    // ------------------------------------------------------------------
+    // Player behaviour
+    // ------------------------------------------------------------------
+
+
+
+    /** Checks if the player is int the radius to activate beam defense */
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Behaviour")
+    bool bIsPlayerInRadiusOfBeamDefense;
+
+    /** Updates the value of the blackbord of IsPlayerInRadiusOfBeamDefense when it has changed */
+    UFUNCTION(BlueprintCallable, Category = "Player Behaviour")
+    void SetIsPlayerInRadiusOfBeamDefense(bool bIsInRadius);
+
+
 protected:
     virtual void BeginPlay() override;
 
@@ -65,4 +80,10 @@ protected:
 
     UFUNCTION(BlueprintCallable)
     void OnSeePlayer(TArray<class AActor*> Actors);
+
+    // ------------------------------------------------------------------
+    // Blackboard value names
+    // ------------------------------------------------------------------
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Blackboard value names")
+    FName FN_BV_bIsPlayerInRadiusOfBeamDefense;
 };

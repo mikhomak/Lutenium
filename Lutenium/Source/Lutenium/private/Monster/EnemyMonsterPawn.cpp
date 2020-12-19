@@ -7,6 +7,8 @@
 #include "Monster/Weapons/FanMW.h"
 #include "Monster/Weapons/TrafficLightMW.h"
 #include "Monster/Weapons/PowerSystemMW.h"
+#include "Player/PlayerPawn.h"
+#include ""
 #include "Perception/PawnSensingComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
@@ -44,6 +46,11 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
 
     /* Setting the movement  */
     PawnMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Pawn Floating Movement"));
+
+    /* Creates sphere for the beam defense */
+
+    BeamDefenseSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Beam Defense Sphere"));
+    BeamDefenseSphere->AttachToComponent(SphereComponent, AttachmentTransformRules);
 
     /* Initialize legs */
     RearLeftLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Rear Left Leg"));
@@ -86,6 +93,15 @@ void AEnemyMonsterPawn::BeginPlay()
 {
     Super::BeginPlay();
     SpawnWeapons();
+    /** Setting MonsterAI, in case it wasn't set */
+    if(MonsterAI == nullptr)
+    {
+        AMonsterAIController* AIContr = Cast<AMonsterAIController>(GetController());
+        if(AIContr)
+        {
+            MonsterAI = AIContr;
+        }
+    }
 }
 
 void AEnemyMonsterPawn::PostInitializeComponents()
@@ -311,5 +327,27 @@ void AEnemyMonsterPawn::Die()
     if(bHandleDeathInCpp)
     {
         Destroy();
+    }
+}
+
+/** Player has entered the radius of beam defense */
+/** Telling that to MonsterAIController and we will do something with it in behaviour tree*/
+void AEnemyMonsterPawn::PlayerHasEnteredBeamDefense(AActor* OverlapActor)
+{
+    APlayerPawn* Player = Cast<APlayerPawn>(OverlapActor);
+    if(Player && MonsterAI)
+    {
+        MonsterAI->SetIsPlayerInRadiusOfBeamDefense(true);
+    }
+}
+
+/** Player has exit beam defense radius */
+/** Notiyfing the monster ai controller */
+void AEnemyMonsterPawn::PlayerHasExitdBeamDefense(AActor* OverlapExitActor)
+{
+    APlayerPawn* Player = Cast<APlayerPawn>(OverlapActor);
+    if(Player && MonsterAI)
+    {
+        MonsterAI->SetIsPlayerInRadiusOfBeamDefense(false);
     }
 }

@@ -23,14 +23,30 @@ public:
     // General
     // ------------------------------------------------------------------
 
-    UPROPERTY(Category = General, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(Category = General, VisibleDefaultsOnly, BlueprintReadOnly)
     class USkeletalMeshComponent* MonsterMesh;
 
-    UPROPERTY(Category = General, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(Category = General, VisibleDefaultsOnly, BlueprintReadOnly)
     class USphereComponent* SphereComponent;
 
-    UPROPERTY(Category = General, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(Category = General, VisibleDefaultsOnly, BlueprintReadOnly)
     class UFloatingPawnMovement* PawnMovement;
+
+    // ------------------------------------------------------------------
+    // Player behaviour
+    // ------------------------------------------------------------------
+
+    /** Collision to check if the player is inside the beam defense radius */
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player")
+    class USphereComponent* BeamDefenseSphere;
+
+    /** Handles overlapping BeamDefenseSphere with the player */
+    UFUNCTION(BlueprintCallable)
+    void PlayerHasEnteredBeamDefense(class AActor* OverlapActor);
+
+    /** Handles overlap exit BeamDefenseSphere with the player */
+    UFUNCTION(BlueprintCallable)
+    void PlayerHasExitdBeamDefense(class AActor* OverlapExitActor);
 
     // ------------------------------------------------------------------
     // Legs
@@ -77,8 +93,11 @@ public:
     // AI
     // ------------------------------------------------------------------
 
-    UPROPERTY(EditAnywhere, Category = "AI")
+    UPROPERTY(VisibleDefaultsOnly, Category = "AI")
     class UBehaviorTree* BehaviorTree;
+
+    UPROPERTY(VisibleDefaultsOnly, Category = "AI")
+    class AMonsterAIController* MonsterAI;
 
     // ------------------------------------------------------------------
     // DAMAGE & HEALTH
