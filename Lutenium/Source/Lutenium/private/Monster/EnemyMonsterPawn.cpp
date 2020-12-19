@@ -343,7 +343,7 @@ void AEnemyMonsterPawn::PlayerHasEnteredBeamDefense(AActor* OverlapActor)
 /** Notiyfing monster ai controller */
 void AEnemyMonsterPawn::PlayerHasExitdBeamDefense(AActor* OverlapExitActor)
 {
-    APlayerPawn* Player = Cast<APlayerPawn>(OverlapActor);
+    APlayerPawn* Player = Cast<APlayerPawn>(OverlapExitActor);
     if(Player && MonsterAI)
     {
         MonsterAI->SetIsPlayerInRadiusOfBeamDefense(false);
