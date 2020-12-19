@@ -2,11 +2,13 @@
 #include "Monster/EnemyMonsterPawn.h"
 #include "Monster/Weapons/WeaponsUtils/MonsterWeaponType.h"
 #include "Monster/Weapons/MonsterWeapon.h"
+#include "Player/PlayerPawn.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
+#include "Kismet/GameplayStatics.h"
 
 AMonsterAIController::AMonsterAIController()
 {
@@ -29,6 +31,12 @@ AMonsterAIController::AMonsterAIController()
 void AMonsterAIController::BeginPlay()
 {
     Super::BeginPlay();
+    /* Storring player referense */
+    APlayerPawn* PlayerCharacter = Cast<APlayerPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+    if(PlayerCharacter)
+    {
+        Player = PlayerCharacter;
+    }
 }
 
 void AMonsterAIController::Tick(float DeltaTime)
@@ -75,4 +83,22 @@ void AMonsterAIController::SetIsPlayerInRadiusOfBeamDefense(bool bIsInRadius)
 {
     bIsPlayerInRadiusOfBeamDefense = bIsInRadius;
     BlackboardComp->SetValueAsBool(FN_BV_bIsPlayerInRadiusOfBeamDefense, bIsInRadius);
+}
+
+/** Setting tha blackboard value for the PlayerHightLevel */
+int32 AMonsterAIController::SetPlayerHightLevelBlackboardValue()
+{
+    const float PlayerHight = Player->GetActorLocation().Z;
+    int32 Hight = 2; /** by default it should be center */
+    /* indexes of hight level socket location star with 1! */
+    if(MonsterPawn->GetHightLevelSocketLocation(1).Z < PlayerHight)
+    {
+        Hight = 1;
+    }
+    else if(MonsterPawn->GetHightLevelSocketLocation(3).Z > PlayerHight)
+    {
+        Hight = 3;
+    }
+    BlackboardComp->SetValueAsInt(FN_BV_PlayerHightLevel, Hight);
+    return Hight;
 }

@@ -158,8 +158,8 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Sockets")
     FVector GetHightLevelSocketLocation(const int32 Location);
 
-
 protected:
+
     virtual void BeginPlay() override;
 
     virtual void PostInitializeComponents() override;

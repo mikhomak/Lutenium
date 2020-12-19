@@ -36,6 +36,11 @@ public:
     // Player behaviour
     // ------------------------------------------------------------------
 
+    /** Reference to the player */
+    /** CAUTION! Can be nullptr if the player wasn't been found */
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Behaviour")
+    class APlayerPawn* Player;
+
     /** Checks if the player is int the radius to activate beam defense */
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Behaviour")
     bool bIsPlayerInRadiusOfBeamDefense;
@@ -48,7 +53,7 @@ public:
     /** Use it in behaviour tasks */
     /** Depends on the world location of the socket levels of the mesh and the player's location */
     UFUNCTION(BlueprintCallable, Category = "Player Behaviour")
-    int32 GetPlayerHightLevel();
+    int32 SetPlayerHightLevelBlackboardValue();
 
 protected:
     virtual void BeginPlay() override;
@@ -79,13 +84,22 @@ protected:
     UPROPERTY( EditDefaultsOnly,BlueprintReadOnly, Category ="Behaviour")
     FName SecondLevelSocket;
 
-
     UFUNCTION(BlueprintCallable)
     void OnSeePlayer(TArray<class AActor*> Actors);
 
     // ------------------------------------------------------------------
     // Blackboard value names
     // ------------------------------------------------------------------
+
+    /** FORMAT OF VARIABLES  ----- FN_BV_VariableName */
+    /** FName_BlackboardValue_VariableName */
+    /** i like it, sue me, see if I care*/
+
+    /** Checks if the player is in the radius of beam defense */
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Blackboard value names")
     FName FN_BV_bIsPlayerInRadiusOfBeamDefense;
+
+    /** Checks the hight level of the player */
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Blackboard value names")
+    FName FN_BV_PlayerHightLevel;
 };
