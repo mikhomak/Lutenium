@@ -8,7 +8,7 @@
 #include "Monster/Weapons/TrafficLightMW.h"
 #include "Monster/Weapons/PowerSystemMW.h"
 #include "Player/PlayerPawn.h"
-#include ""
+#include "Monster/MonsterAIController.h"
 #include "Perception/PawnSensingComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
@@ -39,7 +39,6 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
     DirectDamageReduction = 0.5f;
     bHandleDeathInCpp = true;
 
-
     /* Setting up body variables */
     BodySocketName = "BodySocket";
     BodyUpMovementSpeed = 1000.f;
@@ -48,7 +47,6 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
     PawnMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Pawn Floating Movement"));
 
     /* Creates sphere for the beam defense */
-
     BeamDefenseSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Beam Defense Sphere"));
     BeamDefenseSphere->AttachToComponent(SphereComponent, AttachmentTransformRules);
 
@@ -342,7 +340,7 @@ void AEnemyMonsterPawn::PlayerHasEnteredBeamDefense(AActor* OverlapActor)
 }
 
 /** Player has exit beam defense radius */
-/** Notiyfing the monster ai controller */
+/** Notiyfing monster ai controller */
 void AEnemyMonsterPawn::PlayerHasExitdBeamDefense(AActor* OverlapExitActor)
 {
     APlayerPawn* Player = Cast<APlayerPawn>(OverlapActor);
