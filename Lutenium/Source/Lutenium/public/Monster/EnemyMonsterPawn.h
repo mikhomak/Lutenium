@@ -128,6 +128,37 @@ public:
     /* Handles direct damage from the player. Reduces the actual damage  */
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
 
+
+    // ------------------------------------------------------------------
+    // Other socket locations
+    // ------------------------------------------------------------------
+
+    /** Checks on what hight level player is at */
+    /** The hight level is determined by the monster hight location and its sockets */
+    /** Check mesh to see where the socket are */
+
+    /** Checks if the player is below that socket's location to fire the appropiate weapon*/
+    /** First hight level(the lowest one) to decide what weapon should be used for an attack */
+    /** RN it's traffic light*/
+    UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category="Sockets")
+    FName FirstHightLevelSocketName;
+
+    /** Checks if the player is below that socket's location to fire the appropiate weapon*/
+    /** RN it's fan*/
+    UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category="Sockets")
+    FName SecondHightLevelSocketName;
+
+    /** Checks if the player is ABOVE that socket's location to fire the appropiate weapon*/
+    /** RN it's siren */
+    UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category="Sockets")
+    FName ThirdHightLevelSocketName;
+
+    /** Returns the world location of the hight level from the socket */
+    /** Start with 1, ends with 3 */
+    UFUNCTION(BlueprintCallable, Category = "Sockets")
+    FVector GetHightLevelSocketLocation(const int32 Location);
+
+
 protected:
     virtual void BeginPlay() override;
 

@@ -349,3 +349,20 @@ void AEnemyMonsterPawn::PlayerHasExitdBeamDefense(AActor* OverlapExitActor)
         MonsterAI->SetIsPlayerInRadiusOfBeamDefense(false);
     }
 }
+
+/** Returns the world location of the hight level socket of the mesh*/
+/** Location should be 1 to 3*/
+/** Returns ActorLocation if the Location is not correct */
+FVector AEnemyMonsterPawn::GetHightLevelSocketLocation(const int32 Location)
+{
+    switch(Location)
+    {
+        case 1:
+            return MonsterMesh->GetSocketLocation(FirstHightLevelSocketName);
+        case 2:
+            return MonsterMesh->GetSocketLocation(SecondHightLevelSocketName);
+        case 3:
+            return MonsterMesh->GetSocketLocation(ThirdHightLevelSocketName);
+    }
+    return GetActorLocation();
+}

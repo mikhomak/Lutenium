@@ -70,6 +70,7 @@ int32 AMonsterAIController::GetWeaponLevel(EMonsterWeaponType MonsterWeaponType)
     return -1;
 }
 
+/** Setting blackboard value for PlayerInRadiusOfBeamDefense */
 void AMonsterAIController::SetIsPlayerInRadiusOfBeamDefense(bool bIsInRadius)
 {
     bIsPlayerInRadiusOfBeamDefense = bIsInRadius;

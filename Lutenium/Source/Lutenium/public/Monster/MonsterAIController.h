@@ -36,8 +36,6 @@ public:
     // Player behaviour
     // ------------------------------------------------------------------
 
-
-
     /** Checks if the player is int the radius to activate beam defense */
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Behaviour")
     bool bIsPlayerInRadiusOfBeamDefense;
@@ -46,6 +44,11 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Player Behaviour")
     void SetIsPlayerInRadiusOfBeamDefense(bool bIsInRadius);
 
+    /** Gets plaer's hight level to determine which weapon should be executed */
+    /** Use it in behaviour tasks */
+    /** Depends on the world location of the socket levels of the mesh and the player's location */
+    UFUNCTION(BlueprintCallable, Category = "Player Behaviour")
+    int32 GetPlayerHightLevel();
 
 protected:
     virtual void BeginPlay() override;
@@ -57,7 +60,6 @@ protected:
 
     UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category = "Perception")
     class UAISenseConfig_Sight* SightConfig;
-
 
     virtual void OnPossess(APawn* InPawn) override;
 
