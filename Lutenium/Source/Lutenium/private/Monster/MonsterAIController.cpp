@@ -26,6 +26,7 @@ AMonsterAIController::AMonsterAIController()
 
     /* Set up names for blackboard values */
     FN_BV_bIsPlayerInRadiusOfBeamDefense = "bIsPlayerInRadiusOfBeamDefense";
+    FN_BV_PlayerHightLevel = "PlayerHightLevel";
 }
 
 void AMonsterAIController::BeginPlay()
