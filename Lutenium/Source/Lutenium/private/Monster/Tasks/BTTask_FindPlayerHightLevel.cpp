@@ -21,9 +21,9 @@ EBTNodeResult::Type UBTTask_FindPlayerHightLevel::ExecuteTask(UBehaviorTreeCompo
 		return EBTNodeResult::Failed;
 	}
 
-    /* Setting blackboard value of the hight level position of the player in  */
-    MonsterController->SetPlayerHightLevelBlackboardValue();
+  /* Setting blackboard value of the hight level position of the player in  */
+  MonsterController->SetPlayerHightLevelBlackboardValue();
 
-    return EBTNodeResult::Succeeded;
+  return EBTNodeResult::Succeeded;
 
 }
