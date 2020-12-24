@@ -33,7 +33,7 @@ AFanMW::AFanMW() : AMonsterWeapon()
 void AFanMW::ExecuteAttack()
 {
     bForwardWindActive = true;
-    bBackWindActive = true;
+    bBackwardWindActive = true;
 
     /* Invoking events for visuals n shit */
     OnActivateForwardWind(true);
@@ -56,7 +56,7 @@ void AFanMW::WindTriggerOverlap(class AActor* OtherActor, bool bPush)
         /* Pushing away player or pulling it towards */
         ForceDirection = bPush ? ForceDirection : ForceDirection * -1.f;
         const float Force = bPush ? PushForce : PullForce;
-        PlayerPawn->GetPlaneMovement()->DragMovementEffect->Activate(Force, DragDirection);
+        PlayerPawn->GetPlaneMovement()->DragMovementEffect->Activate(Force, ForceDirection);
         return;
     }
 
@@ -65,7 +65,7 @@ void AFanMW::WindTriggerOverlap(class AActor* OtherActor, bool bPush)
     if(Missile)
     {
         /* Throws missile in the opposite direction */
-        Position = Missile->GetActorLocation() - Position;
+        FVector Position = Missile->GetActorLocation() - Position;
         Position.Normalize();
         Missile->ThrowMissile(Missile->GetActorForwardVector() * -1, PushForce);
         /* Do not defected the missile */

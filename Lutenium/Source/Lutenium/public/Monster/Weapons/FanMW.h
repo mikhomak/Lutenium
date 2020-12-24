@@ -85,13 +85,13 @@ public:
         {
             OnDeactivateForwardWind(true);
         }
-        if(bBackWindActive)
+        if(bBackwardWindActive)
         {
-            OnDeactivateForwardWind(true);
+            OnDeactivateForwardWind(false);
         }
 
         bForwardWindActive = false;
-        bBackWindActive = false;
+        bBackwardWindActive = false;
     }
 
     /**
@@ -100,7 +100,7 @@ public:
      * @param bForward - true if that's forward wind, false if its backward
      */
     UFUNCTION(BlueprintImplementableEvent, Category="Wind")
-    void OnActivateForwardWind(bool& bForward);
+    void OnActivateForwardWind(bool bForward);
 
     /**
      * Event on wind get deactivated
@@ -108,7 +108,7 @@ public:
      * @param bForward - true if that's forward wind, false if its backward
      */
     UFUNCTION(BlueprintImplementableEvent, Category="Wind")
-    void OnDeactivateForwardWind(bool& bForward);
+    void OnDeactivateForwardWind(bool bForward);
 
     /**
      * Push force amount applied to the mesh on the player that overlaps wind
