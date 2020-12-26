@@ -28,10 +28,12 @@ AFenceTowerMW::AFenceTowerMW() : AMonsterWeapon()
 void AFenceTowerMW::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+
     /* Only the parent tower should raycast*/
     /* Raycasting for the player each tick when the beam is active */
     if(bParentFenceTower && bActiveBeam &&
-     LeftNeighborFenceTower && RightNeighborFenceTower)
+       LeftNeighborFenceTower && RightNeighborFenceTower &&
+       (PlayerEmpMovementEffect == nullptr || !PlayerEmpMovementEffect->Active))
     {
         FHitResult Hit;
         FVector RightNeighborLocation = RightNeighborFenceTower->GetActorLocation();
@@ -44,12 +46,23 @@ void AFenceTowerMW::Tick(float DeltaTime)
                                                              BeamRadius, Hit);
         if(Player && !bIsPlayerInBeam)
         {
+            /* Setting emp movemnt effect */
+            if(PlayerEmpMovementEffect == nullptr && Player &&
+               Player->GetPlaneMovement() && Player->GetPlaneMovement()->EmpMovementEffect)
+            {
+                PlayerEmpMovementEffect = PlayerPawn->GetPlaneMovement()->EmpMovementEffect;
+            }
+
             const FVector RandomRotation = FVector(
 			    FMath::RandRange(0.f, 1.f),
 			    FMath::RandRange(0.f, 1.f),
 			    FMath::RandRange(0.f, 1.f)
 		    );
-            Player->GetPlaneMovement()->EmpMovementEffect->Activate(BeamEmpTime, RandomRotation, BeamEmpForce);
+            /* Safe activating player's emp*/
+            if(PlayerEmpMovementEffect)
+            {
+                PlayerEmpMovementEffect->Activate(BeamEmpTime, RandomRotation, BeamEmpForce);
+            }
             bIsPlayerInBeam = true; // Applying emp only on entering the beam
         }
         else if(bIsPlayerInBeam)

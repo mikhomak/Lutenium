@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../public/Player/PlayerPawn.h"
+#include "Player/PlayerPawn.h"
 #include "MovementEffect.generated.h"
 
 UCLASS(BlueprintType, Blueprintable)
@@ -10,16 +10,30 @@ class LUTENIUM_API UMovementEffect : public UObject
     GENERATED_BODY()
 
 public:
+
+    /** Determines if this effect should be applied to the plane each tick or not */
+    UPROPERTY(BlueprintReadWrite, Category = "Effect")
     bool Active;
 
-    UFUNCTION(BlueprintCallable, Category="Effect")
+    /**
+     * Virtual method to override in the child effects
+     * Acivates the effect with different option for each effects
+     */
+    UFUNCTION(BlueprintCallable, Category = "Effect")
     virtual void ApplyEffect();
 
-    UFUNCTION(BlueprintCallable, Category="Effect")
-    virtual void Deactivate() { Active = false; }
+    /** Deactivating the effect */
+    FORCEINLINE UFUNCTION(BlueprintCallable, Category = "Effect")
+    void Deactivate() { Active = false; }
 
-    UFUNCTION(BlueprintCallable, Category="Effect")
-    void InitEffect(APlayerPawn* Pawn);
+    /** Called once while creating the effect(int PlayerPawn) to set needed references */
+    FORCELINE UFUNCTION(BlueprintCallable, Category = "Effect")
+    void InitEffect(APlayerPawn* Pawn)
+    {
+        PlayerPawn = Pawn;
+        PlayerBox = PlayerPawn->GetPlaneBox();
+        PlaneMovementComp = PlayerPawn->GetPlaneMovement();
+    }
 
 protected:
     class APlayerPawn* PlayerPawn;
@@ -31,10 +45,3 @@ protected:
 
 
 inline void UMovementEffect::ApplyEffect(){}
-
-inline void UMovementEffect::InitEffect(APlayerPawn* Pawn)
-{
-    PlayerPawn = Pawn;
-    PlayerBox = PlayerPawn->GetPlaneBox();
-    PlaneMovementComp = PlayerPawn->GetPlaneMovement();
-}

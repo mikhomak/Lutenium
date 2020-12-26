@@ -142,6 +142,18 @@ public:
     void OnDeactivateBeam(const bool bLeft);
 
     // ------------------------------------------------------------------
+	// Indexes
+	// ------------------------------------------------------------------
+
+    /**
+     * Emp Movement Effect of the player
+     * Being set only for the parent fence tower
+     * Being set in tick if this vairable is null
+     */
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Beam")
+    class UEmpMovementEffect* PlayerEmpMovementEffect;
+
+    // ------------------------------------------------------------------
 	// Overrides of AMonsterWeaapon
 	// ------------------------------------------------------------------
 
