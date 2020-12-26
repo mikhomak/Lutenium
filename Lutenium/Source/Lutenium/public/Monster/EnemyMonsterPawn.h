@@ -140,17 +140,17 @@ public:
     /** Checks if the player is below that socket's location to fire the appropiate weapon*/
     /** First hight level(the lowest one) to decide what weapon should be used for an attack */
     /** RN it's traffic light*/
-    UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category="Sockets")
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Sockets")
     FName FirstHightLevelSocketName;
 
     /** Checks if the player is below that socket's location to fire the appropiate weapon*/
     /** RN it's fan*/
-    UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category="Sockets")
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Sockets")
     FName SecondHightLevelSocketName;
 
     /** Checks if the player is ABOVE that socket's location to fire the appropiate weapon*/
     /** RN it's siren */
-    UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category="Sockets")
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Sockets")
     FName ThirdHightLevelSocketName;
 
     /** Returns the world location of the hight level from the socket */
