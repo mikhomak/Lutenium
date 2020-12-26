@@ -28,12 +28,19 @@ AFenceTowerMW::AFenceTowerMW() : AMonsterWeapon()
 void AFenceTowerMW::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+    /* Only the parent tower should raycast*/
     /* Raycasting for the player each tick when the beam is active */
-    if(bActiveBeam)
+    if(bParentFenceTower && bActiveBeam &&
+     LeftNeighborFenceTower && RightNeighborFenceTower)
     {
         FHitResult Hit;
+        FVector RightNeighborLocation = RightNeighborFenceTower->GetActorLocation();
+        FVector LeftNeighborLocation = LeftNeighborFenceTower->GetActorLocation();
+
+        /* Racyasting for both neighbors */
         APlayerPawn* Player = FAssistUtils::RaycastForPlayer(this, GetWorld(),
-                                       GetActorLocation(), BeamTargetLocation,
+                                       GetActorLocation(),
+                                       RightNeighborLocation, LeftNeighborLocation
                                        BeamRadius, Hit);
         if(Player && !bIsPlayerInBeam)
         {

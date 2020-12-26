@@ -62,9 +62,28 @@ public:
     UPROPERTY(BlueprintReadWrite, Category="Beam")
     bool bIsPlayerInBeam;
 
-    /** Target location where the beam should end */
+    /**
+     * Indicates whether this tower should create beam to its neighbors(raycasting for the player and creating vfx)
+     * Should be true if the position index is 0 or 3
+     */
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Beam")
+    bool bParentFenceTower;
+
+    /**
+     * Left Neighbor of the tower
+     * Used for the vfx in BP(setting target beam each tick)
+     * @warning NULL for even position indexes!!!
+     */
     UPROPERTY(BlueprintReadWrite, Category="Beam")
-    FVector BeamTargetLocation;
+    class AFenceTowerMW* LeftNeighborFenceTower;
+
+    /**
+     * Right Neighbor of the tower
+     * Used for the vfx in BP(setting target beam each tick)
+     * @warning NULL for even position indexes!!!
+     */
+    UPROPERTY(BlueprintReadWrite, Category="Beam")
+    class AFenceTowerMW* RightNeighborFenceTower;
 
     /** The radius of the beam and the raycast */
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Beam")
@@ -80,49 +99,47 @@ public:
 
     /**
      * Activates defensive beam
-     * TargetLocation is the location where we should raycast for the player (should be neighbour tower)
      * If the beam is active (bActiveBeam == true), on each tick raycasting from tower to tower for the player
      * If the player has been found in the raycast, activates EMP movement effect on him
      * Activates event for doing some cool stuff in BP (VFX SFX ya know the drill)
-     * TargetIndex - index of the target tower fence. 0 - left, 1 - right
      * @param bActive - activate or deactivate beam
-     * @param TargetLocation - target location for beam
-     * @param TargetIndex - index of the target fence tower
+     * @param bLeft - Indicates left or right Neighbor
      */
     FORCEINLINE UFUNCTION(Category="Beam")
-    void SetActiveBeam(bool bActive, FVector TargetLocation, int32 TargetIndex)
+    void SetActiveBeam(bool bActive, bool bLeft)
     {
+        /* Invoking events */
+        if(bActive)
+        {
+            OnActivateBeam(bLeft);
+        }
+        else
+        {
+            bIsPlayerInBeam = false; // obligatory disabling player inside the beam variable
+            OnDeactivateBeam(bLeft);
+        }
+
         if(bActiveBeam != bActive)
         {
-            if(bActive)
-            {
-                OnActivateBeam(TargetLocation, TargetIndex);
-            }
-            else
-            {
-                bIsPlayerInBeam = false; // obligatory disabling player inside the beam variable
-                OnDeactivateBeam(TargetLocation, TargetIndex);
-            }
             bActiveBeam = bActive;
-            BeamTargetLocation = TargetLocation;
         }
      }
 
     /**
      * Event to activate beam VFX, SFX in BP
      * @param TargetLocation - location of the target for the beam (to set VFX beam target variable)
-     * @param TargetIndex - index of the target tower fence
+     * @param bLeft - Indicates left or right Neighbor
      */
     UFUNCTION(BlueprintImplementableEvent, Category="Beam")
-    void OnActivateBeam(const FVector& TargetLocation, const int32& TargetIndex);
+    void OnActivateBeam(const bool bLeft);
 
     /**
      * Event to deactivate beam VFX, SFX in BP
      * @param TargetLocation - location of the target for the beam (to set VFX beam target variable)
-     * @param TargetIndex - index of the target tower fence
+     * @param bLeft - Indicates left or right Neighbor
      */
     UFUNCTION(BlueprintImplementableEvent, Category="Beam")
-    void OnDeactivateBeam(const FVector& TargetLocation, const int32& TargetIndex);
+    void OnDeactivateBeam(const bool bLeft);
 
     // ------------------------------------------------------------------
 	// Overrides of AMonsterWeaapon

@@ -49,10 +49,31 @@ void APowerSystemMW::InitializeTowerFencse()
                     /* Setting indexes for spawned tower so even if we remove one of them from the array, we still would know the original index to adapt behaviour */
                     SpawnedFenceTower->HightIndex = HightIndex;
                     SpawnedFenceTower->PositionIndex = PositionIndex;
+                    /* Setting parent for 0 and 1 towers */
+                    if(PositionIndex == 0 || PositionIndex == 3)
+                    {
+                        SpawnedFenceTower->bParentFenceTower = true;
+                    }
                     /* Adds spawned tower to the array of the current hight */
                     FenceTowers[HightIndex].Add(SpawnedFenceTower);
                 }
             }
+            /* Setting the neighbors for the parent towers */
+            /* Setting them after we initialize all the towers for the currnet hight index*/
+            if(FenceTowers[HightIndex][1] && FenceTowers[HightIndex][2])
+            {
+                if(FenceTowers[HightIndex][0])
+                {
+                    FenceTowers[HightIndex][0]->LeftNeighborFenceTower = FenceTower[HightIndex][1];
+                    FenceTowers[HightIndex][0]->LeftNeighborFenceTower = FenceTower[HightIndex][2];
+                }
+                if(FenceTowers[HightIndex][3])
+                {
+                    FenceTowers[HightIndex][3]->LeftNeighborFenceTower = FenceTower[HightIndex][1];
+                    FenceTowers[HightIndex][3]->LeftNeighborFenceTower = FenceTower[HightIndex][2];
+                }
+            }
+
         }
     }
 }
@@ -80,14 +101,16 @@ void APowerSystemMW::ActivateBeamDefense()
         //    |      MONSTER
         //    |
         //    2                     3
-        SafeActiveBeam(true, FenceTowers[HightIndex][0], FenceTowers[HightIndex][1], FenceTowers[HightIndex][2]);
+        SafeActiveBeam(true, FenceTowers[HightIndex][0], true);
+        SafeActiveBeam(true, FenceTowers[HightIndex][0], false);
 
 
         //    0                     1
         //           MONSTER        |
         //                          |
         //    2---------------------3
-        SafeActiveBeam(true, FenceTowers[HightIndex][3], FenceTowers[HightIndex][1], FenceTowers[HightIndex][2]);
+        SafeActiveBeam(true, FenceTowers[HightIndex][3], true);
+        SafeActiveBeam(true, FenceTowers[HightIndex][3], false);
     }
 }
 
@@ -97,22 +120,17 @@ void APowerSystemMW::DeactivateBeamDefense()
     /* Deactivate beam defense for every fence tower */
     for(int32 HightIndex = 0; HightIndex < FenceTowers.Num(); HightIndex++)
     {
-        SafeActiveBeam(false, FenceTowers[HightIndex][0], FenceTowers[HightIndex][1], FenceTowers[HightIndex][2]);
-        SafeActiveBeam(false, FenceTowers[HightIndex][3], FenceTowers[HightIndex][1], FenceTowers[HightIndex][2]);
+        SafeActiveBeam(false, FenceTowers[HightIndex][0], true);
+        SafeActiveBeam(false, FenceTowers[HightIndex][3], true);
+        SafeActiveBeam(false, FenceTowers[HightIndex][0], left);
+        SafeActiveBeam(false, FenceTowers[HightIndex][3], left);
     }
 }
 
-void APowerSystemMW::SafeActiveBeam(bool bActivate, class AFenceTowerMW* FenceTowerStart, class AFenceTowerMW* FirstTargetFenceTower, class AFenceTowerMW* SecondTargetFenceTower)
+void APowerSystemMW::SafeActiveBeam(bool bActivate, class AFenceTowerMW* FenceTowerStart, bool bLeft)
 {
     if(FenceTowerStart)
     {
-        if(FirstTargetFenceTower)
-        {
-            FenceTowerStart->SetActiveBeam(true, FirstTargetFenceTower->GetActorLocation(), 0);
-        }
-        if(SecondTargetFenceTower)
-        {
-            FenceTowerStart->SetActiveBeam(true, SecondTargetFenceTower->GetActorLocation(), 1);
-        }
+        FenceTowerStart->SetActiveBeam(bActivate, bLeft);
     }
 }

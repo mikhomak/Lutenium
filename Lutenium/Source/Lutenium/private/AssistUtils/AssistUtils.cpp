@@ -118,3 +118,23 @@ APlayerPawn* FAssistUtils::RaycastForPlayer(const AActor* OwnerActor,
 
     return nullptr;
 }
+
+
+/**
+ * Same funcinality as the normal RaycastForPlayer but has the second end location in case if the first one hasn't found the player
+ */
+APlayerPawn* FAssistUtils::RaycastForPlayer(const AActor* OwnerActor,
+                                            const UWorld* World,
+                                            const FVector& StartLocation,
+                                            const FVector& EndLocation,
+                                            const FVector& SecondEndLocation,
+                                            const float RaycastRadius,
+                                            FHitResult& HitResultOut)
+{
+    APlayerPawn Player = RaycastForPlayer(OwnerActor, World, StartLocation, EndLocation, RaycastRadius, HitResultOut);
+    if(Player)
+    {
+        return Player;
+    }
+    return RaycastForPlayer(OwnerActor, World, StartLocation, SecondEndLocation, RaycastRadius, HitResultOut);
+}
