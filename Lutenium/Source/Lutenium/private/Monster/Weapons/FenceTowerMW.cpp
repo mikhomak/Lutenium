@@ -39,9 +39,9 @@ void AFenceTowerMW::Tick(float DeltaTime)
 
         /* Racyasting for both neighbors */
         APlayerPawn* Player = FAssistUtils::RaycastForPlayer(this, GetWorld(),
-                                       GetActorLocation(),
-                                       RightNeighborLocation, LeftNeighborLocation
-                                       BeamRadius, Hit);
+                                                             GetActorLocation(),
+                                                             RightNeighborLocation, LeftNeighborLocation,
+                                                             BeamRadius, Hit);
         if(Player && !bIsPlayerInBeam)
         {
             const FVector RandomRotation = FVector(

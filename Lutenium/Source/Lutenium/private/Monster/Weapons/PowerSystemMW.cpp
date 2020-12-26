@@ -64,13 +64,13 @@ void APowerSystemMW::InitializeTowerFencse()
             {
                 if(FenceTowers[HightIndex][0])
                 {
-                    FenceTowers[HightIndex][0]->LeftNeighborFenceTower = FenceTower[HightIndex][1];
-                    FenceTowers[HightIndex][0]->LeftNeighborFenceTower = FenceTower[HightIndex][2];
+                    FenceTowers[HightIndex][0]->LeftNeighborFenceTower = FenceTowers[HightIndex][1];
+                    FenceTowers[HightIndex][0]->RightNeighborFenceTower = FenceTowers[HightIndex][2];
                 }
                 if(FenceTowers[HightIndex][3])
                 {
-                    FenceTowers[HightIndex][3]->LeftNeighborFenceTower = FenceTower[HightIndex][1];
-                    FenceTowers[HightIndex][3]->LeftNeighborFenceTower = FenceTower[HightIndex][2];
+                    FenceTowers[HightIndex][3]->LeftNeighborFenceTower = FenceTowers[HightIndex][1];
+                    FenceTowers[HightIndex][3]->RightNeighborFenceTower = FenceTowers[HightIndex][2];
                 }
             }
 
@@ -122,8 +122,8 @@ void APowerSystemMW::DeactivateBeamDefense()
     {
         SafeActiveBeam(false, FenceTowers[HightIndex][0], true);
         SafeActiveBeam(false, FenceTowers[HightIndex][3], true);
-        SafeActiveBeam(false, FenceTowers[HightIndex][0], left);
-        SafeActiveBeam(false, FenceTowers[HightIndex][3], left);
+        SafeActiveBeam(false, FenceTowers[HightIndex][0], false);
+        SafeActiveBeam(false, FenceTowers[HightIndex][3], false);
     }
 }
 

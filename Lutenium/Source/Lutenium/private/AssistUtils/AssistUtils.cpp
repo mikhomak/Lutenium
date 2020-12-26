@@ -1,6 +1,7 @@
 ﻿#include "AssistUtils/AssistUtils.h"
 #include "Player/PlaneMovementComponent.h"
 #include "Player/MissileTargetHit.h"
+#include "Player/PlayerPawn.h"
 #include "Math/Vector.h"
 #include "Kismet/KismetSystemLibrary.h"
 #define ECC_MonsterWPHurtbox ECollisionChannel::ECC_GameTraceChannel1
@@ -131,7 +132,7 @@ APlayerPawn* FAssistUtils::RaycastForPlayer(const AActor* OwnerActor,
                                             const float RaycastRadius,
                                             FHitResult& HitResultOut)
 {
-    APlayerPawn Player = RaycastForPlayer(OwnerActor, World, StartLocation, EndLocation, RaycastRadius, HitResultOut);
+    APlayerPawn* Player = RaycastForPlayer(OwnerActor, World, StartLocation, EndLocation, RaycastRadius, HitResultOut);
     if(Player)
     {
         return Player;
