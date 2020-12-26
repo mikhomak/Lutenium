@@ -17,7 +17,6 @@ public:
     UFUNCTION(BlueprintCallable, Category="Effect")
     void Activate(const float NewEmpTime, FVector NewRotationDirection, const float NewRotationForce);
 
-    FORCEINLINE void Deactivate() override { Active = false; }
 protected:
 
     float EmpTime;

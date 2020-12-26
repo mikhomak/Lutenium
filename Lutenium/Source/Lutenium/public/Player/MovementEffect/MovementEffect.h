@@ -27,7 +27,7 @@ public:
     void Deactivate() { Active = false; }
 
     /** Called once while creating the effect(int PlayerPawn) to set needed references */
-    FORCELINE UFUNCTION(BlueprintCallable, Category = "Effect")
+    FORCEINLINE UFUNCTION(BlueprintCallable, Category = "Effect")
     void InitEffect(APlayerPawn* Pawn)
     {
         PlayerPawn = Pawn;

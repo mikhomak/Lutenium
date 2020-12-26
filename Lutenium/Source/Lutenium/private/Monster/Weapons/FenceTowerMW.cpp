@@ -50,7 +50,7 @@ void AFenceTowerMW::Tick(float DeltaTime)
             if(PlayerEmpMovementEffect == nullptr && Player &&
                Player->GetPlaneMovement() && Player->GetPlaneMovement()->EmpMovementEffect)
             {
-                PlayerEmpMovementEffect = PlayerPawn->GetPlaneMovement()->EmpMovementEffect;
+                PlayerEmpMovementEffect = Player->GetPlaneMovement()->EmpMovementEffect;
             }
 
             const FVector RandomRotation = FVector(
