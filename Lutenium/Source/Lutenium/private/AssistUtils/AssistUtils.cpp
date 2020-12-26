@@ -6,7 +6,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #define ECC_MonsterWPHurtbox ECollisionChannel::ECC_GameTraceChannel1
 #define ECC_Monster ECollisionChannel::ECC_GameTraceChannel2
-#define ECC_Player ECollisionChannel::ECC_GameTraceChannel3
+#define ECC_Player ECollisionChannel::ECC_GameTraceChannel4
 
 USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const UWorld* World,
                                                                    const FVector& StartLocation,
