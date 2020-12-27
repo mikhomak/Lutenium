@@ -297,7 +297,7 @@ void AEnemyMonsterPawn::ToggleWhatLegsShouldMove(const bool Left) const
 /** Removes a weapon when it got destroyed */
 void AEnemyMonsterPawn::LooseWeapon(EMonsterWeaponType WeaponType)
 {
-    WeaponMap.FindAndRemoveChecked(WeaponType);
+    WeaponMap.Remove(WeaponType);
 }
 
 
