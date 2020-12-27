@@ -32,12 +32,11 @@ void AFenceTowerMW::Tick(float DeltaTime)
     /* Only the parent tower should raycast*/
     /* Raycasting for the player each tick when the beam is active */
     if(bParentFenceTower && bActiveBeam &&
-       LeftNeighborFenceTower && RightNeighborFenceTower &&
        (PlayerEmpMovementEffect == nullptr || !PlayerEmpMovementEffect->Active))
     {
         FHitResult Hit;
-        FVector RightNeighborLocation = RightNeighborFenceTower->GetActorLocation();
-        FVector LeftNeighborLocation = LeftNeighborFenceTower->GetActorLocation();
+        FVector RightNeighborLocation = RightNeighborFenceTower != nullptr ? RightNeighborFenceTower->GetActorLocation() : FVector::ZeroVector;
+        FVector LeftNeighborLocation = LeftNeighborFenceTower != nullptr ? LeftNeighborFenceTower->GetActorLocation() : FVector::ZeroVector;
 
         /* Racyasting for both neighbors */
         APlayerPawn* Player = FAssistUtils::RaycastForPlayer(this, GetWorld(),
@@ -86,7 +85,6 @@ void AFenceTowerMW::Die()
 
     /* Disabling defense beam in case it was active  */
     bActiveBeam = false;
-
     /* Removes tower fense from power system */
     FFenceTower2DArray& FenceTowers = PowerSystem->FenceTowers[HightIndex];
     if(FenceTowers.Num() != 0)
@@ -96,6 +94,7 @@ void AFenceTowerMW::Die()
             /* Removes the tower from the array without shrinking it!! */
             /* We don't shrink it so we can acces other towers directly by their position index */
             FenceTowers.RemoveAt(PositionIndex, 1, false);
+            Destroy();
         }
     }
 

@@ -132,10 +132,19 @@ APlayerPawn* FAssistUtils::RaycastForPlayer(const AActor* OwnerActor,
                                             const float RaycastRadius,
                                             FHitResult& HitResultOut)
 {
-    APlayerPawn* Player = RaycastForPlayer(OwnerActor, World, StartLocation, EndLocation, RaycastRadius, HitResultOut);
-    if(Player)
+    if(EndLocation != FVector::ZeroVector)
     {
-        return Player;
+        APlayerPawn* Player = RaycastForPlayer(OwnerActor, World, StartLocation, EndLocation, RaycastRadius, HitResultOut);
+        if(Player)
+        {
+            return Player;
+        }
     }
-    return RaycastForPlayer(OwnerActor, World, StartLocation, SecondEndLocation, RaycastRadius, HitResultOut);
+    if(SecondEndLocation != FVector::ZeroVector)
+    {
+        return RaycastForPlayer(OwnerActor, World, StartLocation, SecondEndLocation, RaycastRadius, HitResultOut);
+    }
+
+    /* In case of both end location are zeros, do nothing */
+    return nullptr;
 }
