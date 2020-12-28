@@ -3,6 +3,7 @@
 #include "Monster/Weapons/FenceTowerMW.h"
 #include "Monster/Weapons/PowerSystemMW.h"
 #include "Monster/Weapons/MonsterWeapon.h"
+#include "Monster/Weapons/Spells/PowerProjectile.h"
 #include "Player/PlayerPawn.h"
 #include "Player/PlaneMovementComponent.h"
 #include "Player/MovementEffect/EmpMovementEffect.h"
@@ -10,10 +11,15 @@
 #include "Monster/Weapons/WeaponsUtils/FenceTower2DArray.h"
 #include "AssistUtils/AssistUtils.h"
 #include "Math/Vector.h"
+#include "Components/ArrowComponent.h"
 
 
 AFenceTowerMW::AFenceTowerMW() : AMonsterWeapon()
 {
+    /* Creating arrow projectile */
+    ArrowProjectile = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow Projectile"));
+    ArrowProjectile ->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
+
     Health = 100.f;
     BeamRadius = 2000.f;
 
@@ -71,9 +77,24 @@ void AFenceTowerMW::Tick(float DeltaTime)
     }
 }
 
+/** Shoot projectiles */
 void AFenceTowerMW::ExecuteAttack()
 {
+    if(PowerProjectileClass)
+    {
+        // just in case
+        UWorld* World = GetWorld();
+        if(World)
+        {
+            FActorSpawnParameters SpawnParams;
+            SpawnParams.Owner = this;
+            SpawnParams.Instigator = this;
 
+            const FVector SpawnLocation = ArrowProjectile->GetActorLocation();
+            cosnt FRotator SpawnRotation = ArrowProjectile->GetActorForwardVector();
+            World->SpawnActor<APowerProjecile>(PowerProjectileClass, SpawnLocation, SpawnRotation, SpawnParams);
+        }
+    }
 }
 
 void AFenceTowerMW::Die()

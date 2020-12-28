@@ -15,6 +15,8 @@ public:
         return Array[i];
     }
 
+
+
     void Add(class AFenceTowerMW* FenceTower) {
         Array.Add(FenceTower);
     }

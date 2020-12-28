@@ -41,7 +41,7 @@ public:
      * Indexes should coolorate with the names of the sockets of the monster mesh
      * Using that array we can execute the behaviour we want of the whole system (Power System itself doesn't have direct actions)
      */
-    UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category="Fence Towers")
+    UPROPERTY(BlueprintReadOnly, Category="Fence Towers")
     TArray<FFenceTower2DArray> FenceTowers;
 
     /**

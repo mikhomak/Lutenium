@@ -83,9 +83,16 @@ FName APowerSystemMW::ConstructSocketName(int32 HightIndex, int32 PositionIndex)
     return FName(FString::Format(*TowerFenceSocketFormat, { HightIndex, PositionIndex }));
 }
 
+/** shoots from every tower */
 void APowerSystemMW::ExecuteAttack()
 {
-
+    for(int32 HightIndex = 0; HightIndex < FenceTowers.Num(); HightIndex++)
+    {
+        for(int32 PositionIndex = 0; PositionIndex < FenceTowers[HightIndex].Num(); PositionIndex++)
+        {
+            FenceTowers[HightIndex][PositionIndex]->ExecuteAttack();
+        }
+    }
 }
 
 

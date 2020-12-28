@@ -17,17 +17,18 @@ public:
 
     virtual void Tick(float DeltaTime) override;
 
-    // ------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------------------------
 	// General
-	// ------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------------------------------
 
     /** Reference to the main power system weapon */
     UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category="Power System")
     class APowerSystemMW* PowerSystem;
 
-    // ------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------------------------
 	// Indexes
-	// ------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------------------------
+
 
     /** Indexes are used in Power System to controll the logic of each tower (towers don't take decisions individually) */
 
@@ -45,9 +46,9 @@ public:
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Index")
     int32 PositionIndex;
 
-    // ------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------------------------
 	// Beam
-	// ------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------------------------
 
     /** Variable to check if we should raycast the player in each tick */
     UPROPERTY(BlueprintReadWrite, Category="Beam")
@@ -141,10 +142,6 @@ public:
     UFUNCTION(BlueprintImplementableEvent, Category="Beam")
     void OnDeactivateBeam(const bool bLeft);
 
-    // ------------------------------------------------------------------
-	// Indexes
-	// ------------------------------------------------------------------
-
     /**
      * Emp Movement Effect of the player
      * Being set only for the parent fence tower
@@ -153,9 +150,23 @@ public:
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Beam")
     class UEmpMovementEffect* PlayerEmpMovementEffect;
 
-    // ------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------------------------
+	// Projectile
+    // -----------------------------------------------------------------------------------------------------------
+
+    /**
+     * Projectile class to spawn
+     * Should be SubClass because we need to put a BP class of APowerProjecile
+     */
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Projectile")
+	TSubclassOf<class APowerProjecile> PowerProjectileClass;
+
+	/** Arrow component to determine the spawn location and the forward vector for spaned projectiles */
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Projectile")
+    class UArrowComponent* ArrowProjectile;
+    // -----------------------------------------------------------------------------------------------------------
 	// Overrides of AMonsterWeaapon
-	// ------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------------------------
 
     /** Overriding Dying function to unassigned the tower from the power system, not the monster! (Monster itslef doesn't control each tower individually)*/
     virtual void Die() override;
