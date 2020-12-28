@@ -17,11 +17,12 @@ public:
     UFUNCTION(BlueprintCallable, Category="Effect")
     void Activate(const float NewEmpTime, FVector NewRotationDirection, const float NewRotationForce);
 
-protected:
-
+    UPROPERTY(BlueprintReadWrite, Category = "Effect")
     float EmpTime;
 
+    UPROPERTY(BlueprintReadWrite, Category = "Effect")
     FVector RotationDirection;
 
+    UPROPERTY(BlueprintReadWrite, Category = "Effect")
     float RotationForce;
 };
