@@ -4,6 +4,7 @@
 #include "Monster/Weapons/PowerSystemMW.h"
 #include "Monster/Weapons/MonsterWeapon.h"
 #include "Monster/Weapons/Spells/PowerProjectile.h"
+#include "Monster/EnemyMonsterPawn.h"
 #include "Player/PlayerPawn.h"
 #include "Player/PlaneMovementComponent.h"
 #include "Player/MovementEffect/EmpMovementEffect.h"
@@ -88,11 +89,14 @@ void AFenceTowerMW::ExecuteAttack()
         {
             FActorSpawnParameters SpawnParams;
             SpawnParams.Owner = this;
-            SpawnParams.Instigator = this;
+            if(MonsterPawn)
+            {
+                SpawnParams.Instigator = MonsterPawn;
+            }
 
-            const FVector SpawnLocation = ArrowProjectile->GetActorLocation();
-            cosnt FRotator SpawnRotation = ArrowProjectile->GetActorForwardVector();
-            World->SpawnActor<APowerProjecile>(PowerProjectileClass, SpawnLocation, SpawnRotation, SpawnParams);
+            const FVector SpawnLocation = ArrowProjectile->GetComponentLocation();
+            const FRotator SpawnRotation = ArrowProjectile->GetComponentRotation();
+            World->SpawnActor<APowerProjectile>(PowerProjectileClass, SpawnLocation, SpawnRotation, SpawnParams);
         }
     }
 }

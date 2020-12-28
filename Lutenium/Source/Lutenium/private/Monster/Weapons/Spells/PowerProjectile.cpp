@@ -14,7 +14,7 @@ APowerProjectile::APowerProjectile()
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Projectlie mesh"));
     ProjectileMesh->AttachToComponent(MainSphereComp, FAttachmentTransformRules::KeepWorldTransform);
 
-	EmpLifeTime=15.f;
+	LifeTime=15.f;
 }
 
 void APowerProjectile::BeginPlay()

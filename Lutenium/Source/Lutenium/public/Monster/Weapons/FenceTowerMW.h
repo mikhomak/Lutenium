@@ -159,7 +159,7 @@ public:
      * Should be SubClass because we need to put a BP class of APowerProjecile
      */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Projectile")
-	TSubclassOf<class APowerProjecile> PowerProjectileClass;
+	TSubclassOf<class APowerProjectile> PowerProjectileClass;
 
 	/** Arrow component to determine the spawn location and the forward vector for spaned projectiles */
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Projectile")
