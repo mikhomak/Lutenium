@@ -141,3 +141,8 @@ void APowerSystemMW::SafeActiveBeam(bool bActivate, class AFenceTowerMW* FenceTo
         FenceTowerStart->SetActiveBeam(bActivate, bLeft);
     }
 }
+
+void APowerSystemMW::BeforeAttackEvent_Implementation()
+{
+    
+}

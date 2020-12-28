@@ -125,3 +125,8 @@ void AFenceTowerMW::Die()
 
 }
 
+
+void AFenceTowerMW::BeforeAttackEvent_Implementation()
+{
+    
+}

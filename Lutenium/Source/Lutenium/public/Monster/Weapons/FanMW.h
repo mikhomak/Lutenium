@@ -22,6 +22,10 @@ public:
 
     virtual void ExecuteAttack() override;
 
+    /** Before attack event */
+    virtual void BeforeAttackEvent_Implementation() override;
+
+
     // ------------------------------------------------------------------
 	// Wind collisions
 	// ------------------------------------------------------------------

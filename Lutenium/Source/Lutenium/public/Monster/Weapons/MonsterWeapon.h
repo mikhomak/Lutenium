@@ -72,7 +72,6 @@ public:
     UFUNCTION(BlueprintCallable, Category="Atack")
     void DoAttack();
 
-protected:
     /* Main method for executing the attack */
     /* Being executes after a certeain delay*/
     UFUNCTION(BlueprintCallable, Category="Atack")
@@ -82,8 +81,9 @@ protected:
     float TimeBeforeAttack;
 
 	/* Add SVF, VFX and so on the BP to make the attack more telegraphic */
-    UFUNCTION(BlueprintImplementableEvent, Category = "Attack")
+    UFUNCTION(BlueprintNativeEvent , Category = "Attack")
     void BeforeAttackEvent();
+    virtual void BeforeAttackEvent_Implementation();
 
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Upgrade")
     int LevelUpgrade;

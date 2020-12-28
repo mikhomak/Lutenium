@@ -100,4 +100,6 @@ protected:
     // ------------------------------------------------------------------
 	virtual void BeginPlay() override;
 
+    /** Before attack event */
+    virtual void BeforeAttackEvent_Implementation() override;
 };

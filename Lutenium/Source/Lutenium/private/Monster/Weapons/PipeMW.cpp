@@ -16,3 +16,7 @@ void APipeMW::ExecuteAttack()
 
 }
 
+void APipeMW::BeforeAttackEvent_Implementation()
+{
+    
+}

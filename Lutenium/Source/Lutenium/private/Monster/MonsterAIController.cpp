@@ -66,7 +66,11 @@ void AMonsterAIController::OnSeePlayer(TArray<AActor*> Actors)
 /** IMPORTANT!!! Could ne null!!! */
 AMonsterWeapon* AMonsterAIController::GetWeapon(EMonsterWeaponType MonsterWeaponType)
 {
-    return (AMonsterWeapon*) MonsterPawn->WeaponMap.Find(MonsterWeaponType);
+    if(MonsterPawn)
+    {
+        return MonsterPawn->WeaponMap.FindRef(MonsterWeaponType);
+    }
+    return nullptr;
 }
 
 int32 AMonsterAIController::GetWeaponLevel(EMonsterWeaponType MonsterWeaponType)

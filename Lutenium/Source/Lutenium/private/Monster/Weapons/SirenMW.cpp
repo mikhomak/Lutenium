@@ -61,3 +61,8 @@ void ASirenMW::SirenTriggerOverlapEnd(class AActor* OtherActor)
         PlayerPawn->GetPlaneMovement()->DragMovementEffect->Deactivate();
     }
 }
+
+void ASirenMW::BeforeAttackEvent_Implementation()
+{
+    
+}

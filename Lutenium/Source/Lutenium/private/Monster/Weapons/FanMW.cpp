@@ -81,3 +81,9 @@ void AFanMW::WindTriggerOverlapEnd(class AActor* OtherActor)
         PlayerPawn->GetPlaneMovement()->DragMovementEffect->Deactivate();
     }
 }
+
+
+void AFanMW::BeforeAttackEvent_Implementation()
+{
+    
+}

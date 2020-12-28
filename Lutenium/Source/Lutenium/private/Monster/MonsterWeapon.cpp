@@ -87,3 +87,9 @@ void AMonsterWeapon::ExecuteAttack()
     /* DO NOTHING */
     /* VIRTUAL METHOD */
 }
+
+void AMonsterWeapon::BeforeAttackEvent_Implementation()
+{
+    /* DO NOTHING */
+    /* VIRTUAL METHOD */
+}

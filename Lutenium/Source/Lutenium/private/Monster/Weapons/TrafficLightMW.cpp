@@ -135,3 +135,8 @@ void ATrafficLightMW::LightEndOverlap(class AActor* Actor, const ETrafficLight T
         PlayerPawn->GetPlaneMovement()->DragMovementEffect->Deactivate();
     }
 }
+
+void ATrafficLightMW::BeforeAttackEvent_Implementation()
+{
+    
+}
