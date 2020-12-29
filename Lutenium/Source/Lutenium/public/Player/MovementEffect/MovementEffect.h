@@ -19,6 +19,8 @@ class LUTENIUM_API UMovementEffect : public UObject
 
 public:
 
+    UMovementEffect();
+
     /** Determines if this effect should be applied to the plane each tick or not */
     UPROPERTY(BlueprintReadWrite, Category = "Effect")
     bool Active;

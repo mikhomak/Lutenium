@@ -2,6 +2,10 @@
 #include "TimerManager.h"
 
 
+UMovementEffect::UMovementEffect()
+{
+    CanBeSafeDeactivated = true;
+}
 
 void UMovementEffect::StartSafeDeactivation()
 {
