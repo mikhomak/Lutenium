@@ -85,5 +85,5 @@ void AFanMW::WindTriggerOverlapEnd(class AActor* OtherActor)
 
 void AFanMW::BeforeAttackEvent_Implementation()
 {
-    
+    /* OVERRIDE THIS EVENT IN BP */
 }

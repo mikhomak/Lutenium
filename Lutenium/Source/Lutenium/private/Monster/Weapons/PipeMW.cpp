@@ -18,5 +18,5 @@ void APipeMW::ExecuteAttack()
 
 void APipeMW::BeforeAttackEvent_Implementation()
 {
-    
+    /* OVERRIDE THIS EVENT IN BP */
 }

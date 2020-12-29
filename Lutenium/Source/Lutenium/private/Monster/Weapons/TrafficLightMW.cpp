@@ -138,5 +138,5 @@ void ATrafficLightMW::LightEndOverlap(class AActor* Actor, const ETrafficLight T
 
 void ATrafficLightMW::BeforeAttackEvent_Implementation()
 {
-    
+    /* OVERRIDE THIS EVENT IN BP */
 }

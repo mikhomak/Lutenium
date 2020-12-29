@@ -128,5 +128,5 @@ void AFenceTowerMW::Die()
 
 void AFenceTowerMW::BeforeAttackEvent_Implementation()
 {
-    
+    /* OVERRIDE THIS EVENT IN BP */
 }

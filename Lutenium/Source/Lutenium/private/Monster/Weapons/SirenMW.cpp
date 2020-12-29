@@ -64,5 +64,5 @@ void ASirenMW::SirenTriggerOverlapEnd(class AActor* OtherActor)
 
 void ASirenMW::BeforeAttackEvent_Implementation()
 {
-    
+    /* OVERRIDE THIS EVENT IN BP */
 }

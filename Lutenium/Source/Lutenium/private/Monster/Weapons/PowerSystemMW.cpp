@@ -144,5 +144,5 @@ void APowerSystemMW::SafeActiveBeam(bool bActivate, class AFenceTowerMW* FenceTo
 
 void APowerSystemMW::BeforeAttackEvent_Implementation()
 {
-    
+    /* OVERRIDE THIS EVENT IN BP */
 }
