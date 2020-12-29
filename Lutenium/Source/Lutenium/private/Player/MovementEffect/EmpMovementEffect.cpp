@@ -13,13 +13,12 @@ void UEmpMovementEffect::ApplyEffect()
     }
 }
 
-void UEmpMovementEffect::Activate(const float NewEmpTime, FVector NewRotationDirection, const float NewRotationForce)
+void UEmpMovementEffect::Activate(FVector NewRotationDirection, const float NewRotationForce)
 {
     if(PlaneMovementComp)
     {
         if(!PlaneMovementComp->bStalling)
         {
-            EmpTime = NewEmpTime;
             RotationForce = NewRotationForce;
             RotationDirection = NewRotationDirection;
             if (!RotationDirection.IsNormalized())
@@ -31,4 +30,5 @@ void UEmpMovementEffect::Activate(const float NewEmpTime, FVector NewRotationDir
             PlaneMovementComp->ResetCurrentAcceleration();
         }
     }
+    StartSafeDeactivation();
 }

@@ -90,10 +90,6 @@ public:
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Beam")
     float BeamRadius;
 
-    /** The time of emp applied to the player in case he doesn't escape with the speed */
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Beam")
-    float BeamEmpTime;
-
     /** The force that applied to the emp to the player rotation */
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Beam")
     float BeamEmpForce;

@@ -25,7 +25,6 @@ AFenceTowerMW::AFenceTowerMW() : AMonsterWeapon()
     BeamRadius = 2000.f;
 
     /* BEAM EMP */
-    BeamEmpTime = 5.5f;
     BeamEmpForce = 80.f;
 
     WeaponType = EMonsterWeaponType::FenceTower;
@@ -67,7 +66,7 @@ void AFenceTowerMW::Tick(float DeltaTime)
             /* Safe activating player's emp*/
             if(PlayerEmpMovementEffect)
             {
-                PlayerEmpMovementEffect->Activate(BeamEmpTime, RandomRotation, BeamEmpForce);
+                PlayerEmpMovementEffect->Activate(RandomRotation, BeamEmpForce);
             }
             bIsPlayerInBeam = true; // Applying emp only on entering the beam
         }

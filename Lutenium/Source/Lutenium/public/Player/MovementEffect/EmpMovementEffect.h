@@ -15,10 +15,7 @@ public:
     void ApplyEffect() override;
 
     UFUNCTION(BlueprintCallable, Category="Effect")
-    void Activate(const float NewEmpTime, FVector NewRotationDirection, const float NewRotationForce);
-
-    UPROPERTY(BlueprintReadWrite, Category = "Effect")
-    float EmpTime;
+    void Activate(FVector NewRotationDirection, const float NewRotationForce);
 
     UPROPERTY(BlueprintReadWrite, Category = "Effect")
     FVector RotationDirection;
