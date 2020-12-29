@@ -90,7 +90,10 @@ void APowerSystemMW::ExecuteAttack()
     {
         for(int32 PositionIndex = 0; PositionIndex < FenceTowers[HightIndex].Num(); PositionIndex++)
         {
-            FenceTowers[HightIndex][PositionIndex]->ExecuteAttack();
+            if(FenceTowers[HightIndex][PositionIndex])
+            {
+                FenceTowers[HightIndex][PositionIndex]->ExecuteAttack();
+            }
         }
     }
 }
