@@ -1,6 +1,7 @@
 #include "Monster/Weapons/Spells/PowerProjectile.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/SphereComponent.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/PrimitiveComponent.h"
 #include "GameFramework/Actor.h"
 
@@ -13,6 +14,9 @@ APowerProjectile::APowerProjectile()
 
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Projectlie mesh"));
     ProjectileMesh->AttachToComponent(MainSphereComp, FAttachmentTransformRules::KeepWorldTransform);
+
+	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile movement"));
+    ProjectileMovement->bRotationFollowsVelocity = true;
 
 	LifeTime=15.f;
 }
