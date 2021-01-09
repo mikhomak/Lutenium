@@ -13,6 +13,7 @@
  * Abstract class of the monster weapon
  * Each weapon should extend this class
  * Main method is DoAttack() which sets timer for invoking ExecuteAttack()
+ * Each weapon has a cooldown
  */
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class LUTENIUM_API AMonsterWeapon : public AActor
@@ -141,6 +142,10 @@ public:
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Atack")
     bool bCanAttack;
 
+    /**
+     * Activates weapon after the cooldown
+     * Gets called in DoAttack()
+     */
     FORCEINLINE UFUNCTION(BlueprintCallable, Category="Atack")
     void CooldownEnd()
     {
