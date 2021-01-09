@@ -9,7 +9,11 @@
 
 #include "MonsterWeapon.generated.h"
 
-
+/**
+ * Abstract class of the monster weapon
+ * Each weapon should extend this class
+ * Main method is DoAttack() which sets timer for invoking ExecuteAttack()
+ */
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class LUTENIUM_API AMonsterWeapon : public AActor
 {
@@ -125,6 +129,24 @@ public:
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Atack")
     float TimeBeforeAttack;
 
+    /** Cooldown timer */
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Atack")
+    float CooldownTime;
+
+    /**
+     * Bool to check if the attack can be performed
+     * Gets activated in CooldownEnd()
+     * Gets deactivated in DoAttack()
+     */
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Atack")
+    bool bCanAttack;
+
+    FORCEINLINE UFUNCTION(BlueprintCallable, Category="Atack")
+    void CooldownEnd()
+    {
+        bCanAttack = true;
+    }
+
 	/* Add SVF, VFX and so on the BP to make the attack more telegraphic */
     UFUNCTION(BlueprintNativeEvent , Category = "Attack")
     void BeforeAttackEvent();
@@ -139,7 +161,6 @@ public:
     /* Event is called on upgrade the weapon. Add SVX, VFX and so on in the BP.  */
     UFUNCTION(BlueprintImplementableEvent, Category = "Upgrade")
     void OnUpgradeEvent();
-
 
 public:
     FORCEINLINE void SetMonsterMesh(class USkeletalMeshComponent* Mesh) { MonsterMesh = Mesh; }

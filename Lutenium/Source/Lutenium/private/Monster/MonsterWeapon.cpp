@@ -20,6 +20,10 @@ AMonsterWeapon::AMonsterWeapon()
 
     TimeBeforeAttack = 0;
 
+    /* Cooldown */
+    bCanAttack = true;
+    CooldownTime = 10.f;
+
     bDebugDetach=false;
 }
 
@@ -74,12 +78,21 @@ void AMonsterWeapon::Die()
 
 void AMonsterWeapon::DoAttack()
 {
+    if(!bCanAttack)
+    {
+        return;
+    }
     /* Invoking event to add some stuff in BP(sfx, vfx, so on...)*/
     BeforeAttackEvent();
 
     /* Delays actual attack */
     FTimerHandle AttackHandler;
     GetWorldTimerManager().SetTimer(AttackHandler, this, &AMonsterWeapon::ExecuteAttack, TimeBeforeAttack, false);
+
+    /* Sets cooldown */
+    bCanAttack = false;
+    FTimerHandle CooldownTimer;
+    GetWorldTimerManager().SetTimer(CooldownTimer, this, &AMonsterWeapon::CooldownEnd, CooldownTime, false);
 }
 
 void AMonsterWeapon::ExecuteAttack()
