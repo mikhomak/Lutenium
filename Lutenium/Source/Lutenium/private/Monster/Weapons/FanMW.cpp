@@ -41,7 +41,7 @@ void AFanMW::ExecuteAttack()
 
     /* After WindActiveTime deactivate winds */
     FTimerHandle WindTimeHandler;
-    GetWorldTimerManager().SetTimer(WindTimeHandler, this, &AFanMW::ExecuteAttack, WindActiveTime, false);
+    GetWorldTimerManager().SetTimer(WindTimeHandler, this, &AFanMW::DeactivateWind, WindActiveTime, false);
 }
 
 /** Handles overlaped player and missile */

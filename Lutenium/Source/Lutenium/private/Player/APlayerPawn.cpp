@@ -49,6 +49,7 @@ APlayerPawn::APlayerPawn()
 void APlayerPawn::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+    /* Raycasting every tick to update MissileTargetRaycastHitLocation so we can show the UI of the current missile target(even tho it has been shot yet) */
     FAssistUtils::RaycastMissileTarget(this,GetWorld(),
                                         PlaneMesh->GetSocketLocation("MissileMuzzle"), GetActorForwardVector(),
                                         MissileTraceLength, FirstRaytraceRadius,
