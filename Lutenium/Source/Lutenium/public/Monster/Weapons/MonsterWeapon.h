@@ -163,6 +163,20 @@ public:
     virtual void ExecuteAttack();
 
     /**
+     * Some weapons can repeat the ExecuteAttack()
+     * This variable keeps track of the amount of repeated attacks so we can stop repeating it in ExecuteAttack()
+     * Resets this value in DoAttack(), which is called in Tasks
+     */
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Atack")
+    int32 CurrentExecutedAttacks;
+
+    /**
+     * When the weapon wants to repeat the attack that variable determines the time between attack
+     */
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Atack")
+    float RepeatAttackTime;
+
+    /**
      * Time to invoke ExecuteAttack() after invoking DoAttack()
      */
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Atack")

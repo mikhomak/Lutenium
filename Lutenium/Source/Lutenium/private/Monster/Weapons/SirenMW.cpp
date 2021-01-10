@@ -19,6 +19,7 @@ ASirenMW::ASirenMW() : AMonsterWeapon()
 
     WeaponType = EMonsterWeaponType::Siren;
 
+    bDragOrImpulse = true;
     /* Set events in BP for overlapping!*/
 }
 
@@ -37,8 +38,21 @@ void ASirenMW::ExecuteAttack()
             if(Scream)
             {
                 Scream->SetDragOrImpulse(bDragOrImpulse);
+                /* If that was the second attack, resets bDragOrImpulse to the default value (Draggggggging)*/
+                if(CurrentExecutedAttacks == 1)
+                {
+                    bDragOrImpulse = true;
+                }
             }
         }
+    }
+
+    /* When the upgrade is >= 1 and Siren spawned less than 2 sirens, creates a timer for another one */
+    if(LevelUpgrade > 1 && CurrentExecutedAttacks < 2)
+    {
+        FTimerHandle SecondAttackTimer;
+        GetWorldTimerManager().SetTimer(SecondAttackTimer, this, &AMonsterWeapon::ExecuteAttack, RepeatAttackTime, false);
+        bDragOrImpulse = false;
     }
 }
 

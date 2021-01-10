@@ -27,6 +27,7 @@ AMonsterWeapon::AMonsterWeapon()
 
     /* Attack */
     TimeBeforeAttack = 1.f;
+    RepeatAttackTime = 2.5f;
 
     /* Cooldown */
     bCanAttack = true;
@@ -132,6 +133,7 @@ void AMonsterWeapon::DoAttack()
     {
         return;
     }
+    CurrentExecutedAttacks = 0;
     /* Invoking event to add some stuff in BP(sfx, vfx, so on...)*/
     BeforeAttackEvent();
 
