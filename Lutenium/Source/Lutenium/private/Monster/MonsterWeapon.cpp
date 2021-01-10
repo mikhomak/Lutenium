@@ -28,6 +28,7 @@ AMonsterWeapon::AMonsterWeapon()
     /* Attack */
     TimeBeforeAttack = 1.f;
     RepeatAttackTime = 2.5f;
+    LevelUpgrade = 0;
 
     /* Cooldown */
     bCanAttack = true;

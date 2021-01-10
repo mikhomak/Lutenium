@@ -298,6 +298,13 @@ void AEnemyMonsterPawn::ToggleWhatLegsShouldMove(const bool Left) const
 void AEnemyMonsterPawn::LooseWeapon(EMonsterWeaponType WeaponType)
 {
     WeaponMap.Remove(WeaponType);
+    for (const TPair<EMonsterWeaponType, AMonsterWeapon*>& Pair : WeaponMap)
+    {
+        if(Pair.Value)
+        {
+            Pair.Value->UpgradeWeapon();
+        }
+    }
 }
 
 

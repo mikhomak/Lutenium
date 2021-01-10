@@ -44,14 +44,16 @@ void ASirenMW::ExecuteAttack()
                     bDragOrImpulse = true;
                 }
             }
+
+            CurrentExecutedAttacks++;
         }
     }
 
     /* When the upgrade is >= 1 and Siren spawned less than 2 sirens, creates a timer for another one */
-    if(LevelUpgrade > 1 && CurrentExecutedAttacks < 2)
+    if(LevelUpgrade >= 1 && CurrentExecutedAttacks < 2)
     {
         FTimerHandle SecondAttackTimer;
-        GetWorldTimerManager().SetTimer(SecondAttackTimer, this, &AMonsterWeapon::ExecuteAttack, RepeatAttackTime, false);
+        GetWorldTimerManager().SetTimer(SecondAttackTimer, this, &ASirenMW::ExecuteAttack, RepeatAttackTime, false);
         bDragOrImpulse = false;
     }
 }
