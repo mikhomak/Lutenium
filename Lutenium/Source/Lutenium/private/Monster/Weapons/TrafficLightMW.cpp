@@ -158,20 +158,20 @@ float ATrafficLightMW::TakeDamage(float Damage, struct FDamageEvent const& Damag
         return 0.f;
     }
     const auto RadialDamage = (FRadialDamageEvent*)&DamageEvent;
-    /* getting collision object type to difirentatite mesh from other parts of the weapon */
-    const ECollisionChannel ComponentCollisionChannel = RadialDamage->ComponentHits[0].Component.Get()->GetCollisionObjectType();
-
-    if(ComponentCollisionChannel == ECC_Monster)
+    /* Finding if there was a Monster Spell or Hurtbox in hit components of radial damage */
+    /* If not, that means we hit only the mesh*/
+    const FHitResult* HitResult = RadialDamage->ComponentHits.FindByPredicate([](const FHitResult& HitResult)
     {
-        TakeMeshDamage(Damage);
-        return Damage;
-    }
-    /* If it wasn't mesh, then it would be hurtbox*/
-    if(ComponentCollisionChannel == ECC_MonsterWPHurtbox || ComponentCollisionChannel == ECC_MonsterSpell)
+       ECollisionChannel ComponentCollisionChannel = HitResult.Component.Get()->GetCollisionObjectType();
+       return ComponentCollisionChannel == ECC_MonsterWPHurtbox || ComponentCollisionChannel == ECC_MonsterSpell;
+    });
+
+
+    /* If hit result was found, than we found in component hits */
+    if(HitResult)
     {
         /* Sets the correct position of the hit component */
-
-        UPrimitiveComponent* HitComponent = RadialDamage->ComponentHits[0].Component.Get(); /* Gets the hit component */
+        UPrimitiveComponent* HitComponent = HitResult->Component.Get(); /* Gets the hit component */
 
         ETrafficLightPosition Position = ETrafficLightPosition::Center; /* Default position is center */
 
@@ -189,7 +189,10 @@ float ATrafficLightMW::TakeDamage(float Damage, struct FDamageEvent const& Damag
         }
 
         TakeHurtboxDamageChangingLight(Damage, Position);
+        return Damage;
     }
+
+    TakeMeshDamage(Damage);
     return Damage;
 }
 

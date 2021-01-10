@@ -44,17 +44,19 @@ float AMonsterWeapon::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
     }
     const auto RadialDamage = (FRadialDamageEvent*)&DamageEvent;
     /* getting collision object type to difirentatite mesh from other parts of the weapon */
-    const ECollisionChannel ComponentCollisionChannel = RadialDamage->ComponentHits[0].Component.Get()->GetCollisionObjectType();
-    if(ComponentCollisionChannel == ECC_Monster)
+    const FHitResult* HitResult = RadialDamage->ComponentHits.FindByPredicate([](const FHitResult& HitResult)
     {
-        TakeMeshDamage(DamageAmount);
-        return DamageAmount;
-    }
-    /* If it wasn't mesh, then it would be hurtbox*/
-    if(ComponentCollisionChannel == ECC_MonsterWPHurtbox || ComponentCollisionChannel == ECC_MonsterSpell)
+       ECollisionChannel ComponentCollisionChannel = HitResult.Component.Get()->GetCollisionObjectType();
+       return ComponentCollisionChannel == ECC_MonsterWPHurtbox || ComponentCollisionChannel == ECC_MonsterSpell;
+    });
+    /* It was hurtbox */
+    if(HitResult)
     {
         TakeHurtboxDamage(DamageAmount);
+        return DamageAmount;
     }
+    /* It was mesh */
+    TakeMeshDamage(DamageAmount);
     return DamageAmount;
 }
 
