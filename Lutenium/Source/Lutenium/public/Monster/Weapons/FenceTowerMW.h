@@ -105,6 +105,11 @@ public:
     FORCEINLINE UFUNCTION(Category="Beam")
     void SetActiveBeam(bool bActive, bool bLeft)
     {
+        /* Activates only for parent towers */
+        if(!bParentFenceTower)
+        {
+            return;
+        }
         /* Invoking events */
         if(bActive)
         {

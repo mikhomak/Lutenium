@@ -109,18 +109,7 @@ void AFenceTowerMW::Die()
 
     /* Disabling defense beam in case it was active  */
     bActiveBeam = false;
-    /* Removes tower fense from power system */
-    FFenceTower2DArray& FenceTowers = PowerSystem->FenceTowers[HightIndex];
-    if(FenceTowers.Num() != 0)
-    {
-        if(FenceTowers.IsValidIndex(PositionIndex))
-        {
-            /* Removes the tower from the array without shrinking it!! */
-            /* We don't shrink it so we can acces other towers directly by their position index */
-            FenceTowers.RemoveAt(PositionIndex, 1, false);
-            Destroy();
-        }
-    }
+    Destroy();
 
 }
 

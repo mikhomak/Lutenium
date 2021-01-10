@@ -104,23 +104,25 @@ void APowerSystemMW::ActivateBeamDefense()
     /* Activates beam defense for every fence tower */
     for(int32 HightIndex = 0; HightIndex < FenceTowers.Num(); HightIndex++)
     {
-        // Numbers are the positions of tower fences on the legs. Monster is the head. Dashes are beams.
-        //
-        //
-        //    0---------------------1
-        //    |      MONSTER
-        //    |
-        //    2                     3
-        SafeActiveBeam(true, FenceTowers[HightIndex][0], true);
-        SafeActiveBeam(true, FenceTowers[HightIndex][0], false);
+        if(FenceTowers.IsValidIndex(HightIndex))
+        {
+            // Numbers are the positions of tower fences on the legs. Monster is the head. Dashes are beams.
+            //
+            //
+            //    0---------------------1
+            //    |      MONSTER
+            //    |
+            //    2                     3
+            SafeActiveBeam(true, FenceTowers[HightIndex][0], true);
+            SafeActiveBeam(true, FenceTowers[HightIndex][0], false);
 
-
-        //    0                     1
-        //           MONSTER        |
-        //                          |
-        //    2---------------------3
-        SafeActiveBeam(true, FenceTowers[HightIndex][3], true);
-        SafeActiveBeam(true, FenceTowers[HightIndex][3], false);
+            //    0                     1
+            //           MONSTER        |
+            //                          |
+            //    2---------------------3
+            SafeActiveBeam(true, FenceTowers[HightIndex][3], true);
+            SafeActiveBeam(true, FenceTowers[HightIndex][3], false);
+        }
     }
 }
 
@@ -131,8 +133,8 @@ void APowerSystemMW::DeactivateBeamDefense()
     for(int32 HightIndex = 0; HightIndex < FenceTowers.Num(); HightIndex++)
     {
         SafeActiveBeam(false, FenceTowers[HightIndex][0], true);
-        SafeActiveBeam(false, FenceTowers[HightIndex][3], true);
         SafeActiveBeam(false, FenceTowers[HightIndex][0], false);
+        SafeActiveBeam(false, FenceTowers[HightIndex][3], true);
         SafeActiveBeam(false, FenceTowers[HightIndex][3], false);
     }
 }

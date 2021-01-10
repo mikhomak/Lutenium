@@ -9,11 +9,14 @@ struct FFenceTower2DArray
     GENERATED_BODY()
 public:
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Array)
     TArray<class AFenceTowerMW*> Array;
 
     class AFenceTowerMW* operator[] (int32 i) {
         return Array[i];
     }
+
+
 
 
 
