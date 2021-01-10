@@ -23,7 +23,9 @@ AMonsterWeapon::AMonsterWeapon()
     Health = 100.f;
     MassInKgAfterDetach = 55000.f;
     MeshDamageReduction = 0.4f;
+    InvincibilityTime = 0.1f;
 
+    /* Attack */
     TimeBeforeAttack = 1.f;
 
     /* Cooldown */
@@ -69,6 +71,15 @@ void AMonsterWeapon::TakeHurtboxDamage(float Damage)
 
 void AMonsterWeapon::OnTakeDamage(float Damage)
 {
+    /* Do nothign if the weapon is invincible right now */
+    if(!CanBeDamaged())
+    {
+        return;
+    }
+
+    /* Making weapon invincible for sometime */
+    SetCanBeDamaged(false);
+
     Health -= Damage;
 
     // Apply damage to the monster itself
@@ -82,6 +93,11 @@ void AMonsterWeapon::OnTakeDamage(float Damage)
     {
         DieEvent();
         Die();
+    }
+    else /* Removing Invincibility only if the weapon hasn't died yet */
+    {
+        FTimerHandle InvincibilityTimer;
+        GetWorldTimerManager().SetTimer(InvincibilityTimer, this, &AMonsterWeapon::InvincibilityEnd, InvincibilityTime, false);
     }
 }
 

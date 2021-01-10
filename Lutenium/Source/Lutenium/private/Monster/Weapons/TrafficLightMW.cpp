@@ -152,7 +152,6 @@ void ATrafficLightMW::LightEndOverlap(class AActor* Actor, const ETrafficLight T
 
 float ATrafficLightMW::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser)
 {
-    Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
     if(!DamageEvent.IsOfType(FRadialDamageEvent::ClassID))
     {

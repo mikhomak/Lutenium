@@ -90,7 +90,7 @@ public:
     UFUNCTION(BlueprintCallable)
     void TakeHurtboxDamage(float Damage);
 
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Health")
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Health")
     float MeshDamageReduction;
 
     /**
@@ -99,6 +99,24 @@ public:
      * Calls TakeMeshDamage() or TakeHurtboxDamage()
      */
     virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
+
+    /**
+     * Time that's weapon being invincible after taking damage
+     * Prevents insta-kills
+     */
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Health")
+    float InvincibilityTime;
+
+    /**
+     * Ends the invincibility and thos weapon can be damaged
+     * Fires this method by timer in OnTakeDamage()
+     */
+    FORCEINLINE UFUNCTION(BlueprintCallable, Category="Health")
+    void InvincibilityEnd()
+    {
+        /* OOTB method lol there is a bool bCanBeDamaged in AActor*/
+        SetCanBeDamaged(true);
+    }
 
     /**
      * Die when health becomes below 0
