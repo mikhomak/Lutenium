@@ -9,7 +9,13 @@
 #include "TrafficLightMW.generated.h"
 
 /**
- *
+ * Traffic light weapon
+ * On the 0 level
+ * Has 3 Lights: center, right and left
+ * Each light have three states: red, green and yellow
+ * Red - throws and defecets missile, and starts dragging player away
+ * Yellow - throws missile and dragging player away
+ * Green - takes damage and does nothing to the player
  */
 UCLASS()
 class LUTENIUM_API ATrafficLightMW : public AMonsterWeapon
@@ -62,11 +68,26 @@ public:
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Attack")
     float PlayerDragForce;
 
+    /**
+     * Takes hurt box damage and changes the light status of the light that took damage
+     * After changing the status, calls TakeHurtboxDamage(Damage);
+     */
+    UFUNCTION(BlueprintCallable)
+    void TakeHurtboxDamageChangingLight(float Damage, const ETrafficLightPosition TrafficLightPosition);
+
+    /**
+     * Overriding this method to call TakeHurtboxDamageChangingLight() with the position of the hurtbox that was hit
+     */
+    virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
+
+
 
 protected:
+
     // ------------------------------------------------------------------
     // Missile
     // ------------------------------------------------------------------
+
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Missile")
     float MissileThrowForce;
 
@@ -76,6 +97,7 @@ protected:
     // ------------------------------------------------------------------
     // Lights overlaps
     // ------------------------------------------------------------------
+
     UFUNCTION(BlueprintCallable)
     void LightBeginOverlap(class AActor* Actor, const ETrafficLight TrafficLightStatus, const ETrafficLightPosition TrafficLightPosition);
 
@@ -95,6 +117,11 @@ protected:
     UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
     class UStaticMeshComponent* CenterLightMesh;
 
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Weapon")
+    class USphereComponent* HurtboxRight;
+
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Weapon")
+    class USphereComponent* HurtboxLeft;
     // ------------------------------------------------------------------
     // General
     // ------------------------------------------------------------------

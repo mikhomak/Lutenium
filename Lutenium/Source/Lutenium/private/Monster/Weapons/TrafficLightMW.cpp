@@ -11,8 +11,21 @@
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/Actor.h"
 
+#define ECC_MonsterWPHurtbox ECollisionChannel::ECC_GameTraceChannel1
+#define ECC_Monster ECollisionChannel::ECC_GameTraceChannel2
+#define ECC_MonsterSpell ECollisionChannel::ECC_GameTraceChannel3
+
 ATrafficLightMW::ATrafficLightMW() : AMonsterWeapon()
 {
+    /* Creates two more hurtboxes*/
+    HurtboxRight = CreateDefaultSubobject<USphereComponent>(TEXT("Hurt box right"));
+    HurtboxRight->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
+    HurtboxRight->SetCollisionProfileName(TEXT("MonsterWPHurtbox"));
+
+    HurtboxLeft = CreateDefaultSubobject<USphereComponent>(TEXT("Hurt box left"));
+    HurtboxLeft->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
+    HurtboxLeft->SetCollisionProfileName(TEXT("MonsterWPHurtbox"));
+
     Health = 100.f;
 
 
@@ -134,6 +147,58 @@ void ATrafficLightMW::LightEndOverlap(class AActor* Actor, const ETrafficLight T
     {
         PlayerPawn->GetPlaneMovement()->DragMovementEffect->Deactivate();
     }
+}
+
+
+float ATrafficLightMW::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser)
+{
+    Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+
+    if(!DamageEvent.IsOfType(FRadialDamageEvent::ClassID))
+    {
+        return 0.f;
+    }
+    const auto RadialDamage = (FRadialDamageEvent*)&DamageEvent;
+    /* getting collision object type to difirentatite mesh from other parts of the weapon */
+    const ECollisionChannel ComponentCollisionChannel = RadialDamage->ComponentHits[0].Component.Get()->GetCollisionObjectType();
+
+    if(ComponentCollisionChannel == ECC_Monster)
+    {
+        TakeMeshDamage(Damage);
+        return Damage;
+    }
+    /* If it wasn't mesh, then it would be hurtbox*/
+    if(ComponentCollisionChannel == ECC_MonsterWPHurtbox || ComponentCollisionChannel == ECC_MonsterSpell)
+    {
+        /* Sets the correct position of the hit component */
+
+        UPrimitiveComponent* HitComponent = RadialDamage->ComponentHits[0].Component.Get(); /* Gets the hit component */
+
+        ETrafficLightPosition Position = ETrafficLightPosition::Center; /* Default position is center */
+
+        if(HitComponent == Hurtbox || HitComponent == CenterLightMesh)
+        {
+            Position = ETrafficLightPosition::Center;
+        }
+        else if(HitComponent == HurtboxRight || HitComponent == RightLightMesh)
+        {
+            Position = ETrafficLightPosition::Right;
+        }
+        else if(HitComponent == HurtboxLeft || HitComponent == LeftLightMesh)
+        {
+            Position = ETrafficLightPosition::Left;
+        }
+
+        TakeHurtboxDamageChangingLight(Damage, Position);
+    }
+    return Damage;
+}
+
+
+void ATrafficLightMW::TakeHurtboxDamageChangingLight(float Damage, const ETrafficLightPosition TrafficLightPosition)
+{
+    ChangeLight(TrafficLightPosition, ETrafficLight::Red);
+    TakeHurtboxDamage(Damage);
 }
 
 void ATrafficLightMW::BeforeAttackEvent_Implementation()

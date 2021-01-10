@@ -58,7 +58,6 @@ public:
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Debug")
     bool bDebugDetach;
 
-protected:
 	// ------------------------------------------------------------------
 	// Health & Death
 	// ------------------------------------------------------------------
@@ -66,14 +65,6 @@ protected:
     /** Health of the weapon */
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Health")
     float Health;
-
-    /**
-     * Mass in kg after detach(death)
-     * After diying the weapon got detached and starts simulating physics
-     * Put some cool values here so it would fall cool
-     */
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Heath")
-    float MassInKgAfterDetach;
 
     /**
      * Doing damage stuff
@@ -85,6 +76,31 @@ protected:
     void OnTakeDamage(float Damage);
 
     /**
+     * Takes damage when missile collides with mesh
+     * Redcues damage applied to the weapon
+     * Calls OnTakeDamage() with reduced damage
+     */
+    UFUNCTION(BlueprintCallable)
+	void TakeMeshDamage(float Damage);
+
+    /**
+     * Apply damage without reduction when the missile hits directly hurtbox
+     * Calls OnTakeDamage()
+     */
+    UFUNCTION(BlueprintCallable)
+    void TakeHurtboxDamage(float Damage);
+
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Health")
+    float MeshDamageReduction;
+
+    /**
+     * Overriding reciving radial damage
+     * Checks if the hit component was Mesh or Hurtbox
+     * Calls TakeMeshDamage() or TakeHurtboxDamage()
+     */
+    virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
+
+    /**
      * Die when health becomes below 0
      * Do not destroyes the weapon
      * Distach it from the weapon and activates physics so it would fall nice and smooth just like i like it
@@ -93,15 +109,19 @@ protected:
     virtual void Die();
 
     /**
-     * Do some vfx bullshit in bp
+     * Do some vfx bullshit in bp on death
      */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Health")
     void DieEvent();
 
-    /* Take damage & handle death */
+    /**
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
+     * After diying the weapon got detached and starts simulating physics
+     * Put some cool values here so it would fall cool
+     */
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Heath")
+    float MassInKgAfterDetach;
 
-public:
 	// ------------------------------------------------------------------
 	// ATTACK
 	// ------------------------------------------------------------------

@@ -1,8 +1,12 @@
 #include "Monster/Weapons/MonsterWeapon.h"
 #include "Monster/EnemyMonsterPawn.h"
 #include "Components/SphereComponent.h"
+#include "Components/PrimitiveComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "TimerManager.h"
+#define ECC_MonsterWPHurtbox ECollisionChannel::ECC_GameTraceChannel1
+#define ECC_Monster ECollisionChannel::ECC_GameTraceChannel2
+#define ECC_MonsterSpell ECollisionChannel::ECC_GameTraceChannel3
 
 AMonsterWeapon::AMonsterWeapon()
 {
@@ -15,10 +19,12 @@ AMonsterWeapon::AMonsterWeapon()
     Hurtbox->SetCollisionProfileName(TEXT("MonsterWPHurtbox"));
     PrimaryActorTick.bCanEverTick = true;
 
+    /* Damage & Health */
     Health = 100.f;
     MassInKgAfterDetach = 55000.f;
+    MeshDamageReduction = 0.4f;
 
-    TimeBeforeAttack = 0;
+    TimeBeforeAttack = 1.f;
 
     /* Cooldown */
     bCanAttack = true;
@@ -27,11 +33,37 @@ AMonsterWeapon::AMonsterWeapon()
     bDebugDetach=false;
 }
 
-float AMonsterWeapon::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser)
+float AMonsterWeapon::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController * EventInstigator, AActor * DamageCauser)
 {
-    Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+    Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+    if(!DamageEvent.IsOfType(FRadialDamageEvent::ClassID))
+    {
+        return 0.f;
+    }
+    const auto RadialDamage = (FRadialDamageEvent*)&DamageEvent;
+    /* getting collision object type to difirentatite mesh from other parts of the weapon */
+    const ECollisionChannel ComponentCollisionChannel = RadialDamage->ComponentHits[0].Component.Get()->GetCollisionObjectType();
+    if(ComponentCollisionChannel == ECC_Monster)
+    {
+        TakeMeshDamage(DamageAmount);
+        return DamageAmount;
+    }
+    /* If it wasn't mesh, then it would be hurtbox*/
+    if(ComponentCollisionChannel == ECC_MonsterWPHurtbox || ComponentCollisionChannel == ECC_MonsterSpell)
+    {
+        TakeHurtboxDamage(DamageAmount);
+    }
+    return DamageAmount;
+}
+
+void AMonsterWeapon::TakeMeshDamage(float Damage)
+{
+    OnTakeDamage(Damage * MeshDamageReduction);
+}
+
+void AMonsterWeapon::TakeHurtboxDamage(float Damage)
+{
     OnTakeDamage(Damage);
-    return Damage;
 }
 
 
@@ -66,7 +98,7 @@ void AMonsterWeapon::Die()
     WeaponMesh->SetMassOverrideInKg(FName(), MassInKgAfterDetach, true);
     WeaponMesh->SetCollisionProfileName(TEXT("BlockAll"));
 
-    //disable hurtbox collision so we couldnt target it with the missiles
+    // disable hurtbox collision so we couldnt target it with the missiles
     Hurtbox->SetCollisionProfileName(TEXT("NoCollision"));
 
     //Removes the refernse of the weapons and upgrades all the other ones
