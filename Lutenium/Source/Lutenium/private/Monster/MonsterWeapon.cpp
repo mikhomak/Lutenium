@@ -156,3 +156,9 @@ void AMonsterWeapon::BeforeAttackEvent_Implementation()
     /* DO NOTHING */
     /* VIRTUAL METHOD */
 }
+
+void AMonsterWeapon::SpecificUpgrade(int32 Level)
+{
+    /* DO NOTHING */
+    /* VIRTUAL METHOD */
+}

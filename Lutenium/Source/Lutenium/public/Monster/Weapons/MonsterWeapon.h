@@ -201,6 +201,13 @@ public:
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Upgrade")
     int32 LevelUpgrade;
 
+    /**
+     * Added specific upgrade for each method if it's being needed
+     * Virtual method, could be overrated
+     * Being called in SetUpgradeWeapon
+     */
+    virtual void SpecificUpgrade(int32 Level);
+
     /* Event is called on upgrade the weapon. Add SVX, VFX and so on in the BP.  */
     UFUNCTION(BlueprintImplementableEvent, Category = "Upgrade")
     void OnUpgradeEvent();
@@ -209,6 +216,6 @@ public:
     FORCEINLINE void SetMonsterMesh(class USkeletalMeshComponent* Mesh) { MonsterMesh = Mesh; }
     FORCEINLINE void SetMonsterPawn(class AEnemyMonsterPawn* Pawn) { MonsterPawn = Pawn; }
     FORCEINLINE void UpgradeWeapon() { LevelUpgrade++; OnUpgradeEvent(); }
-    FORCEINLINE void SetUpgradeWeapon(int32 Level) { LevelUpgrade = Level; if(Level > LevelUpgrade) { OnUpgradeEvent(); } }
+    FORCEINLINE void SetUpgradeWeapon(int32 Level) { LevelUpgrade = Level; if(Level > LevelUpgrade) { OnUpgradeEvent(); SpecificUpgrade(Level); } }
     FORCEINLINE int32 GetUpgradeWeapon() { return LevelUpgrade; }
 };

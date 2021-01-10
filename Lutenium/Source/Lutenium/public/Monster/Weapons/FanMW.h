@@ -25,6 +25,9 @@ public:
     /** Before attack event */
     virtual void BeforeAttackEvent_Implementation() override;
 
+    /** Adds time to WindActiveTime for each upgrade  */
+    virtual void SpecificUpgrade(int32 Level) override;
+
 
     // ------------------------------------------------------------------
 	// Wind collisions

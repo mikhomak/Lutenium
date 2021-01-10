@@ -32,12 +32,16 @@ AFanMW::AFanMW() : AMonsterWeapon()
 
 void AFanMW::ExecuteAttack()
 {
+    /* Always activates the forward wind */
     bForwardWindActive = true;
-    bBackwardWindActive = true;
-
-    /* Invoking events for visuals n shit */
     OnActivateForwardWind(true);
-    OnActivateForwardWind(false);
+
+    /* If the weapon's upgrade level is 1 or more, then activates the backward wind also*/
+    if(LevelUpgrade >= 1)
+    {
+        bBackwardWindActive = true;
+        OnActivateForwardWind(false);
+    }
 
     /* After WindActiveTime deactivate winds */
     FTimerHandle WindTimeHandler;
@@ -82,6 +86,10 @@ void AFanMW::WindTriggerOverlapEnd(class AActor* OtherActor)
     }
 }
 
+void AFanMW::SpecificUpgrade(int32 Level)
+{
+    WindActiveTime *= Level + 1;
+}
 
 void AFanMW::BeforeAttackEvent_Implementation()
 {
