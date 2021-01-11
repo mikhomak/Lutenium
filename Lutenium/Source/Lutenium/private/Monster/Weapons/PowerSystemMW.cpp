@@ -96,6 +96,13 @@ void APowerSystemMW::ExecuteAttack()
             }
         }
     }
+
+    /* When the upgrade is >= 1 and Siren spawned less than 2 sirens, creates a timer for another one */
+    if(LevelUpgrade >= 1 && CurrentExecutedAttacks < 2)
+    {
+        FTimerHandle SecondAttackTimer;
+        GetWorldTimerManager().SetTimer(SecondAttackTimer, this, &APowerSystemMW::ExecuteAttack, RepeatAttackTime, false);
+    }
 }
 
 

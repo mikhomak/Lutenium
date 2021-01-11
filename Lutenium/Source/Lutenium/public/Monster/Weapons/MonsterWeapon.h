@@ -13,6 +13,7 @@
  * Abstract class of the monster weapon
  * Each weapon should extend this class
  * Main method is DoAttack() which sets timer for invoking ExecuteAttack()
+ * ExecuteAttack is specific for each weapon and does an actual attack
  * Each weapon has a cooldown
  */
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )

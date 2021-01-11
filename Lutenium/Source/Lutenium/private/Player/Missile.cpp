@@ -72,12 +72,12 @@ void AMissile::SetTargetOrDirection(USceneComponent *Target, const FVector &Shoo
 void AMissile::ThrowMissile(FVector ThrownDirection, float ForceAmount)
 {
     // Enemy could throw the missile and it will explode against the player
-    ProjectileMovement->MaxSpeed = 0.f;
-    if(ThrownDirection.IsNormalized())
+    if(!ThrownDirection.IsNormalized())
     {
         ThrownDirection.Normalize();
     }
-    ProjectileMovement->Velocity = ThrownDirection;
+    ProjectileMovement->bIsHomingProjectile = false;
+    ProjectileMovement->Velocity = ThrownDirection * ForceAmount;
 
     /* Only execute defected logic if the missile was directly set to do it. EG - red traffic light*/
     if(bShouldBeDefected)

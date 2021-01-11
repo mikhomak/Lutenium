@@ -62,13 +62,13 @@ void ATrafficLightMW::ChangeLight(ETrafficLightPosition Position, ETrafficLight 
     switch(Position)
     {
         case ETrafficLightPosition::Right:
-            CenterLightStatus = Light;
+            RightLightStatus = Light;
         break;
         case ETrafficLightPosition::Left:
             LeftLightStatus = Light;
         break;
         case ETrafficLightPosition::Center:
-            RightLightStatus = Light;
+            CenterLightStatus = Light;
         break;
     }
     /* Setting the latest red light position so we could use it for the attack */
@@ -184,7 +184,7 @@ float ATrafficLightMW::TakeDamage(float Damage, struct FDamageEvent const& Damag
         else if(HitComponent == HurtboxRight || HitComponent == RightLightMesh)
         {
             Position = ETrafficLightPosition::Right;
-            HitLightStatus = RightLightStatus
+            HitLightStatus = RightLightStatus;
         }
         else if(HitComponent == HurtboxLeft || HitComponent == LeftLightMesh)
         {
