@@ -100,6 +100,7 @@ void AMonsterWeapon::OnTakeDamage(float Damage)
     }
     else /* Removing Invincibility only if the weapon hasn't died yet */
     {
+        TakeDamageEvent(Damage);
         FTimerHandle InvincibilityTimer;
         GetWorldTimerManager().SetTimer(InvincibilityTimer, this, &AMonsterWeapon::InvincibilityEnd, InvincibilityTime, false);
     }

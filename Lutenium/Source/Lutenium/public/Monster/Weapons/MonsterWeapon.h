@@ -72,7 +72,7 @@ public:
      * Dealing damage to the monster(transparent damage way weapon->monster)
      * Being called in TakeDamage
      */
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable,Category="Health")
     void OnTakeDamage(float Damage);
 
     /**
@@ -80,16 +80,28 @@ public:
      * Redcues damage applied to the weapon
      * Calls OnTakeDamage() with reduced damage
      */
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable,Category="Health")
 	void TakeMeshDamage(float Damage);
 
     /**
      * Apply damage without reduction when the missile hits directly hurtbox
      * Calls OnTakeDamage()
      */
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category="Health")
     void TakeHurtboxDamage(float Damage);
 
+    /**
+     * Event when the weapon takes damage
+     * We can't use TakeDamage because we have other checks when the weapon recieve damage but it's not applied to the weapon
+     * The final method to recieve damage is always OnTakeDamage()
+     * Add VFX, SFX all of the shiete
+     */
+    UFUNCTION(BlueprintImplementableEvent, Category="Health")
+    void TakeDamageEvent(float& Damage);
+
+    /**
+     * Apply reduced damage when the missile hit the mesh and not the hurtbox
+     */
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Health")
     float MeshDamageReduction;
 
