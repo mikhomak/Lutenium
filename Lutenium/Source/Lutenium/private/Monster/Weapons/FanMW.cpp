@@ -71,7 +71,7 @@ void AFanMW::WindTriggerOverlap(class AActor* OtherActor, bool bPush)
         /* Throws missile in the opposite direction */
         FVector Position = Missile->GetActorLocation() - Position;
         Position.Normalize();
-        Missile->ThrowMissile(Missile->GetActorForwardVector() * -1, PushForce);
+        Missile->ThrowMissile(Missile->GetActorForwardVector() * -1, PushForce, false);
         /* Do not defected the missile */
         return;
     }

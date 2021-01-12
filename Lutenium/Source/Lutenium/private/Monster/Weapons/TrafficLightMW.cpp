@@ -112,11 +112,7 @@ void ATrafficLightMW::LightBeginOverlap(class AActor* Actor, const ETrafficLight
         /* Throws missile in the opposite direction */
         Position = Missile->GetActorLocation() - Position;
         Position.Normalize();
-        Missile->ThrowMissile(Missile->GetActorForwardVector() * -1, MissileThrowForce);
-        if(bDefected)
-        {
-            Missile->ActivateDefected();
-        }
+        Missile->ThrowMissile(Missile->GetActorForwardVector() * -1, MissileThrowForce, bDefected);
         return;
     }
 
@@ -193,7 +189,7 @@ float ATrafficLightMW::TakeDamage(float Damage, struct FDamageEvent const& Damag
         }
 
         /* if the player hit red light, do not damage */
-        TakeHurtboxDamageChangingLight(Damage * (HitLightStatus != ETrafficLight::Red), Position);
+        TakeHurtboxDamageChangingLight(Damage * (HitLightStatus == nullptr || HitLightStatus != ETrafficLight::Red), Position);
         return Damage;
     }
 

@@ -6,7 +6,9 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/TimelineComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "PhysicsEngine/RadialForceComponent.h"
 #include "GameFramework/DamageType.h"
+#define ECC_Player ECollisionChannel::ECC_GameTraceChannel4
 
 AMissile::AMissile()
 {
@@ -19,39 +21,38 @@ AMissile::AMissile()
     MissileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Missile Mesh"));
     MissileMesh->AttachToComponent(SphereComponent, FAttachmentTransformRules::KeepWorldTransform);
 
-    ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
+    ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Movement Component"));
     ProjectileMovement->bRotationFollowsVelocity = true;
 
-    NonTargetSpeed = 500.f;
+    RadialForceComponent = CreateDefaultSubobject<URadialForceComponent>(TEXT("Radial Force component"));
+    RadialForceComponent->bIgnoreOwningActor = true;
+    DefecteedGravityForceAmount = -50000000.f;
+    DefecteedGravityRadius = 2000.f;
+    RadialForceComponent->ForceStrength = DefecteedGravityForceAmount;
+    RadialForceComponent->Radius = DefecteedGravityRadius;
+
+    NonTargetSpeed = 5000.f;
 
     Damage = 150.f;
     ExplosionRadius = 2000.f;
+
     MissileLifeSpan = 20.f;
 
-    if (Curve)
-    {
-        bShouldBeDefected = false;
-        FOnTimelineFloat TimelineCallback;
-        FOnTimelineEventStatic TimelineFinishedCallback;
-
-        TimelineCallback.BindUFunction(this, FName("DefectedMissileGravity"));
-        TimelineFinishedCallback.BindUFunction(this, {FName("DefectedMissileImpulse")});
-
-        DefectedTimeline.AddInterpFloat(Curve, TimelineCallback);
-        DefectedTimeline.SetTimelineFinishedFunc(TimelineFinishedCallback);
-    }
+    DefecteedImpulseRadius = 2000.f;
+    DefecteedImpulseForceAmount = 50000000.f;
 }
 
 void AMissile::BeginPlay()
 {
     Super::BeginPlay();
     SetLifeSpan(MissileLifeSpan);
+    RadialForceComponent->AddCollisionChannelToAffect(ECC_Player);
+    RadialForceComponent->ToggleActive(); /* Disalbe radial force on the begging. Activating it in DefectMissile() */
 }
 
 void AMissile::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    DefectedTimeline.TickTimeline(DeltaTime);
 }
 
 void AMissile::SetTargetOrDirection(USceneComponent *Target, const FVector &ShootDirection)
@@ -63,13 +64,13 @@ void AMissile::SetTargetOrDirection(USceneComponent *Target, const FVector &Shoo
     }
     else
     {
-        Direction = ShootDirection;
+        FVector Direction = ShootDirection;
         Direction.Normalize();
         ProjectileMovement->Velocity = Direction * NonTargetSpeed;
     }
 }
 
-void AMissile::ThrowMissile(FVector ThrownDirection, float ForceAmount)
+void AMissile::ThrowMissile(FVector ThrownDirection, float ForceAmount, bool bDefectMissile)
 {
     // Enemy could throw the missile and it will explode against the player
     if(!ThrownDirection.IsNormalized())
@@ -80,43 +81,34 @@ void AMissile::ThrowMissile(FVector ThrownDirection, float ForceAmount)
     ProjectileMovement->Velocity = ThrownDirection * ForceAmount;
 
     /* Only execute defected logic if the missile was directly set to do it. EG - red traffic light*/
-    if(bShouldBeDefected)
+    if(bDefectMissile)
     {
-        bIsDefected = true;
-        DefectedTimeline.PlayFromStart();
-        GotDefected();
+        DefectMissile();
     }
 }
 
-void AMissile::DefectedMissileGravity()
+void AMissile::DefectMissile()
 {
-    // While the missile is defected, attaching the player to it
-    if(FVector::Distance(GetActorLocation(), PlayerPawn->GetActorLocation()) < DistanceToThePlayerWhenTheDefectedMissileIsAboutToBlowUp)
+    /* If it's already activated we don't want to activate it one more time */
+    if(!RadialForceComponent->IsActive())
     {
-        FVector GravityDirection = GetActorLocation() - PlayerPawn->GetActorLocation();
-        GravityDirection.Normalize();
-        GravityDirection *= DefecteedGravityForceAmount;
-        PlayerPawn->GetPlaneBox()->AddForce(GravityDirection, FName(), true);
-        bIsPawnGravited = true;
+        return;
     }
-    else if(bIsPawnGravited)
-    {
-        bIsPawnGravited= false;
-    }
+    SetLifeSpan(0); /* Removes the timer for life span */
+    RadialForceComponent->ToggleActive();
+    bIsDefected = true;
+    GotDefected(); /* invokes the event */
+
+    FTimerHandle DefectedImpuleTimer;
+    GetWorldTimerManager().SetTimer(DefectedImpuleTimer, this, &AMissile::DefectedMissileImpulse, DefectedTime, false);
 }
 
 void AMissile::DefectedMissileImpulse()
 {
-    // After some amount of time of being deflected, explodes if the player is close lel
-    if(FVector::Distance(GetActorLocation(), PlayerPawn->GetActorLocation()) < DistanceToThePlayerWhenTheDefectedMissileIsAboutToBlowUp)
-    {
-        DefectedImpulse();
-        FVector ImpulseDirection = PlayerPawn->GetActorLocation() - GetActorLocation();
-        ImpulseDirection.Normalize();
-        ImpulseDirection *= DefecteedImpulseForceAmount;
-        PlayerPawn->GetPlaneBox()->AddImpulse(ImpulseDirection, FName(), true);
-        Destroy();
-    }
+    OnDefectedImpulse(); /** VFX, SFX and desotryin an actor*/
+    RadialForceComponent->ForceStrength = DefecteedImpulseForceAmount;
+    RadialForceComponent->Radius = DefecteedImpulseRadius;
+    RadialForceComponent->FireImpulse();
 }
 
 void AMissile::Explode()
