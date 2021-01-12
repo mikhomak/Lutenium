@@ -170,7 +170,7 @@ float ATrafficLightMW::TakeDamage(float Damage, struct FDamageEvent const& Damag
         UPrimitiveComponent* HitComponent = HitResult->Component.Get(); /* Gets the hit component */
 
         ETrafficLightPosition Position = ETrafficLightPosition::Center; /* Default position is center */
-        ETrafficLight HitLightStatus; /* Light status of the hit light to reduce the damage */
+        ETrafficLight HitLightStatus = ETrafficLight::Green; /* Light status of the hit light to reduce the damage */
 
         if(HitComponent == Hurtbox || HitComponent == CenterLightMesh)
         {
@@ -189,7 +189,7 @@ float ATrafficLightMW::TakeDamage(float Damage, struct FDamageEvent const& Damag
         }
 
         /* if the player hit red light, do not damage */
-        TakeHurtboxDamageChangingLight(Damage * (HitLightStatus == nullptr || HitLightStatus != ETrafficLight::Red), Position);
+        TakeHurtboxDamageChangingLight(Damage * (HitLightStatus != ETrafficLight::Red), Position);
         return Damage;
     }
 
