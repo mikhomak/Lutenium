@@ -18,14 +18,14 @@ public:
                                                        FVector& HitLocation,
                                                        EMissileTargetHit& MissileTargetHitType);
 
-    static class APlayerPawn* RaycastForPlayer(const AActor* OwnerActor,
+    static class AActor* RaycastForPlayer(const AActor* OwnerActor,
                                                const UWorld* World,
                                                const FVector& StartLocation,
                                                const FVector& EndLocation,
                                                const float RaycastRadius,
                                                FHitResult& HitResultOut);
 
-    static class APlayerPawn* RaycastForPlayer(const AActor* OwnerActor,
+    static class AActor* RaycastForPlayer(const AActor* OwnerActor,
                                                const UWorld* World,
                                                const FVector& StartLocation,
                                                const FVector& EndLocation,

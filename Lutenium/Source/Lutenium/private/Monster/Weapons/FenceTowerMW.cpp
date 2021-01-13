@@ -5,6 +5,7 @@
 #include "Monster/Weapons/MonsterWeapon.h"
 #include "Monster/Weapons/Spells/PowerProjectile.h"
 #include "Monster/EnemyMonsterPawn.h"
+#include "Player/Missile.h"
 #include "Player/PlayerPawn.h"
 #include "Player/PlaneMovementComponent.h"
 #include "Player/MovementEffect/EmpMovementEffect.h"
@@ -44,37 +45,68 @@ void AFenceTowerMW::Tick(float DeltaTime)
         FVector RightNeighborLocation = RightNeighborFenceTower != nullptr ? RightNeighborFenceTower->GetActorLocation() : FVector::ZeroVector;
         FVector LeftNeighborLocation = LeftNeighborFenceTower != nullptr ? LeftNeighborFenceTower->GetActorLocation() : FVector::ZeroVector;
 
-        /* Racyasting for both neighbors */
-        APlayerPawn* Player = FAssistUtils::RaycastForPlayer(this, GetWorld(),
-                                                             GetActorLocation(),
-                                                             RightNeighborLocation, LeftNeighborLocation,
-                                                             BeamRadius, Hit);
-        if(Player && !bIsPlayerInBeam)
-        {
-            /* Setting emp movemnt effect */
-            if(PlayerEmpMovementEffect == nullptr && Player &&
-               Player->GetPlaneMovement() && Player->GetPlaneMovement()->EmpMovementEffect)
-            {
-                PlayerEmpMovementEffect = Player->GetPlaneMovement()->EmpMovementEffect;
-            }
+        /* Racyasting for both neighbors towers, finding for the player or the missile  */
+        AActor* FoundActor = FAssistUtils::RaycastForPlayer(this, GetWorld(),
+                                                          GetActorLocation(),
+                                                          RightNeighborLocation, LeftNeighborLocation,
+                                                          BeamRadius, Hit);
 
-            const FVector RandomRotation = FVector(
-			    FMath::RandRange(0.f, 1.f),
-			    FMath::RandRange(0.f, 1.f),
-			    FMath::RandRange(0.f, 1.f)
-		    );
-            /* Safe activating player's emp*/
-            if(PlayerEmpMovementEffect)
-            {
-                PlayerEmpMovementEffect->Activate(RandomRotation, BeamEmpForce);
-            }
-            bIsPlayerInBeam = true; // Applying emp only on entering the beam
-        }
-        else if(bIsPlayerInBeam)
+        if(FoundActor == nullptr)
         {
-            bIsPlayerInBeam = false;
+            return;
         }
+
+        /* Handles player */
+        APlayerPawn* Player = Cast<APlayerPawn>(FoundActor);
+        if(Player)
+        {
+            HandlePlayerBeam(Player);
+            return;
+        }
+
+        bIsPlayerInBeam = false;
+
+        /* Handles missile */
+        AMissile* Missile = Cast<AMissile>(FoundActor);
+        if(Missile)
+        {
+            HandleMissileBeam(Missile);
+            return;
+        }
+
     }
+}
+
+
+void AFenceTowerMW::HandlePlayerBeam(APlayerPawn* Player)
+{
+    if(!bIsPlayerInBeam)
+    {
+        /* Setting emp movemnt effect */
+        if(PlayerEmpMovementEffect == nullptr && Player &&
+            Player->GetPlaneMovement() && Player->GetPlaneMovement()->EmpMovementEffect)
+        {
+            PlayerEmpMovementEffect = Player->GetPlaneMovement()->EmpMovementEffect;
+        }
+
+        const FVector RandomRotation = FVector(
+            FMath::RandRange(0.f, 1.f),
+            FMath::RandRange(0.f, 1.f),
+            FMath::RandRange(0.f, 1.f)
+        );
+        /* Safe activating player's emp*/
+        if(PlayerEmpMovementEffect)
+        {
+            PlayerEmpMovementEffect->Activate(RandomRotation, BeamEmpForce);
+        }
+        bIsPlayerInBeam = true; // Applying emp only on entering the beam
+        return;
+    }
+}
+
+void AFenceTowerMW::HandleMissileBeam(AMissile* Missile)
+{
+    Missile->EmpMissile();
 }
 
 /** Shoot projectiles */

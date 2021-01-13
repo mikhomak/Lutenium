@@ -151,6 +151,23 @@ public:
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Beam")
     class UEmpMovementEffect* PlayerEmpMovementEffect;
 
+    /**
+     * Handles players if they have overllaped with the beam defense
+     * Getting called in Tick()
+     * @param Player - shouldn't be nullptr
+     */
+    UFUNCTION(BlueprintCallable, Category = "Beam")
+    void HandlePlayerBeam(class APlayerPawn* Player);
+
+    /**
+     * Handles missile if it has overllaped with the beam defense
+     * Getting called in Tick()
+     * @param Missile - shouldn't be nullptr
+     */
+    UFUNCTION(BlueprintCallable, Category = "Beam")
+    void HandleMissileBeam(class AMissile* Missile);
+
+
     // -----------------------------------------------------------------------------------------------------------
 	// Projectile
     // -----------------------------------------------------------------------------------------------------------

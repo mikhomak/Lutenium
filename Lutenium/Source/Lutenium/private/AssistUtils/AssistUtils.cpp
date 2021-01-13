@@ -2,11 +2,13 @@
 #include "Player/PlaneMovementComponent.h"
 #include "Player/MissileTargetHit.h"
 #include "Player/PlayerPawn.h"
+#include "Player/Missile.h"
 #include "Math/Vector.h"
 #include "Kismet/KismetSystemLibrary.h"
 #define ECC_MonsterWPHurtbox ECollisionChannel::ECC_GameTraceChannel1
 #define ECC_Monster ECollisionChannel::ECC_GameTraceChannel2
 #define ECC_Player ECollisionChannel::ECC_GameTraceChannel4
+#define ECC_PlayerMissile ECollisionChannel::ECC_GameTraceChannel5
 
 USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const UWorld* World,
                                                                    const FVector& StartLocation,
@@ -84,9 +86,9 @@ USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const U
 }
 
 /** Racyast the player (use for mosnter) */
-/** Raycast ONLY the player level of collision */
+/** Raycast ONLY the player level of collision AND the missile*/
 /** Returns Player and HitResultOut */
-APlayerPawn* FAssistUtils::RaycastForPlayer(const AActor* OwnerActor,
+AActor* FAssistUtils::RaycastForPlayer(const AActor* OwnerActor,
                                             const UWorld* World,
                                             const FVector& StartLocation,
                                             const FVector& EndLocation,
@@ -99,6 +101,7 @@ APlayerPawn* FAssistUtils::RaycastForPlayer(const AActor* OwnerActor,
         Params.AddIgnoredActor(OwnerActor);
 
         FCollisionObjectQueryParams PlayerObjectQuery(ECC_Player);
+        PlayerObjectQuery.AddObjectTypesToQuery(ECC_PlayerMissile);
 
         const bool bHit = World->SweepSingleByObjectType(HitResultOut,
                                                          StartLocation,
@@ -109,11 +112,7 @@ APlayerPawn* FAssistUtils::RaycastForPlayer(const AActor* OwnerActor,
                                                          Params);
         if(bHit && HitResultOut.Actor != nullptr)
         {
-            APlayerPawn* Player =  Cast<APlayerPawn>(HitResultOut.Actor);
-            if(Player)
-            {
-                return Player;
-            }
+            return HitResultOut.Actor.Get();
         }
     }
 
@@ -122,9 +121,9 @@ APlayerPawn* FAssistUtils::RaycastForPlayer(const AActor* OwnerActor,
 
 
 /**
- * Same funcinality as the normal RaycastForPlayer but has the second end location in case if the first one hasn't found the player
+ * Same funcinality as the normal RaycastForPlayer but has the second end location in case if the first one hasn't found the player/missile
  */
-APlayerPawn* FAssistUtils::RaycastForPlayer(const AActor* OwnerActor,
+AActor* FAssistUtils::RaycastForPlayer(const AActor* OwnerActor,
                                             const UWorld* World,
                                             const FVector& StartLocation,
                                             const FVector& EndLocation,
@@ -134,10 +133,10 @@ APlayerPawn* FAssistUtils::RaycastForPlayer(const AActor* OwnerActor,
 {
     if(EndLocation != FVector::ZeroVector)
     {
-        APlayerPawn* Player = RaycastForPlayer(OwnerActor, World, StartLocation, EndLocation, RaycastRadius, HitResultOut);
-        if(Player)
+        AActor* Actor = RaycastForPlayer(OwnerActor, World, StartLocation, EndLocation, RaycastRadius, HitResultOut);
+        if(Actor != nullptr)
         {
-            return Player;
+            return Actor;
         }
     }
     if(SecondEndLocation != FVector::ZeroVector)
