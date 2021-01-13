@@ -93,6 +93,11 @@ void AMonsterAIController::SetIsPlayerInRadiusOfBeamDefense(bool bIsInRadius)
 /** Setting tha blackboard value for the PlayerHightLevel */
 int32 AMonsterAIController::SetPlayerHightLevelBlackboardValue()
 {
+    if(Player == nullptr)
+    {
+        return -1;
+    }
+
     const float PlayerHight = Player->GetActorLocation().Z;
     int32 Hight = 2; /** by default it should be center */
     /* indexes of hight level socket location star with 1! */

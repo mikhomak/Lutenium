@@ -53,6 +53,7 @@ void AFenceTowerMW::Tick(float DeltaTime)
 
         if(FoundActor == nullptr)
         {
+            bIsPlayerInBeam = false;
             return;
         }
 
