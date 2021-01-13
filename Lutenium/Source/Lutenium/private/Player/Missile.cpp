@@ -23,8 +23,10 @@ AMissile::AMissile()
 
     ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Movement Component"));
     ProjectileMovement->bRotationFollowsVelocity = true;
+    ProjectileMovement->ProjectileGravityScale = 0.f;
 
     RadialForceComponent = CreateDefaultSubobject<URadialForceComponent>(TEXT("Radial Force component"));
+    RadialForceComponent->AttachToComponent(SphereComponent, FAttachmentTransformRules::KeepWorldTransform);
     RadialForceComponent->bIgnoreOwningActor = true;
     DefecteedGravityForceAmount = -50000000.f;
     DefecteedGravityRadius = 2000.f;
@@ -55,7 +57,7 @@ void AMissile::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
-void AMissile::SetTargetOrDirection(USceneComponent *Target, const FVector &ShootDirection)
+void AMissile::SetTargetOrDirection(USceneComponent* Target, const FVector& ShootDirection)
 {
     if (Target != nullptr)
     {
@@ -85,6 +87,17 @@ void AMissile::ThrowMissile(FVector ThrownDirection, float ForceAmount, bool bDe
     {
         DefectMissile();
     }
+}
+
+
+void AMissile::EmpMissile()
+{
+    OnEmped(); /* Calls the event */
+    /* Disables movement */
+    ProjectileMovement->bIsHomingProjectile = false;
+    ProjectileMovement->Velocity = FVector::ZeroVector;
+    /* Adding gravity scale */
+    ProjectileMovement->ProjectileGravityScale = EmpGravityScale;
 }
 
 void AMissile::DefectMissile()

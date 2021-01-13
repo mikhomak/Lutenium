@@ -75,6 +75,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ThrowMissile(FVector ThrownDirection, float ForceAmount, bool bDefectMissile);
 
+	/**
+	 * Activates emp for the missile
+	 * Disables current movement and activates gravity, while random rotating the missile
+	 */
+	UFUNCTION(BlueprintCallable)
+	void EmpMissile();
+
 	// -----------------------------------------------------------------------------------------------------------
 	// Defected activation
     // -----------------------------------------------------------------------------------------------------------
@@ -200,6 +207,34 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Defected")
 	void OnDefectedImpulse();
 
+	// -----------------------------------------------------------------------------------------------------------
+	// Emp
+    // -----------------------------------------------------------------------------------------------------------
+
+	/**
+	 * Randomly rotate the missile while falling down
+	 */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Emp")
+	FRotator EmpRotator;
+
+	/**
+	 * Amount of rotation force while emp
+	 */
+	UPROPERTY(EditDefaultsOnly, Category="Emp")
+	float EmpRotationForce;
+
+	/**
+	 * Gravity scale while falling down with emp applied to ProjectileMovement
+	 */
+	UPROPERTY(EditDefaultsOnly, Category="Emp")
+	float EmpGravityScale;
+
+	/**
+	 *  Event when the missile gets emped
+	 * Add some VFX, SFX and other cool stuff in BP
+	 */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Defected")
+	void OnEmped();
 
 protected:
 
