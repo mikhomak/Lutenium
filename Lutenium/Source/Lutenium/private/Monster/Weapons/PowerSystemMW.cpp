@@ -13,6 +13,9 @@ APowerSystemMW::APowerSystemMW() : AMonsterWeapon()
     Health = 100.f;
     WeaponType = EMonsterWeaponType::PowerSystem;
 
+    CooldownTime = 20.f;
+    RepeatAttackTime = 5.f;
+
     /* Fence tower array initalization variables */
     FenceTowersHightLevelsAmount = 3;
     FenceTowersPositionsAmount = 4;
@@ -102,6 +105,7 @@ void APowerSystemMW::ExecuteAttack()
     {
         FTimerHandle SecondAttackTimer;
         GetWorldTimerManager().SetTimer(SecondAttackTimer, this, &APowerSystemMW::ExecuteAttack, RepeatAttackTime, false);
+        CurrentExecutedAttacks++;
     }
 }
 

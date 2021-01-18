@@ -112,6 +112,19 @@ AActor* FAssistUtils::RaycastForPlayer(const AActor* OwnerActor,
                                                          Params);
         if(bHit && HitResultOut.Actor != nullptr)
         {
+            /* Checking if the player/missile wasn't hidding */
+            FHitResult VisibilityHitResult;
+            const bool bVisibilityHit =  World->LineTraceSingleByChannel(
+                                                VisibilityHitResult,
+                                                StartLocation,
+                                                HitResultOut.Location,
+                                                ECC_Visibility,
+                                                Params);
+            if(bVisibilityHit)
+            {
+                return nullptr;
+            }
+
             return HitResultOut.Actor.Get();
         }
     }
