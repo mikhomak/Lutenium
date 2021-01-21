@@ -7,7 +7,16 @@
 #include "Components/TimelineComponent.h"
 #include "EnemyMonsterPawn.generated.h"
 
-
+/**
+ * Main enemy monster
+ * Use it as a reference to get components that you need because it doesn't do much
+ * All the attack are coming from MonsterWeapons
+ * Controlled by MonsterAIController
+ * Use it as just the body, all the behaviour should come from BehaviourTree
+ * All the logic of how to do should come from MonsterAIController
+ * @see MonsterWeapon.h
+ * @see MonsterAIController.h
+ */
 UCLASS()
 class LUTENIUM_API AEnemyMonsterPawn : public APawn
 {
@@ -23,12 +32,23 @@ public:
     // General
     // ------------------------------------------------------------------
 
-    UPROPERTY(Category = General, VisibleDefaultsOnly, BlueprintReadOnly)
-    class USkeletalMeshComponent* MonsterMesh;
-
+    /**
+     * Main Sphere component
+     * Root Component
+     * @todo consider placing skeletal mesh as a root component
+     */
     UPROPERTY(Category = General, VisibleDefaultsOnly, BlueprintReadOnly)
     class USphereComponent* SphereComponent;
 
+    /** Main skeleton mesh for the monster */
+    UPROPERTY(Category = General, VisibleDefaultsOnly, BlueprintReadOnly)
+    class USkeletalMeshComponent* MonsterMesh;
+
+    /**
+     * Movement component
+     * We don't need complex behaviour for the monster
+     * It should simply go from place A to place B without
+     */
     UPROPERTY(Category = General, VisibleDefaultsOnly, BlueprintReadOnly)
     class UFloatingPawnMovement* PawnMovement;
 
