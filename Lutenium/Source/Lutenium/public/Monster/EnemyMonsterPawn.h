@@ -56,15 +56,26 @@ public:
     // Player behaviour
     // ------------------------------------------------------------------
 
-    /** Collision to check if the player is inside the beam defense radius */
+    /**
+     * If the player has entered this sphere, notify the behaviour tree (blackbaord)
+     * Should activate the beam defense in this case
+     */
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player")
     class USphereComponent* BeamDefenseSphere;
 
-    /** Handles overlapping BeamDefenseSphere with the player */
+    /**
+     * Handles overlapping BeamDefenseSphere with the player
+     * Invokes SetIsPlayerInRadiusOfBeamDefense(true) from MonsterAIController
+     * Connect this method for BeamDefenseSphere->OnOverlapBegin in BP
+     */
     UFUNCTION(BlueprintCallable)
     void PlayerHasEnteredBeamDefense(class AActor* OverlapActor);
 
-    /** Handles overlap exit BeamDefenseSphere with the player */
+    /**
+     * Handles overlap exit BeamDefenseSphere with the player
+     * Invokes SetIsPlayerInRadiusOfBeamDefense(true) from MonsterAIController
+     * Connect this method for BeamDefenseSphere->OnOverlapBegin in BP
+     */
     UFUNCTION(BlueprintCallable)
     void PlayerHasExitdBeamDefense(class AActor* OverlapExitActor);
 
@@ -97,15 +108,22 @@ public:
     // Weapons
     // ------------------------------------------------------------------
 
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
-    float ArmourDamageReduction;
-
-    UFUNCTION(BlueprintImplementableEvent)
-    void MissileCollide(const FVector& HitLocation, const FVector& NormalizedDirection, const float DamageApplied);
-
+    /**
+     * When the weapon "dies", it calls this method
+     * Removes a wepon from the WeaponMap and upgrades all the other weapons
+     */
     UFUNCTION(BlueprintCallable)
     void LooseWeapon(EMonsterWeaponType WeaponType);
 
+    /**
+     * Each weapon is spawned in BeginPlay() of this pawn
+     * Then it stores the refernce to itself in this array with the key of enum EMonsterWeaponType
+     * To get the weapon you need, use this map
+     * @warning TowerFence is always nullptr, use PowerSystem instead
+     * @warning could be nullptr!!! when the weapon is destroyed
+     * @see MonsterWeapon
+     * @see MonsterWeaponType
+     */
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category ="Weapons")
     TMap<EMonsterWeaponType, class AMonsterWeapon*> WeaponMap;
 
@@ -113,9 +131,18 @@ public:
     // AI
     // ------------------------------------------------------------------
 
+    /**
+     * The brain of the mosnter
+     * Makes all the decesion
+     * @warning MAKE LOGIC IN THE BEHAIVOR TREE ONLY
+     */
     UPROPERTY(VisibleDefaultsOnly, Category = "AI")
     class UBehaviorTree* BehaviorTree;
 
+    /**
+     * The controller of the monster
+     * Try to use controller(in all logic based stuff, ex: tasks, services, etc..) instead of this class itself as much as possible
+     */
     UPROPERTY(VisibleDefaultsOnly, Category = "AI")
     class AMonsterAIController* MonsterAI;
 
@@ -123,7 +150,11 @@ public:
     // DAMAGE & HEALTH
     // ------------------------------------------------------------------
 
-
+    /**
+     * Health of the monster
+     * Takes damages from the player directly(to the monster mesh) or inderectly(to the weapons/hurtboxes)
+     * Direct damage is reduced
+     */
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Health")
     float Health;
 

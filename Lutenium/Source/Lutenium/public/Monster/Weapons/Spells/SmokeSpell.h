@@ -9,13 +9,13 @@
  * Slowly falling down, if overlapps with the player, adds post processing effect and slows the player down
  */
 UCLASS()
-class LUTENIUM_API ASMokeSpell : public AActor
+class LUTENIUM_API ASmokeSpell : public AActor
 {
 	GENERATED_BODY()
 
 public:
 
-	ASMokeSpell();
+	ASmokeSpell();
 
     /**
      * Main projectile mesh

@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 
 
-APowerProjectile::APowerProjectile()
+ASmokeSpell::ASmokeSpell()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -16,14 +16,14 @@ APowerProjectile::APowerProjectile()
 	LifeTime = 120.f; /* 2 mins */
 }
 
-void APowerProjectile::BeginPlay()
+void ASmokeSpell::BeginPlay()
 {
 	Super::BeginPlay();
     SetLifeSpan(LifeTime);
 
 }
 
-void APowerProjectile::Tick(float DeltaTime)
+void ASmokeSpell::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }

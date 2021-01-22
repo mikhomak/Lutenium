@@ -30,6 +30,20 @@ void UMonsterLegComponent::BeginPlay()
         LegTimeline.AddInterpFloat(Curve, TimelineCallback);
         LegTimeline.SetTimelineFinishedFunc(TimelineFinishedCallback);
     }
+
+    /* Sets default location for each leg no matter if it can move or not */
+    FHitResult HitResult;
+    FCollisionQueryParams CollisionParams;
+    CollisionParams.AddIgnoredActor(EnemyMonsterPawn);
+    FVector RaycastLocation = MonsterMesh->GetSocketLocation(RaycastSocket); /* Gets location of the raycast socket */
+    FVector RaycastEndLocation = RaycastLocation + (FVector::DownVector * RaycastDownLength); /* Downvector from this socket  */
+    FVector DownRaycast = RaycastJoint(RaycastLocation,
+                                        RaycastEndLocation,
+                                        HitResult, CollisionParams);
+    if(HitResult.bBlockingHit)
+    {
+        CurrentPosition = DownRaycast;
+    }
 }
 
 
