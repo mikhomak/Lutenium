@@ -156,7 +156,7 @@ public:
 	/**
 	 * After succefuly raycasting for the position, checks if there is something blocking between two joints
 	 */
-	FVector RaycastJoint(FVector& StartPos, FVector& EndPos,
+	FVector Raycast(FVector& StartPos, FVector& EndPos,
 						 FHitResult& HitResult, FCollisionQueryParams& CollisionParams);
 
 protected:

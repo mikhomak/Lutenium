@@ -31,7 +31,7 @@ void UMonsterLegComponent::BeginPlay()
 	CollisionParams.AddIgnoredActor(EnemyMonsterPawn);
 	FVector RaycastLocation = MonsterMesh->GetSocketLocation(RaycastSocket); /* Gets location of the raycast socket */
 	FVector RaycastEndLocation = RaycastLocation + (FVector::DownVector * RaycastDownLength); /* Downvector from this socket  */
-	FVector DownRaycast = RaycastJoint(RaycastLocation,
+	FVector DownRaycast = Raycast(RaycastLocation,
 										RaycastEndLocation,
 										HitResult, CollisionParams);
 	if(HitResult.bBlockingHit)
@@ -76,7 +76,7 @@ void UMonsterLegComponent::RaycastLeg()
 		FVector RaycastResultLocation;
 		FVector SecondJoint = MonsterMesh->GetSocketLocation(SecondJointSocket);
 
-		RaycastPosition = RaycastJoint(RaycastLocation,
+		RaycastPosition = Raycast(RaycastLocation,
 										   RaycastEndLocation,
 										   HitResult, CollisionParams);
 
@@ -84,9 +84,9 @@ void UMonsterLegComponent::RaycastLeg()
 		if (HitResult.bBlockingHit)
 		{
 			/* Check if there is any obstacles from the second joint to the finish position */
-			RaycastResultLocation = RaycastJoint(SecondJoint,
-			//									 DownRaycast,
-			//									 HitResult, CollisionParams);
+			RaycastResultLocation = Raycast(SecondJoint,
+												 RaycastPosition,
+												 HitResult, CollisionParams);
 			/* If there was an obstacle, then move the leg to the impact location with that obstacle */
 			if (HitResult.bBlockingHit)
 			{
@@ -99,7 +99,7 @@ void UMonsterLegComponent::RaycastLeg()
 	}
 }
 
-FVector UMonsterLegComponent::RaycastJoint(FVector& StartPos, FVector& EndPos, FHitResult& HitResult,
+FVector UMonsterLegComponent::Raycast(FVector& StartPos, FVector& EndPos, FHitResult& HitResult,
 										   FCollisionQueryParams& CollisionParams)
 {
 	GetWorld()->LineTraceSingleByChannel(
