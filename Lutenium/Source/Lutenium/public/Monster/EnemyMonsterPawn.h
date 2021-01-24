@@ -20,305 +20,315 @@
 UCLASS()
 class LUTENIUM_API AEnemyMonsterPawn : public APawn
 {
-    GENERATED_BODY()
+	GENERATED_BODY()
 
 public:
 
-    AEnemyMonsterPawn();
+	AEnemyMonsterPawn();
 
-    virtual void Tick(float DeltaTime) override;
+	virtual void Tick(float DeltaTime) override;
 
-    // ------------------------------------------------------------------
-    // General
-    // ------------------------------------------------------------------
+	// ------------------------------------------------------------------
+	// General
+	// ------------------------------------------------------------------
 
-    /**
-     * Main Sphere component
-     * Root Component
-     * @todo consider placing skeletal mesh as a root component
-     */
-    UPROPERTY(Category = General, VisibleDefaultsOnly, BlueprintReadOnly)
-    class USphereComponent* SphereComponent;
+	/**
+	 * Main Sphere component
+	 * Root Component
+	 * @todo consider placing skeletal mesh as a root component
+	 */
+	UPROPERTY(Category = General, VisibleDefaultsOnly, BlueprintReadOnly)
+	class USphereComponent* SphereComponent;
 
-    /** Main skeleton mesh for the monster */
-    UPROPERTY(Category = General, VisibleDefaultsOnly, BlueprintReadOnly)
-    class USkeletalMeshComponent* MonsterMesh;
+	/** Main skeleton mesh for the monster */
+	UPROPERTY(Category = General, VisibleDefaultsOnly, BlueprintReadOnly)
+	class USkeletalMeshComponent* MonsterMesh;
 
-    /**
-     * Movement component
-     * We don't need complex behaviour for the monster
-     * It should simply go from place A to place B without
-     */
-    UPROPERTY(Category = General, VisibleDefaultsOnly, BlueprintReadOnly)
-    class UFloatingPawnMovement* PawnMovement;
+	/**
+	 * Movement component
+	 * We don't need complex behaviour for the monster
+	 * It should simply go from place A to place B without
+	 */
+	UPROPERTY(Category = General, VisibleDefaultsOnly, BlueprintReadOnly)
+	class UFloatingPawnMovement* PawnMovement;
 
-    // ------------------------------------------------------------------
-    // Player behaviour
-    // ------------------------------------------------------------------
+	// ------------------------------------------------------------------
+	// Player behaviour
+	// ------------------------------------------------------------------
 
-    /**
-     * If the player has entered this sphere, notify the behaviour tree (blackbaord)
-     * Should activate the beam defense in this case
-     */
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player")
-    class USphereComponent* BeamDefenseSphere;
+	/**
+	 * If the player has entered this sphere, notify the behaviour tree (blackbaord)
+	 * Should activate the beam defense in this case
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player")
+	class USphereComponent* BeamDefenseSphere;
 
-    /**
-     * Handles overlapping BeamDefenseSphere with the player
-     * Invokes SetIsPlayerInRadiusOfBeamDefense(true) from MonsterAIController
-     * Connect this method for BeamDefenseSphere->OnOverlapBegin in BP
-     */
-    UFUNCTION(BlueprintCallable)
-    void PlayerHasEnteredBeamDefense(class AActor* OverlapActor);
+	/**
+	 * Handles overlapping BeamDefenseSphere with the player
+	 * Invokes SetIsPlayerInRadiusOfBeamDefense(true) from MonsterAIController
+	 * Connect this method for BeamDefenseSphere->OnOverlapBegin in BP
+	 */
+	UFUNCTION(BlueprintCallable)
+	void PlayerHasEnteredBeamDefense(class AActor* OverlapActor);
 
-    /**
-     * Handles overlap exit BeamDefenseSphere with the player
-     * Invokes SetIsPlayerInRadiusOfBeamDefense(true) from MonsterAIController
-     * Connect this method for BeamDefenseSphere->OnOverlapBegin in BP
-     */
-    UFUNCTION(BlueprintCallable)
-    void PlayerHasExitdBeamDefense(class AActor* OverlapExitActor);
+	/**
+	 * Handles overlap exit BeamDefenseSphere with the player
+	 * Invokes SetIsPlayerInRadiusOfBeamDefense(true) from MonsterAIController
+	 * Connect this method for BeamDefenseSphere->OnOverlapBegin in BP
+	 */
+	UFUNCTION(BlueprintCallable)
+	void PlayerHasExitdBeamDefense(class AActor* OverlapExitActor);
 
-    // ------------------------------------------------------------------
-    // Legs
-    // ------------------------------------------------------------------
+	// ------------------------------------------------------------------
+	// Legs
+	// ------------------------------------------------------------------
 
-    UFUNCTION(BlueprintCallable)
-    FVector GetLegLocation(EMonsterLeg Leg) const;
+	UFUNCTION(BlueprintCallable)
+	FVector GetLegLocation(int32 LegIndex) const;
 
-    UPROPERTY(EditDefaultsOnly, Category="Legs movement")
-    float DistanceBetweenLegsToMove;
+	UPROPERTY(EditDefaultsOnly, Category="Legs movement")
+	float LegDistanceBetweenLegsToMove;
 
-    UPROPERTY(EditDefaultsOnly, Category="Legs movement")
-    float RaycastDownLength;
+	UPROPERTY(EditDefaultsOnly, Category="Legs movement")
+	float LegRaycastDownLength;
 
-    UPROPERTY(EditDefaultsOnly, Category="Legs movement")
-    float HighestPoint;
+	UPROPERTY(EditDefaultsOnly, Category="Legs movement")
+	float LegLerpValue;
 
-    UPROPERTY(EditDefaultsOnly, Category="Legs movement")
-    float LerpValue;
+	UPROPERTY(EditDefaultsOnly, Category="Legs movement")
+	float LegAddedHightStep;
 
-    UPROPERTY(EditDefaultsOnly, Category="Legs movement")
-    UCurveFloat* LegFloatCurve;
+	UPROPERTY(EditDefaultsOnly, Category="Legs movement")
+	float LegStepTime;
 
-    void LegHasMovedEventCaller(EMonsterLeg MonsterLeg);
+	void LegHasMovedEventCaller(const int32 LegIndex);
 
 
-    // ------------------------------------------------------------------
-    // Weapons
-    // ------------------------------------------------------------------
+	// ------------------------------------------------------------------
+	// Weapons
+	// ------------------------------------------------------------------
 
-    /**
-     * When the weapon "dies", it calls this method
-     * Removes a wepon from the WeaponMap and upgrades all the other weapons
-     */
-    UFUNCTION(BlueprintCallable)
-    void LooseWeapon(EMonsterWeaponType WeaponType);
+	/**
+	 * When the weapon "dies", it calls this method
+	 * Removes a wepon from the WeaponMap and upgrades all the other weapons
+	 */
+	UFUNCTION(BlueprintCallable)
+	void LooseWeapon(EMonsterWeaponType WeaponType);
 
-    /**
-     * Each weapon is spawned in BeginPlay() of this pawn
-     * Then it stores the refernce to itself in this array with the key of enum EMonsterWeaponType
-     * To get the weapon you need, use this map
-     * @warning TowerFence is always nullptr, use PowerSystem instead
-     * @warning could be nullptr!!! when the weapon is destroyed
-     * @see MonsterWeapon
-     * @see MonsterWeaponType
-     */
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category ="Weapons")
-    TMap<EMonsterWeaponType, class AMonsterWeapon*> WeaponMap;
+	/**
+	 * Each weapon is spawned in BeginPlay() of this pawn
+	 * Then it stores the refernce to itself in this array with the key of enum EMonsterWeaponType
+	 * To get the weapon you need, use this map
+	 * @warning TowerFence is always nullptr, use PowerSystem instead
+	 * @warning could be nullptr!!! when the weapon is destroyed
+	 * @see MonsterWeapon
+	 * @see MonsterWeaponType
+	 */
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category ="Weapons")
+	TMap<EMonsterWeaponType, class AMonsterWeapon*> WeaponMap;
 
-    // ------------------------------------------------------------------
-    // AI
-    // ------------------------------------------------------------------
+	// ------------------------------------------------------------------
+	// AI
+	// ------------------------------------------------------------------
 
-    /**
-     * The brain of the mosnter
-     * Makes all the decesion
-     * @warning MAKE LOGIC IN THE BEHAIVOR TREE ONLY
-     */
-    UPROPERTY(VisibleDefaultsOnly, Category = "AI")
-    class UBehaviorTree* BehaviorTree;
+	/**
+	 * The brain of the mosnter
+	 * Makes all the decesion
+	 * @warning MAKE LOGIC IN THE BEHAIVOR TREE ONLY
+	 */
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+	class UBehaviorTree* BehaviorTree;
 
-    /**
-     * The controller of the monster
-     * Try to use controller(in all logic based stuff, ex: tasks, services, etc..) instead of this class itself as much as possible
-     */
-    UPROPERTY(VisibleDefaultsOnly, Category = "AI")
-    class AMonsterAIController* MonsterAI;
+	/**
+	 * The controller of the monster
+	 * Try to use controller(in all logic based stuff, ex: tasks, services, etc..) instead of this class itself as much as possible
+	 */
+	UPROPERTY(VisibleDefaultsOnly, Category = "AI")
+	class AMonsterAIController* MonsterAI;
 
-    // ------------------------------------------------------------------
-    // DAMAGE & HEALTH
-    // ------------------------------------------------------------------
+	// ------------------------------------------------------------------
+	// DAMAGE & HEALTH
+	// ------------------------------------------------------------------
 
-    /**
-     * Health of the monster
-     * Takes damages from the player directly(to the monster mesh) or inderectly(to the weapons/hurtboxes)
-     * Direct damage is reduced
-     */
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Health")
-    float Health;
+	/**
+	 * Health of the monster
+	 * Takes damages from the player directly(to the monster mesh) or inderectly(to the weapons/hurtboxes)
+	 * Direct damage is reduced
+	 */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Health")
+	float Health;
 
-    /* Percentage value of the damage that is going to be applied */
-    /* Should be from 0 to 1 */
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Health", meta = (UIMin = "0.0", UIMax = "1.0"))
-    float DirectDamageReduction;
+	/* Percentage value of the damage that is going to be applied */
+	/* Should be from 0 to 1 */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Health", meta = (UIMin = "0.0", UIMax = "1.0"))
+	float DirectDamageReduction;
 
-    UFUNCTION(BlueprintCallable, Category = "Health")
-    void Die();
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	void Die();
 
-    UFUNCTION(BlueprintImplementableEvent, Category = "Health")
-    void OnDieEvent();
+	UFUNCTION(BlueprintImplementableEvent, Category = "Health")
+	void OnDieEvent();
 
-    /* Handles damage from the weapon. Do not reduce the damage */
-    UFUNCTION(BlueprintCallable, Category = "Health")
-    void TakeNonDirectDamage(float Damage);
+	/* Handles damage from the weapon. Do not reduce the damage */
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	void TakeNonDirectDamage(float Damage);
 
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Health")
-    bool bHandleDeathInCpp;
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Health")
+	bool bHandleDeathInCpp;
 
-    /* Handles direct damage from the player. Reduces the actual damage  */
+	/* Handles direct damage from the player. Reduces the actual damage  */
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
 
 
-    // ------------------------------------------------------------------
-    // Other socket locations
-    // ------------------------------------------------------------------
+	// ------------------------------------------------------------------
+	// Other socket locations
+	// ------------------------------------------------------------------
 
-    /** Checks on what hight level player is at */
-    /** The hight level is determined by the monster hight location and its sockets */
-    /** Check mesh to see where the socket are */
+	/** Checks on what hight level player is at */
+	/** The hight level is determined by the monster hight location and its sockets */
+	/** Check mesh to see where the socket are */
 
-    /** Checks if the player is below that socket's location to fire the appropiate weapon*/
-    /** First hight level(the lowest one) to decide what weapon should be used for an attack */
-    /** RN it's traffic light*/
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Sockets")
-    FName FirstHightLevelSocketName;
+	/** Checks if the player is below that socket's location to fire the appropiate weapon*/
+	/** First hight level(the lowest one) to decide what weapon should be used for an attack */
+	/** RN it's traffic light*/
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Sockets")
+	FName FirstHightLevelSocketName;
 
-    /** Checks if the player is below that socket's location to fire the appropiate weapon*/
-    /** RN it's fan*/
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Sockets")
-    FName SecondHightLevelSocketName;
+	/** Checks if the player is below that socket's location to fire the appropiate weapon*/
+	/** RN it's fan*/
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Sockets")
+	FName SecondHightLevelSocketName;
 
-    /** Checks if the player is ABOVE that socket's location to fire the appropiate weapon*/
-    /** RN it's siren */
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Sockets")
-    FName ThirdHightLevelSocketName;
+	/** Checks if the player is ABOVE that socket's location to fire the appropiate weapon*/
+	/** RN it's siren */
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Sockets")
+	FName ThirdHightLevelSocketName;
 
-    /** Returns the world location of the hight level from the socket */
-    /** Start with 1, ends with 3 */
-    UFUNCTION(BlueprintCallable, Category = "Sockets")
-    FVector GetHightLevelSocketLocation(const int32 Location);
+	/** Returns the world location of the hight level from the socket */
+	/** Start with 1, ends with 3 */
+	UFUNCTION(BlueprintCallable, Category = "Sockets")
+	FVector GetHightLevelSocketLocation(const int32 Location);
 
 protected:
 
-    virtual void BeginPlay() override;
+	virtual void BeginPlay() override;
 
-    virtual void PostInitializeComponents() override;
+	virtual void PostInitializeComponents() override;
 
-    void GetActorEyesViewPoint(FVector& Location, FRotator& Rotation) const override;
+	void GetActorEyesViewPoint(FVector& Location, FRotator& Rotation) const override;
 
-    // ------------------------------------------------------------------
-    // Legs
-    // ------------------------------------------------------------------
+	// ------------------------------------------------------------------
+	// Legs
+	// ------------------------------------------------------------------
 
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
-    TArray<class UMonsterLegComponent*> Legs;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Legs")
+	TArray<class UMonsterLegComponent*> Legs;
 
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
-    class UMonsterLegComponent* RearLeftLeg;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
+	class UMonsterLegComponent* LeftFrontLeg;
 
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
-    class UMonsterLegComponent* RearRightLeg;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
+	class UMonsterLegComponent* LeftMiddleLeg;
 
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
-    class UMonsterLegComponent* FrontLeftLeg;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
+	class UMonsterLegComponent* LeftBackLeg;
 
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
-    class UMonsterLegComponent* FrontRightLeg;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
+	class UMonsterLegComponent* RightFrontLeg;
 
-    UFUNCTION(BlueprintImplementableEvent)
-    void LegHasMoved(EMonsterLeg Leg);
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
+	class UMonsterLegComponent* RightMiddleLeg;
 
-    // ------------------------------------------------------------------
-    // Body Movement
-    // ------------------------------------------------------------------
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
+	class UMonsterLegComponent* RightBackLeg;
 
-    UFUNCTION(BlueprintCallable)
-    bool RaycastLegJoints();
+	UFUNCTION(BlueprintImplementableEvent)
+	void LegHasMoved(EMonsterLeg Leg);
 
-    UPROPERTY(EditDefaultsOnly, Category = "Body")
-    FName BodySocketName;
+	void InitLeg(class UMonsterLegComponent* Leg, int32 LegIndex);
 
-    UPROPERTY(EditDefaultsOnly, Category = "Body")
-    FVector BodyPosition;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
+	bool bIsCurrentLegsOdd;
+	// ------------------------------------------------------------------
+	// Body Movement
+	// ------------------------------------------------------------------
 
-    UPROPERTY(EditDefaultsOnly, Category = "Body")
-    float BodyUpMovementSpeed;
+	UFUNCTION(BlueprintCallable)
+	bool RaycastLegJoints();
 
-    UPROPERTY(BlueprintReadWrite, Category = "Body")
-    bool bIsBodyMovingUp;
+	UPROPERTY(EditDefaultsOnly, Category = "Body")
+	FName BodySocketName;
 
-    UFUNCTION()
-    void BodyTimelineMovement();
+	UPROPERTY(EditDefaultsOnly, Category = "Body")
+	FVector BodyPosition;
 
-    UFUNCTION()
-    void BodyTimelineMovementFinish();
+	UPROPERTY(EditDefaultsOnly, Category = "Body")
+	float BodyUpMovementSpeed;
 
-    UPROPERTY(EditDefaultsOnly, Category="Body")
-    UCurveFloat* BodyFloatCurve;
+	UPROPERTY(BlueprintReadWrite, Category = "Body")
+	bool bIsBodyMovingUp;
 
-    struct FTimeline BodyTimeline;
+	UFUNCTION()
+	void BodyTimelineMovement();
 
-    FORCEINLINE FVector GetCurrentBodyPosition() const { return BodyPosition; }
+	UFUNCTION()
+	void BodyTimelineMovementFinish();
 
-    // ------------------------------------------------------------------
-    // BODY MOVEMENT WHEN THERE IS AN OVERLAP FROM THE BODY TO THE LEGS
-    // ------------------------------------------------------------------
+	UPROPERTY(EditDefaultsOnly, Category="Body")
+	UCurveFloat* BodyFloatCurve;
 
-    void ToggleWhatLegsShouldMove(bool Left) const;
+	struct FTimeline BodyTimeline;
 
-    TArray<FName> TopSocketLocationNames;
+	FORCEINLINE FVector GetCurrentBodyPosition() const { return BodyPosition; }
 
-    bool bBodyMoving;
+	// ------------------------------------------------------------------
+	// BODY MOVEMENT WHEN THERE IS AN OVERLAP FROM THE BODY TO THE LEGS
+	// ------------------------------------------------------------------
 
-    void CheckBodyAltitudeDependingOnLegs();
+	void ToggleWhatLegsShouldMove(const bool Odd);
 
+	TArray<FName> TopSocketLocationNames;
 
-    // ------------------------------------------------------------------
-    // Weapons
-    // ------------------------------------------------------------------
+	bool bBodyMoving;
 
-    UPROPERTY( EditDefaultsOnly,BlueprintReadOnly, Category ="Weapons")
-    FName FanSocketName;
-
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category ="Weapons")
-    FName SirenSocketName;
-
-    UPROPERTY( EditDefaultsOnly,BlueprintReadOnly, Category ="Weapons")
-    FName PipeSocketName;
-
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category ="Weapons")
-    FName TrafficLightSocketName;
-
-    UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category ="Weapons")
-    FName PowerSystemSocketName;
-
-    UFUNCTION(BlueprintCallable)
-    void SpawnWeapons();
+	void CheckBodyAltitudeDependingOnLegs();
 
 
-    UPROPERTY(EditDefaultsOnly, Category = "Weapons")
-    TSubclassOf<class APipeMW> PipeClass;
+	// ------------------------------------------------------------------
+	// Weapons
+	// ------------------------------------------------------------------
 
-    UPROPERTY(EditDefaultsOnly, Category = "Weapons")
-    TSubclassOf<class AFanMW> FanClass;
+	UPROPERTY( EditDefaultsOnly,BlueprintReadOnly, Category ="Weapons")
+	FName FanSocketName;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Weapons")
-    TSubclassOf<class ASirenMW> SirenClass;
+	UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category ="Weapons")
+	FName SirenSocketName;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Weapons")
-    TSubclassOf<class ATrafficLightMW> TrafficLightClass;
+	UPROPERTY( EditDefaultsOnly,BlueprintReadOnly, Category ="Weapons")
+	FName PipeSocketName;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Weapons")
-    TSubclassOf<class APowerSystemMW> PowerSystemClass;
+	UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category ="Weapons")
+	FName TrafficLightSocketName;
+
+	UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Category ="Weapons")
+	FName PowerSystemSocketName;
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnWeapons();
+
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapons")
+	TSubclassOf<class APipeMW> PipeClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapons")
+	TSubclassOf<class AFanMW> FanClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapons")
+	TSubclassOf<class ASirenMW> SirenClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapons")
+	TSubclassOf<class ATrafficLightMW> TrafficLightClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapons")
+	TSubclassOf<class APowerSystemMW> PowerSystemClass;
 };

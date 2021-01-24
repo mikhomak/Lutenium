@@ -1,189 +1,256 @@
 #include "Monster/MonsterLegComponent.h"
 #include "Monster/EnemyMonsterPawn.h"
-#include "Components/TimelineComponent.h"
+#include "DrawDebugHelpers.h"
+#include "TimerManager.h"
+#include "GameFramework/Actor.h"
 
 UMonsterLegComponent::UMonsterLegComponent()
 {
-    PrimaryComponentTick.bCanEverTick = true;
-    bMoving = false;
+	PrimaryComponentTick.bCanEverTick = true;
+	bMoving = false;
 }
-
 
 void UMonsterLegComponent::BeginPlay()
 {
-    Super::BeginPlay();
-    Curve = Curve == nullptr ? EnemyMonsterPawn->LegFloatCurve : Curve;
-    DistanceBetweenLegsToMove = EnemyMonsterPawn->DistanceBetweenLegsToMove;
-    RaycastDownLength = EnemyMonsterPawn->RaycastDownLength;
-    AddedYValue = EnemyMonsterPawn->HighestPoint;
-    LerpValue = EnemyMonsterPawn->LerpValue;
-    Curve->GetTimeRange(MinTimeCurve, MaxTimeCurve);
+	Super::BeginPlay();
+	/** Gets default values from the EnemyMonsterPawn */
+	if(EnemyMonsterPawn)
+	{
+		DistanceBetweenLegsToMove = EnemyMonsterPawn->LegDistanceBetweenLegsToMove;
+		RaycastDownLength = EnemyMonsterPawn->LegRaycastDownLength;
+		LerpValue = EnemyMonsterPawn->LegLerpValue;
+		AddedHightStep = EnemyMonsterPawn->LegAddedHightStep;
+		StepTime = EnemyMonsterPawn->LegStepTime;
+	}
 
-    if (Curve)
-    {
-        FOnTimelineFloat TimelineCallback;
-        FOnTimelineEventStatic TimelineFinishedCallback;
+	CurrentStepTime = 0.f;
 
-        TimelineCallback.BindUFunction(this, FName("TimelineCallback"));
-        TimelineFinishedCallback.BindUFunction(this, {FName("TimelineFinished")});
-
-        LegTimeline.AddInterpFloat(Curve, TimelineCallback);
-        LegTimeline.SetTimelineFinishedFunc(TimelineFinishedCallback);
-    }
-
-    /* Sets default location for each leg no matter if it can move or not */
-    FHitResult HitResult;
-    FCollisionQueryParams CollisionParams;
-    CollisionParams.AddIgnoredActor(EnemyMonsterPawn);
-    FVector RaycastLocation = MonsterMesh->GetSocketLocation(RaycastSocket); /* Gets location of the raycast socket */
-    FVector RaycastEndLocation = RaycastLocation + (FVector::DownVector * RaycastDownLength); /* Downvector from this socket  */
-    FVector DownRaycast = RaycastJoint(RaycastLocation,
-                                        RaycastEndLocation,
-                                        HitResult, CollisionParams);
-    if(HitResult.bBlockingHit)
-    {
-        CurrentPosition = DownRaycast;
-    }
+	/* Sets default location for each leg no matter if it can move or not */
+	FHitResult HitResult;
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(EnemyMonsterPawn);
+	FVector RaycastLocation = MonsterMesh->GetSocketLocation(RaycastSocket); /* Gets location of the raycast socket */
+	FVector RaycastEndLocation = RaycastLocation + (FVector::DownVector * RaycastDownLength); /* Downvector from this socket  */
+	FVector DownRaycast = RaycastJoint(RaycastLocation,
+										RaycastEndLocation,
+										HitResult, CollisionParams);
+	if(HitResult.bBlockingHit)
+	{
+		CurrentPosition = DownRaycast;
+	}
 }
 
 
 void UMonsterLegComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-                                         FActorComponentTickFunction* ThisTickFunction)
+										 FActorComponentTickFunction* ThisTickFunction)
 {
-    Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-    LegTimeline.TickTimeline(DeltaTime);
-    RaycastLeg();
-}
-
-
-void UMonsterLegComponent::StartMovingLeg(const FVector HitLocation)
-{
-    StartPosition = CurrentPosition;
-    FinishPosition = HitLocation;
-
-    // If start position is higher than the finish position, then we decrease the added Y Value to the highest point ( to make the leg go like a parabola) 
-    const float AddedYValueCalculated = StartPosition.Z > FinishPosition.Z ? AddedYValue / 3 : AddedYValue;
-
-    HighPointBetweenSteps = FMath::Max(HitLocation.Z, CurrentPosition.Z) + AddedYValueCalculated;
-    LowestPointBetweenSteps = FMath::Min(HitLocation.Z, CurrentPosition.Z);
-    bMoving = true;
-    bHasReachedHighestPoint = false;
-    LegTimeline.PlayFromStart();
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	RaycastLeg();
+	if(bMoving)
+	{
+		MoveLeg(DeltaTime);
+	}
 }
 
 
 void UMonsterLegComponent::RaycastLeg()
 {
-    if (bMoving || !bCanMove)
-    {
-        return;
-    }
+	if (bMoving || !bCanMove)
+	{
+		return;
+	}
 
-    /* Raycasting only if the socket has moved too far away from the current leg position */
-    FVector RaycastLocation = MonsterMesh->GetSocketLocation(RaycastSocket);
-    FVector RaycastEndLocation = RaycastLocation + (FVector::DownVector * RaycastDownLength);
-    const float DistanceBetweenCurrentPosAndPrevious = FVector::Distance(
-        CurrentPosition, FVector(RaycastLocation.X, RaycastLocation.Y, CurrentPosition.Z));
+	/* Raycasting only if the socket has moved too far away from the current leg position */
+	FVector RaycastLocation = MonsterMesh->GetSocketLocation(RaycastSocket);
+	FVector RaycastEndLocation = RaycastLocation + (FVector::DownVector * RaycastDownLength);
+	const float DistanceBetweenCurrentPosAndPrevious = FVector::Distance(
+		CurrentPosition, FVector(RaycastLocation.X, RaycastLocation.Y, CurrentPosition.Z));
 
+	DEBUG_DrawLineBetweenPoints(CurrentPosition, RaycastLocation);
+	DEBUG_DrawRaycastSphere();
+	if (DistanceBetweenCurrentPosAndPrevious >= DistanceBetweenLegsToMove)
+	{
+		FHitResult HitResult;
+		FCollisionQueryParams CollisionParams;
+		CollisionParams.AddIgnoredActor(EnemyMonsterPawn);
+		FVector RaycastResultLocation;
+		FVector SecondJoint = MonsterMesh->GetSocketLocation(SecondJointSocket);
 
-    if (DistanceBetweenCurrentPosAndPrevious >= DistanceBetweenLegsToMove)
-    {
-        FHitResult HitResult;
-        FCollisionQueryParams CollisionParams;
-        CollisionParams.AddIgnoredActor(EnemyMonsterPawn);
-        FVector RaycastResultLocation;
-        FVector SecondJoint = MonsterMesh->GetSocketLocation(SecondJointSocket);
+		RaycastPosition = RaycastJoint(RaycastLocation,
+										   RaycastEndLocation,
+										   HitResult, CollisionParams);
 
-        FVector DownRaycast = RaycastJoint(RaycastLocation,
-                                           RaycastEndLocation,
-                                           HitResult, CollisionParams);
-
-        /* If the position wasn't found, do nothing */
-        if (HitResult.bBlockingHit)
-        {
-            /* Check if there is any obstacles from the second joint to the finish position */
-            RaycastResultLocation = RaycastJoint(SecondJoint,
-                                                 DownRaycast,
-                                                 HitResult, CollisionParams);
-            /* If there was an obstacle, then move the leg to the impact location with that obstacle */
-            if (HitResult.bBlockingHit)
-            {
-                StartMovingLeg(RaycastResultLocation);
-                return;
-            }
-            /* If no obstacles were found, then move the leg to the finish position */
-            StartMovingLeg(DownRaycast);
-        }
-    }
+		/* If the position wasn't found, do nothing */
+		if (HitResult.bBlockingHit)
+		{
+			/* Check if there is any obstacles from the second joint to the finish position */
+			RaycastResultLocation = RaycastJoint(SecondJoint,
+			//									 DownRaycast,
+			//									 HitResult, CollisionParams);
+			/* If there was an obstacle, then move the leg to the impact location with that obstacle */
+			if (HitResult.bBlockingHit)
+			{
+				StartMovingLeg(RaycastResultLocation);
+				return;
+			}
+			/* If no obstacles were found, then move the leg to the finish position */
+			StartMovingLeg(RaycastPosition);
+		}
+	}
 }
 
 FVector UMonsterLegComponent::RaycastJoint(FVector& StartPos, FVector& EndPos, FHitResult& HitResult,
-                                           FCollisionQueryParams& CollisionParams)
+										   FCollisionQueryParams& CollisionParams)
 {
-    GetWorld()->LineTraceSingleByChannel(
-        HitResult,
-        StartPos,
-        EndPos,
-        ECollisionChannel::ECC_WorldStatic,
-        CollisionParams);
-    return HitResult.ImpactPoint;
+	GetWorld()->LineTraceSingleByChannel(
+		HitResult,
+		StartPos,
+		EndPos,
+		ECollisionChannel::ECC_WorldStatic,
+		CollisionParams);
+	return HitResult.ImpactPoint;
 }
 
 
-void UMonsterLegComponent::TimelineCallback()
+
+void UMonsterLegComponent::StartMovingLeg(const FVector HitLocation)
 {
-    TimelineValue = LegTimeline.GetPlaybackPosition();
+	StartPosition = CurrentPosition;
+	FinishPosition = HitLocation;
 
-    CurrentFloatTimelineValue = Curve->GetFloatValue(TimelineValue);
+	HighestPoint = FMath::Max(StartPosition.Z, FinishPosition.Z) + AddedHightStep;
 
-    float ZValue;
-    CalculateZValue(ZValue);
+	bMoving = true;
 
-    CurrentPosition = FMath::Lerp(
-        CurrentPosition,
-        FVector(GetCurrentValueForAxis(true), GetCurrentValueForAxis(false), ZValue),
-        LerpValue);
+	FTimerHandle StepHandler;
+	GetWorld()->GetTimerManager().SetTimer(StepHandler, this, &UMonsterLegComponent::StopMoving, StepTime, false);
 }
 
-void UMonsterLegComponent::TimelineFinished()
+void UMonsterLegComponent::StopMoving()
 {
-    bMoving = false;
-    EnemyMonsterPawn->LegHasMovedEventCaller(MonsterLegType);
+	bMoving = false;
+	CurrentStepTime = 0.f;
+	bHasReachedHighestPoint = false;
+	EnemyMonsterPawn->LegHasMovedEventCaller(LegIndex);
 }
 
-
-float UMonsterLegComponent::GetCurrentValueForAxis(const bool IsX)
+void UMonsterLegComponent::MoveLeg(float DeltaTime)
 {
-    const float MinValue = IsX ? StartPosition.X : StartPosition.Y;
-    const float MaxValue = IsX ? FinishPosition.X : FinishPosition.Y;
-    return FMath::GetMappedRangeValueClamped(
-        FVector2D(0, 1),
-        FVector2D(MinValue, MaxValue),
-        TimelineValue);
+	CurrentStepTime += DeltaTime;
+	CurrentPosition = FMath::Lerp(CurrentPosition, GetCurrentPositionOfStep(), LerpValue);
 }
 
 
-void UMonsterLegComponent::CalculateZValue(float& ZValue)
+FVector UMonsterLegComponent::GetCurrentPositionOfStep()
 {
-    ZValue = FMath::GetMappedRangeValueUnclamped(
-        FVector2D(0, 1),
-        FVector2D(LowestPointBetweenSteps, HighPointBetweenSteps),
-        CurrentFloatTimelineValue);
 
-    if (ZValue > HighPointBetweenSteps - 50.f)
-    {
-        // When leg has reached  the highest point between two legs
-        bHasReachedHighestPoint = true;
-    }
-    if (bHasReachedHighestPoint && ZValue < FinishPosition.Z)
-    {
-        ZValue = FinishPosition.Z;
-        // When leg has is has reached the highest point but finish point is higher, making sure that the leg is staying on that point 
-    }
-    if (!bHasReachedHighestPoint &&
-        ZValue < StartPosition.Z)
-    {
-        // Do not move if thew leg is below the lowest position until that positions is reached
-        ZValue = StartPosition.Z;
-    }
+
+	const float X = FMath::GetMappedRangeValueClamped(
+							FVector2D(0, StepTime),
+							FVector2D(StartPosition.X, FinishPosition.X),
+							CurrentStepTime);
+	const float Y = FMath::GetMappedRangeValueClamped(
+							FVector2D(0, StepTime),
+							FVector2D(StartPosition.Y, FinishPosition.Y),
+							CurrentStepTime);
+
+	// Z value defines depending if CurrentPosition.Z is higher of FinishPosition.Z
+	// The parabola of the step takes always StepTime seconds, so to get to the middle of the parabola, even if the leg should start on the higher ground, it takes StepTime/2
+	// Same goes when the FinishPosition is lower than StartPosition
+	//  CASE 1:
+	//
+	//						   HighestPoint
+	//				             ______
+	//          			   /       \
+	// 				          /         \
+	//         				 /           \
+	//				        /             \
+	//				       /               \
+	//     				  /                 \
+	// 	  FinishPosition /                   \ CurrentPosition
+	// -------------------------------------------------
+	//
+	//
+	// CASE 2:
+	//
+	//						   HighestPoint
+	//				             ______
+	//          			   /       \
+	// 				          /         \
+	//        FinishPosition /           \
+	//				      _____           \
+	//				     |     |           \
+	//     				 |     |            \
+	//                   |     |             \ CurrentPosition
+	// -------------------------------------------------
+	//
+	//
+	//  CASE 3:
+	//
+	//						   HighestPoint
+	//				             ______
+	//          			   /       \
+	// 				          /         \
+	//         				 /           \ CurrentPosition
+	//				        /            ____
+	//				       /           |     |
+	//     				  /            |     |
+	// 	  FinishPosition /             |     |
+	// -------------------------------------------------
+
+	if (CurrentPosition.Z > HighestPoint - 50.f)
+	{
+		bHasReachedHighestPoint = true;
+	}
+
+	const float Z = bHasReachedHighestPoint == false ?
+				 FMath::GetMappedRangeValueClamped(
+							FVector2D(0, StepTime / 2),
+							FVector2D(StartPosition.Z, HighestPoint),
+							CurrentStepTime) :
+				FMath::GetMappedRangeValueClamped(
+							FVector2D(StepTime / 2, StepTime),
+							FVector2D(HighestPoint, FinishPosition.Z),
+							CurrentStepTime);
+	return FVector(X, Y, Z);
+}
+
+
+
+
+void UMonsterLegComponent::DEBUG_DrawRaycastSphere()
+{
+	if(!bDrawDebug)
+	{
+		return;
+	}
+	DrawDebugSphere(GetWorld(),       // world
+					RaycastPosition,  // position
+					500.f,			  // radius
+					6,                // segments
+					FColor::Red, 	  // Color
+					false,			  // persistent lines
+					0.f,			  // life time
+					0,             	  // depth
+					150.f);			  // thicknes
+}
+
+void UMonsterLegComponent::DEBUG_DrawLineBetweenPoints(FVector& StartLocation, FVector& EndLocation)
+{
+	if(!bDrawDebug)
+	{
+		return;
+	}
+
+	DrawDebugLine
+	(
+		GetWorld(),			// world
+		StartLocation,		// start location
+		EndLocation,		// end location
+		FColor::Red,		// color
+		false,				// persistent lines
+		0.f,				// life time
+		0,					// depth
+		150.f 				// thicknes
+	);
 }
