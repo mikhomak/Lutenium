@@ -43,7 +43,7 @@ void APowerSystemMW::InitializeTowerFencse()
                 if(SpawnedFenceTower)
                 {
                     SpawnedFenceTower->AttachToComponent(MonsterMesh,
-                                                        FAttachmentTransformRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false),
+                                                        FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false),
                                                         ConstructSocketName(HightIndex, PositionIndex)); // Dynmaicly creates socket name
                     /* Setting monster params for the spawned towers*/
                     SpawnedFenceTower->MonsterPawn = MonsterPawn;
