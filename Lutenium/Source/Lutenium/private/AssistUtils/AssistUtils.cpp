@@ -95,7 +95,7 @@ AActor* FAssistUtils::RaycastForPlayer(const AActor* OwnerActor,
                                             const float RaycastRadius,
                                             FHitResult& HitResultOut)
 {
-    if(World)
+    if(World && EndLocation != FVector::ZeroVector)
     {
         FCollisionQueryParams Params;
         Params.AddIgnoredActor(OwnerActor);

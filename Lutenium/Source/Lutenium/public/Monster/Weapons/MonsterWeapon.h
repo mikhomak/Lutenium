@@ -233,6 +233,7 @@ public:
      * Virtual method, could be overrated
      * Being called in SetUpgradeWeapon
      */
+    UFUNCTION(BlueprintCallable, Category="Upgrade")
     virtual void SpecificUpgrade(int32 Level);
 
     /* Event is called on upgrade the weapon. Add SVX, VFX and so on in the BP.  */
@@ -242,7 +243,7 @@ public:
 public:
     FORCEINLINE void SetMonsterMesh(class USkeletalMeshComponent* Mesh) { MonsterMesh = Mesh; }
     FORCEINLINE void SetMonsterPawn(class AEnemyMonsterPawn* Pawn) { MonsterPawn = Pawn; }
-    FORCEINLINE void UpgradeWeapon() { LevelUpgrade++; OnUpgradeEvent(); }
+    FORCEINLINE void UpgradeWeapon() { LevelUpgrade++; OnUpgradeEvent(); SpecificUpgrade(LevelUpgrade) }
     FORCEINLINE void SetUpgradeWeapon(int32 Level) { LevelUpgrade = Level; if(Level > LevelUpgrade) { OnUpgradeEvent(); SpecificUpgrade(Level); } }
     FORCEINLINE int32 GetUpgradeWeapon() { return LevelUpgrade; }
 };

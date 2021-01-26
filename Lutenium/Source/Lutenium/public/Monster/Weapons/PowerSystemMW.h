@@ -12,7 +12,7 @@
  * Doesn't do much on its own
  * Doesn't have a mesh (it does, but it's empty)
  * What does it do:
- *      1) Initialize array of FenceTowers with correct indexes with APowerSystemMW::InitializeTowerFencse() on BeginPlay(Put that in BP)
+ *      1) Initialize array of FenceTowers with correct indexes with APowerSystemMW::InitializeTowerFencse() on BeginPlay of the EnemyMonsterPawn.h
  *      2) Attach them to the mesh via TowerFenceSocketFormat
  *      3) On DoAttack() from the weapon, shoots the PowerProjectile from every available tower via AFenceTowerMW::ExecuteAttack()
  *      4) Has a new method APowerSystemMW::ActivateBeamDefense() which activates the beam defense from all available PARENT fence towers(@see FenceTower.h)
@@ -38,6 +38,9 @@ public:
     /** Before attack event */
     virtual void BeforeAttackEvent_Implementation() override;
 
+    /* Creates beams between different hights  */
+    virtual void SpecificUpgrade(int32 Level) override;
+
     // ------------------------------------------------------------------
 	// Fence Towers
 	// ------------------------------------------------------------------
@@ -45,7 +48,6 @@ public:
     /**
      * Spawn all the tower fences and add them to arrays
      * Usually it would be in BeginPlay, but because this actor is spawned, we have to directly use this function after spawnging it
-     * Put it in BP
      */
     UFUNCTION(BlueprintCallable, Category="Fence Towers")
     void InitializeTowerFencse();
@@ -90,10 +92,6 @@ protected:
      */
     UFUNCTION(BlueprintCallable, Category="Fence Towers")
     void SafeActiveBeam(bool bActivate, class AFenceTowerMW* FenceTowerStart, bool bLeft);
-
-    // ------------------------------------------------------------------
-	// Fence Towers
-	// ------------------------------------------------------------------
 
     /**
      * Format of the string to construct the name to find a socket for fence tower depending on the hight and position indexes
@@ -161,4 +159,19 @@ protected:
     UFUNCTION(BlueprintCallable)
     FName ConstructSocketName(int32 HightIndex, int32 PositionIndex);
 
+    /**
+     * Helper method to add to the parent tower's BeamFenceTowers array two neighbors
+     * Doesn't do anything if Parent is not vallid
+     * Doesn't add new neighors if they are not valid
+     * @param ParentHightIndex - Hight Index of the parent tower to add new neighbors to
+     * @param ParentPositionIndex - Position Index of the parent tower to add new neighbors to
+     * @param NeighborsHightIndex - Hight Index of the neighbors
+     * @param LeftNeighborPositionIndex - Position Index of the left neighbor
+     * @param RightNeighborPositionIndex - Position Index of the right neighbor
+     */
+    void SaveAddNewNeighborsToTheParentTower(int ParentHightIndex,
+                                             int ParentPositionIndex,
+                                             int NeighborsHightIndex,
+                                             int LeftNeighborPositionIndex,
+                                             int RightNeighborPositionIndex);
 };

@@ -41,40 +41,41 @@ void AFenceTowerMW::Tick(float DeltaTime)
     if(bParentFenceTower && bActiveBeam &&
        (PlayerEmpMovementEffect == nullptr || !PlayerEmpMovementEffect->Active))
     {
-        FHitResult Hit;
-        FVector RightNeighborLocation = RightNeighborFenceTower != nullptr ? RightNeighborFenceTower->GetActorLocation() : FVector::ZeroVector;
-        FVector LeftNeighborLocation = LeftNeighborFenceTower != nullptr ? LeftNeighborFenceTower->GetActorLocation() : FVector::ZeroVector;
-
-        /* Racyasting for both neighbors towers, finding for the player or the missile  */
-        AActor* FoundActor = FAssistUtils::RaycastForPlayer(this, GetWorld(),
-                                                          GetActorLocation(),
-                                                          RightNeighborLocation, LeftNeighborLocation,
-                                                          BeamRadius, Hit);
-
-        if(FoundActor == nullptr)
+        for(auto NeighborTower : BeamFenceTowers)
         {
+            FHitResult Hit;
+            FVector NeighborLocation = NeighborTower != nullptr ? NeighborTower->GetActorLocation() : FVector::ZeroVector;
+
+            /* Racyasting for both neighbors towers, finding for the player or the missile  */
+            AActor* FoundActor = FAssistUtils::RaycastForPlayer(this, GetWorld(),
+                                                              GetActorLocation(),
+                                                              NeighborLocation,
+                                                              BeamRadius, Hit);
+
+            if(FoundActor == nullptr)
+            {
+                bIsPlayerInBeam = false;
+                return;
+            }
+
+            /* Handles player */
+            APlayerPawn* Player = Cast<APlayerPawn>(FoundActor);
+            if(Player)
+            {
+                HandlePlayerBeam(Player);
+                return;
+            }
+
             bIsPlayerInBeam = false;
-            return;
+
+            /* Handles missile */
+            AMissile* Missile = Cast<AMissile>(FoundActor);
+            if(Missile)
+            {
+                HandleMissileBeam(Missile);
+                return;
+            }
         }
-
-        /* Handles player */
-        APlayerPawn* Player = Cast<APlayerPawn>(FoundActor);
-        if(Player)
-        {
-            HandlePlayerBeam(Player);
-            return;
-        }
-
-        bIsPlayerInBeam = false;
-
-        /* Handles missile */
-        AMissile* Missile = Cast<AMissile>(FoundActor);
-        if(Missile)
-        {
-            HandleMissileBeam(Missile);
-            return;
-        }
-
     }
 }
 

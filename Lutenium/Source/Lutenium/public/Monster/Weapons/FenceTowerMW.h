@@ -16,6 +16,9 @@
  * Parent towers are 1, 2 and 5
  * Other towers don't create the beam, they are used as a location for parents' beams
  * If one of the tower gets destroyed, do not create beam to that tower (if it was a parent tower, then it just stops creating towers)
+ * On the upgrade two things happen:
+ *      1) Beams now go also between high indexes
+ *      2) Shoots two projectiles from each tower with a slight delay
  * @see PowerSystemMW.h
  * @see PowerProjectile.h
  */
@@ -53,10 +56,10 @@ public:
      *
      *                  FRONT  MIDDLE  BACK
      *
-     *                    /2\    |    /2\
+     *                    /1\    |    /1\
      *                   /   \   |   /   \
      *                  /     \  |  /     \
-     *                 1     MONSTER       1
+     *                 /     MONSTER       \
      *                /          |          \
      *               /           |           \
      *              0            |            0
@@ -115,21 +118,15 @@ public:
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Beam")
     bool bParentFenceTower;
 
-    /**
-     * Left Neighbor of the tower
-     * Used for the vfx in BP(setting target beam each tick)
-     * @warning NULL for even position indexes!!!
-     */
-    UPROPERTY(BlueprintReadWrite, Category="Beam")
-    class AFenceTowerMW* LeftNeighborFenceTower;
 
     /**
-     * Right Neighbor of the tower
-     * Used for the vfx in BP(setting target beam each tick)
-     * @warning NULL for even position indexes!!!
+     * Towers to create beams to
+     * Valid only for the parent towers
+     * At the begging only two adjustent towers are added
+     * On the upgrade also adds towers from another hight index
      */
     UPROPERTY(BlueprintReadWrite, Category="Beam")
-    class AFenceTowerMW* RightNeighborFenceTower;
+    TArray<class AFenceTowerMW*> BeamFenceTowers;
 
     /** The radius of the beam and the raycast */
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Beam")

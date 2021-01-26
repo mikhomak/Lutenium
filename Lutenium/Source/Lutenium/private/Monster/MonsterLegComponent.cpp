@@ -90,12 +90,20 @@ void UMonsterLegComponent::RaycastLeg()
 FVector UMonsterLegComponent::Raycast(FVector& StartPos, FVector& EndPos, FHitResult& HitResult,
 										   FCollisionQueryParams& CollisionParams)
 {
-	GetWorld()->LineTraceSingleByChannel(
+	/*GetWorld()->LineTraceSingleByChannel(
 		HitResult,
 		StartPos,
 		EndPos,
 		ECollisionChannel::ECC_WorldStatic,
-		CollisionParams);
+		CollisionParams);*/
+	GetWorld()->SweepSingleByObjectType(
+                                   HitResult,
+                                   StartPos,
+                                   EndPos,
+                                   FQuat::Identity,
+                                   ECollisionChannel::ECC_WorldStatic,
+                                   FCollisionShape::MakeSphere(4000.f),
+                                   CollisionParams);
 	return HitResult.ImpactPoint;
 }
 
