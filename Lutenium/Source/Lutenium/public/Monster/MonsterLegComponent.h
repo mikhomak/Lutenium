@@ -134,25 +134,6 @@ public:
 	FVector GetCurrentPositionOfStep();
 
 
-	// -----------------------------------------------------------------------------------------------------------
-	// Joint raycast
-	// -----------------------------------------------------------------------------------------------------------
-
-	/**
-	 * After main raycast to find RayCastPosition, makes another raycast to find if there is something blocking from this socket to SecondJointSocket
-	 * If there is a blocking hit, sets RaycastPosition to this hit location
-	 * It was made to prevent clipping the leg through objects
-	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Joint")
-	FName FirstJointSocket;
-
-	/**
-	 * Second joint to raycast from the FirstJointSocket
-	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Joint")
-	FName SecondJointSocket;
-
-
 	/**
 	 * After succefuly raycasting for the position, checks if there is something blocking between two joints
 	 */

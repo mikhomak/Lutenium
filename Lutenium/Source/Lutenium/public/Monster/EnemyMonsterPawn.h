@@ -253,9 +253,6 @@ protected:
 	// Body Movement
 	// ------------------------------------------------------------------
 
-	UFUNCTION(BlueprintCallable)
-	bool RaycastLegJoints();
-
 	UPROPERTY(EditDefaultsOnly, Category = "Body")
 	FName BodySocketName;
 

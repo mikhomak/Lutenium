@@ -7,7 +7,19 @@
 #include "GameFramework/Actor.h"
 #include "PowerSystemMW.generated.h"
 
-
+/**
+ * Weapon that has fence towers
+ * Doesn't do much on its own
+ * Doesn't have a mesh (it does, but it's empty)
+ * What does it do:
+ *      1) Initialize array of FenceTowers with correct indexes with APowerSystemMW::InitializeTowerFencse() on BeginPlay(Put that in BP)
+ *      2) Attach them to the mesh via TowerFenceSocketFormat
+ *      3) On DoAttack() from the weapon, shoots the PowerProjectile from every available tower via AFenceTowerMW::ExecuteAttack()
+ *      4) Has a new method APowerSystemMW::ActivateBeamDefense() which activates the beam defense from all available PARENT fence towers(@see FenceTower.h)
+ *      5) On APowerSystemMW::DeactivateBeamDefense(), deactivates the beam in every parent tower
+ * @see FenceTower.h
+ * @see MonsterWeapon.h
+ */
 UCLASS()
 class LUTENIUM_API APowerSystemMW : public AMonsterWeapon
 {
@@ -33,6 +45,7 @@ public:
     /**
      * Spawn all the tower fences and add them to arrays
      * Usually it would be in BeginPlay, but because this actor is spawned, we have to directly use this function after spawnging it
+     * Put it in BP
      */
     UFUNCTION(BlueprintCallable, Category="Fence Towers")
     void InitializeTowerFencse();
@@ -111,6 +124,35 @@ protected:
     /**
      * Class of FenceTower that will be spawned
      * Should be BP child class of AFenceTowerMW
+     * The index are:
+     * POSITION INDEXES:
+     *
+     *
+     *      LEFT    0---------------------1  RIGHT
+     *              |                     |
+     *              |                     |
+     *              2       MONSTER       3
+     *              |                     |
+     *              |                     |
+     *              4---------------------5
+     *
+     * 2, 1 and 5 are parent towers that create beans to other towers
+     *
+     * HIGH INDEXES:
+     *
+     *                 THOSE ARE THE LEGS OKAY?
+     *
+     *
+     *                  FRONT  MIDDLE  BACK
+     *
+     *                    /2\    |    /2\
+     *                   /   \   |   /   \
+     *                  /     \  |  /     \
+     *                 1     MONSTER       1
+     *                /          |          \
+     *               /           |           \
+     *              0            |            0
+     *---------------------------------------------- FLOOR
      */
     UPROPERTY(EditDefaultsOnly, Category = "Fence Towers Initialization")
     TSubclassOf<class AFenceTowerMW> FenceTowerClass;

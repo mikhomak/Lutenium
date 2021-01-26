@@ -6,7 +6,19 @@
 #include "GameFramework/Actor.h"
 #include "FenceTowerMW.generated.h"
 
-
+/**
+ * Not a weapon by itself, it is the part of PowerSystem
+ * Does two things:
+ *      1) Create defense beam to other towers if it's a parent tower
+ *      2) Shoots the projectile that follows the player
+ * Tower is situated on the mesh, and it has indexes to determine on wich socket
+ * Parent towers are the ones who create beam to other towers(we don't need to create a beam from each tower to cover every beam)
+ * Parent towers are 1, 2 and 5
+ * Other towers don't create the beam, they are used as a location for parents' beams
+ * If one of the tower gets destroyed, do not create beam to that tower (if it was a parent tower, then it just stops creating towers)
+ * @see PowerSystemMW.h
+ * @see PowerProjectile.h
+ */
 UCLASS()
 class LUTENIUM_API AFenceTowerMW : public AMonsterWeapon
 {
@@ -34,14 +46,37 @@ public:
 
     /**
      * Index of the hight level on the monster leg (See sockets of the mesh)
-     * The defensive beam should only be between the towers on the same level(debatable but for now that)
+     * The defensive beam should only be between the towers on the same level
+     *
+     *                 THOSE ARE THE LEGS OKAY?
+     *
+     *
+     *                  FRONT  MIDDLE  BACK
+     *
+     *                    /2\    |    /2\
+     *                   /   \   |   /   \
+     *                  /     \  |  /     \
+     *                 1     MONSTER       1
+     *                /          |          \
+     *               /           |           \
+     *              0            |            0
+     *---------------------------------------------- FLOOR
     */
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Index")
     int32 HightIndex;
 
     /**
-     * Index of the position on the level on each leg(1 to 4)
+     * Index of the position on the level on each leg(0 to 5)
      * Makes easier to raycast from tower to tower (we only have to use 2 towers on the same hight level to coverage all the defensive)
+      *
+     *      LEFT    0---------------------1  RIGHT
+     *              |                     |
+     *              |                     |
+     *              2       MONSTER       3
+     *              |                     |
+     *              |                     |
+     *              4---------------------5
+     *
      */
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Index")
     int32 PositionIndex;
@@ -65,7 +100,17 @@ public:
 
     /**
      * Indicates whether this tower should create beam to its neighbors(raycasting for the player and creating vfx)
-     * Should be true if the position index is 0 or 3
+     * Should be true if the position index is 1, 2 or 5
+     * Parents towers are the ones that create beam to another towers
+     *
+     *      LEFT    0---------------------1  RIGHT
+     *              |                     |
+     *              |                     |
+     *              2       MONSTER       3
+     *              |                     |
+     *              |                     |
+     *              4---------------------5
+     *
      */
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Beam")
     bool bParentFenceTower;

@@ -213,10 +213,6 @@ void AEnemyMonsterPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	//bIsBodyMovingUp = RaycastLegJoints();
-	if (bIsBodyMovingUp)
-	{
-		PawnMovement->AddInputVector(FVector::UpVector, true);
-	}
 }
 
 /*
@@ -233,29 +229,6 @@ void AEnemyMonsterPawn::LegHasMovedEventCaller(const int32 LegIndex)
 	//LegHasMoved(MonsterLeg);
 }
 
-bool AEnemyMonsterPawn::RaycastLegJoints()
-{
-	FHitResult HitResult;
-	FCollisionQueryParams CollisionParams;
-	CollisionParams.AddIgnoredActor(this);
-	for (UMonsterLegComponent* LegComp : Legs)
-	{
-		const FVector FirstJoint = MonsterMesh->GetSocketLocation(LegComp->FirstJointSocket);
-		const FVector SecondJoint = MonsterMesh->GetSocketLocation(LegComp->SecondJointSocket);
-
-		GetWorld()->LineTraceSingleByChannel(
-			HitResult,
-			FirstJoint,
-			SecondJoint,
-			ECollisionChannel::ECC_WorldStatic,
-			CollisionParams);
-		if (HitResult.bBlockingHit)
-		{
-			return true;
-		}
-	}
-	return false;
-}
 
 void AEnemyMonsterPawn::BodyTimelineMovement()
 {
