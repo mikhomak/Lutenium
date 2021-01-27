@@ -243,7 +243,7 @@ public:
 public:
     FORCEINLINE void SetMonsterMesh(class USkeletalMeshComponent* Mesh) { MonsterMesh = Mesh; }
     FORCEINLINE void SetMonsterPawn(class AEnemyMonsterPawn* Pawn) { MonsterPawn = Pawn; }
-    FORCEINLINE void UpgradeWeapon() { LevelUpgrade++; OnUpgradeEvent(); SpecificUpgrade(LevelUpgrade) }
+    FORCEINLINE void UpgradeWeapon() { LevelUpgrade++; OnUpgradeEvent(); SpecificUpgrade(LevelUpgrade); }
     FORCEINLINE void SetUpgradeWeapon(int32 Level) { LevelUpgrade = Level; if(Level > LevelUpgrade) { OnUpgradeEvent(); SpecificUpgrade(Level); } }
     FORCEINLINE int32 GetUpgradeWeapon() { return LevelUpgrade; }
 };
