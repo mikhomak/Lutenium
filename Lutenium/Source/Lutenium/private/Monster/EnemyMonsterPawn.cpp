@@ -22,7 +22,7 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
 
 	/* Setting the attachment rules */
 	const FAttachmentTransformRules AttachmentTransformRules = FAttachmentTransformRules(
-		EAttachmentRule::KeepRelative, true);
+		EAttachmentRule::KeepRelative, false);
 
 	/* Setting the root component as a sphere */
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("RootComponent"));

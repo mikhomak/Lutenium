@@ -13,6 +13,12 @@ class ALuteniumGameMode : public AGameModeBase
 
 public:
 	ALuteniumGameMode();
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Debug")
+	bool bDrawTraceDebug;
+
+	virtual void BeginPlay() override;
+
 };
 
 
