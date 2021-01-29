@@ -19,8 +19,10 @@
 AFenceTowerMW::AFenceTowerMW() : AMonsterWeapon()
 {
     /* Creating arrow projectile */
+    const FAttachmentTransformRules AttachmentTransformRules = FAttachmentTransformRules(
+        EAttachmentRule::KeepRelative, false);
     ArrowProjectile = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow Projectile"));
-    ArrowProjectile ->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
+    ArrowProjectile ->AttachToComponent(WeaponMesh, AttachmentTransformRules);
 
     Health = 100.f;
     BeamRadius = 2000.f;

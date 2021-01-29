@@ -22,8 +22,10 @@ APlayerPawn::APlayerPawn()
     PlaneBox->SetCollisionProfileName(TEXT("Player"));
     RootComponent = PlaneBox;
 
+    const FAttachmentTransformRules AttachmentTransformRules = FAttachmentTransformRules(
+        EAttachmentRule::KeepRelative, false);
     PlaneMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Plane Mesh"));
-    PlaneMesh->AttachToComponent(PlaneBox, FAttachmentTransformRules::KeepWorldTransform);
+    PlaneMesh->AttachToComponent(PlaneBox, AttachmentTransformRules);
 
     SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
     SpringArm->SetupAttachment(RootComponent); // Attach SpringArm to RootComponent

@@ -12,10 +12,12 @@
 AFanMW::AFanMW() : AMonsterWeapon()
 {
     /* Setting up mesh collisions */
+    const FAttachmentTransformRules AttachmentTransformRules = FAttachmentTransformRules(
+        EAttachmentRule::KeepRelative, false);
     ForwardWindCollision = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Forward wind mesh"));
     BackwardWindCollision = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Backward wind mesh"));
-    ForwardWindCollision->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
-    BackwardWindCollision->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
+    ForwardWindCollision->AttachToComponent(WeaponMesh, AttachmentTransformRules);
+    BackwardWindCollision->AttachToComponent(WeaponMesh, AttachmentTransformRules);
     ForwardWindCollision->SetCollisionProfileName(TEXT("OverlapAll"));
     BackwardWindCollision->SetCollisionProfileName(TEXT("OverlapAll"));
 

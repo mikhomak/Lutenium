@@ -18,12 +18,14 @@
 ATrafficLightMW::ATrafficLightMW() : AMonsterWeapon()
 {
     /* Creates two more hurtboxes*/
+    const FAttachmentTransformRules AttachmentTransformRules = FAttachmentTransformRules(
+        EAttachmentRule::KeepRelative, false);
     HurtboxRight = CreateDefaultSubobject<USphereComponent>(TEXT("Hurt box right"));
-    HurtboxRight->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
+    HurtboxRight->AttachToComponent(WeaponMesh, AttachmentTransformRules);
     HurtboxRight->SetCollisionProfileName(TEXT("MonsterWPHurtbox"));
 
     HurtboxLeft = CreateDefaultSubobject<USphereComponent>(TEXT("Hurt box left"));
-    HurtboxLeft->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
+    HurtboxLeft->AttachToComponent(WeaponMesh, AttachmentTransformRules);
     HurtboxLeft->SetCollisionProfileName(TEXT("MonsterWPHurtbox"));
 
     Health = 100.f;
@@ -36,9 +38,9 @@ ATrafficLightMW::ATrafficLightMW() : AMonsterWeapon()
     RightLightMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Right Light Mesh"));
     CenterLightMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Center Light Mesh"));
 
-    LeftLightMesh->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
-    RightLightMesh->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
-    CenterLightMesh->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
+    LeftLightMesh->AttachToComponent(WeaponMesh, AttachmentTransformRules);
+    RightLightMesh->AttachToComponent(WeaponMesh, AttachmentTransformRules);
+    CenterLightMesh->AttachToComponent(WeaponMesh, AttachmentTransformRules);
 
     MissileThrowForce = 6000.f;
     PlayerDragForce = 7000.f;

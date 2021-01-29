@@ -13,9 +13,12 @@ AMonsterWeapon::AMonsterWeapon()
 
     WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
     RootComponent = WeaponMesh;
+
     // set the radius of the hurtbox in bp
+    const FAttachmentTransformRules AttachmentTransformRules = FAttachmentTransformRules(
+        EAttachmentRule::KeepRelative, false);
     Hurtbox = CreateDefaultSubobject<USphereComponent>(TEXT("Hurt box"));
-    Hurtbox->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
+    Hurtbox->AttachToComponent(WeaponMesh, AttachmentTransformRules);
     Hurtbox->SetCollisionProfileName(TEXT("MonsterWPHurtbox"));
     PrimaryActorTick.bCanEverTick = true;
 

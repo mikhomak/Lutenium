@@ -12,8 +12,10 @@ APowerProjectile::APowerProjectile()
 	MainSphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("Main Sphere"));
     RootComponent = MainSphereComp;
 
+    const FAttachmentTransformRules AttachmentTransformRules = FAttachmentTransformRules(
+        EAttachmentRule::KeepRelative, false);
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Projectlie mesh"));
-    ProjectileMesh->AttachToComponent(MainSphereComp, FAttachmentTransformRules::KeepWorldTransform);
+    ProjectileMesh->AttachToComponent(MainSphereComp, AttachmentTransformRules);
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile movement"));
     ProjectileMovement->bRotationFollowsVelocity = true;

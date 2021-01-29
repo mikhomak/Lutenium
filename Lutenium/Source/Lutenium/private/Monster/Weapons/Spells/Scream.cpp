@@ -10,11 +10,13 @@
 
 AScream::AScream()
 {
+    const FAttachmentTransformRules AttachmentTransformRules = FAttachmentTransformRules(
+        EAttachmentRule::KeepRelative, false);
     MainSphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("Main Sphere"));
     RootComponent = MainSphereComp;
 
     WaveMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Wave Mesh"));
-    WaveMesh->AttachToComponent(MainSphereComp, FAttachmentTransformRules::KeepWorldTransform);
+    WaveMesh->AttachToComponent(MainSphereComp, AttachmentTransformRules);
     WaveMesh->SetGenerateOverlapEvents(true);
 
     WavesLifeSpan = 10.f;

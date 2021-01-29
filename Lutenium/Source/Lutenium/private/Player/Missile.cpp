@@ -18,15 +18,17 @@ AMissile::AMissile()
     SphereComponent->SetSimulatePhysics(false);
     RootComponent = SphereComponent;
 
+    const FAttachmentTransformRules AttachmentTransformRules = FAttachmentTransformRules(
+        EAttachmentRule::KeepRelative, false);
     MissileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Missile Mesh"));
-    MissileMesh->AttachToComponent(SphereComponent, FAttachmentTransformRules::KeepWorldTransform);
+    MissileMesh->AttachToComponent(SphereComponent, AttachmentTransformRules);
 
     ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Movement Component"));
     ProjectileMovement->bRotationFollowsVelocity = true;
     ProjectileMovement->ProjectileGravityScale = 0.f;
 
     RadialForceComponent = CreateDefaultSubobject<URadialForceComponent>(TEXT("Radial Force component"));
-    RadialForceComponent->AttachToComponent(SphereComponent, FAttachmentTransformRules::KeepWorldTransform);
+    RadialForceComponent->AttachToComponent(SphereComponent, AttachmentTransformRules);
     RadialForceComponent->bIgnoreOwningActor = true;
     DefecteedGravityForceAmount = -50000000.f;
     DefecteedGravityRadius = 2000.f;

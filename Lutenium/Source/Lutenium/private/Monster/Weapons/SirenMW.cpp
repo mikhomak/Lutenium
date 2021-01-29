@@ -13,9 +13,11 @@
 
 ASirenMW::ASirenMW() : AMonsterWeapon()
 {
+    const FAttachmentTransformRules AttachmentTransformRules = FAttachmentTransformRules(
+        EAttachmentRule::KeepRelative, false);
     Health = 100.f;
     SirenTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("Siren trigger"));
-    SirenTrigger->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepWorldTransform);
+    SirenTrigger->AttachToComponent(WeaponMesh, AttachmentTransformRules);
 
     WeaponType = EMonsterWeaponType::Siren;
 

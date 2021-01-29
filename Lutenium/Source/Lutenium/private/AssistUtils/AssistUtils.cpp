@@ -99,6 +99,7 @@ AActor* FAssistUtils::RaycastForPlayer(const AActor* OwnerActor,
     {
         FCollisionQueryParams Params;
         Params.AddIgnoredActor(OwnerActor);
+        Params.bIgnoreBlocks = true;
 
         FCollisionObjectQueryParams PlayerObjectQuery(ECC_Player);
         PlayerObjectQuery.AddObjectTypesToQuery(ECC_PlayerMissile);
