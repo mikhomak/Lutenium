@@ -54,10 +54,11 @@ void AFenceTowerMW::Tick(float DeltaTime)
                                                               GetActorLocation(),
                                                               NeighborLocation,
                                                               BeamRadius, Hit);
+
             if(FoundActor == nullptr)
             {
                 bIsPlayerInBeam = false;
-                break;
+                continue;
             }
 
 
@@ -65,7 +66,7 @@ void AFenceTowerMW::Tick(float DeltaTime)
             APlayerPawn* Player = Cast<APlayerPawn>(FoundActor);
             if(Player)
             {
-                PlayerHasEnteredTheBeamEven(Player);
+                PlayerHasEnteredTheBeamEven(FoundActor);
                 HandlePlayerBeam(Player);
                 return;
             }
