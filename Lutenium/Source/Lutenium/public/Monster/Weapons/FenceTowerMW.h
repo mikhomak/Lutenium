@@ -209,6 +209,11 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Beam")
     void HandleMissileBeam(class AMissile* Missile);
 
+    /**
+     * Event that gets fired when player has entered the active beam
+     */
+    UFUNCTION(BlueprintImplementableEvent, Category = "Beam")
+    void PlayerHasEnteredTheBeamEven(const class AActor* Actor);
 
     // -----------------------------------------------------------------------------------------------------------
 	// Projectile

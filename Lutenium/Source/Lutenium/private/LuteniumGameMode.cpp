@@ -12,5 +12,8 @@ ALuteniumGameMode::ALuteniumGameMode()
 void ALuteniumGameMode::BeginPlay()
 {
    	Super::BeginPlay();
-	GetWorld()->bDebugDrawAllTraceTags = bDrawTraceDebug;
+	if(bDrawCustomChangelTrace_DEBUG)
+	{
+		GetWorld()->DebugDrawTraceTag = "DEBUG_MonsterTrace";
+	}
 }

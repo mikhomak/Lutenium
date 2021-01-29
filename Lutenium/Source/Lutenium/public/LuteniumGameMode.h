@@ -15,7 +15,7 @@ public:
 	ALuteniumGameMode();
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Debug")
-	bool bDrawTraceDebug;
+	bool bDrawCustomChangelTrace_DEBUG;
 
 	virtual void BeginPlay() override;
 

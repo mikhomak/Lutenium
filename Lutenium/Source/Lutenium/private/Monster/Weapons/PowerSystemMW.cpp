@@ -73,7 +73,7 @@ void APowerSystemMW::InitializeTowerFencse()
                         SpawnedFenceTower->bParentFenceTower = true;
                     }
                     /* Adds spawned tower to the array of the current hight */
-                    FenceTowers[HightIndex].Add(SpawnedFenceTower);
+                    FenceTowers[HightIndex].Insert(SpawnedFenceTower, PositionIndex);
                 }
             }
             /* Setting the neighbors for the parent towers */

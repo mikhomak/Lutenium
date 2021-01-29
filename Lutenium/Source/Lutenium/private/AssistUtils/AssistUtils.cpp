@@ -99,8 +99,7 @@ AActor* FAssistUtils::RaycastForPlayer(const AActor* OwnerActor,
     {
         FCollisionQueryParams Params;
         Params.AddIgnoredActor(OwnerActor);
-        Params.bIgnoreBlocks = true;
-
+        Params.TraceTag = "DEBUG_MonsterTrace";
         FCollisionObjectQueryParams PlayerObjectQuery(ECC_Player);
         PlayerObjectQuery.AddObjectTypesToQuery(ECC_PlayerMissile);
 

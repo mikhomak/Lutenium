@@ -12,6 +12,7 @@
 #include "Monster/Weapons/WeaponsUtils/MonsterWeaponType.h"
 #include "Monster/Weapons/WeaponsUtils/FenceTower2DArray.h"
 #include "AssistUtils/AssistUtils.h"
+#include "DrawDebugHelpers.h"
 #include "Math/Vector.h"
 #include "Components/ArrowComponent.h"
 
@@ -53,17 +54,18 @@ void AFenceTowerMW::Tick(float DeltaTime)
                                                               GetActorLocation(),
                                                               NeighborLocation,
                                                               BeamRadius, Hit);
-
             if(FoundActor == nullptr)
             {
                 bIsPlayerInBeam = false;
-                return;
+                break;
             }
+
 
             /* Handles player */
             APlayerPawn* Player = Cast<APlayerPawn>(FoundActor);
             if(Player)
             {
+                PlayerHasEnteredTheBeamEven(Player);
                 HandlePlayerBeam(Player);
                 return;
             }

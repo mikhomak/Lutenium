@@ -42,6 +42,11 @@ public:
     {
         Array.Empty();
     }
+
+    void Insert(class AFenceTowerMW* FenceTower, int Index)
+    {
+        Array.Insert(FenceTower, Index);
+    }
 };
 
 /** CREDITS - https://answers.unrealengine.com/questions/551199/dynamic-2d-array-using-tarray.html */
