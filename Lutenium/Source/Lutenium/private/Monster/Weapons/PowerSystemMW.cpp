@@ -278,7 +278,7 @@ void APowerSystemMW::SaveAddNewNeighborsToTheParentTower(int ParentHightIndex,
                                          int LeftNeighborPositionIndex,
                                          int RightNeighborPositionIndex)
 {
-    if(FenceTowers[ParentHightIndex].IsValidIndex(ParentPositionIndex))
+    if(FenceTowers[ParentHightIndex].IsValidIndex(ParentPositionIndex) && FenceTowers[ParentHightIndex][ParentPositionIndex])
     {
         if(FenceTowers[NeighborsHightIndex].IsValidIndex(LeftNeighborPositionIndex))
         {
