@@ -32,6 +32,7 @@ AFenceTowerMW::AFenceTowerMW() : AMonsterWeapon()
     BeamEmpForce = 80.f;
 
     WeaponType = EMonsterWeaponType::FenceTower;
+    ActiveTower = true;
 }
 
 
@@ -47,7 +48,7 @@ void AFenceTowerMW::Tick(float DeltaTime)
         for(auto NeighborTower : BeamFenceTowers)
         {
             FHitResult Hit;
-            FVector NeighborLocation = NeighborTower != nullptr ? NeighborTower->GetActorLocation() : FVector::ZeroVector;
+            FVector NeighborLocation = NeighborTower != nullptr ? NeighborTower->ArrowProjectile->GetComponentLocation() : FVector::ZeroVector;
 
             /* Racyasting for both neighbors towers, finding for the player or the missile  */
             AActor* FoundActor = FAssistUtils::RaycastForPlayer(this, GetWorld(),
@@ -148,6 +149,7 @@ void AFenceTowerMW::Die()
 
     /* Disabling defense beam in case it was active  */
     bActiveBeam = false;
+    ActiveTower = false;
     Destroy();
 
 }

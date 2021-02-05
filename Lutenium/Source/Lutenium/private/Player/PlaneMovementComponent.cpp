@@ -214,9 +214,19 @@ void UPlaneMovementComponent::CalculateAerodynamic(float DeltaTime)
     const FVector UpVector = PlayerPawn->GetActorUpVector();
     Velocity.Normalize();
     const float DotProduct = FVector::DotProduct(UpVector, Velocity);
+
+
     if (DotProduct < 0)
     {
-        PlayerBox->AddForce(Velocity * DotProduct * AerodynamicMultiplier, FName(), true);
+        // The greater our speed, the greatere the aerodynamic effect
+        const FVector AppliedAerodynamic = Velocity * DotProduct * AerodynamicMultiplier *
+        (
+            (CurrentAcceleration - MinSpeed)
+                        /
+            (MaxSpeed - MinSpeed)
+        ); // Maping current velocity value between 0 and 1
+
+        PlayerBox->AddForce(AppliedAerodynamic, FName(), true);
     }
     HasDotChangedEventCaller(DotProduct);
 }

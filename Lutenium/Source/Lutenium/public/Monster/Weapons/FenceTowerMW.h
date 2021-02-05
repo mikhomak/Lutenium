@@ -84,6 +84,10 @@ public:
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Index")
     int32 PositionIndex;
 
+    /** Indactes whenever this tower is active or going to be destroyed */
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Index")
+    bool ActiveTower;
+
     // -----------------------------------------------------------------------------------------------------------
 	// Beam
     // -----------------------------------------------------------------------------------------------------------

@@ -208,6 +208,7 @@ protected:
     UPROPERTY(Category = Control, EditDefaultsOnly)
     float AerodynamicMultiplier;
 
+    UPROPERTY(BlueprintReadOnly, Category = "Physics")
     float Dot;
 
     void AddGravityForce(float DeltaTime) const;
