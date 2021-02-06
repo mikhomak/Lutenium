@@ -32,7 +32,7 @@ AFenceTowerMW::AFenceTowerMW() : AMonsterWeapon()
     BeamEmpForce = 80.f;
 
     WeaponType = EMonsterWeaponType::FenceTower;
-    ActiveTower = true;
+    bIsActiveTower = true;
 }
 
 
@@ -47,39 +47,46 @@ void AFenceTowerMW::Tick(float DeltaTime)
     {
         for(auto NeighborTower : BeamFenceTowers)
         {
-            FHitResult Hit;
-            FVector NeighborLocation = NeighborTower != nullptr ? NeighborTower->ArrowProjectile->GetComponentLocation() : FVector::ZeroVector;
-
-            /* Racyasting for both neighbors towers, finding for the player or the missile  */
-            AActor* FoundActor = FAssistUtils::RaycastForPlayer(this, GetWorld(),
-                                                              GetActorLocation(),
-                                                              NeighborLocation,
-                                                              BeamRadius, Hit);
-
-            if(FoundActor == nullptr)
+            if(NeighborTower)
             {
+                if(NeighborTower->bIsActiveTower == false)
+                {
+                    return;
+                }
+                FHitResult Hit;
+                FVector NeighborLocation = NeighborTower != nullptr ? NeighborTower->ArrowProjectile->GetComponentLocation() : FVector::ZeroVector;
+
+                /* Racyasting for both neighbors towers, finding for the player or the missile  */
+                AActor* FoundActor = FAssistUtils::RaycastForPlayer(this, GetWorld(),
+                                                                  GetActorLocation(),
+                                                                  NeighborLocation,
+                                                                  BeamRadius, Hit);
+
+                if(FoundActor == nullptr)
+                {
+                    bIsPlayerInBeam = false;
+                    continue;
+                }
+
+
+                /* Handles player */
+                APlayerPawn* Player = Cast<APlayerPawn>(FoundActor);
+                if(Player)
+                {
+                    PlayerHasEnteredTheBeamEven(FoundActor);
+                    HandlePlayerBeam(Player);
+                    return;
+                }
+
                 bIsPlayerInBeam = false;
-                continue;
-            }
 
-
-            /* Handles player */
-            APlayerPawn* Player = Cast<APlayerPawn>(FoundActor);
-            if(Player)
-            {
-                PlayerHasEnteredTheBeamEven(FoundActor);
-                HandlePlayerBeam(Player);
-                return;
-            }
-
-            bIsPlayerInBeam = false;
-
-            /* Handles missile */
-            AMissile* Missile = Cast<AMissile>(FoundActor);
-            if(Missile)
-            {
-                HandleMissileBeam(Missile);
-                return;
+                /* Handles missile */
+                AMissile* Missile = Cast<AMissile>(FoundActor);
+                if(Missile)
+                {
+                    HandleMissileBeam(Missile);
+                    return;
+                }
             }
         }
     }
@@ -142,14 +149,17 @@ void AFenceTowerMW::ExecuteAttack()
 
 void AFenceTowerMW::Die()
 {
+    /* Disabling defense beam in case it was active  */
+    bActiveBeam = false;
+    bIsActiveTower = false;
+
+
     if(bDebugDetach)
     {
         return;
     }
 
-    /* Disabling defense beam in case it was active  */
-    bActiveBeam = false;
-    ActiveTower = false;
+
     Destroy();
 
 }

@@ -6,6 +6,7 @@
 #include "Player/PlayerPawn.h"
 #include "Player/PlaneMovementComponent.h"
 #include "Player/MovementEffect/DragMovementEffect.h"
+#include "Player/MovementEffect/EmpMovementEffect.h"
 #include "Components/PrimitiveComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -121,12 +122,29 @@ void ATrafficLightMW::LightBeginOverlap(class AActor* Actor, const ETrafficLight
     /* Handles player overlap */
     /* If the player overlaps the red light, drags him away from the light */
     APlayerPawn* PlayerPawn = Cast<APlayerPawn>(Actor);
-    if (TrafficLightStatus == ETrafficLight::Red && PlayerPawn)
+    if (TrafficLightStatus != ETrafficLight::Green && PlayerPawn)
     {
-        FVector DragDirection = PlayerPawn->GetActorLocation() - Position;
-        DragDirection.Normalize();
-        PlayerPawn->GetPlaneMovement()->DragMovementEffect->Activate(PlayerDragForce, DragDirection);
-        return;
+        /* YELLOW */
+        /* Pushing the player away*/
+        if(TrafficLightStatus == ETrafficLight::Yellow)
+        {
+            FVector DragDirection = PlayerPawn->GetActorLocation() - Position;
+            DragDirection.Normalize();
+            PlayerPawn->GetPlaneMovement()->DragMovementEffect->Activate(PlayerDragForce, DragDirection);
+            return;
+        }
+        /* RED */
+        /* Emps the player */
+        if(TrafficLightStatus == ETrafficLight::Red)
+        {
+            const FVector RandomRotation = FVector(
+                FMath::RandRange(0.f, 1.f),
+                FMath::RandRange(0.f, 1.f),
+                FMath::RandRange(0.f, 1.f)
+            );
+            PlayerPawn->GetPlaneMovement()->EmpMovementEffect->Activate(RandomRotation, RedEmpForce);
+            return;
+        }
     }
 }
 

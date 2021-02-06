@@ -86,7 +86,7 @@ public:
 
     /** Indactes whenever this tower is active or going to be destroyed */
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Index")
-    bool ActiveTower;
+    bool bIsActiveTower;
 
     // -----------------------------------------------------------------------------------------------------------
 	// Beam
