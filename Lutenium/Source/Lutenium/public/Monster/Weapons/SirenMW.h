@@ -41,8 +41,16 @@ public:
     /**
      * Determins if the spawned Scream should drag the player of push away
      */
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Siren")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Siren")
     bool bDragOrImpulse;
+
+    /**
+     * Detemins which type of Screan should be spawned
+     * true - normal scream
+     * false - semisphere
+     */
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Siren")
+    bool bIsScreamSemishpere;
 
     /**
      * On top of the siren

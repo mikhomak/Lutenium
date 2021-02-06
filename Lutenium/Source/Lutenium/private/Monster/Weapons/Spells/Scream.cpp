@@ -10,14 +10,11 @@
 
 AScream::AScream()
 {
-    const FAttachmentTransformRules AttachmentTransformRules = FAttachmentTransformRules(
-        EAttachmentRule::KeepRelative, false);
-    MainSphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("Main Sphere"));
-    RootComponent = MainSphereComp;
+
 
     WaveMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Wave Mesh"));
-    WaveMesh->AttachToComponent(MainSphereComp, AttachmentTransformRules);
     WaveMesh->SetGenerateOverlapEvents(true);
+    RootComponent = WaveMesh;
 
     WavesLifeSpan = 10.f;
     ScalingSpeed = 1.01f;
@@ -38,9 +35,9 @@ void AScream::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    const FVector FirstWaveCurrentScale = WaveMesh->GetComponentScale();
-    const FVector FirstWaveNewScale = FirstWaveCurrentScale + ScalingMultiplier * ScalingSpeed;
-    WaveMesh->SetWorldScale3D(FirstWaveNewScale);
+    const FVector CurrentScale = GetActorScale3D();
+    const FVector NewScale = CurrentScale + ScalingMultiplier * ScalingSpeed;
+    SetActorScale3D(NewScale);
 }
 
 void AScream::WaveOverlap(AActor* OtherActor)

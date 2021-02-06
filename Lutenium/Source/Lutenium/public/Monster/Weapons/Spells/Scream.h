@@ -15,8 +15,6 @@ class LUTENIUM_API AScream : public AActor
 public:
     AScream();
 
-    UPROPERTY(EditDefaultsOnly, Category="Mesh")
-    class USphereComponent* MainSphereComp;
 
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Mesh")
     class UStaticMeshComponent* WaveMesh;
@@ -50,6 +48,10 @@ public:
 
     UPROPERTY(EditDefaultsOnly, Category="Waves")
     float DragForce;
+
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Scream")
+    bool bIsSemishpere;
+
 protected:
     virtual void BeginPlay() override;
 
