@@ -199,10 +199,15 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Sockets")
 	FName SecondHightLevelSocketName;
 
-	/** Checks if the player is ABOVE that socket's location to fire the appropiate weapon*/
+	/** Checks if the player is BELOW that socket's location to fire the appropiate weapon*/
 	/** RN it's siren */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Sockets")
 	FName ThirdHightLevelSocketName;
+
+	/** Checks if the player is ABOVE that socket's location to fire the appropiate weapon*/
+	/** RN it's siren  but semisphere*/
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Sockets")
+	FName FourthHightLevelSocketName;
 
 	/** Returns the world location of the hight level from the socket */
 	/** Start with 1, ends with 3 */

@@ -101,13 +101,24 @@ int32 AMonsterAIController::SetPlayerHightLevelBlackboardValue()
     const float PlayerHight = Player->GetActorLocation().Z;
     int32 Hight = 2; /** by default it should be center */
     /* indexes of hight level socket location star with 1! */
-    if(MonsterPawn->GetHightLevelSocketLocation(1).Z < PlayerHight)
+    const FVector FirstHight = MonsterPawn->GetHightLevelSocketLocation(1);
+    const FVector SecondHight = MonsterPawn->GetHightLevelSocketLocation(2);
+    const FVector FourthHight = MonsterPawn->GetHightLevelSocketLocation(4);
+    if(FirstHight.Z > PlayerHight)
     {
         Hight = 1;
     }
-    else if(MonsterPawn->GetHightLevelSocketLocation(3).Z > PlayerHight)
+    else if(FirstHight.Z < PlayerHight && SecondHight.Z > PlayerHight)
+    {
+        Hight = 2;
+    }
+    else if(SecondHight.Z < PlayerHight && FourthHight.Z > PlayerHight)
     {
         Hight = 3;
+    }
+    else
+    {
+        Hight = 4;
     }
     BlackboardComp->SetValueAsInt(FN_BV_PlayerHightLevel, Hight);
     return Hight;
