@@ -19,8 +19,6 @@ public:
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Mesh")
     class UStaticMeshComponent* WaveMesh;
 
-    UPROPERTY(EditDefaultsOnly, Category="Damage")
-    float Damage;
 
     UPROPERTY(EditDefaultsOnly, Category="Damage")
     float ExpansionSpeed;
@@ -50,8 +48,10 @@ public:
     float DragForce;
 
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Scream")
-    bool bIsSemishpere;
+    bool bIsEmpScream;
 
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Scream")
+    float EmpForce;
 protected:
     virtual void BeginPlay() override;
 
@@ -59,7 +59,6 @@ protected:
 public:
     virtual void Tick(float DeltaTime) override;
 
-    FORCEINLINE void SetDamage(float& NewDamage) { Damage = NewDamage; }
     FORCEINLINE void SetExpansionSpeed(float& NewExpansionSpeed) { ExpansionSpeed = NewExpansionSpeed; }
     FORCEINLINE UFUNCTION(BlueprintCallable)
     void SetDragOrImpulse(bool DragOrImpulse) { bDragOrImpulse = DragOrImpulse; }

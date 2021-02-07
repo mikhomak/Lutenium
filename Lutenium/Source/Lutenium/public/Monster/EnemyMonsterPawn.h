@@ -210,7 +210,7 @@ public:
 	FName FourthHightLevelSocketName;
 
 	/** Returns the world location of the hight level from the socket */
-	/** Start with 1, ends with 3 */
+	/** Start with 1, ends with 4 */
 	UFUNCTION(BlueprintCallable, Category = "Sockets")
 	FVector GetHightLevelSocketLocation(const int32 Location);
 

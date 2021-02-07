@@ -5,6 +5,7 @@
 UMovementEffect::UMovementEffect()
 {
     CanBeSafeDeactivated = true;
+    SafeDeactivateTime = 15.f;
 }
 
 void UMovementEffect::StartSafeDeactivation()
@@ -16,7 +17,10 @@ void UMovementEffect::StartSafeDeactivation()
         PlayerPawn->GetWorldTimerManager().SetTimer(DeactivateTimer, this, &UMovementEffect::StartSafeDeactivation, SafeDeactivateTime, false);
     }
 }
+
 void UMovementEffect::ApplyEffect()
 {
 
 }
+
+void UMovementEffect::AdditionalDeactivationEffect(){}

@@ -2,6 +2,7 @@
 #include "Player/PlayerPawn.h"
 #include "Player/PlaneMovementComponent.h"
 #include "Player/MovementEffect/DragMovementEffect.h"
+#include "Player/MovementEffect/EmpMovementEffect.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/BoxComponent.h"
@@ -22,6 +23,7 @@ AScream::AScream()
 
     ForceImpact = 9000.f;
     DragForce = 90000.f;
+    EmpForce = 80.f;
 }
 
 void AScream::BeginPlay()
@@ -45,18 +47,31 @@ void AScream::WaveOverlap(AActor* OtherActor)
     APlayerPawn* PlayerPawn = Cast<APlayerPawn>(OtherActor);
     if (PlayerPawn)
     {
-        FVector DragDirection = PlayerPawn->GetActorLocation() - GetActorLocation();
-        DragDirection.Normalize();
-        // Dragging or impulsing the player aways lel
-        if(bDragOrImpulse)
+        if(bIsEmpScream) // Emp the player
         {
-            PlayerPawn->GetPlaneMovement()->DragMovementEffect->Activate(DragForce, DragDirection);
+            const FVector RandomRotation = FVector(
+                FMath::RandRange(0.f, 1.f),
+                FMath::RandRange(0.f, 1.f),
+                FMath::RandRange(0.f, 1.f)
+            );
+            PlayerPawn->GetPlaneMovement()->EmpMovementEffect->ActivateWithAddedGravity(RandomRotation, EmpForce, true);
         }
-        else
+        else //pushing/ dragging the player
         {
-            PlayerPawn->GetPlaneBox()->AddImpulse(DragDirection * 9000.f, FName(), true);
-            WaveMesh->SetCollisionProfileName(TEXT("IgnoreAll"));
+            FVector DragDirection = PlayerPawn->GetActorLocation() - GetActorLocation();
+            DragDirection.Normalize();
+            // Dragging or impulsing the player aways lel
+            if(bDragOrImpulse)
+            {
+                PlayerPawn->GetPlaneMovement()->DragMovementEffect->Activate(DragForce, DragDirection);
+            }
+            else
+            {
+                PlayerPawn->GetPlaneBox()->AddImpulse(DragDirection * 9000.f, FName(), true);
+                WaveMesh->SetCollisionProfileName(TEXT("IgnoreAll"));
+            }
         }
+
     }
 }
 

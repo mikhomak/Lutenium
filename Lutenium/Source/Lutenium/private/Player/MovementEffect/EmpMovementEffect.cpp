@@ -3,6 +3,12 @@
 #include "Player/PlayerPawn.h"
 #include "Components/BoxComponent.h"
 
+
+UEmpMovementEffect::UEmpMovementEffect()
+{
+    AdditionalGravity = -900.f;
+}
+
 void UEmpMovementEffect::ApplyEffect()
 {
     if (Active)
@@ -10,12 +16,17 @@ void UEmpMovementEffect::ApplyEffect()
         const FVector ZeroVector;
         const FVector DirectionToTilt = FMath::Lerp(ZeroVector, RotationDirection * RotationForce, 0.1f);
         PlayerBox->AddTorqueInRadians(DirectionToTilt, FName(), true);
+        // Adding additional gravity
+        if(bAddAdditionalGravity)
+        {
+            PlayerBox->AddForce(FVector(0, 0, AdditionalGravity), FName(), true);
+        }
     }
 }
 
 void UEmpMovementEffect::Activate(FVector NewRotationDirection, const float NewRotationForce)
 {
-    if(PlaneMovementComp)
+    if(PlaneMovementComp && !Active)
     {
         if(!PlaneMovementComp->bStalling)
         {
@@ -31,4 +42,24 @@ void UEmpMovementEffect::Activate(FVector NewRotationDirection, const float NewR
         }
     }
     StartSafeDeactivation();
+}
+
+
+void UEmpMovementEffect::ActivateWithAddedGravity(FVector NewRotationDirection, const float NewRotationForce, const bool bAddGravity)
+{
+    Activate(NewRotationDirection, NewRotationForce);
+    bAddAdditionalGravity = bAddGravity;
+}
+
+void UEmpMovementEffect::ActivateWithAddedGravityAndGravityValue(FVector NewRotationDirection, const float NewRotationForce, const bool bAddGravity, const float AddedGravity)
+{
+    ActivateWithAddedGravity(NewRotationDirection, NewRotationForce, bAddGravity);
+    AdditionalGravity = AddedGravity;
+}
+
+
+void UEmpMovementEffect::AdditionalDeactivationEffect()
+{
+    bAddAdditionalGravity = false;
+    AdditionalGravity = -900.f;
 }

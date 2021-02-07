@@ -71,9 +71,9 @@ void UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
     PlayerBox->AddTorqueInDegrees(PlayerBox->GetPhysicsAngularVelocityInDegrees() * -1.f / 0.5f, FName(), true);
+    AddGravityForce(DeltaTime);
     if(!bStalling)
     {
-        AddGravityForce(DeltaTime);
         Movement(DeltaTime);
     }
     else if(CurrentAcceleration > ExitStallAcceleration)

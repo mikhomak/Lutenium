@@ -59,7 +59,7 @@ public:
 
     /** Deactivating the effect */
     FORCEINLINE UFUNCTION(BlueprintCallable, Category = "Effect")
-    void Deactivate() { Active = false; CanBeSafeDeactivated = true; }
+    void Deactivate() { Active = false; CanBeSafeDeactivated = true;  AdditionalDeactivationEffect();}
 
     /** Called once while creating the effect(int PlayerPawn) to set needed references(kinda like constructor but with arguments so yeah) */
     FORCEINLINE UFUNCTION(BlueprintCallable, Category = "Effect")
@@ -70,6 +70,13 @@ public:
         PlaneMovementComp = PlayerPawn->GetPlaneMovement();
         SafeDeactivateTime = 15.f;
     }
+
+    /**
+     * Virtual function to add specific logic for MovementEffect children if needed
+     * Invokes in Deactivate()
+     */
+    UFUNCTION(BlueprintCallable, Category = "Effect")
+    virtual void AdditionalDeactivationEffect();
 
 protected:
 

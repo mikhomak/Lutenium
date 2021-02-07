@@ -47,10 +47,10 @@ public:
     /**
      * Detemins which type of Screan should be spawned
      * true - normal scream
-     * false - semisphere
+     * false - emp scream
      */
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Siren")
-    bool bIsScreamSemishpere;
+    bool bIsEmpScream;
 
     /**
      * On top of the siren

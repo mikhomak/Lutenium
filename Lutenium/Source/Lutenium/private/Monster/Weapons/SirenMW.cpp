@@ -40,7 +40,7 @@ void ASirenMW::ExecuteAttack()
             if(Scream)
             {
                 Scream->SetDragOrImpulse(bDragOrImpulse);
-                Scream->bIsSemishpere = bIsScreamSemishpere;
+                Scream->bIsEmpScream = bIsEmpScream;
                 /* If that was the second attack, resets bDragOrImpulse to the default value (Draggggggging)*/
                 if(CurrentExecutedAttacks == 1)
                 {
