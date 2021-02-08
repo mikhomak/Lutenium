@@ -78,6 +78,13 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Effect")
     virtual void AdditionalDeactivationEffect();
 
+    /**
+     * Debug property
+     * Checks whenever we want to execute the code of the effect
+     */
+    UPROPERTY(BlueprintReadWrite, Category = "Effect")
+    bool bDeactive_DEBUG;
+
 protected:
 
     /** Refernce to the player pawn */

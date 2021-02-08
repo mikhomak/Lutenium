@@ -11,10 +11,9 @@ UEmpMovementEffect::UEmpMovementEffect()
 
 void UEmpMovementEffect::ApplyEffect()
 {
-    if (Active)
+    if (Active && !bDeactive_DEBUG)
     {
-        const FVector ZeroVector;
-        const FVector DirectionToTilt = FMath::Lerp(ZeroVector, RotationDirection * RotationForce, 0.1f);
+        const FVector DirectionToTilt = FMath::Lerp(FVector::ZeroVector, RotationDirection * RotationForce, 0.1f);
         PlayerBox->AddTorqueInRadians(DirectionToTilt, FName(), true);
         // Adding additional gravity
         if(bAddAdditionalGravity)
