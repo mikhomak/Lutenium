@@ -124,15 +124,6 @@ void ATrafficLightMW::LightBeginOverlap(class AActor* Actor, const ETrafficLight
     APlayerPawn* PlayerPawn = Cast<APlayerPawn>(Actor);
     if (TrafficLightStatus != ETrafficLight::Green && PlayerPawn)
     {
-        /* YELLOW */
-        /* Pushing the player away*/
-        if(TrafficLightStatus == ETrafficLight::Yellow)
-        {
-            FVector DragDirection = PlayerPawn->GetActorLocation() - Position;
-            DragDirection.Normalize();
-            PlayerPawn->GetPlaneMovement()->DragMovementEffect->Activate(PlayerDragForce, DragDirection);
-            return;
-        }
         /* RED */
         /* Emps the player */
         if(TrafficLightStatus == ETrafficLight::Red)
@@ -143,8 +134,13 @@ void ATrafficLightMW::LightBeginOverlap(class AActor* Actor, const ETrafficLight
                 FMath::RandRange(0.f, 1.f)
             );
             PlayerPawn->GetPlaneMovement()->EmpMovementEffect->Activate(RandomRotation, RedEmpForce);
-            return;
         }
+        /* YELLOW */
+        /* Pushing the player away*/
+        FVector DragDirection = PlayerPawn->GetActorLocation() - Position;
+        DragDirection.Normalize();
+        PlayerPawn->GetPlaneMovement()->DragMovementEffect->Activate(PlayerDragForce, DragDirection);
+        return;
     }
 }
 
