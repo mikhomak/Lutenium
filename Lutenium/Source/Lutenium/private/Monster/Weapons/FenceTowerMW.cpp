@@ -58,7 +58,7 @@ void AFenceTowerMW::Tick(float DeltaTime)
 
                 /* Racyasting for both neighbors towers, finding for the player or the missile  */
                 AActor* FoundActor = FAssistUtils::RaycastForPlayer(this, GetWorld(),
-                                                                  GetActorLocation(),
+                                                                  ArrowProjectile->GetComponentLocation(),
                                                                   NeighborLocation,
                                                                   BeamRadius, Hit);
 
