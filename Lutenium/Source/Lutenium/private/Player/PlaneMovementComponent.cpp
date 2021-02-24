@@ -27,6 +27,7 @@ UPlaneMovementComponent::UPlaneMovementComponent()
     NoThrustDeceleration = -1500.f;
 
     LerpVelocity = 0.014f;
+	LerpVelocityNoThrust = 0.03f;
 
     ExitStallAcceleration = 18000.f;
     MaxAccelerationUntilTakeOff = 1000.f;
@@ -173,7 +174,7 @@ void UPlaneMovementComponent::AddThrust(float DeltaTime) const
                             : FMath::Clamp(CurrentAcceleration, MinSpeed, MaxSpeed);
 
     const FVector Velocity = FMath::Lerp(PlayerBox->GetPhysicsLinearVelocity(), PlayerBox->GetForwardVector() * Speed,
-                                        LerpVelocity);
+                                        bThrustUp ? LerpVelocity : LerpVelocityNoThrust);
     PlayerBox->SetPhysicsLinearVelocity(Velocity, false, FName());
 }
 

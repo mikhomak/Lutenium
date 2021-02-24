@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -133,6 +134,9 @@ protected:
 
     UPROPERTY(Category = Control, EditDefaultsOnly)
     float LerpVelocity;
+
+    UPROPERTY(Category = Control, EditDefaultsOnly)
+    float LerpVelocityNoThrust;
 
     // ------------------------------------------------------------------
     // SPEED
