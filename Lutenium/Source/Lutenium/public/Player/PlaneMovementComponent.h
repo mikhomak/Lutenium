@@ -67,7 +67,8 @@ public:
     FORCEINLINE UFUNCTION(Category ="Speed")
     float GetCurrentAcceleration() {return CurrentAcceleration;}
 
-    FORCEINLINE void ResetCurrentAcceleration() { CurrentAcceleration = 0;}
+    FORCEINLINE UFUNCTION(Category = "Speed")
+    void ResetCurrentAcceleration() { CurrentAcceleration = 0;}
 
     UPROPERTY(Category = "Dash", EditAnywhere)
     int MaxDashes;
@@ -120,16 +121,16 @@ protected:
     // ------------------------------------------------------------------
     // CONTROLS
     // ------------------------------------------------------------------
-    UPROPERTY(Category = Control, EditDefaultsOnly)
+    UPROPERTY(Category = Control, EditDefaultsOnly, BlueprintReadWrite)
     float AirControl;
 
-    UPROPERTY(Category = Control, EditDefaultsOnly)
+    UPROPERTY(Category = Control, EditDefaultsOnly, BlueprintReadWrite)
     float YawnControl;
 
-    UPROPERTY(Category = Control, EditDefaultsOnly)
+    UPROPERTY(Category = Control, EditDefaultsOnly, BlueprintReadWrite)
     float PitchControl;
 
-    UPROPERTY(Category = Control, EditDefaultsOnly)
+    UPROPERTY(Category = Control, EditDefaultsOnly, BlueprintReadWrite)
     float RollControl;
 
     UPROPERTY(Category = Control, EditDefaultsOnly)
