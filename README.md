@@ -5,7 +5,7 @@
 1. You play as a jet
 2. Fighting kaijus (Big monsters)
 3. PS1 artstyle
-4. Soviet combined with modern extrime brutalism enviroment
+4. Soviet enviroment combined with modern extrime brutalism 
 ---    
 ### Technical Features:
 1. Physic based movement
