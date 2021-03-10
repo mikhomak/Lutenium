@@ -8,17 +8,27 @@ class FAssistUtils
 {
 public:
 
-    static class USceneComponent* RaycastMissileTarget(const AActor* Actor,
+    static class USceneComponent* RaycastMissileTarget(const TSet<AActor*>& ActorsToIgnore,
                                                        const UWorld* World,
                                                        const FVector& StartLocation,
                                                        const FVector& ForwardVector,
                                                        const float TraceLength,
-                                                       const float FirstRaycastRadius,
+                                                       const float RaycastRadius,
                                                        const float SecondRaycastRadius,
                                                        FVector& HitLocation,
-                                                       EMissileTargetHit& MissileTargetHitType);
+                                                       EMissileTargetHit& MissileTargetHitType,
+                                                       AActor*& HitActor);
 
-    static bool RaycastSameMonsterPosition(const AActor* SelfActor,
+    static class USceneComponent* RaycastUpgradedMissileTarget(const TSet<AActor*>& ActorsToIgnore,
+                                                               const UWorld* World,
+                                                               const FVector& StartLocation,
+                                                               const FVector& ForwardVector,
+                                                               const float TraceLength,
+                                                               const float FirstRaycastRadius,
+                                                               FVector& HitLocation,
+                                                               AActor*& HitActor);
+
+    static bool RaycastSameMonsterPosition(const TSet<AActor*>& ActorsToIgnore,
                                                  const UWorld* World,
                                                  const FVector& StartLocation,
                                                  FVector& SameMonsterLocation);

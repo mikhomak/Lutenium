@@ -10,21 +10,22 @@
 #define ECC_Player ECollisionChannel::ECC_GameTraceChannel4
 #define ECC_PlayerMissile ECollisionChannel::ECC_GameTraceChannel5
 
-USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const UWorld* World,
+USceneComponent* FAssistUtils::RaycastMissileTarget(const TSet<AActor*>& ActorsToIgnore, const UWorld* World,
                                                                    const FVector& StartLocation,
                                                                    const FVector& ForwardVector,
                                                                    const float TraceLength,
                                                                    const float FirstRaycastRadius,
                                                                    const float SecondRaycastRadius,
                                                                    FVector& HitLocation,
-                                                                   EMissileTargetHit& MissileTargetHitType)
+                                                                   EMissileTargetHit& MissileTargetHitType,
+                                                                   AActor*& HitActor)
 {
     const FVector EndLocation = StartLocation + ForwardVector * TraceLength;
     if (World)
     {
         // Ignoring the actor
         FCollisionQueryParams Params;
-        Params.AddIgnoredActor(Actor);
+        Params.AddIgnoredActors(ActorsToIgnore.Array());
         FCollisionObjectQueryParams MonsterWPHurtBoxObjectQuery(ECC_MonsterWPHurtbox);
 
         /*
@@ -54,6 +55,7 @@ USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const U
             {
                 MissileTargetHitType = EMissileTargetHit::MonsterWPHurtbox;
                 HitLocation = FirstHitResult.Location;
+                HitActor = FirstHitResult.Actor.Get();
                 return FirstHitResult.GetComponent();
             }
         }
@@ -77,6 +79,7 @@ USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const U
         {
             MissileTargetHitType = EMissileTargetHit::Monster;
             HitLocation = SecondHitResult.Location;
+            HitActor = SecondHitResult.Actor.Get();
             return nullptr;
         }
     }
@@ -85,8 +88,46 @@ USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const U
     return nullptr;
 }
 
+USceneComponent* FAssistUtils::RaycastUpgradedMissileTarget(const TSet<AActor*>& ActorsToIgnore,
+                                                               const UWorld* World,
+                                                               const FVector& StartLocation,
+                                                               const FVector& ForwardVector,
+                                                               const float TraceLength,
+                                                               const float RaycastRadius,
+                                                               FVector& HitLocation,
+                                                               AActor*& HitActor)
+{
+    const FVector EndLocation = StartLocation + ForwardVector * TraceLength;
+    if(World)
+    {
+        // Ignoring the actor
+        FCollisionQueryParams Params;
+        Params.AddIgnoredActors(ActorsToIgnore.Array());
+        FCollisionObjectQueryParams MonsterWPHurtBoxObjectQuery(ECC_MonsterWPHurtbox);
 
-bool FAssistUtils::RaycastSameMonsterPosition(const AActor* SelfActor,
+        FHitResult HitResult;
+        const bool bHit = World->SweepSingleByObjectType(
+                                                         HitResult,
+                                                         StartLocation,
+                                                         EndLocation,
+                                                         FQuat::Identity,
+                                                         MonsterWPHurtBoxObjectQuery,
+                                                         FCollisionShape::MakeSphere(RaycastRadius),
+                                                         Params
+                                                         );
+        if (bHit && HitResult.GetComponent())
+        {
+            HitLocation = HitResult.Location;
+            HitActor = HitResult.Actor.Get();
+            return HitResult.GetComponent();
+        }
+    }
+    HitLocation = FVector::ZeroVector;
+    return nullptr;
+}
+
+
+bool FAssistUtils::RaycastSameMonsterPosition(const TSet<AActor*>& ActorsToIgnore,
                                               const UWorld* World,
                                               const FVector& StartLocation,
                                               FVector& SameMonsterLocation)
@@ -95,7 +136,7 @@ bool FAssistUtils::RaycastSameMonsterPosition(const AActor* SelfActor,
     {
         // Params to ignore the self actor
         FCollisionQueryParams Params;
-        Params.AddIgnoredActor(SelfActor);
+        Params.AddIgnoredActors(ActorsToIgnore.Array());
 
         FCollisionObjectQueryParams MonsterWPHurtBoxObjectQuery(ECC_MonsterWPHurtbox);
 
@@ -116,7 +157,7 @@ bool FAssistUtils::RaycastSameMonsterPosition(const AActor* SelfActor,
                                                 SameMonsterLocation,
                                                 ECC_Visibility,
                                                 Params);
-        return bHurtboxHit && bVisibilityHit;
+        return bHurtboxHit && !bVisibilityHit;
     }
     return false;
 }
