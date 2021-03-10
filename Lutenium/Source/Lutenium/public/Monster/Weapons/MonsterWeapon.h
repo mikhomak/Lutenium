@@ -146,12 +146,18 @@ public:
     void DieEvent();
 
     /**
-	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
+	 * virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
      * After diying the weapon got detached and starts simulating physics
      * Put some cool values here so it would fall cool
      */
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Heath")
     float MassInKgAfterDetach;
+
+    /**
+     * Widget Component to display health for each weapon individually
+     */
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Health")
+    class UWidgetComponent* HealthWidget;
 
 	// ------------------------------------------------------------------
 	// ATTACK

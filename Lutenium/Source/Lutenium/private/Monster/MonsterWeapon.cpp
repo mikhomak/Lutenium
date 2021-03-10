@@ -3,6 +3,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/PrimitiveComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/WidgetComponent.h"
 #include "TimerManager.h"
 #define ECC_MonsterWPHurtbox ECollisionChannel::ECC_GameTraceChannel1
 #define ECC_Monster ECollisionChannel::ECC_GameTraceChannel2
@@ -27,6 +28,7 @@ AMonsterWeapon::AMonsterWeapon()
     MassInKgAfterDetach = 55000.f;
     MeshDamageReduction = 0.4f;
     InvincibilityTime = 0.1f;
+    HealthWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthWidget"));
 
     /* Attack */
     TimeBeforeAttack = 1.f;

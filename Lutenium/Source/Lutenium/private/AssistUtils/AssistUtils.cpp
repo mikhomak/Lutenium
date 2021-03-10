@@ -85,15 +85,52 @@ USceneComponent* FAssistUtils::RaycastMissileTarget(const AActor* Actor, const U
     return nullptr;
 }
 
+
+bool FAssistUtils::RaycastSameMonsterPosition(const AActor* SelfActor,
+                                              const UWorld* World,
+                                              const FVector& StartLocation,
+                                              FVector& SameMonsterLocation)
+{
+    if(World)
+    {
+        // Params to ignore the self actor
+        FCollisionQueryParams Params;
+        Params.AddIgnoredActor(SelfActor);
+
+        FCollisionObjectQueryParams MonsterWPHurtBoxObjectQuery(ECC_MonsterWPHurtbox);
+
+        // Hurtbox check
+        FHitResult HurtboxHitResult;
+        const bool bHurtboxHit =  World->LineTraceSingleByObjectType(
+                                                HurtboxHitResult,
+                                                StartLocation,
+                                                SameMonsterLocation,
+                                                MonsterWPHurtBoxObjectQuery,
+                                                Params);
+
+        // Visibility check
+        FHitResult VisibilityHitResult;
+        const bool bVisibilityHit =  World->LineTraceSingleByChannel(
+                                                VisibilityHitResult,
+                                                StartLocation,
+                                                SameMonsterLocation,
+                                                ECC_Visibility,
+                                                Params);
+        return bHurtboxHit && bVisibilityHit;
+    }
+    return false;
+}
+
+
 /** Racyast the player (use for mosnter) */
 /** Raycast ONLY the player level of collision AND the missile*/
 /** Returns Player and HitResultOut */
 AActor* FAssistUtils::RaycastForPlayer(const AActor* OwnerActor,
-                                            const UWorld* World,
-                                            const FVector& StartLocation,
-                                            const FVector& EndLocation,
-                                            const float RaycastRadius,
-                                            FHitResult& HitResultOut)
+                                       const UWorld* World,
+                                       const FVector& StartLocation,
+                                       const FVector& EndLocation,
+                                       const float RaycastRadius,
+                                       FHitResult& HitResultOut)
 {
     if(World && EndLocation != FVector::ZeroVector)
     {

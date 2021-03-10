@@ -18,6 +18,11 @@ public:
                                                        FVector& HitLocation,
                                                        EMissileTargetHit& MissileTargetHitType);
 
+    static bool RaycastSameMonsterPosition(const AActor* SelfActor,
+                                                 const UWorld* World,
+                                                 const FVector& StartLocation,
+                                                 FVector& SameMonsterLocation);
+
     static class AActor* RaycastForPlayer(const AActor* OwnerActor,
                                                const UWorld* World,
                                                const FVector& StartLocation,

@@ -10,6 +10,7 @@
 #include "Components/PrimitiveComponent.h"
 #include "Components/BoxComponent.h"
 #include "Player/Missile.h"
+#include "Player/MissileTargetHit.h"
 #include "AssistUtils/AssistUtils.h"
 
 APlayerPawn::APlayerPawn()
@@ -52,11 +53,30 @@ void APlayerPawn::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
     /* Raycasting every tick to update MissileTargetRaycastHitLocation so we can show the UI of the current missile target(even tho it has been shot yet) */
-    FAssistUtils::RaycastMissileTarget(this,GetWorld(),
-                                        PlaneMesh->GetSocketLocation("MissileMuzzle"), GetActorForwardVector(),
-                                        MissileTraceLength, FirstRaytraceRadius,
-                                        SecondRaytraceRadius, MissileTargetRaycastHitLocation,
-                                        MissileTargetRaycastHitType);
+
+
+    // If previos found location was a hurtbox, we wanna cache it
+    if(MissileTargetRaycastHitType == EMissileTargetHit::MonsterWPHurtbox)
+    {
+        // however we need to make sure that we still can see it
+        // if we don't, then look for a new one
+        if(!FAssistUtils::RaycastSameMonsterPosition(this, GetWorld(), PlaneMesh->GetSocketLocation("MissileMuzzle"), MissileTargetRaycastHitLocation))
+        {
+            FAssistUtils::RaycastMissileTarget(this,GetWorld(),
+                                                    PlaneMesh->GetSocketLocation("MissileMuzzle"), GetActorForwardVector(),
+                                                    MissileTraceLength, FirstRaytraceRadius,
+                                                    SecondRaytraceRadius, MissileTargetRaycastHitLocation,
+                                                    MissileTargetRaycastHitType);
+        }
+    }
+    else // If the previous found location was not hurtbox, then we don't care and should look for a new one
+    {
+        FAssistUtils::RaycastMissileTarget(this,GetWorld(),
+                                            PlaneMesh->GetSocketLocation("MissileMuzzle"), GetActorForwardVector(),
+                                            MissileTraceLength, FirstRaytraceRadius,
+                                            SecondRaytraceRadius, MissileTargetRaycastHitLocation,
+                                            MissileTargetRaycastHitType);
+    }
 }
 
 void APlayerPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other,
