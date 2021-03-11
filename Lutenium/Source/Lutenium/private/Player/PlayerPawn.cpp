@@ -101,7 +101,7 @@ void APlayerPawn::MissileAimLock()
 
     // Iterating through other locks in case if we have an upgrade (bHasDoubleAimLocks == true ----> IsUpgradeAquiered(EPlayerUpgrade::DoubleMissileAimLock)) == true)
     // If the first raycast hasn't found any actor, then we don't need to racyast upgraded missiles
-    if(MissileTargetArray[0] != nullptr && bHasDoubleAimLocks)
+    if(bHasDoubleAimLocks)
     {
         for(int i = 1; i < AmountOfFireMissile; ++i)
         {
@@ -128,6 +128,7 @@ void APlayerPawn::MissileAimLock()
             }
         }
     }
+
 }
 
 void APlayerPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other,
