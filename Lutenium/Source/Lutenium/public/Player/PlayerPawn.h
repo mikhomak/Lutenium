@@ -96,15 +96,15 @@ public:
 	float GetYawnInput() const;
 
 	/** Returns the Roll Imput */
-	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
+	UFUNCTION(BlueprintCallable, Category = "Input")
 	float GetRollInput() const;
 
 	/** Returns the Pitch Imput */
-	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
+	UFUNCTION(BlueprintCallable, Category = "Input")
 	float GetPitchInput() const;
 
 	/** Returns the Thrust Imput */
-	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
+	UFUNCTION(BlueprintCallable, Category = "Input")
 	float GetThrustInput() const;
 
 	/**
@@ -120,6 +120,7 @@ public:
 
 	/**
 	 * Event called when Dash has been activated
+	 * Do some fancy shit with camera n VFX/SFX in BP
 	 * @see UPlayerPlaneMovementComponent - DashInput()
 	 */
 	UFUNCTION(BlueprintImplementableEvent, Category = "PlaneMovement")
@@ -128,31 +129,81 @@ public:
 	// ------------------------------------------------------------------
 	// Missile
 	// ------------------------------------------------------------------
+
+	/**
+	 * Each tick we are looking for the target for the missile
+	 * It's an array for the possible upgraded missiles
+	 * First index (0) is awlays present because it doesn't need an upgrade
+	 * Others indexes are use for upgraded missiles (AmountOfFireMissile and bHasDoubleAimLocks)
+	 * We use FAssistUtils::RaycastMissileTarget() for the first missile
+	 * For the upgaded missiles we use FAssistUtils::RaycastUpgradedMissileTarget()
+	 * The possible values could be: MonsterWeapon or Monster itself. nullptr in other cases
+	 * If upgraded values can't find new values, they become the same as the [0]
+	 * @see MissileAimLock()
+	 * @see AmountOfFireMissile
+	 * @see bHasDoubleAimLocks
+	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Missile")
 	TArray<USceneComponent*> MissileTargetArray;
 
+	/**
+	 * Array of locations of MissileTargetArray
+	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Missile")
 	TArray<FVector> MissileTargetRaycastHitLocationArray;
 
+	/**
+	 * Hit type of the main missile - MissileTargetArray[0]
+	 * If it's EMissileTargetHit::MonsterWPHurtbox then we will raycast the ugrpades ones
+	 * If it's EMissileTargetHit::Monster or EMissileTargetHit::NoHit then we will use [0] for the upgrade ones
+	 * @see MissileAimLock()
+	 * @see MissileTargetArray
+	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Missile")
 	EMissileTargetHit MissileTargetRaycastHitType;
 
+	/**
+	 * Missicle class to spawn
+	 * Create a BP child class of AMissile and assing it to this
+	 */
 	UPROPERTY(EditDefaultsOnly, Category = "Missile")
 	TSubclassOf<class AMissile> MissileClass;
 
+	/**
+	 * The length to raycast for the missile
+	 * Could be upgraded with EPlayerUpgrade::IncreasedAimRadius
+	 */
 	UPROPERTY(EditDefaultsOnly, Category = "Missile")
 	float MissileAimTraceLength;
 
+	/**
+	 * When we ryacast for the first missile, we raytrace as a sphere with this radius
+	 * The first raycast that we do, we are searching for the MonsterWPHurtbox
+	 * @see MissileAimLock()
+	 */
 	UPROPERTY(EditDefaultsOnly, Category = "Missile")
 	float FirstRaytraceMissileAimRadius;
 
+	/**
+	 * When the first raycast failes, search for the Monster with bigger radius
+	 * @see FirstRaytraceMissileAimRadius
+	 * @see MissileAimLock()
+	 */
 	UPROPERTY(EditDefaultsOnly, Category = "Missile")
 	float SecondRaytraceMissileAimRadius;
 
+	/**
+	 * When the first missile found MonsterWeapon, then we will raycast the upgrade ones IF we the upgrade is available (bHasDoubleAimLocks == true)
+	 * @see FirstRaytraceMissileAimRadius
+	 * @see MissileAimLock()
+	 */
 	UPROPERTY(EditDefaultsOnly, Category = "Missile")
 	float UpgradeRaytraceMissileAimRadius;
 
-
+	/**
+	 * Main method to fire missiles
+	 * Fire
+	 */
 	UFUNCTION(BlueprintCallable, Category = "Missile")
 	void FireMissile();
 

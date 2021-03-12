@@ -95,7 +95,7 @@ void APlayerPawn::MissileAimLock()
         {
             // If previous hit actor is null, then all next raycast would be nullptr so we don't need to do them.
             // If so, we assign their locations/targets as the first raycast target
-            if(HitActor == nullptr)
+            if(HitActor == nullptr || MissileTargetRaycastHitType == EMissileTargetHit::MonsterWPHurtbox)
             {
                 MissileTargetArray[i] = MissileTargetArray[0];
                 MissileTargetRaycastHitLocationArray[i] = MissileTargetRaycastHitLocationArray[0];
