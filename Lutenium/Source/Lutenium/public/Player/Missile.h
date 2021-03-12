@@ -46,10 +46,6 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Mesh")
 	class UStaticMeshComponent* MissileMesh;
 
-	/** Refernce to the player */
-	UPROPERTY(BlueprintReadOnly)
-	class APlayerPawn* PlayerPawn;
-
 
 	// -----------------------------------------------------------------------------------------------------------
 	// Movement activation
@@ -241,9 +237,6 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
-
-public:
-	FORCEINLINE void SetParentPawn(class APlayerPawn* Pawn){ PlayerPawn = Pawn;}
 
 };
 

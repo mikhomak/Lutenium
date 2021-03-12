@@ -6,7 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Player/PlaneMovementComponent.h"
+#include "Player/PlayerPlaneMovementComponent.h"
 #include "Components/PrimitiveComponent.h"
 #include "Components/BoxComponent.h"
 #include "Player/Missile.h"
@@ -38,10 +38,9 @@ APlayerPawn::APlayerPawn()
     Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName); // Attach the camera
     Camera->bUsePawnControlRotation = false; // Don't rotate camera with controller
 
-    PlaneMovement = CreateDefaultSubobject<UPlaneMovementComponent>(TEXT("Plane Movement"));
+    PlaneMovement = CreateDefaultSubobject<UPlayerPlaneMovementComponent>(TEXT("Plane Movement"));
     PlaneMovement->SetPawn(this);
-    PlaneMovement->SetMesh(PlaneMesh);
-    PlaneMovement->SetBox(PlaneBox);
+    PlaneMovement->PhysicsComponent = PlaneBox;
 
     // Missile
     MissileAimTraceLength = 50000.f;
@@ -146,11 +145,11 @@ void APlayerPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputCo
 {
     check(PlayerInputComponent);
     InputComponent = PlayerInputComponent;
-    PlayerInputComponent->BindAxis("Thrust", PlaneMovement, &UPlaneMovementComponent::ThrustInput);
-    PlayerInputComponent->BindAxis("Pitch", PlaneMovement, &UPlaneMovementComponent::PitchInput);
-    PlayerInputComponent->BindAxis("Yawn", PlaneMovement, &UPlaneMovementComponent::YawnInput);
-    PlayerInputComponent->BindAxis("Roll", PlaneMovement, &UPlaneMovementComponent::RollInput);
-    PlayerInputComponent->BindAction("Stop", IE_Released, PlaneMovement, &UPlaneMovementComponent::DashInput);
+    PlayerInputComponent->BindAxis("Thrust", PlaneMovement, &UPlayerPlaneMovementComponent::ThrustInput);
+    PlayerInputComponent->BindAxis("Pitch", PlaneMovement, &UPlayerPlaneMovementComponent::PitchInput);
+    PlayerInputComponent->BindAxis("Yawn", PlaneMovement, &UPlayerPlaneMovementComponent::YawnInput);
+    PlayerInputComponent->BindAxis("Roll", PlaneMovement, &UPlayerPlaneMovementComponent::RollInput);
+    PlayerInputComponent->BindAction("Stop", IE_Released, PlaneMovement, &UPlayerPlaneMovementComponent::DashInput);
     PlayerInputComponent->BindAction("Fire", IE_Released, this, &APlayerPawn::FireMissile);
 }
 
@@ -175,7 +174,6 @@ void APlayerPawn::FireMissile()
                                                                     SpawnParams);
                     if (Missile)
                     {
-                        Missile->SetParentPawn(this);
                         Missile->SetTargetOrDirection(MissileTargetArray[i], GetActorForwardVector());
                     }
                 }

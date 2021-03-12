@@ -1,13 +1,13 @@
-#include "../public/Player/PlaneMovementComponent.h"
-#include "../public/Player/PlayerPawn.h"
-#include "../public/AssistUtils/AssistUtils.h"
-#include "../public/Player/MovementEffect/DragMovementEffect.h"
-#include "../public/Player/MovementEffect/EmpMovementEffect.h"
+#include "Player/PlaneMovementComponent.h"
+#include "GameFramework/Pawn.h"
+#include "AssistUtils/AssistUtils.h"
+#include "Player/MovementEffect/DragMovementEffect.h"
+#include "Player/MovementEffect/EmpMovementEffect.h"
 #include "Camera/CameraComponent.h"
 #include "Engine/World.h"
 #include "Math/Vector.h"
 #include "Components/StaticMeshComponent.h"
-#include "Components/BoxComponent.h"
+#include "Components/PrimitiveComponent.h"
 #include "Math/UnrealMathUtility.h"
 #include "TimerManager.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -44,11 +44,7 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 
     Dot = 0;
 
-    DashImpactForce = 8000.f;
-    MaxDashes = 2;
-    DashesLeft = MaxDashes;
-    DashCooldown = 3.f;
-    bCanDash = true;
+
 
 
 }
@@ -60,9 +56,9 @@ void UPlaneMovementComponent::BeginPlay()
     GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UPlaneMovementComponent::CalculateAcceleration, 0.05f,
                                            true);
     DragMovementEffect = NewObject<UDragMovementEffect>();
-    DragMovementEffect->InitEffect(PlayerPawn);
+    DragMovementEffect->InitEffect(PhysicsComponent, this);
     EmpMovementEffect = NewObject<UEmpMovementEffect>();
-    EmpMovementEffect->InitEffect(PlayerPawn);
+    EmpMovementEffect->InitEffect(PhysicsComponent, this);
     MovementEffects.Init(DragMovementEffect, 1);
     MovementEffects.Add(EmpMovementEffect);
 }
@@ -71,7 +67,7 @@ void UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
                                             FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-    PlayerBox->AddTorqueInDegrees(PlayerBox->GetPhysicsAngularVelocityInDegrees() * -1.f / 0.5f, FName(), true);
+    PhysicsComponent->AddTorqueInDegrees(PhysicsComponent->GetPhysicsAngularVelocityInDegrees() * -1.f / 0.5f, FName(), true);
     AddGravityForce(DeltaTime);
     if(!bStalling)
     {
@@ -97,35 +93,20 @@ void UPlaneMovementComponent::ThrustInput(const float Val)
 void UPlaneMovementComponent::PitchInput(const float Val)
 {
     const float AppliedPitch = !bThrustUp ? Val * 2 : Val;
-    AddTorqueToThePlane(PlayerPawn->GetActorRightVector(), AppliedPitch * PitchControl);
+    AddTorqueToThePlane(OwnerPawn->GetActorRightVector(), AppliedPitch * PitchControl);
 }
 
 void UPlaneMovementComponent::YawnInput(const float Val)
 {
-    AddTorqueToThePlane(PlayerPawn->GetActorUpVector(), Val * YawnControl);
+    AddTorqueToThePlane(OwnerPawn->GetActorUpVector(), Val * YawnControl);
 }
 
 void UPlaneMovementComponent::RollInput(const float Val)
 {
-    AddTorqueToThePlane(PlayerPawn->GetActorForwardVector(), Val * RollControl);
+    AddTorqueToThePlane(OwnerPawn->GetActorForwardVector(), Val * RollControl);
 }
 
-void UPlaneMovementComponent::DashInput()
-{
-    if (DashesLeft <= 0)
-    {
-        return;
-    }
-    bCanDash = false;
-    PlayerPawn->DashImpact();
-    PlayerBox->AddForce(PlayerBox->GetForwardVector() * DashImpactForce, FName(), true);
-    CurrentAcceleration = MaxThrustUpAcceleration;
-    DashesLeft--;
-    FTimerHandle DashCooldownTimer;
-    GetWorld()->GetTimerManager().SetTimer(DashCooldownTimer, this, &UPlaneMovementComponent::ResetDashCooldown,
-                                           DashCooldown,
-                                           false);
-}
+
 
 
 void UPlaneMovementComponent::Movement(const float DeltaTime)
@@ -142,7 +123,7 @@ void UPlaneMovementComponent::AddTorqueToThePlane(const FVector Direction, const
     {
         const FVector ZeroVector;
         const FVector DirectionToTilt = FMath::Lerp(ZeroVector, Direction * InputVal * AirControl, 0.1f);
-        PlayerBox->AddTorqueInRadians(DirectionToTilt, FName(), true);
+        PhysicsComponent->AddTorqueInRadians(DirectionToTilt, FName(), true);
     }
 }
 
@@ -173,9 +154,9 @@ void UPlaneMovementComponent::AddThrust(float DeltaTime) const
                             ? FMath::Lerp(MaxSpeed, CurrentAcceleration, MaxSpeedLerpAlpha)
                             : FMath::Clamp(CurrentAcceleration, MinSpeed, MaxSpeed);
 
-    const FVector Velocity = FMath::Lerp(PlayerBox->GetPhysicsLinearVelocity(), PlayerBox->GetForwardVector() * Speed,
+    const FVector Velocity = FMath::Lerp(PhysicsComponent->GetPhysicsLinearVelocity(), PhysicsComponent->GetForwardVector() * Speed,
                                         bThrustUp ? LerpVelocity : LerpVelocityNoThrust);
-    PlayerBox->SetPhysicsLinearVelocity(Velocity, false, FName());
+    PhysicsComponent->SetPhysicsLinearVelocity(Velocity, false, FName());
 }
 
 void UPlaneMovementComponent::CalculateAcceleration()
@@ -197,11 +178,11 @@ void UPlaneMovementComponent::AddGravityForce(float DeltaTime) const
                                                                             FVector2D(CustomMaxGravity,
                                                                                       CustomMinGravity),
                                                                             CurrentAcceleration);
-    FVector UpVectorNormalized = PlayerBox->GetUpVector();
+    FVector UpVectorNormalized = PhysicsComponent->GetUpVector();
     UpVectorNormalized.Normalize();
     const float AppliedGravity = FVector::DotProduct(UpVectorNormalized, FVector(0, 0, 1)) *
         GravityDependingOnSpeed;
-    PlayerBox->AddForce(FVector(0, 0, AppliedGravity), FName(), true);
+    PhysicsComponent->AddForce(FVector(0, 0, AppliedGravity), FName(), true);
 }
 
 
@@ -211,8 +192,8 @@ void UPlaneMovementComponent::CalculateAerodynamic(float DeltaTime)
     {
         return;
     }
-    FVector Velocity = PlayerPawn->GetVelocity();
-    const FVector UpVector = PlayerPawn->GetActorUpVector();
+    FVector Velocity = OwnerPawn->GetVelocity();
+    const FVector UpVector = OwnerPawn->GetActorUpVector();
     Velocity.Normalize();
     const float DotProduct = FVector::DotProduct(UpVector, Velocity);
 
@@ -227,32 +208,29 @@ void UPlaneMovementComponent::CalculateAerodynamic(float DeltaTime)
             (MaxSpeed - MinSpeed)
         ); // Maping current velocity value between 0 and 1
 
-        PlayerBox->AddForce(AppliedAerodynamic, FName(), true);
+        PhysicsComponent->AddForce(AppliedAerodynamic, FName(), true);
     }
-    HasDotChangedEventCaller(DotProduct);
+    HasDotChanged(DotProduct);
 }
 
 ///		Checks if the dot value(aerodynamics) has reached the change value
-///		If so, calls the DotHasChange method of PlayerPawn
+///		If so, calls the DotHasChange method of OwnerPawn
 ///		In blueprint activates VFX when it happens
-void UPlaneMovementComponent::HasDotChangedEventCaller(const float DotProduct)
+void UPlaneMovementComponent::HasDotChanged(const float DotProduct)
 {
     const float AbsPreviousDot = Dot < 0 ? Dot * -1.f : Dot;
     const float AbsDot = DotProduct < 0 ? DotProduct * -1.f : DotProduct;
     if ((AbsPreviousDot > 0.6f && AbsDot < 0.6f) || (AbsPreviousDot < 0.6f && AbsDot > 0.6f))
     {
-        PlayerPawn->DotHasChange();
+        HasDotChangedEventCaller();
     }
     Dot = DotProduct;
 }
 
-void UPlaneMovementComponent::ResetDashCooldown()
+
+void UPlaneMovementComponent::HasDotChangedEventCaller()
 {
-    bCanDash = true;
-    if (DashesLeft < MaxDashes)
-    {
-        DashesLeft++;
-    }
+
 }
 
 void UPlaneMovementComponent::AddAcceleration(const float AddedAcceleration)

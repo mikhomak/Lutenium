@@ -1,4 +1,5 @@
 #include "Player/MovementEffect/MovementEffect.h"
+#include "Player/PlaneMovementComponent.h"
 #include "TimerManager.h"
 
 
@@ -14,7 +15,7 @@ void UMovementEffect::StartSafeDeactivation()
     {
         CanBeSafeDeactivated = false;
         FTimerHandle DeactivateTimer;
-        PlayerPawn->GetWorldTimerManager().SetTimer(DeactivateTimer, this, &UMovementEffect::StartSafeDeactivation, SafeDeactivateTime, false);
+        PlaneMovementComponent->GetWorld()->GetTimerManager().SetTimer(DeactivateTimer, this, &UMovementEffect::StartSafeDeactivation, SafeDeactivateTime, false);
     }
 }
 

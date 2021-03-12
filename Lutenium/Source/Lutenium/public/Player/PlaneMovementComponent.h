@@ -8,7 +8,7 @@
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class LUTENIUM_API UPlaneMovementComponent final : public UActorComponent
+class LUTENIUM_API UPlaneMovementComponent : public UActorComponent
 {
     GENERATED_BODY()
 
@@ -18,14 +18,11 @@ protected:
     virtual void BeginPlay() override;
 
 public:
-    UPROPERTY(BlueprintReadWrite, Category = Player, EditAnywhere)
-    class APlayerPawn* PlayerPawn;
+    UPROPERTY(BlueprintReadWrite, Category = "Owner", EditAnywhere)
+    class APawn* OwnerPawn;
 
-    UPROPERTY(BlueprintReadWrite, Category = Player, EditAnywhere)
-    class UBoxComponent* PlayerBox;
-
-    UPROPERTY(BlueprintReadWrite, Category = Player, EditAnywhere)
-    class UStaticMeshComponent* PlayerMesh;
+    UPROPERTY(BlueprintReadWrite, Category = "Owner=", EditAnywhere)
+    class UPrimitiveComponent* PhysicsComponent;
 
     UPlaneMovementComponent();
 
@@ -48,18 +45,15 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
     void RollInput(float Val);
 
-    UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
-    void DashInput();
+
 
     // ------------------------------------------------------------------
     // Pawn setters
     // ------------------------------------------------------------------
-    FORCEINLINE UFUNCTION(Category="General")
-    void SetBox(class UBoxComponent* Box){ PlayerBox = Box; }
-    FORCEINLINE UFUNCTION(Category="General")
-    void SetPawn(class APlayerPawn* Pawn){ PlayerPawn = Pawn; }
-    FORCEINLINE UFUNCTION(Category="General")
-    void SetMesh(class UStaticMeshComponent* Mesh){ PlayerMesh = Mesh; }
+    FORCEINLINE UFUNCTION(Category = "General")
+    void SetBox(class UPrimitiveComponent* PrimitiveComp){ PhysicsComponent = PrimitiveComp; }
+    FORCEINLINE UFUNCTION(Category = "General")
+    void SetPawn(class APawn* Pawn){ OwnerPawn = Pawn; }
 
     // ------------------------------------------------------------------
     // Movement
@@ -70,11 +64,6 @@ public:
     FORCEINLINE UFUNCTION(Category = "Speed")
     void ResetCurrentAcceleration() { CurrentAcceleration = 0;}
 
-    UPROPERTY(Category = "Dash", EditAnywhere)
-    int MaxDashes;
-
-    UPROPERTY(Category = "Dash", EditAnywhere)
-    float DashCooldown;
 
     UPROPERTY(Category = Control, BlueprintReadWrite, EditAnywhere)
     bool bStalling;
@@ -182,17 +171,6 @@ protected:
     /* Main movement method */
     void Movement(const float DeltaTime);
 
-    // ------------------------------------------------------------------
-    // DASH
-    // ------------------------------------------------------------------
-    UPROPERTY(Category = Dash, EditDefaultsOnly)
-    float DashImpactForce;
-
-    int DashesLeft;
-
-    bool bCanDash;
-
-    void ResetDashCooldown();
 
 
     // ------------------------------------------------------------------
@@ -219,7 +197,10 @@ protected:
     void AddGravityForce(float DeltaTime) const;
 
     /* Fires the event when Dot value changes drastically to enable VFX in blueprints */
-    void HasDotChangedEventCaller(float DotProduct);
+    void HasDotChanged(float DotProduct);
+
+    UFUNCTION()
+    virtual void HasDotChangedEventCaller();
 
     void CalculateAerodynamic(float DeltaTime);
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Player/PlayerPawn.h"
 #include "MovementEffect.generated.h"
 
 /**
@@ -61,13 +60,12 @@ public:
     FORCEINLINE UFUNCTION(BlueprintCallable, Category = "Effect")
     void Deactivate() { Active = false; CanBeSafeDeactivated = true;  AdditionalDeactivationEffect();}
 
-    /** Called once while creating the effect(int PlayerPawn) to set needed references(kinda like constructor but with arguments so yeah) */
+    /** Called once while creating the effect to set needed references(kinda like constructor but with arguments so yeah) */
     FORCEINLINE UFUNCTION(BlueprintCallable, Category = "Effect")
-    void InitEffect(APlayerPawn* Pawn)
+    void InitEffect(class UPrimitiveComponent* PrimitiveComp, class UPlaneMovementComponent* PlaneMovementComp)
     {
-        PlayerPawn = Pawn;
-        PlayerBox = PlayerPawn->GetPlaneBox();
-        PlaneMovementComp = PlayerPawn->GetPlaneMovement();
+        PrimitiveComponent = PrimitiveComp;
+        PlaneMovementComponent = PlaneMovementComp;
         SafeDeactivateTime = 15.f;
     }
 
@@ -87,14 +85,11 @@ public:
 
 protected:
 
-    /** Refernce to the player pawn */
-    class APlayerPawn* PlayerPawn;
-
     /** Reference to the player's box. Apply force n shit to this */
-    class UBoxComponent* PlayerBox;
+    class UPrimitiveComponent* PrimitiveComponent;
 
     /** Reference to the player's movement component */
-    class UPlaneMovementComponent* PlaneMovementComp;
+    class UPlaneMovementComponent* PlaneMovementComponent;
 
 
 };

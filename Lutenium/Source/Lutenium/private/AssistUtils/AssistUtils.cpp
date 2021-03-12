@@ -54,8 +54,8 @@ USceneComponent* FAssistUtils::RaycastMissileTarget(const TSet<AActor*>& ActorsT
             if(!bVisibilityHit)
             {
                 MissileTargetHitType = EMissileTargetHit::MonsterWPHurtbox;
-                HitLocation = FirstHitResult.Location;
                 HitActor = FirstHitResult.Actor.Get();
+                HitLocation = FirstHitResult.GetComponent()->GetComponentLocation();
                 return FirstHitResult.GetComponent();
             }
         }
@@ -78,9 +78,9 @@ USceneComponent* FAssistUtils::RaycastMissileTarget(const TSet<AActor*>& ActorsT
         if (bSecondHit && SecondHitResult.GetComponent())
         {
             MissileTargetHitType = EMissileTargetHit::Monster;
-            HitLocation = SecondHitResult.Location;
             HitActor = SecondHitResult.Actor.Get();
-            return nullptr;
+            HitLocation = SecondHitResult.GetComponent()->GetComponentLocation();
+            return SecondHitResult.GetComponent();
         }
     }
     MissileTargetHitType = EMissileTargetHit::NoHit;
@@ -117,8 +117,8 @@ USceneComponent* FAssistUtils::RaycastUpgradedMissileTarget(const TSet<AActor*>&
                                                          );
         if (bHit && HitResult.GetComponent())
         {
-            HitLocation = HitResult.Location;
             HitActor = HitResult.Actor.Get();
+            HitLocation = HitResult.GetComponent()->GetComponentLocation();
             return HitResult.GetComponent();
         }
     }

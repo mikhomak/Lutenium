@@ -1,7 +1,6 @@
 ﻿#include "Player/MovementEffect/DragMovementEffect.h"
-#include "Player/PlaneMovementComponent.h"
 #include "Player/PlayerPawn.h"
-#include "Components/BoxComponent.h"
+#include "Components/PrimitiveComponent.h"
 
 
 
@@ -9,7 +8,7 @@ void UDragMovementEffect::ApplyEffect()
 {
     if (Active)
     {
-        PlayerBox->AddForce(DragDirection * DragForce, FName(), true);
+        PrimitiveComponent->AddForce(DragDirection * DragForce, FName(), true);
     }
 }
 

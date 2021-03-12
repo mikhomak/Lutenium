@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Player/PlayerPlaneMovementComponent.h"
 #include "MissileTargetHit.h"
 #include "PlayerPawn.generated.h"
 
@@ -38,7 +39,7 @@ class APlayerPawn : public APawn
 	class UCameraComponent* Camera;
 
 	UPROPERTY(Category = Movement, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UPlaneMovementComponent* PlaneMovement;
+	class UPlayerPlaneMovementComponent* PlaneMovement;
 
 	UPROPERTY(Category = Movement, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UBoxComponent* PlaneBox;

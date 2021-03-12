@@ -1,7 +1,6 @@
 #include "Player/MovementEffect/EmpMovementEffect.h"
 #include "Player/PlaneMovementComponent.h"
-#include "Player/PlayerPawn.h"
-#include "Components/BoxComponent.h"
+#include "Components/PrimitiveComponent.h"
 
 
 UEmpMovementEffect::UEmpMovementEffect()
@@ -14,20 +13,20 @@ void UEmpMovementEffect::ApplyEffect()
     if (Active && !bDeactive_DEBUG)
     {
         const FVector DirectionToTilt = FMath::Lerp(FVector::ZeroVector, RotationDirection * RotationForce, 0.1f);
-        PlayerBox->AddTorqueInRadians(DirectionToTilt, FName(), true);
+        PrimitiveComponent->AddTorqueInRadians(DirectionToTilt, FName(), true);
         // Adding additional gravity
         if(bAddAdditionalGravity)
         {
-            PlayerBox->AddForce(FVector(0, 0, AdditionalGravity), FName(), true);
+            PrimitiveComponent->AddForce(FVector(0, 0, AdditionalGravity), FName(), true);
         }
     }
 }
 
 void UEmpMovementEffect::Activate(FVector NewRotationDirection, const float NewRotationForce)
 {
-    if(PlaneMovementComp && !Active)
+    if(PlaneMovementComponent && !Active)
     {
-        if(!PlaneMovementComp->bStalling)
+        if(!PlaneMovementComponent->bStalling)
         {
             RotationForce = NewRotationForce;
             RotationDirection = NewRotationDirection;
@@ -36,8 +35,8 @@ void UEmpMovementEffect::Activate(FVector NewRotationDirection, const float NewR
                 RotationDirection.Normalize();
             }
             Active = true;
-            PlaneMovementComp->bStalling = true;
-            PlaneMovementComp->ResetCurrentAcceleration();
+            PlaneMovementComponent->bStalling = true;
+            PlaneMovementComponent->ResetCurrentAcceleration();
         }
     }
     StartSafeDeactivation();
