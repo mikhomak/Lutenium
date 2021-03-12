@@ -202,7 +202,11 @@ public:
 
 	/**
 	 * Main method to fire missiles
-	 * Fire
+	 * Fire AmountOfFireMissile missiles
+	 * If the first missile hasn't found anything, then every missile will go staright
+	 * If every next missile (from 0 - AmountOfFireMissile) doesn't find anyting, uses the last found position
+	 * EXAMPLE - if we have 3 missilse, and found hurtbox on the first one and haven't found one on the second one, then 2-3 will follow [0]
+	 * @see MissileAimLock()
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Missile")
 	void FireMissile();
