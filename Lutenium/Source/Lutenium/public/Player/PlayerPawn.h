@@ -24,46 +24,104 @@ enum class EPlayerUpgrade : uint8
 };
 
 
+/**
+ * Main Player class
+ * For movement uses - PlayerPlaneMovementComponent  which is PlaneMovementComponent with integrated Abilities for the player
+ * Has upgrade system  - EPlayerUpgrade
+ * For combat uses - missiles
+ * For raycasting uses - FAssistsUtils
+ */
 UCLASS(Config=Game)
 class APlayerPawn : public APawn
 {
 	GENERATED_BODY()
 
-	UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UStaticMeshComponent* PlaneMesh;
-
-	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class USpringArmComponent* SpringArm;
-
-	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* Camera;
-
-	UPROPERTY(Category = Movement, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UPlayerPlaneMovementComponent* PlaneMovement;
-
-	UPROPERTY(Category = Movement, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	/**
+	 * Root Component
+	 * Main component that moves the player
+	 * Physic based
+	 * Don't forrget to set size in BP
+	 */
+	UPROPERTY( VisibleDefaultsOnly, BlueprintReadOnly, Category = "General")
 	class UBoxComponent* PlaneBox;
 
+	/**
+	 * Main mesh of the jet
+	 */
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Mesh")
+	class UStaticMeshComponent* PlaneMesh;
+
+	/**
+	 * Spring arm for the camera
+	 * You can change the length of it in BP according to speed
+	 */
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Camera")
+	class USpringArmComponent* SpringArm;
+
+	/**
+	 * Main camera of the player
+	 * Configure it in BP
+	 */
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Camera")
+	class UCameraComponent* Camera;
+
+	/**
+	 * Main movement component
+	 * Every tick executes UPlaneMovementComponent::TickComponent() that has main logic of the logic
+	 * In order to install it correctly, set OwnerPawn, PhysicsComponent and PlayerPawn of PlaneMovement in the constructor of the PlayerPawn
+	 */
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Movement")
+	class UPlayerPlaneMovementComponent* PlaneMovement;
+
 public:
+
+	/** Constructor */
 	APlayerPawn();
+
+	/**
+	 * Tick method
+	 * Executes MissileAimLock()
+	 * @see MissileAimLock()
+	 */
 	virtual void Tick(float DeltaSeconds) override;
+
+	/**
+	 * On hit rotates the player
+	 * TODO decide what to do it with it
+	 */
 	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 
-	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
+	/** Returns the Yawn Imput */
+	UFUNCTION(BlueprintCallable, Category = "Input")
 	float GetYawnInput() const;
 
+	/** Returns the Roll Imput */
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
 	float GetRollInput() const;
 
+	/** Returns the Pitch Imput */
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
 	float GetPitchInput() const;
 
+	/** Returns the Thrust Imput */
 	UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
 	float GetThrustInput() const;
 
+	/**
+	 * Event when Dot value has Changed dramatically
+	 * Dot value - dot product between current physics velocity and UP vector
+	 * When the value has reached a certain point, invokes this event
+	 * It was made for activating "drift lines", when aerdonyamcis is activated
+	 * Activate drift lines in BP
+	 * @see UPlaneMovementComponent - CalculateAerodynamic()
+	 */
 	UFUNCTION(BlueprintImplementableEvent, Category = "PlaneMovement")
 	void DotHasChange();
 
+	/**
+	 * Event called when Dash has been activated
+	 * @see UPlayerPlaneMovementComponent - DashInput()
+	 */
 	UFUNCTION(BlueprintImplementableEvent, Category = "PlaneMovement")
 	void DashImpact();
 
@@ -90,6 +148,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Missile")
 	float SecondRaytraceMissileAimRadius;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Missile")
+	float UpgradeRaytraceMissileAimRadius;
 
 
 	UFUNCTION(BlueprintCallable, Category = "Missile")
@@ -158,7 +219,7 @@ public:
 
 	/**
 	 * Map that contains upgrades
-	 * Key - E num of upgrade
+	 * Key - Enum of upgrade
 	 * Value - bool that indicates if the upgrade has been aquiered
 	 * Updates in UpgradePlayer()
 	 */

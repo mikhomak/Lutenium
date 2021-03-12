@@ -46,6 +46,7 @@ APlayerPawn::APlayerPawn()
     MissileAimTraceLength = 50000.f;
     FirstRaytraceMissileAimRadius = 20000.f;
     SecondRaytraceMissileAimRadius = 40000.f;
+    UpgradeRaytraceMissileAimRadius = 10000.f;
     AmountOfFireMissile = 1;
     MissileTargetRaycastHitType = EMissileTargetHit::NoHit;
     MissileTargetRaycastHitLocationArray.Init(FVector::ZeroVector, 2);
@@ -78,17 +79,6 @@ void APlayerPawn::MissileAimLock()
     IgnoredActors.Add(this);
 
     AActor* HitActor = nullptr;
-    // If previos found location was a hurtbox, we wanna cache it
-    /*if(MissileTargetRaycastHitType == EMissileTargetHit::MonsterWPHurtbox)
-    {
-        // however we need to make sure that we still can see it
-        // if we don't, then look for a new one
-        if(FAssistUtils::RaycastSameMonsterPosition(IgnoredActors, GetWorld(), PlaneMesh->GetSocketLocation("MissileMuzzle"), MissileTargetRaycastHitLocationArray[0]))
-        {
-            return;
-        }
-    }*/
-    // If the previous found location was not hurtbox, then we don't care and should look for a new one
 
     // RaycastMissileTarget() Updates MissileTargetRaycastHitLocation[0] and MissileTargetRaycastHitType
     MissileTargetArray[0] = FAssistUtils::RaycastMissileTarget(IgnoredActors,GetWorld(),
@@ -99,7 +89,6 @@ void APlayerPawn::MissileAimLock()
 
 
     // Iterating through other locks in case if we have an upgrade (bHasDoubleAimLocks == true ----> IsUpgradeAquiered(EPlayerUpgrade::DoubleMissileAimLock)) == true)
-    // If the first raycast hasn't found any actor, then we don't need to racyast upgraded missiles
     if(bHasDoubleAimLocks)
     {
         for(int i = 1; i < AmountOfFireMissile; ++i)
@@ -116,7 +105,7 @@ void APlayerPawn::MissileAimLock()
                 IgnoredActors.Add(HitActor);
                 MissileTargetArray[i] = FAssistUtils::RaycastUpgradedMissileTarget(IgnoredActors, GetWorld(),
                                                                       PlaneMesh->GetSocketLocation("MissileMuzzle"), GetActorForwardVector(),
-                                                                      MissileAimTraceLength, FirstRaytraceMissileAimRadius,
+                                                                      MissileAimTraceLength, UpgradeRaytraceMissileAimRadius,
                                                                       MissileTargetRaycastHitLocationArray[i], HitActor); // Updates HitActor
                 if(MissileTargetArray[i] == nullptr)
                 {
