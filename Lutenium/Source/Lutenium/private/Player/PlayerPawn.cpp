@@ -117,7 +117,7 @@ void APlayerPawn::MissileAimLock()
                 IgnoredActors.Add(HitActor);
                 MissileTargetArray[i] = FAssistUtils::RaycastUpgradedMissileTarget(IgnoredActors, GetWorld(),
                                                                       PlaneMesh->GetSocketLocation("MissileMuzzle"), GetActorForwardVector(),
-                                                                      MissileAimTraceLength, SecondRaytraceMissileAimRadius,
+                                                                      MissileAimTraceLength, FirstRaytraceMissileAimRadius,
                                                                       MissileTargetRaycastHitLocationArray[i], HitActor); // Updates HitActor
                 if(MissileTargetArray[i] == nullptr)
                 {
@@ -183,6 +183,7 @@ void APlayerPawn::FireMissile()
         }
     }
 }
+
 
 float APlayerPawn::GetThrustInput() const
 {
