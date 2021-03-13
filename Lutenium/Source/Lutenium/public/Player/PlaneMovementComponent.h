@@ -18,10 +18,10 @@ protected:
     virtual void BeginPlay() override;
 
 public:
-    UPROPERTY(BlueprintReadWrite, Category = "Owner", EditAnywhere)
+    UPROPERTY(BlueprintReadWrite, Category = "Owner")
     class APawn* OwnerPawn;
 
-    UPROPERTY(BlueprintReadWrite, Category = "Owner=", EditAnywhere)
+    UPROPERTY(BlueprintReadWrite, Category = "Owner")
     class UPrimitiveComponent* PhysicsComponent;
 
     UPlaneMovementComponent();
@@ -33,16 +33,16 @@ public:
     // ------------------------------------------------------------------
     // Inputs
     // ------------------------------------------------------------------
-    UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
+    UFUNCTION(BlueprintCallable, Category = "Input")
     void ThrustInput(float Val);
 
-    UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
+    UFUNCTION(BlueprintCallable, Category = "Input")
     void PitchInput(float Val);
 
-    UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
+    UFUNCTION(BlueprintCallable, Category = "Input")
     void YawnInput(float Val);
 
-    UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
+    UFUNCTION(BlueprintCallable, Category = "Input")
     void RollInput(float Val);
 
 
@@ -99,10 +99,10 @@ public:
     // MovementEffects
     // ------------------------------------------------------------------
 
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Effects")
+    UPROPERTY(BlueprintReadOnly, Category = "Effects")
     class UDragMovementEffect* DragMovementEffect;
 
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Effects")
+    UPROPERTY(BlueprintReadOnly,  Category = "Effects")
     class UEmpMovementEffect* EmpMovementEffect;
 
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Effects|Class")

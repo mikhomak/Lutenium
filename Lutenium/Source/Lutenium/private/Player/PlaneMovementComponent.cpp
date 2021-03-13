@@ -19,19 +19,19 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 
     MaxThrustUpAcceleration = 25000.f;
     MaxThrustDownAcceleration = 5000.f;
-    MaxSpeed = 8000.f;
+    MaxSpeed = 49000.f;
     MinSpeed = 50.f;
     MaxSpeedLerpAlpha = 0.4f;
     ThrustUpAcceleration = 400.f;
     ThrustDownAcceleration = -2000.f;
     NoThrustDeceleration = -1500.f;
 
-    LerpVelocity = 0.014f;
+    LerpVelocity = 0.02f;
 	LerpVelocityNoThrust = 0.03f;
 
     ExitStallAcceleration = 18000.f;
-    MaxAccelerationUntilTakeOff = 1000.f;
-    TakeOffAddedAcceleration = 3000.f;
+    MaxAccelerationUntilTakeOff = 6000.f;
+    TakeOffAddedAcceleration = 12000.f;
 
     CustomMaxGravity = -800.f;
     CustomMinGravity = -100.f;
@@ -39,7 +39,7 @@ UPlaneMovementComponent::UPlaneMovementComponent()
     AirControl = 40.f;
     YawnControl = 0.5f;
     PitchControl = 0.8f;
-    RollControl = 1.4f;
+    RollControl = 2.8f;
     AerodynamicMultiplier = 14000.f;
 
     Dot = 0;
