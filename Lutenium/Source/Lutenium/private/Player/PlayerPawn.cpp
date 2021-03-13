@@ -95,7 +95,7 @@ void APlayerPawn::MissileAimLock()
         {
             // If previous hit actor is null, then all next raycast would be nullptr so we don't need to do them.
             // If so, we assign their locations/targets as the first raycast target
-            if(HitActor == nullptr || MissileTargetRaycastHitType == EMissileTargetHit::MonsterWPHurtbox)
+            if(HitActor == nullptr || MissileTargetRaycastHitType != EMissileTargetHit::MonsterWPHurtbox)
             {
                 MissileTargetArray[i] = MissileTargetArray[0];
                 MissileTargetRaycastHitLocationArray[i] = MissileTargetRaycastHitLocationArray[0];
@@ -144,31 +144,38 @@ void APlayerPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputCo
 
 void APlayerPawn::FireMissile()
 {
-    if (MissileClass)
+    // safety checks
+    if (MissileClass == nullptr)
     {
-        UWorld* World = GetWorld();
-        if (World)
+        return;
+    }
+
+    UWorld* World = GetWorld();
+    if (World == nullptr)
+    {
+        return;
+    }
+
+
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.Owner = this;
+    SpawnParams.Instigator = this;
+
+    FVector SpawnLocation = PlaneMesh->GetSocketLocation("MissileMuzzle");
+
+    for(int i = 0; i < AmountOfFireMissile; ++i)
+    {
+        if(i < 1 || bHasDoubleAimLocks)
         {
-            FActorSpawnParameters SpawnParams;
-            SpawnParams.Owner = this;
-            SpawnParams.Instigator = this;
-
-            FVector SpawnLocation = PlaneMesh->GetSocketLocation("MissileMuzzle");
-
-            for(int i = 0; i < AmountOfFireMissile; ++i)
+            AMissile* Missile = World->SpawnActor<AMissile>(MissileClass, SpawnLocation, GetActorRotation(),
+                                                            SpawnParams);
+            if (Missile)
             {
-                if(i < 1 || bHasDoubleAimLocks)
-                {
-                    AMissile* Missile = World->SpawnActor<AMissile>(MissileClass, SpawnLocation, GetActorRotation(),
-                                                                    SpawnParams);
-                    if (Missile)
-                    {
-                        Missile->SetTargetOrDirection(MissileTargetArray[i], GetActorForwardVector());
-                    }
-                }
+                Missile->SetTargetOrDirection(MissileTargetArray[i], GetActorForwardVector());
             }
         }
     }
+
 }
 
 
@@ -237,6 +244,7 @@ void APlayerPawn::UpgradePlayer(const EPlayerUpgrade NewUpgrade)
 
             break;
         }
+        AquieredUpgrade(NewUpgrade);
     }
 }
 

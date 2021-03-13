@@ -1,5 +1,6 @@
 #include "Player/PlayerPlaneMovementComponent.h"
 #include "Player/PlayerPawn.h"
+#include "Player/MovementEffect/PlayerEmpMovementEffect.h"
 #include "Components/PrimitiveComponent.h"
 #include "TimerManager.h"
 
@@ -10,6 +11,8 @@ UPlayerPlaneMovementComponent::UPlayerPlaneMovementComponent()
     DashesLeft = MaxDashes;
     DashCooldown = 3.f;
     bCanDash = true;
+
+    EmpMovementEffectClass = UPlayerEmpMovementEffect::StaticClass();
 }
 
 void UPlayerPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -17,6 +20,17 @@ void UPlayerPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick Ti
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
+
+
+void UPlayerPlaneMovementComponent::BeginPlay()
+{
+    Super::BeginPlay();
+    if(Cast<UPlayerEmpMovementEffect>(EmpMovementEffect) != nullptr)
+    {
+        ((UPlayerEmpMovementEffect*) EmpMovementEffect)->PlayerPawn = PlayerPawn;
+    }
+}
+
 
 void UPlayerPlaneMovementComponent::DashInput()
 {

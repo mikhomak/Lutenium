@@ -37,6 +37,7 @@ void UEmpMovementEffect::Activate(FVector NewRotationDirection, const float NewR
             Active = true;
             PlaneMovementComponent->bStalling = true;
             PlaneMovementComponent->ResetCurrentAcceleration();
+            AdditionalActivateEffect();
         }
     }
     StartSafeDeactivation();

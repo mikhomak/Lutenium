@@ -25,3 +25,5 @@ void UMovementEffect::ApplyEffect()
 }
 
 void UMovementEffect::AdditionalDeactivationEffect(){}
+
+void UMovementEffect::AdditionalActivateEffect(){}

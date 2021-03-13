@@ -36,6 +36,8 @@ class APlayerPawn : public APawn
 {
 	GENERATED_BODY()
 
+public:
+
 	/**
 	 * Root Component
 	 * Main component that moves the player
@@ -72,8 +74,6 @@ class APlayerPawn : public APawn
 	 */
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Movement")
 	class UPlayerPlaneMovementComponent* PlaneMovement;
-
-public:
 
 	/** Constructor */
 	APlayerPawn();
@@ -298,6 +298,31 @@ public:
 	 */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Upgrades|Upgrade values")
 	bool bHasDoubleAimLocks;
+
+	/**
+	 * Event when the player got an upgrade
+	 * Invokes only if the upgrade hasn't been aquiered before
+	 * @see UpgradePlayer()
+	 */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Effects")
+	void AquieredUpgrade(EPlayerUpgrade Upgrade);
+	// ------------------------------------------------------------------
+	// Other effects
+	// ------------------------------------------------------------------
+
+	/**
+	 * Effects when emp gets activated
+	 * @see UPlayerEmpMovementEffect
+	 */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Effects")
+	void EmpActivateEffect();
+
+	/**
+	 * Effects when emp gets deactivated
+	 * @see UPlayerEmpMovementEffect
+	 */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Effects")
+	void EmpDeactivateEffect();
 
 protected:
 

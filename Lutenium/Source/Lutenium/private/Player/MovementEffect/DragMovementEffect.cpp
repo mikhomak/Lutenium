@@ -22,4 +22,5 @@ void UDragMovementEffect::Activate(const float NewDragForce, FVector NewDragDire
     }
     Active = true;
     StartSafeDeactivation();
+    AdditionalActivateEffect();
 }

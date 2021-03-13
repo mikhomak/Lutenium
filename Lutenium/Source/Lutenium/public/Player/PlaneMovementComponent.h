@@ -99,11 +99,19 @@ public:
     // MovementEffects
     // ------------------------------------------------------------------
 
-    UPROPERTY(Category = Effects, BlueprintReadOnly, EditDefaultsOnly)
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Effects")
     class UDragMovementEffect* DragMovementEffect;
 
-    UPROPERTY(Category = Effects, BlueprintReadOnly, EditDefaultsOnly)
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Effects")
     class UEmpMovementEffect* EmpMovementEffect;
+
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Effects|Class")
+    TSubclassOf<class UDragMovementEffect> DragMovementEffectClass;
+
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Effects|Class")
+    TSubclassOf<class UEmpMovementEffect> EmpMovementEffectClass;
+
+
 
 protected:
 

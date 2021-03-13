@@ -20,6 +20,7 @@ public:
     virtual void TickComponent(float DeltaTime, ELevelTick TickType,
                                FActorComponentTickFunction* ThisTickFunction) override;
 
+    virtual void BeginPlay() override;
 
 
     UPROPERTY(BlueprintReadWrite, Category = "Owner", EditAnywhere)

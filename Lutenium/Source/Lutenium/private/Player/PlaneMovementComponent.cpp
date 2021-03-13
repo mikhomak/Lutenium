@@ -44,8 +44,9 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 
     Dot = 0;
 
-
-
+    /** Movement effects */
+    DragMovementEffectClass = UDragMovementEffect::StaticClass();
+    EmpMovementEffectClass = UEmpMovementEffect::StaticClass();
 
 }
 
@@ -55,9 +56,9 @@ void UPlaneMovementComponent::BeginPlay()
     FTimerHandle TimerHandle;
     GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UPlaneMovementComponent::CalculateAcceleration, 0.05f,
                                            true);
-    DragMovementEffect = NewObject<UDragMovementEffect>();
+    DragMovementEffect = NewObject<UDragMovementEffect>(this, DragMovementEffectClass);
     DragMovementEffect->InitEffect(PhysicsComponent, this);
-    EmpMovementEffect = NewObject<UEmpMovementEffect>();
+    EmpMovementEffect = NewObject<UEmpMovementEffect>(this, EmpMovementEffectClass);
     EmpMovementEffect->InitEffect(PhysicsComponent, this);
     MovementEffects.Init(DragMovementEffect, 1);
     MovementEffects.Add(EmpMovementEffect);

@@ -77,6 +77,13 @@ public:
     virtual void AdditionalDeactivationEffect();
 
     /**
+     * Virtual function to add specific logic for MovementEffect children if needed
+     * Invokes in Activate()
+     */
+    UFUNCTION(BlueprintCallable, Category = "Effect")
+    virtual void AdditionalActivateEffect();
+
+    /**
      * Debug property
      * Checks whenever we want to execute the code of the effect
      */
