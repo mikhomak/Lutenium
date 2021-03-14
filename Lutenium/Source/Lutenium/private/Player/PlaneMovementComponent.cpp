@@ -40,6 +40,7 @@ UPlaneMovementComponent::UPlaneMovementComponent()
     YawnControl = 0.5f;
     PitchControl = 0.8f;
     RollControl = 2.8f;
+    NoThrustPitchControl = 1.2f;
     AerodynamicMultiplier = 14000.f;
 
     Dot = 0;
@@ -93,8 +94,8 @@ void UPlaneMovementComponent::ThrustInput(const float Val)
 
 void UPlaneMovementComponent::PitchInput(const float Val)
 {
-    const float AppliedPitch = !bThrustUp ? Val * 2 : Val;
-    AddTorqueToThePlane(OwnerPawn->GetActorRightVector(), AppliedPitch * PitchControl);
+    const float AppliedPitchControl = bThrustUp ? PitchControl : NoThrustPitchControl;
+    AddTorqueToThePlane(OwnerPawn->GetActorRightVector(), AppliedPitchControl * Val);
 }
 
 void UPlaneMovementComponent::YawnInput(const float Val)
@@ -122,8 +123,7 @@ void UPlaneMovementComponent::AddTorqueToThePlane(const FVector Direction, const
 {
     if (InputVal != 0)
     {
-        const FVector ZeroVector;
-        const FVector DirectionToTilt = FMath::Lerp(ZeroVector, Direction * InputVal * AirControl, 0.1f);
+        const FVector DirectionToTilt = FMath::Lerp(FVector::ZeroVector, Direction * InputVal * AirControl, 0.1f);
         PhysicsComponent->AddTorqueInRadians(DirectionToTilt, FName(), true);
     }
 }
@@ -132,7 +132,7 @@ void UPlaneMovementComponent::Thrusting(float InputVal)
 {
     bThrusting = InputVal != 0;
     bThrustUp = InputVal > 0 ? true : false;
-    if (bThrusting && CurrentAcceleration < MaxAccelerationUntilTakeOff  && !bHasAppliedTakeOffAcceleration)
+    if (bThrustUp && CurrentAcceleration < MaxAccelerationUntilTakeOff  && !bHasAppliedTakeOffAcceleration)
     {
         CurrentAcceleration += TakeOffAddedAcceleration;
         bHasAppliedTakeOffAcceleration = true;

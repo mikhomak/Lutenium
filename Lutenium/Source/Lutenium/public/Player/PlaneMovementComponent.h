@@ -118,22 +118,25 @@ protected:
     // ------------------------------------------------------------------
     // CONTROLS
     // ------------------------------------------------------------------
-    UPROPERTY(Category = Control, EditDefaultsOnly, BlueprintReadWrite)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Control")
     float AirControl;
 
-    UPROPERTY(Category = Control, EditDefaultsOnly, BlueprintReadWrite)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Control")
     float YawnControl;
 
-    UPROPERTY(Category = Control, EditDefaultsOnly, BlueprintReadWrite)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Control")
     float PitchControl;
 
-    UPROPERTY(Category = Control, EditDefaultsOnly, BlueprintReadWrite)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Control")
+    float NoThrustPitchControl;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Control")
     float RollControl;
 
-    UPROPERTY(Category = Control, EditDefaultsOnly)
+    UPROPERTY(EditDefaultsOnly, Category = "Control")
     float LerpVelocity;
 
-    UPROPERTY(Category = Control, EditDefaultsOnly)
+    UPROPERTY(EditDefaultsOnly, Category = "Control")
     float LerpVelocityNoThrust;
 
     // ------------------------------------------------------------------
