@@ -19,7 +19,7 @@ void UPlayerEmpMovementEffect::AdditionalActivateEffect()
 	}
 
 
-	PlayerPawn->EmpActivateEffect();
+	PlayerPawn->OnEmpActivateEvent();
 }
 
 void UPlayerEmpMovementEffect::AdditionalDeactivationEffect()
@@ -34,5 +34,5 @@ void UPlayerEmpMovementEffect::AdditionalDeactivationEffect()
 	}
 
 
-	PlayerPawn->EmpDeactivateEffect();
+	PlayerPawn->OnEmpDeactivateEvent();
 }

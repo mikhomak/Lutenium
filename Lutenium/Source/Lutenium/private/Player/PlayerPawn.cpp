@@ -11,6 +11,7 @@
 #include "Components/BoxComponent.h"
 #include "Player/Missile.h"
 #include "Player/MissileTargetHit.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "AssistUtils/AssistUtils.h"
 
 APlayerPawn::APlayerPawn()
@@ -42,6 +43,10 @@ APlayerPawn::APlayerPawn()
     PlaneMovement->SetPawn(this);
     PlaneMovement->PhysicsComponent = PlaneBox;
 
+
+    // Weapons
+    CurrentWeapon = EPlayerWeapon::Missile;
+
     // Missile
     MissileAimTraceLength = 50000.f;
     FirstRaytraceMissileAimRadius = 20000.f;
@@ -52,12 +57,15 @@ APlayerPawn::APlayerPawn()
     MissileTargetRaycastHitLocationArray.Init(FVector::ZeroVector, 2);
     MissileTargetArray.Init(nullptr, 2);
 
+    // Machine Gun
+    MachineGunFireRate = 0.3f;
+
     // Upgrades
     // At the begging we don't have any upgrades
     UpgradeMap.Add(EPlayerUpgrade::IncreasedAimRadius, false);
     UpgradeMap.Add(EPlayerUpgrade::DoubleMissileAimLock, false);
     UpgradeMap.Add(EPlayerUpgrade::BaseSupport, false);
-    UpgradeMap.Add(EPlayerUpgrade::Gun, false);
+    UpgradeMap.Add(EPlayerUpgrade::MachineGun, false);
     UpgradeMap.Add(EPlayerUpgrade::IncreasedDyingVelocity, false);
     UpgradeMap.Add(EPlayerUpgrade::BarrelRoll, false);
     // Upgrade values
@@ -69,7 +77,10 @@ void APlayerPawn::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
     /* Raycasting every tick to update MissileTargetRaycastHitLocation so we can show the UI of the current missile target(even tho it has been shot yet) */
-    MissileAimLock();
+    if(CurrentWeapon == EPlayerWeapon::Missile)
+    {
+        MissileAimLock();
+    }
 }
 
 
@@ -139,7 +150,77 @@ void APlayerPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputCo
     PlayerInputComponent->BindAxis("Yawn", PlaneMovement, &UPlayerPlaneMovementComponent::YawnInput);
     PlayerInputComponent->BindAxis("Roll", PlaneMovement, &UPlayerPlaneMovementComponent::RollInput);
     PlayerInputComponent->BindAction("Stop", IE_Released, PlaneMovement, &UPlayerPlaneMovementComponent::DashInput);
-    PlayerInputComponent->BindAction("Fire", IE_Released, this, &APlayerPawn::FireMissile);
+    PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &APlayerPawn::WeaponInputPressed);
+    PlayerInputComponent->BindAction("Fire", IE_Released, this, &APlayerPawn::WeaponInputReleased);
+}
+
+
+void APlayerPawn::WeaponInputPressed()
+{
+    bWeaponFiring = true;
+    if(CurrentWeapon == EPlayerWeapon::Missile)
+    {
+        FireMissile();
+    }
+    else
+    {
+        // Deactivating HUD for aim lock
+        MissileTargetRaycastHitType = EMissileTargetHit::NoHit;
+        // Starting firign da maching gun
+        GetWorld()->GetTimerManager().SetTimer(MachingGunTimerHandler, this, &APlayerPawn::FireMachineGun, MachineGunFireRate,
+                                       true);
+    }
+}
+
+
+void APlayerPawn::WeaponInputReleased()
+{
+    bWeaponFiring = false;
+    if(CurrentWeapon == EPlayerWeapon::MachineGun)
+    {
+        GetWorld()->GetTimerManager().ClearTimer(MachingGunTimerHandler);
+    }
+}
+
+
+void APlayerPawn::SwitchWeapons(EPlayerWeapon NextWeapon)
+{
+
+    // if we don't have an upgrade for machine gun and the next weapon is machine gun
+    if(NextWeapon == EPlayerWeapon::MachineGun && !bHasMachineGun)
+    {
+        return;
+    }
+
+    if(CurrentWeapon != NextWeapon)
+    {
+        CurrentWeapon = NextWeapon;
+        OnSwitchWeaponEvent(NextWeapon);
+    }
+}
+
+void APlayerPawn::FireMachineGun()
+{
+    // safety checks
+    if(MachineGunBulletClass == nullptr)
+    {
+        return;
+    }
+
+    UWorld* World = GetWorld();
+    if (World == nullptr)
+    {
+        return;
+    }
+
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.Owner = this;
+    SpawnParams.Instigator = this;
+
+    FVector SpawnLocation = PlaneMesh->GetSocketLocation("MissileMuzzle");
+    AActor* Bullet = World->SpawnActor<AMissile>(MissileClass, SpawnLocation, UKismetMathLibrary::MakeRotFromX(GetActorForwardVector()),
+                                                            SpawnParams);
+    OnFireMachineGunEvent();
 }
 
 void APlayerPawn::FireMissile()
@@ -231,19 +312,22 @@ void APlayerPawn::UpgradePlayer(const EPlayerUpgrade NewUpgrade)
                 MissileAimTraceLength = MissileAimTraceLength * IncreasedAimRadiusMultiplier;
                 FirstRaytraceMissileAimRadius = FirstRaytraceMissileAimRadius * IncreasedAimRadiusMultiplier;
                 SecondRaytraceMissileAimRadius = SecondRaytraceMissileAimRadius * IncreasedAimRadiusMultiplier;
-                UpgradeMap[EPlayerUpgrade::IncreasedAimRadius] = true; // At this point we are sure this key exists in map
             break;
 
             case EPlayerUpgrade::DoubleMissileAimLock:
                 bHasDoubleAimLocks = true;
                 AmountOfFireMissile = 2;
-                UpgradeMap[EPlayerUpgrade::DoubleMissileAimLock] = true;
+            break;
+
+            case EPlayerUpgrade::MachineGun:
+                bHasMachineGun = true;
             break;
 
             default:
 
             break;
         }
+        UpgradeMap[NewUpgrade] = true; // At this point we are sure this key exists in map
         AquieredUpgrade(NewUpgrade);
     }
 }

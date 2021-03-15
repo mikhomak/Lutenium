@@ -18,11 +18,25 @@ enum class EPlayerUpgrade : uint8
 	IncreasedAimRadius UMETA(DisplayName = "Increased missile aim radius"),					// Increases aim radiusfor the missiles
 	DoubleMissileAimLock UMETA(DisplayName = "Double missile aim lock"),					// Adds second missile aim lock
 	BaseSupport UMETA(DisplayName = "Base support missile"),								// Support missile from the base to the current aim lock
-	Gun UMETA(DisplayName = "Machine Gun"),													// Just a gun
+	MachineGun UMETA(DisplayName = "Machine Gun"),													// Just a gun
 	IncreasedDyingVelocity  UMETA(DisplayName = "Increased velocity to die on hit"),		// Increases the velocity needed to die on hit
 	BarrelRoll UMETA(DisplayName = "Fast barrerl roll"),									// DO A BARREL ROLL (fast one)
 	BackMirrors UMETA(DisplayName = "Back mirrors") 										// Adds Back mirrors to the UI
 };
+
+
+/**
+ * Player weapons
+ * Could be switched between
+ * Missile by default
+ */
+UENUM(BlueprintType)
+enum class EPlayerWeapon : uint8
+{
+	Missile UMETA(DisplayName = "Missile"),
+	MachineGun UMETA(DisplayName = "MachineGun")
+};
+
 
 
 /**
@@ -127,6 +141,101 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "PlaneMovement")
 	void DashImpact();
 
+
+	// ------------------------------------------------------------------
+	// Weapons
+	// ------------------------------------------------------------------
+
+	/**
+	 * Current weapon
+	 * Could be switch in SwitchWeapons()
+	 * Missile - Shoots missiles. Should be pressed everytime to fire them
+	 * MachineGun - Shoots bullets. Can be hold
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons")
+	EPlayerWeapon CurrentWeapon;
+
+	/**
+	 * Fires the weapon
+	 * Sets bWeaponFiring = true
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Weapons")
+	void WeaponInputPressed();
+
+	/**
+	 * Sets bWeaponFiring = false
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Weapons")
+	void WeaponInputReleased();
+
+	/**
+	 * Indicates whenever the weapon input is hold or not
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons")
+	bool bWeaponFiring;
+
+	/**
+	 * Switches the current weapon
+	 * Updates CurrentWeapon
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Weapons")
+	void SwitchWeapons(EPlayerWeapon NextWeapon);
+
+	/**
+	 * Event when the weapon has changed
+	 * Called in SwitchWeapons()
+	 */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Weapons")
+	void OnSwitchWeaponEvent(EPlayerWeapon NextWeapon);
+
+	// ------------------------------------------------------------------
+	// MachineGun
+	// ------------------------------------------------------------------
+
+	/**
+	 * Indicates whenever the player has a machine gun
+	 * That's an upgrade
+	 * Changes in UpgradePlayer()
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons|MachineGun")
+	bool bHasMachineGun;
+
+	/**
+	 * Bullet class of a machine gun to spawn
+	 * Maybe I would create a base class in cpp for that, but this bullet should be straightforward and can be done in BP
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapons|MachineGun")
+	TSubclassOf<class AActor> MachineGunBulletClass;
+
+	/**
+	 * Fire rate of a MachineGun when the weapon input is hold (bWeaponFiring == true)
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons|MachineGun")
+	float MachineGunFireRate;
+
+	/**
+	 * Timer to handle the FireMachineGun()
+	 * We need to save it in order to clear the timer
+	 * Starts in WeaponInputPressed()
+	 * Ends in WeaponInputReleased()
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons|MachineGun")
+	FTimerHandle MachingGunTimerHandler;
+
+	/**
+	 * Spawns BulletClass each MachineGunFireRate
+	 * Invokes in the WeaponInputPressed() with MachingGunTimerHandler
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Weapons|MachineGun")
+	void FireMachineGun();
+
+	/**
+	 * Event when the bullet gets fired from a machine gun
+	 * Being called in FireMachineGun()
+	 */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Weapons|MachineGun")
+	void OnFireMachineGunEvent();
+
 	// ------------------------------------------------------------------
 	// Missile
 	// ------------------------------------------------------------------
@@ -144,13 +253,13 @@ public:
 	 * @see AmountOfFireMissile
 	 * @see bHasDoubleAimLocks
 	 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Missile")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons|Missile")
 	TArray<USceneComponent*> MissileTargetArray;
 
 	/**
 	 * Array of locations of MissileTargetArray
 	 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Missile")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons|Missile")
 	TArray<FVector> MissileTargetRaycastHitLocationArray;
 
 	/**
@@ -160,21 +269,21 @@ public:
 	 * @see MissileAimLock()
 	 * @see MissileTargetArray
 	 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Missile")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons|Missile")
 	EMissileTargetHit MissileTargetRaycastHitType;
 
 	/**
 	 * Missicle class to spawn
 	 * Create a BP child class of AMissile and assing it to this
 	 */
-	UPROPERTY(EditDefaultsOnly, Category = "Missile")
+	UPROPERTY(EditDefaultsOnly, Category = "Weapons|Missile")
 	TSubclassOf<class AMissile> MissileClass;
 
 	/**
 	 * The length to raycast for the missile
 	 * Could be upgraded with EPlayerUpgrade::IncreasedAimRadius
 	 */
-	UPROPERTY(EditDefaultsOnly, Category = "Missile")
+	UPROPERTY(EditDefaultsOnly, Category = "Weapons|Missile")
 	float MissileAimTraceLength;
 
 	/**
@@ -182,7 +291,7 @@ public:
 	 * The first raycast that we do, we are searching for the MonsterWPHurtbox
 	 * @see MissileAimLock()
 	 */
-	UPROPERTY(EditDefaultsOnly, Category = "Missile")
+	UPROPERTY(EditDefaultsOnly, Category = "Weapons|Missile")
 	float FirstRaytraceMissileAimRadius;
 
 	/**
@@ -190,7 +299,7 @@ public:
 	 * @see FirstRaytraceMissileAimRadius
 	 * @see MissileAimLock()
 	 */
-	UPROPERTY(EditDefaultsOnly, Category = "Missile")
+	UPROPERTY(EditDefaultsOnly, Category = "Weapons|Missile")
 	float SecondRaytraceMissileAimRadius;
 
 	/**
@@ -198,7 +307,7 @@ public:
 	 * @see FirstRaytraceMissileAimRadius
 	 * @see MissileAimLock()
 	 */
-	UPROPERTY(EditDefaultsOnly, Category = "Missile")
+	UPROPERTY(EditDefaultsOnly, Category = "Weapons|Missile")
 	float UpgradeRaytraceMissileAimRadius;
 
 	/**
@@ -209,7 +318,7 @@ public:
 	 * EXAMPLE - if we have 3 missilse, and found hurtbox on the first one and haven't found one on the second one, then 2-3 will follow [0]
 	 * @see MissileAimLock()
 	 */
-	UFUNCTION(BlueprintCallable, Category = "Missile")
+	UFUNCTION(BlueprintCallable, Category = "Weapons|Missile")
 	void FireMissile();
 
 	/**
@@ -229,7 +338,7 @@ public:
 	 * If not, then MissileTargetRaycastHitLocationArray[1] and MissileTargetArray[1] will have the same values as the first one
 	 * @warning this method does not fire missiles, it just updates the Aim Lock variables. To fire missile use FireMissile()
 	 */
-	UFUNCTION(BlueprintCallable, Category = "Missile")
+	UFUNCTION(BlueprintCallable, Category = "Weapons|Missile")
 	void MissileAimLock();
 
 	/**
@@ -239,7 +348,7 @@ public:
 	 * @see MissileAimLock()
 	 * @see bHasDoubleAimLocks
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Missile")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapons|Missile")
 	int32 AmountOfFireMissile;
 
 private:
@@ -305,10 +414,11 @@ public:
 	 * Invokes only if the upgrade hasn't been aquiered before
 	 * @see UpgradePlayer()
 	 */
-	UFUNCTION(BlueprintImplementableEvent, Category = "Effects")
+	UFUNCTION(BlueprintImplementableEvent, Category = "Upgrade")
 	void AquieredUpgrade(EPlayerUpgrade Upgrade);
+
 	// ------------------------------------------------------------------
-	// Other effects
+	// Other Events
 	// ------------------------------------------------------------------
 
 	/**
@@ -316,14 +426,14 @@ public:
 	 * @see UPlayerEmpMovementEffect
 	 */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Effects")
-	void EmpActivateEffect();
+	void OnEmpActivateEvent();
 
 	/**
 	 * Effects when emp gets deactivated
 	 * @see UPlayerEmpMovementEffect
 	 */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Effects")
-	void EmpDeactivateEffect();
+	void OnEmpDeactivateEvent();
 
 protected:
 

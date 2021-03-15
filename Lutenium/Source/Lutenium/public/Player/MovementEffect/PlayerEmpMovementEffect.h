@@ -23,10 +23,10 @@ public:
     UPROPERTY(BlueprintReadWrite, Category = "Effect")
     class APlayerPawn* PlayerPawn;
 
-    /** Invoking EmpActivateEffect() of APlayerPawn */
+    /** Invoking OnEmpActivateEvent() of APlayerPawn */
     virtual void AdditionalActivateEffect() override;
 
-    /** Invoking EmpDeactivateEffect() of APlayerPawn */
+    /** Invoking OnEmpDeactivateEvent() of APlayerPawn */
     virtual void AdditionalDeactivationEffect() override;
 
 };
