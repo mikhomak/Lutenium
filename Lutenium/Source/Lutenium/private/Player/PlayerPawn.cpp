@@ -68,6 +68,8 @@ APlayerPawn::APlayerPawn()
     UpgradeMap.Add(EPlayerUpgrade::MachineGun, false);
     UpgradeMap.Add(EPlayerUpgrade::IncreasedDyingVelocity, false);
     UpgradeMap.Add(EPlayerUpgrade::BarrelRoll, false);
+    UpgradeMap.Add(EPlayerUpgrade::BackMirrors, false);
+
     // Upgrade values
     IncreasedAimRadiusMultiplier = 1.3f;
     bHasDoubleAimLocks = false;
@@ -327,7 +329,14 @@ void APlayerPawn::UpgradePlayer(const EPlayerUpgrade NewUpgrade)
 
             break;
         }
-        UpgradeMap[NewUpgrade] = true; // At this point we are sure this key exists in map
+        if(UpgradeMap.Find(NewUpgrade) != nullptr)
+        {
+            UpgradeMap[NewUpgrade] = true;
+        }
+        else
+        {
+            UpgradeMap.Add(NewUpgrade, true);
+        }
         AquieredUpgrade(NewUpgrade);
     }
 }
