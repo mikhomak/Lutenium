@@ -7,6 +7,15 @@
 #include "PlaneMovementComponent.generated.h"
 
 
+/**
+ * Generic Plane movement component
+ * Can work with any actor/pawn
+ * Has 4 main Inputs:
+ *      Thrust(W-S) - adds acceleration to the jet. ThrustInput()
+ *      Pitch(UP-DOWN) - adds pitch torque to the jet. PitchInput()
+ *      Roll(RIGHT-LEFT) - adds roll torque to the jet. RollInput()
+ *      Yawn(A-D) - adds yawn torque to the jet. YawnInput()
+ */
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class LUTENIUM_API UPlaneMovementComponent : public UActorComponent
 {
