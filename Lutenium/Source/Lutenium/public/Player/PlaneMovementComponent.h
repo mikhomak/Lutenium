@@ -15,8 +15,12 @@
  *      Pitch(UP-DOWN) - adds pitch torque to the jet. PitchInput()
  *      Roll(RIGHT-LEFT) - adds roll torque to the jet. RollInput()
  *      Yawn(A-D) - adds yawn torque to the jet. YawnInput()
+ * Rotation inputs are not calculated during the tick, they should be bind with the input axis.
+ * Thrust input has to bind with the input axis as well, however it's uses a timer to calculate the acceleration and adds it to the physics velocity
+ * Needs physics component(UPrimitiveComponent with PhysicsEnabled) in order to work and a pawn
+ *
  */
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(meta=(BlueprintSpawnableComponent) )
 class LUTENIUM_API UPlaneMovementComponent : public UActorComponent
 {
     GENERATED_BODY()
@@ -61,6 +65,7 @@ public:
     // ------------------------------------------------------------------
     FORCEINLINE UFUNCTION(Category = "General")
     void SetBox(class UPrimitiveComponent* PrimitiveComp){ PhysicsComponent = PrimitiveComp; }
+
     FORCEINLINE UFUNCTION(Category = "General")
     void SetPawn(class APawn* Pawn){ OwnerPawn = Pawn; }
 
