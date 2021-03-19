@@ -346,5 +346,5 @@ void APlayerPawn::UpgradePlayer(const EPlayerUpgrade NewUpgrade)
 bool APlayerPawn::IsUpgradeAquiered(const EPlayerUpgrade Upgrade)
 {
     bool* bHasUpgrade = UpgradeMap.Find(Upgrade);
-    return bHasUpgrade != nullptr && bHasUpgrade;
+    return bHasUpgrade != nullptr && *bHasUpgrade == true;
 }

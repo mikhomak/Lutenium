@@ -379,7 +379,7 @@ public:
 	 * @param Upgrade - check if this ugrpade has a value of true in UpgradeMap
 	 * @return true if it has been aquiered, false it hasn't been aquiered
 	 */
-	UFUNCTION(BlueprintCallable, Category = "Upgrades")
+	UFUNCTION(BlueprintPure, Category = "Upgrades")
 	bool IsUpgradeAquiered(const EPlayerUpgrade Upgrade);
 
 	/**
