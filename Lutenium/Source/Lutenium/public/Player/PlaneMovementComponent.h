@@ -51,6 +51,9 @@ public:
     UPROPERTY(BlueprintReadWrite, Category = "Owner")
     class UPrimitiveComponent* PhysicsComponent;
 
+    UPROPERTY(BlueprintReadWrite, Category = "General")
+    float fDeltaTime;
+
     UPlaneMovementComponent();
 
     virtual void TickComponent(float DeltaTime, ELevelTick TickType,
@@ -82,6 +85,7 @@ public:
 
     FORCEINLINE UFUNCTION(Category = "General")
     void SetPawn(class APawn* Pawn){ OwnerPawn = Pawn; }
+
 
     // ------------------------------------------------------------------
     // Movement
@@ -161,10 +165,10 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Control")
     float RollControl;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Control")
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Control")
     float LerpVelocity;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Control")
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Control")
     float LerpVelocityNoThrust;
 
     // ------------------------------------------------------------------
@@ -172,23 +176,23 @@ protected:
     // ------------------------------------------------------------------
 
     /* Added acceleration while thrusting */
-    UPROPERTY(Category = Speed, EditDefaultsOnly)
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed" )
     float ThrustUpAcceleration;
 
     /* Added acceleration while stopping */
-    UPROPERTY(Category = Speed, EditDefaultsOnly)
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed")
     float ThrustDownAcceleration;
 
     /* Deceleration while no thrust is applied */
-    UPROPERTY(Category = Speed, EditDefaultsOnly)
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed")
     float NoThrustDeceleration;
 
     /* If the speed is below this value, the acceleration "kicks in" faster*/
-    UPROPERTY(Category = Speed, EditDefaultsOnly)
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed")
     float MaxAccelerationUntilTakeOff;
 
     /* If the speed is below this value, the acceleration "kicks in" faster*/
-    UPROPERTY(Category = Speed, EditDefaultsOnly)
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed")
     float TakeOffAddedAcceleration;
 
     bool bHasAppliedTakeOffAcceleration;
@@ -218,16 +222,16 @@ protected:
 
 
     /* Gravity depends on the speed, the faster the plane is moving the less gravity is applied */
-    UPROPERTY(Category = CustomPhysics, EditAnywhere)
+    UPROPERTY(BlueprintReadOnly, EditAnywhere)
     float CustomMaxGravity;
 
-    UPROPERTY(Category = CustomPhysics, EditAnywhere)
+    UPROPERTY(BlueprintReadOnly, EditAnywhere)
     float CustomMinGravity;
 
 
     /* Aerodynamic is applied all the time */
     /* Aerodynamic vector =  Opposite velocity vector * Multiplier*/
-    UPROPERTY(Category = Control, EditDefaultsOnly)
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Control")
     float AerodynamicMultiplier;
 
     UPROPERTY(BlueprintReadOnly, Category = "Physics")
@@ -252,12 +256,18 @@ protected:
     // ------------------------------------------------------------------
     // DEBUG
     // ------------------------------------------------------------------
-    UPROPERTY(Category = Debug, EditDefaultsOnly, BlueprintReadWrite)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Debug")
     bool bDeactivateThrust;
 
-    UPROPERTY(Category = Debug, EditDefaultsOnly, BlueprintReadWrite)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Debug")
     bool bDeactivateAerodynamics;
 
-    UPROPERTY(Category = Debug, EditDefaultsOnly, BlueprintReadWrite)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Debug")
     bool bDeactivateGravity;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Debug")
+    bool bApplyAerodynamicsOnSpecificValue_DEBUG;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Debug")
+    bool bScaleAerodynamicsWithSpeed_DEBUG;
 };

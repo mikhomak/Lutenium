@@ -11,6 +11,7 @@
 #include "Math/UnrealMathUtility.h"
 #include "TimerManager.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 UPlaneMovementComponent::UPlaneMovementComponent()
 {
@@ -69,6 +70,7 @@ void UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
                                             FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+    fDeltaTime = DeltaTime;
     PhysicsComponent->AddTorqueInDegrees(PhysicsComponent->GetPhysicsAngularVelocityInDegrees() * -1.f / 0.5f, FName(), true);
     AddGravityForce(DeltaTime);
     if(!bStalling)
@@ -94,8 +96,8 @@ void UPlaneMovementComponent::ThrustInput(const float Val)
 
 void UPlaneMovementComponent::PitchInput(const float Val)
 {
-    const float AppliedPitchControl = bThrustUp ? PitchControl : NoThrustPitchControl;
-    AddTorqueToThePlane(OwnerPawn->GetActorRightVector(), AppliedPitchControl * Val);
+    const float fAppliedPitchControl = bThrustUp ? PitchControl : NoThrustPitchControl;
+    AddTorqueToThePlane(OwnerPawn->GetActorRightVector(), fAppliedPitchControl * Val);
 }
 
 void UPlaneMovementComponent::YawnInput(const float Val)
@@ -183,6 +185,7 @@ void UPlaneMovementComponent::AddGravityForce(float DeltaTime) const
     UpVectorNormalized.Normalize();
     const float AppliedGravity = FVector::DotProduct(UpVectorNormalized, FVector(0, 0, 1)) *
         GravityDependingOnSpeed;
+    // GravityDependingOnSpeed is negative, so the vector will point
     PhysicsComponent->AddForce(FVector(0, 0, AppliedGravity), FName(), true);
 }
 
@@ -196,18 +199,21 @@ void UPlaneMovementComponent::CalculateAerodynamic(float DeltaTime)
     FVector Velocity = OwnerPawn->GetVelocity();
     const FVector UpVector = OwnerPawn->GetActorUpVector();
     Velocity.Normalize();
-    const float DotProduct = FVector::DotProduct(UpVector, Velocity);
+    const float DotProduct = UKismetMathLibrary::Abs(FVector::DotProduct(UpVector, Velocity));
+    const float fAbsDotProduct = UKismetMathLibrary::Abs(DotProduct);
 
-
-    if (DotProduct < 0)
+    if (bApplyAerodynamicsOnSpecificValue_DEBUG || fAbsDotProduct > 0.6f)
     {
         // The greater our speed, the greatere the aerodynamic effect
-        const FVector AppliedAerodynamic = Velocity * DotProduct * AerodynamicMultiplier *
-        (
-            (CurrentAcceleration - MinSpeed)
-                        /
-            (MaxSpeed - MinSpeed)
-        ); // Maping current velocity value between 0 and 1
+        const float fSpeedLerp =
+         (!bScaleAerodynamicsWithSpeed_DEBUG ?
+            (
+                (CurrentAcceleration - MinSpeed)
+                            /
+                (MaxSpeed - MinSpeed)
+            ) // Maping current velocity value between 0 and 1
+            :    1);
+        const FVector AppliedAerodynamic = Velocity * fAbsDotProduct * AerodynamicMultiplier * fSpeedLerp * -1.f;
 
         PhysicsComponent->AddForce(AppliedAerodynamic, FName(), true);
     }
