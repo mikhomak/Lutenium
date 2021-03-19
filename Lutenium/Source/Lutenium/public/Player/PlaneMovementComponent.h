@@ -16,7 +16,21 @@
  *      Roll(RIGHT-LEFT) - adds roll torque to the jet. RollInput()
  *      Yawn(A-D) - adds yawn torque to the jet. YawnInput()
  * Rotation inputs are not calculated during the tick, they should be bind with the input axis.
- * Thrust input has to bind with the input axis as well, however it's uses a timer to calculate the acceleration and adds it to the physics velocity
+ * Thrust input has to bind with the input axis as well, however it's uses a timer to calculate the acceleration and adds it to the physics velocity in tick
+ * ----------------------
+ * ----------------------
+ * ----------------------
+ * Movement Effects:
+ * PlaneMovementComponent can have Effects that could add aditional "movement effects" each tick
+ * Currently there are two effects:
+ *      1) UDragMomvementEffect - Dragging the player to a specific direction
+ *      2) UEmpMovementEffect - Rotates the jet and applying stalling to the player
+ * ----------------------
+ * ----------------------
+ * ----------------------
+ * Stalling
+ * Stalling - removes current acceleration and rotates the jet by a random rotation (see UEmpMovementEffect)
+ * To exit stalling, the jet should get accelerate to a certain point (ExitStallAcceleration)
  * Needs physics component(UPrimitiveComponent with PhysicsEnabled) in order to work and a pawn
  *
  */
