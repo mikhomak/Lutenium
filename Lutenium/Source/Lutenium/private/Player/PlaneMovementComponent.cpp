@@ -41,7 +41,7 @@ UPlaneMovementComponent::UPlaneMovementComponent()
     PitchControl = 0.8f;
     RollControl = 2.8f;
     NoThrustPitchControl = 1.2f;
-    AerodynamicMultiplier = 14000.f;
+    AerodynamicMultiplier = 28000.f;
 
     Dot = 0;
 

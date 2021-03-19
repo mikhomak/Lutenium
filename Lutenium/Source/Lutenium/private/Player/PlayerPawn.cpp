@@ -49,8 +49,8 @@ APlayerPawn::APlayerPawn()
 
     // Missile
     MissileAimTraceLength = 50000.f;
-    FirstRaytraceMissileAimRadius = 20000.f;
-    SecondRaytraceMissileAimRadius = 40000.f;
+    FirstRaytraceMissileAimRadius = 10000.f;
+    SecondRaytraceMissileAimRadius = 20000.f;
     UpgradeRaytraceMissileAimRadius = 10000.f;
     AmountOfFireMissile = 1;
     MissileTargetRaycastHitType = EMissileTargetHit::NoHit;
@@ -168,6 +168,8 @@ void APlayerPawn::WeaponInputPressed()
     {
         // Deactivating HUD for aim lock
         MissileTargetRaycastHitType = EMissileTargetHit::NoHit;
+        // Fires the first bullet immediately
+        FireMachineGun();
         // Starting firign da maching gun
         GetWorld()->GetTimerManager().SetTimer(MachingGunTimerHandler, this, &APlayerPawn::FireMachineGun, MachineGunFireRate,
                                        true);
@@ -220,7 +222,7 @@ void APlayerPawn::FireMachineGun()
     SpawnParams.Instigator = this;
 
     FVector SpawnLocation = PlaneMesh->GetSocketLocation("MissileMuzzle");
-    AActor* Bullet = World->SpawnActor<AMissile>(MissileClass, SpawnLocation, UKismetMathLibrary::MakeRotFromX(GetActorForwardVector()),
+    AActor* Bullet = World->SpawnActor<AActor>(MachineGunBulletClass, SpawnLocation, UKismetMathLibrary::MakeRotFromX(GetActorForwardVector()),
                                                             SpawnParams);
     OnFireMachineGunEvent();
 }
