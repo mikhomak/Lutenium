@@ -45,6 +45,15 @@ protected:
     virtual void BeginPlay() override;
 
 public:
+
+    // ------------------------------------------------------------------
+    // General
+    // ------------------------------------------------------------------
+
+    /**
+     * Owner pawn
+     * Needs to be set after
+     */
     UPROPERTY(BlueprintReadWrite, Category = "Owner")
     class APawn* OwnerPawn;
 
