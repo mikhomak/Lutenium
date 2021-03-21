@@ -52,19 +52,33 @@ public:
 
     /**
      * Owner pawn
-     * Needs to be set after
+     * Needs to be set after creating the component
      */
     UPROPERTY(BlueprintReadWrite, Category = "Owner")
     class APawn* OwnerPawn;
 
+    /**
+     * Main component(Root component of the owner actor) of to aapply the forces to
+     * Should have SimulatePhysics = true
+     * Needs to be set after creating the component
+     */
     UPROPERTY(BlueprintReadWrite, Category = "Owner")
     class UPrimitiveComponent* PhysicsComponent;
 
+    /**
+     * Delta time
+     * Updates in the TickComponent()
+     */
     UPROPERTY(BlueprintReadWrite, Category = "General")
     float fDeltaTime;
 
+    /** Constructor idk*/
     UPlaneMovementComponent();
 
+    /**
+     * In tick we apply thrust, movement effects, stalling and aerodynamics
+     * Torque are applied in input methods that are bind with the input axises
+     */
     virtual void TickComponent(float DeltaTime, ELevelTick TickType,
                                FActorComponentTickFunction* ThisTickFunction) override;
 
