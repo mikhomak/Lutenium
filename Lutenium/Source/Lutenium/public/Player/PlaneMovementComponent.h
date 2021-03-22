@@ -86,15 +86,35 @@ public:
     // ------------------------------------------------------------------
     // Inputs
     // ------------------------------------------------------------------
+
+    /**
+     *
+     * @warning In your pawn class bind this method to the thrust axis!
+     */
     UFUNCTION(BlueprintCallable, Category = "Input")
     void ThrustInput(float Val);
 
+    /**
+     * Adds torque to the Y axis
+     * Uses AddTorqueToThePlane()
+     * @warning In your pawn class bind this method to the Pitch axis!
+     */
     UFUNCTION(BlueprintCallable, Category = "Input")
     void PitchInput(float Val);
 
+    /**
+     * Adds torque to the Z axis
+     * Uses AddTorqueToThePlane()
+     * @warning In your pawn class bind this method to the Yawn axis!
+     */
     UFUNCTION(BlueprintCallable, Category = "Input")
     void YawnInput(float Val);
 
+    /**
+     * Adds torque to the X axis
+     * Uses AddTorqueToThePlane()
+     * @warning In your pawn class bind this method to the Roll axis!
+     */
     UFUNCTION(BlueprintCallable, Category = "Input")
     void RollInput(float Val);
 
@@ -103,10 +123,17 @@ public:
     // ------------------------------------------------------------------
     // Pawn setters
     // ------------------------------------------------------------------
-    FORCEINLINE UFUNCTION(Category = "General")
+
+    /**
+     * You can use this setter in BP to set the physics component
+     */
+    FORCEINLINE UFUNCTION(Category = "Owner")
     void SetBox(class UPrimitiveComponent* PrimitiveComp){ PhysicsComponent = PrimitiveComp; }
 
-    FORCEINLINE UFUNCTION(Category = "General")
+    /**
+     * You can use this setter in BP to set the owner pawn
+     */
+    FORCEINLINE UFUNCTION(Category = "Owner")
     void SetPawn(class APawn* Pawn){ OwnerPawn = Pawn; }
 
 
