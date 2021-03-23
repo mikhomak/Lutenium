@@ -128,7 +128,7 @@ public:
 	 * When the value has reached a certain point, invokes this event
 	 * It was made for activating "drift lines", when aerdonyamcis is activated
 	 * Activate drift lines in BP
-	 * @see UPlaneMovementComponent - CalculateAerodynamic()
+	 * @see UPlaneMovementComponent::CalculateAerodynamic()
 	 */
 	UFUNCTION(BlueprintImplementableEvent, Category = "PlaneMovement")
 	void DotHasChange(const float Dot);
@@ -136,11 +136,18 @@ public:
 	/**
 	 * Event called when Dash has been activated
 	 * Do some fancy shit with camera n VFX/SFX in BP
-	 * @see UPlayerPlaneMovementComponent - DashInput()
+	 * @see UPlayerPlaneMovementComponent::DashInput()
 	 */
 	UFUNCTION(BlueprintImplementableEvent, Category = "PlaneMovement")
 	void DashImpact();
 
+	/**
+	 * Event called when the acceleration is low enought so the next acceleration would "kick in"
+	 * Do some fancy shit with camera n VFX/SFX in BP
+	 * @see UPlaneMovementComponent::Thrusting()
+	 */
+	UFUNCTION(BlueprintImplementableEvent, Category = "PlaneMovement")
+	void OnKickInAccelerationEvent();
 
 	// ------------------------------------------------------------------
 	// Weapons

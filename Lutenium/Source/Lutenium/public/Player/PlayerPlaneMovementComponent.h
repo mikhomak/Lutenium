@@ -57,4 +57,8 @@ public:
     void ResetDashCooldown();
 
 	virtual void HasDotChangedEventCaller(const float fNewDot) override;
+
+
+    virtual void OnKickInAccelerationEventCaller() override;
+
 };

@@ -287,6 +287,10 @@ protected:
     UPROPERTY(BlueprintReadOnly, Category = "Physics")
     float Dot;
 
+
+    UFUNCTION()
+    virtual void OnKickInAccelerationEventCaller();
+
     void AddGravityForce(float DeltaTime) const;
 
     /* Fires the event when Dot value changes drastically to enable VFX in blueprints */

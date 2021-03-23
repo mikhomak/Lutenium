@@ -139,6 +139,7 @@ void UPlaneMovementComponent::Thrusting(float InputVal)
     {
         CurrentAcceleration += TakeOffAddedAcceleration;
         bHasAppliedTakeOffAcceleration = true;
+        OnKickInAccelerationEventCaller();
     }
     else if(CurrentAcceleration > MaxAccelerationUntilTakeOff)
     {
@@ -237,6 +238,11 @@ void UPlaneMovementComponent::HasDotChanged(const float DotProduct)
 
 
 void UPlaneMovementComponent::HasDotChangedEventCaller(const float fNewDot)
+{
+
+}
+
+void UPlaneMovementComponent::OnKickInAccelerationEventCaller()
 {
 
 }

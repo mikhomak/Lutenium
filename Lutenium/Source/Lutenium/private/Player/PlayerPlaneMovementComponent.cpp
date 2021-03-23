@@ -64,3 +64,8 @@ void UPlayerPlaneMovementComponent::HasDotChangedEventCaller(const float fNewDot
 {
 	PlayerPawn->DotHasChange(fNewDot);
 }
+
+void UPlayerPlaneMovementComponent::OnKickInAccelerationEventCaller()
+{
+    PlayerPawn->OnKickInAccelerationEvent();
+}
