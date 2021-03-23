@@ -237,15 +237,24 @@ protected:
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed")
     float NoThrustDeceleration;
 
-    /* If the speed is below this value, the acceleration "kicks in" faster*/
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed")
-    float MaxAccelerationUntilTakeOff;
+
+    // ------------------------------------------------------------------
+    // KICK IN
+    // ------------------------------------------------------------------
 
     /* If the speed is below this value, the acceleration "kicks in" faster*/
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed")
-    float TakeOffAddedAcceleration;
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed|KickIn")
+    float MinAccelerationUntilKickIn;
 
-    bool bHasAppliedTakeOffAcceleration;
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed|KickIn")
+    float MaxAccelerationUntilKickIn;
+
+    /* If the speed is below this value, the acceleration "kicks in" faster*/
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed|KickIn")
+    float KickInAddedAcceleration;
+
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Speed|KickIn")
+    bool bHasAppliedKickInAcceleration;
 
     float CurrentThrust;
 

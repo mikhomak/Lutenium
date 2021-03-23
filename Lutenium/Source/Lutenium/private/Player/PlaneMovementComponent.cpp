@@ -31,8 +31,11 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 	LerpVelocityNoThrust = 0.03f;
 
     ExitStallAcceleration = 18000.f;
-    MaxAccelerationUntilTakeOff = 6000.f;
-    TakeOffAddedAcceleration = 12000.f;
+
+    // Kick in
+    MinAccelerationUntilKickIn = 8000.f;
+    MaxAccelerationUntilKickIn = 15000.f;
+    KickInAddedAcceleration = 12000.f;
 
     CustomMaxGravity = -800.f;
     CustomMinGravity = -100.f;
@@ -135,7 +138,7 @@ void UPlaneMovementComponent::Thrusting(float InputVal)
 {
     bThrusting = InputVal != 0;
     bThrustUp = InputVal > 0 ? true : false;
-    if (bThrustUp && CurrentAcceleration < MaxAccelerationUntilTakeOff  && !bHasAppliedTakeOffAcceleration)
+    if (bThrustUp && CurrentAcceleration < MaxAccelerationUntilKickIn && CurrentAcceleration > MinAccelerationUntilKickIn  && !bHasAppliedTakeOffAcceleration)
     {
         CurrentAcceleration += TakeOffAddedAcceleration;
         bHasAppliedTakeOffAcceleration = true;
