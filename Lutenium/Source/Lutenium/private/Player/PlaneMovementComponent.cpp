@@ -45,6 +45,7 @@ UPlaneMovementComponent::UPlaneMovementComponent()
     AerodynamicMultiplier = 28000.f;
 
     Dot = 0;
+    DotThreshold = 0.6f;
 
     /** Movement effects */
     DragMovementEffectClass = UDragMovementEffect::StaticClass();
@@ -183,7 +184,7 @@ void UPlaneMovementComponent::AddGravityForce(float DeltaTime) const
                                                                             CurrentAcceleration);
     FVector UpVectorNormalized = PhysicsComponent->GetUpVector();
     UpVectorNormalized.Normalize();
-    const float AppliedGravity = FVector::DotProduct(UpVectorNormalized, FVector(0, 0, 1)) *
+    const float AppliedGravity = UKismetMathLibrary::Abs(FVector::DotProduct(UpVectorNormalized, FVector(0, 0, 1))) *
         GravityDependingOnSpeed;
     // GravityDependingOnSpeed is negative, so the vector will point
     PhysicsComponent->AddForce(FVector(0, 0, AppliedGravity), FName(), true);
@@ -199,7 +200,7 @@ void UPlaneMovementComponent::CalculateAerodynamic(float DeltaTime)
     FVector Velocity = OwnerPawn->GetVelocity();
     const FVector UpVector = OwnerPawn->GetActorUpVector();
     Velocity.Normalize();
-    const float DotProduct = UKismetMathLibrary::Abs(FVector::DotProduct(UpVector, Velocity));
+    const float DotProduct = FVector::DotProduct(UpVector, Velocity);
     const float fAbsDotProduct = UKismetMathLibrary::Abs(DotProduct);
 
     if (bApplyAerodynamicsOnSpecificValue_DEBUG || fAbsDotProduct > 0.6f)
@@ -227,15 +228,15 @@ void UPlaneMovementComponent::HasDotChanged(const float DotProduct)
 {
     const float AbsPreviousDot = Dot < 0 ? Dot * -1.f : Dot;
     const float AbsDot = DotProduct < 0 ? DotProduct * -1.f : DotProduct;
-    if ((AbsPreviousDot > 0.6f && AbsDot < 0.6f) || (AbsPreviousDot < 0.6f && AbsDot > 0.6f))
+    if ((AbsPreviousDot > DotThreshold && AbsDot < DotThreshold) || (AbsPreviousDot < DotThreshold && AbsDot > DotThreshold))
     {
-        HasDotChangedEventCaller();
+        HasDotChangedEventCaller(DotProduct);
     }
     Dot = DotProduct;
 }
 
 
-void UPlaneMovementComponent::HasDotChangedEventCaller()
+void UPlaneMovementComponent::HasDotChangedEventCaller(const float fNewDot)
 {
 
 }

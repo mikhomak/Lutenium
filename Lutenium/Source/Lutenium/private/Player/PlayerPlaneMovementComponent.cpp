@@ -60,7 +60,7 @@ void UPlayerPlaneMovementComponent::ResetDashCooldown()
 }
 
 
-void UPlayerPlaneMovementComponent::HasDotChangedEventCaller()
+void UPlayerPlaneMovementComponent::HasDotChangedEventCaller(const float fNewDot)
 {
-	PlayerPawn->DotHasChange();
+	PlayerPawn->DotHasChange(fNewDot);
 }

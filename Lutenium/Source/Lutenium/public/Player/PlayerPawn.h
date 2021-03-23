@@ -131,7 +131,7 @@ public:
 	 * @see UPlaneMovementComponent - CalculateAerodynamic()
 	 */
 	UFUNCTION(BlueprintImplementableEvent, Category = "PlaneMovement")
-	void DotHasChange();
+	void DotHasChange(const float Dot);
 
 	/**
 	 * Event called when Dash has been activated

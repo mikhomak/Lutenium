@@ -56,5 +56,5 @@ public:
 
     void ResetDashCooldown();
 
-	virtual void HasDotChangedEventCaller() override;
+	virtual void HasDotChangedEventCaller(const float fNewDot) override;
 };

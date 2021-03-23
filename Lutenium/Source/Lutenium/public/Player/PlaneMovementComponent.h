@@ -293,10 +293,12 @@ protected:
     void HasDotChanged(float DotProduct);
 
     UFUNCTION()
-    virtual void HasDotChangedEventCaller();
+    virtual void HasDotChangedEventCaller(const float fNewDot);
 
     void CalculateAerodynamic(float DeltaTime);
 
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Aerodynamic")
+    float DotThreshold;
 
     // ------------------------------------------------------------------
     // MovementEffects
