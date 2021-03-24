@@ -88,7 +88,9 @@ public:
     // ------------------------------------------------------------------
 
     /**
-     *
+     * Thrust input W/D
+     * Adds acceleration to the front vector
+     * Uses Thrusting()
      * @warning In your pawn class bind this method to the thrust axis!
      */
     UFUNCTION(BlueprintCallable, Category = "Input")
@@ -138,27 +140,50 @@ public:
 
 
     // ------------------------------------------------------------------
-    // Movement
+    // Acceleration
     // ------------------------------------------------------------------
-    FORCEINLINE UFUNCTION(Category ="Speed")
+
+
+    /* Added acceleration while thrusting */
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed" )
+    float ThrustUpAcceleration;
+
+    /* Added acceleration while stopping */
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed")
+    float ThrustDownAcceleration;
+
+    /* Deceleration while no thrust is applied */
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed")
+    float NoThrustDeceleration;
+
+
+    /**
+     * Max current acceleration
+     * @warning speed(that lerps with the velocity) can be higher than this, but acceleration can not!
+     */
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Acceleration")
+    float MaxAcceleration;
+
+    /*
+     * Min current acceleration
+     */
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Acceleration")
+    float MinAcceleration;
+
+    /**
+     * Returns current acceleration
+     * Acceleration != Velocity!
+     * @return CurrentAcceleration
+     */
+    FORCEINLINE UFUNCTION(Category ="Acceleration")
     float GetCurrentAcceleration() {return CurrentAcceleration;}
 
-    FORCEINLINE UFUNCTION(Category = "Speed")
+    /**
+     * Sets the current acceleration to 0
+     * Used in EMP movement effect
+     */
+    FORCEINLINE UFUNCTION(Category = "Acceleration")
     void ResetCurrentAcceleration() { CurrentAcceleration = 0;}
-
-
-    UPROPERTY(Category = Control, BlueprintReadWrite, EditAnywhere)
-    bool bStalling;
-
-    // ------------------------------------------------------------------
-    // SPEED
-    // ------------------------------------------------------------------
-
-    UPROPERTY(Category = Speed, EditDefaultsOnly, BlueprintReadOnly)
-    float MaxSpeed;
-
-    UPROPERTY(Category = Speed, EditDefaultsOnly, BlueprintReadOnly)
-    float MinSpeed;
 
     /* Alpha to lerp the speed when the value is above MaxSpeed(could happen with dash) */
     UPROPERTY(Category = Speed, EditDefaultsOnly, BlueprintReadOnly)
@@ -170,6 +195,17 @@ public:
     UPROPERTY(Category = Speed, BlueprintReadOnly, EditDefaultsOnly)
     float MaxThrustDownAcceleration;
 
+
+    UPROPERTY(Category = Control, BlueprintReadWrite, EditAnywhere)
+    bool bStalling;
+
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Control")
+    float LerpVelocity;
+
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Control")
+    float LerpVelocityNoThrust;
+
+
     void AddAcceleration(float AddedAcceleration);
 
     UPROPERTY(Category = Speed, BlueprintReadWrite, EditDefaultsOnly)
@@ -177,6 +213,9 @@ public:
 
     UPROPERTY(Category = Speed, BlueprintReadOnly)
     float CurrentAcceleration;
+
+    UFUNCTION()
+    virtual void OnKickInAccelerationEventCaller();
     // ------------------------------------------------------------------
     // MovementEffects
     // ------------------------------------------------------------------
@@ -215,27 +254,11 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Control")
     float RollControl;
 
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Control")
-    float LerpVelocity;
 
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Control")
-    float LerpVelocityNoThrust;
 
     // ------------------------------------------------------------------
     // SPEED
     // ------------------------------------------------------------------
-
-    /* Added acceleration while thrusting */
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed" )
-    float ThrustUpAcceleration;
-
-    /* Added acceleration while stopping */
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed")
-    float ThrustDownAcceleration;
-
-    /* Deceleration while no thrust is applied */
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed")
-    float NoThrustDeceleration;
 
 
     // ------------------------------------------------------------------
@@ -297,8 +320,6 @@ protected:
     float Dot;
 
 
-    UFUNCTION()
-    virtual void OnKickInAccelerationEventCaller();
 
     void AddGravityForce(float DeltaTime) const;
 

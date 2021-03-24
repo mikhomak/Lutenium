@@ -20,8 +20,8 @@ UPlaneMovementComponent::UPlaneMovementComponent()
 
     MaxThrustUpAcceleration = 25000.f;
     MaxThrustDownAcceleration = 5000.f;
-    MaxSpeed = 49000.f;
-    MinSpeed = 50.f;
+    MaxAcceleration = 49000.f;
+    MinAcceleration = 50.f;
     MaxSpeedLerpAlpha = 0.4f;
     ThrustUpAcceleration = 400.f;
     ThrustDownAcceleration = -2000.f;
@@ -151,16 +151,16 @@ void UPlaneMovementComponent::Thrusting(float InputVal)
 }
 
 
-// Lerping the speed to the maximum if the current acceleration is greater than MaxSpeed(Allows dashing), and in other case clamping it to the maxSpeed
+// Lerping the speed to the maximum if the current acceleration is greater than MaxAcceleration(Allows dashing), and in other case clamping it to the MaxAcceleration
 void UPlaneMovementComponent::AddThrust(float DeltaTime) const
 {
     if(bDeactivateThrust)
     {
         return;
     }
-    const float Speed = CurrentAcceleration > MaxSpeed
-                            ? FMath::Lerp(MaxSpeed, CurrentAcceleration, MaxSpeedLerpAlpha)
-                            : FMath::Clamp(CurrentAcceleration, MinSpeed, MaxSpeed);
+    const float Speed = CurrentAcceleration > MaxAcceleration
+                            ? FMath::Lerp(MaxAcceleration, CurrentAcceleration, MaxSpeedLerpAlpha)
+                            : FMath::Clamp(CurrentAcceleration, MinAcceleration, MaxAcceleration);
 
     const FVector Velocity = FMath::Lerp(PhysicsComponent->GetPhysicsLinearVelocity(), PhysicsComponent->GetForwardVector() * Speed,
                                         bThrustUp ? LerpVelocity : LerpVelocityNoThrust);
@@ -182,7 +182,7 @@ void UPlaneMovementComponent::AddGravityForce(float DeltaTime) const
         return;
     }
     // The faster we travel, the less gravity is applied
-    const float GravityDependingOnSpeed = FMath::GetMappedRangeValueClamped(FVector2D(MinSpeed, MaxSpeed),
+    const float GravityDependingOnSpeed = FMath::GetMappedRangeValueClamped(FVector2D(MinAcceleration, MaxAcceleration),
                                                                             FVector2D(CustomMaxGravity,
                                                                                       CustomMinGravity),
                                                                             CurrentAcceleration);
@@ -213,9 +213,9 @@ void UPlaneMovementComponent::CalculateAerodynamic(float DeltaTime)
         const float fSpeedLerp =
          (!bScaleAerodynamicsWithSpeed_DEBUG ?
             (
-                (CurrentAcceleration - MinSpeed)
+                (CurrentAcceleration - MinAcceleration)
                             /
-                (MaxSpeed - MinSpeed)
+                (MaxAcceleration - MinAcceleration)
             ) // Maping current velocity value between 0 and 1
             :    1);
         const FVector AppliedAerodynamic = Velocity * fAbsDotProduct * AerodynamicMultiplier * fSpeedLerp * -1.f;
