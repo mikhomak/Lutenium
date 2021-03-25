@@ -311,7 +311,7 @@ float APlayerPawn::GetPitchInput() const
 void APlayerPawn::BaseSupportAttack()
 {
     // checks
-    if(IsUpgradeAquiered(EPlayerUpgrade::BaseSupport))
+    if(!IsUpgradeAquiered(EPlayerUpgrade::BaseSupport))
     {
         return;
     }
@@ -359,7 +359,7 @@ void APlayerPawn::UpgradePlayer(const EPlayerUpgrade NewUpgrade)
                 bHasMachineGun = true;
             break;
 
-            case EPlayerWeapon::BaseSupport:
+            case EPlayerUpgrade::BaseSupport:
                 bCanBaseAttack = true;
             default:
 
