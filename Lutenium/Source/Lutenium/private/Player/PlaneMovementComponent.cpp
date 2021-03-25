@@ -138,15 +138,15 @@ void UPlaneMovementComponent::Thrusting(float InputVal)
 {
     bThrusting = InputVal != 0;
     bThrustUp = InputVal > 0 ? true : false;
-    if (bThrustUp && CurrentAcceleration < MaxAccelerationUntilKickIn && CurrentAcceleration > MinAccelerationUntilKickIn  && !bHasAppliedTakeOffAcceleration)
+    if (bThrustUp && CurrentAcceleration < MaxAccelerationUntilKickIn && CurrentAcceleration > MinAccelerationUntilKickIn  && !bHasAppliedKickInAcceleration)
     {
-        CurrentAcceleration += TakeOffAddedAcceleration;
-        bHasAppliedTakeOffAcceleration = true;
+        CurrentAcceleration += KickInAddedAcceleration;
+        bHasAppliedKickInAcceleration = true;
         OnKickInAccelerationEventCaller();
     }
-    else if(CurrentAcceleration > MaxAccelerationUntilTakeOff)
+    else if(CurrentAcceleration > MinAccelerationUntilKickIn)
     {
-        bHasAppliedTakeOffAcceleration = false;
+        bHasAppliedKickInAcceleration = false;
     }
 }
 
@@ -207,7 +207,7 @@ void UPlaneMovementComponent::CalculateAerodynamic(float DeltaTime)
     const float DotProduct = FVector::DotProduct(UpVector, Velocity);
     const float fAbsDotProduct = UKismetMathLibrary::Abs(DotProduct);
 
-    if (bApplyAerodynamicsOnSpecificValue_DEBUG || fAbsDotProduct > 0.6f)
+    if (bApplyAerodynamicsOnSpecificValue_DEBUG || fAbsDotProduct > DotThreshold)
     {
         // The greater our speed, the greatere the aerodynamic effect
         const float fSpeedLerp =

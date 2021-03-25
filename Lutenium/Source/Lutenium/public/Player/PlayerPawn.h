@@ -200,6 +200,58 @@ public:
 	// ------------------------------------------------------------------
 
 	/**
+	 * Base Support that launches missile
+	 * The player has to have an upgrade EPlayerUpgrade::BaseSupport
+	 * The target is APlayerPawn::MissileTargetArray[0]
+	 * @warning This function doesn't not launch the missile by itself, it only invokes the APlayerPawn::OnBaseSupportAttackEvent() with the current missile target!
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Weapons|BaseSupport")
+	void BaseSupportAttack();
+
+	/**
+	 * Event when BaseSupportAttack is called
+	 * Launch the missile from the BP!
+	 * The target is APlayerPawn::MissileTargetArray[0]
+	 */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Weapons|BaseSupport")
+	void OnBaseSupportAttackEvent(const USceneComponent* Target);
+
+	/**
+	 * Check if the APlayerPawn::BaseSupportAttack()
+	 * Updates in reset cooldown APlayerPawn::ResetBaseAttackCooldown()
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons|BaseSupport")
+	bool bCanBaseAttack;
+
+	/**
+	 * Cooldown time between each base support attack
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons|BaseSupport")
+	float fBaseAttackCooldown;
+
+	/**
+	 * Resets the cooldown of the base support attack
+	 * Invokes in APlayerPawn::BaseSuportAttack() after fBaseAttackCooldown
+	 */
+	FORCEINLINE UFUNCTION(Category = "Weapons|BaseSupport")
+	void ResetBaseAttackCooldown()
+	{
+		bCanBaseAttack = true;
+		OnBaseSupportCooldownReset();
+	}
+
+	/**
+	 * Event get calls when the base support cooldown is reset
+	 * Invokes in ResetBaseAttackCooldown()
+	 */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Weapons|BaseSupport")
+	void OnBaseSupportCooldownReset();
+
+	// ------------------------------------------------------------------
+	// MachineGun
+	// ------------------------------------------------------------------
+
+	/**
 	 * Indicates whenever the player has a machine gun
 	 * That's an upgrade
 	 * Changes in UpgradePlayer()

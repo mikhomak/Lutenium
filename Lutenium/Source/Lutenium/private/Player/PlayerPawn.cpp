@@ -60,6 +60,10 @@ APlayerPawn::APlayerPawn()
     // Machine Gun
     MachineGunFireRate = 0.3f;
 
+    // Base support
+    bCanBaseAttack = false;
+    fBaseAttackCooldown = 30.f;
+
     // Upgrades
     // At the begging we don't have any upgrades
     UpgradeMap.Add(EPlayerUpgrade::IncreasedAimRadius, false);
@@ -304,6 +308,34 @@ float APlayerPawn::GetPitchInput() const
     return 0.f;
 }
 
+void APlayerPawn::BaseSupportAttack()
+{
+    // checks
+    if(IsUpgradeAquiered(EPlayerUpgrade::BaseSupport))
+    {
+        return;
+    }
+
+    if(bCanBaseAttack == false)
+    {
+        return;
+    }
+    // we use MissileTargetArray[0] as a target for the BaseSupport
+    // it's the first missile target
+    if(MissileTargetArray[0] == nullptr)
+    {
+        return;
+    }
+
+    OnBaseSupportAttackEvent(MissileTargetArray[0]);
+    bCanBaseAttack = false;
+
+    FTimerHandle BaseSupportCooldownTimerHandler;
+    GetWorld()->GetTimerManager().SetTimer(BaseSupportCooldownTimerHandler, this, &APlayerPawn::ResetBaseAttackCooldown, fBaseAttackCooldown,
+                                       false);
+
+}
+
 
 void APlayerPawn::UpgradePlayer(const EPlayerUpgrade NewUpgrade)
 {
@@ -327,6 +359,8 @@ void APlayerPawn::UpgradePlayer(const EPlayerUpgrade NewUpgrade)
                 bHasMachineGun = true;
             break;
 
+            case EPlayerWeapon::BaseSupport:
+                bCanBaseAttack = true;
             default:
 
             break;
