@@ -144,15 +144,30 @@ public:
     // ------------------------------------------------------------------
 
 
-    /* Added acceleration while thrusting */
+    /*
+     * Added acceleration when the thurst input is > 0
+     * Adds to CurrentAcceleation
+     * Used in Thrusting()
+     */
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed" )
     float ThrustUpAcceleration;
 
-    /* Added acceleration while stopping */
+
+    /*
+     * Added acceleration when the thurst input is < 0
+     * Adds to CurrentAcceleation
+     * This value should be negative
+     * Used in Thrusting()
+     */
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed")
     float ThrustDownAcceleration;
 
-    /* Deceleration while no thrust is applied */
+    /*
+     * Added acceleration when the thurst input is < 0
+     * Adds to CurrentAcceleation
+     * This value should be negative
+     * Used in Thrusting()
+     */
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed")
     float NoThrustDeceleration;
 
