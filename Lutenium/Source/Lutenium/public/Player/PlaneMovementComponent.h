@@ -144,12 +144,20 @@ public:
     // ------------------------------------------------------------------
 
 
+    /**
+     * Current Acceleration of the plane
+     * Clamped between MinAcceleration and MaxAcceleration
+     */
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Acceleration")
+    float CurrentAcceleration;
+
+
     /*
      * Added acceleration when the thurst input is > 0
      * Adds to CurrentAcceleation
      * Used in Thrusting()
      */
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed" )
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Acceleration" )
     float ThrustUpAcceleration;
 
 
@@ -159,7 +167,7 @@ public:
      * This value should be negative
      * Used in Thrusting()
      */
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed")
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Acceleration")
     float ThrustDownAcceleration;
 
     /*
@@ -168,7 +176,7 @@ public:
      * This value should be negative
      * Used in Thrusting()
      */
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Speed")
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Acceleration")
     float NoThrustDeceleration;
 
 
@@ -226,8 +234,6 @@ public:
     UPROPERTY(Category = Speed, BlueprintReadWrite, EditDefaultsOnly)
     float ExitStallAcceleration;
 
-    UPROPERTY(Category = Speed, BlueprintReadOnly)
-    float CurrentAcceleration;
 
     UFUNCTION()
     virtual void OnKickInAccelerationEventCaller();
