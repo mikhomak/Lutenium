@@ -146,6 +146,7 @@ public:
 
     /**
      * Current Acceleration of the plane
+     * Acceleration is added to the physical velocity as ForwardVector * CurrentAcceleration
      * Clamped between MinAcceleration and MaxAcceleration
      */
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Acceleration")
@@ -208,25 +209,48 @@ public:
     FORCEINLINE UFUNCTION(Category = "Acceleration")
     void ResetCurrentAcceleration() { CurrentAcceleration = 0;}
 
-    /* Alpha to lerp the speed when the value is above MaxSpeed(could happen with dash) */
-    UPROPERTY(Category = Speed, EditDefaultsOnly, BlueprintReadOnly)
+    /* 
+     * If the current acceleration is more than MaxAcceleration, than we lerp the current acceleration with the MaxAcceleration using this value as a alpha for lerp
+     * Basically lerping the value to the MaxAcceleration when it's beyond MaxAcceleration, without "hard" clamping
+     * Can happen when dashing
+     */
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Acceleration")
     float MaxSpeedLerpAlpha;
 
-    UPROPERTY(Category = Speed, BlueprintReadOnly, EditDefaultsOnly)
+    /**
+     * Maximum acceleration the plane could get when the ThrustInput is 1
+     * Not the same as MaxAcceleration!
+     * This one is the Maximum that we can get only with Thrusting, while MaxAcceleration also works with custom inputs, such as dashes and so on
+     */
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Acceleration")
     float MaxThrustUpAcceleration;
 
-    UPROPERTY(Category = Speed, BlueprintReadOnly, EditDefaultsOnly)
-    float MaxThrustDownAcceleration;
+    /**
+     * Minimum acceleration
+     * This value clamping the minimum acceleration, CurrentAcceleration can't get below this value!
+     */
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Acceleration")
+    float MinThrustAcceleration;
 
 
-    UPROPERTY(Category = Control, BlueprintReadWrite, EditAnywhere)
-    bool bStalling;
-
+    /**
+     * To add the acceleartion, each tick we setting the PhysicalVelocity 
+     * The value we add is the lerp value between CurrentPhysicalVelocity and ForwardVector * Speed
+     * Speed is calculated with CurrentAcceleration, MaxAcceleration, MinAcceleration and MaxSpeedLerpAlpha
+     * @see AddThrust
+     * @see CurrentAcceleration
+     * @warning bDeactivateThrust deactivates AddThrust() and thus deactivetes thrusting
+     */
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Control")
     float LerpVelocity;
 
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Control")
     float LerpVelocityNoThrust;
+
+
+    UPROPERTY(Category = Control, BlueprintReadWrite, EditAnywhere)
+    bool bStalling;
+
 
 
     void AddAcceleration(float AddedAcceleration);

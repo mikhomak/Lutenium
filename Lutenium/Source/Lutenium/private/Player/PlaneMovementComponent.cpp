@@ -19,7 +19,7 @@ UPlaneMovementComponent::UPlaneMovementComponent()
     PrimaryComponentTick.TickGroup = TG_PrePhysics;
 
     MaxThrustUpAcceleration = 25000.f;
-    MaxThrustDownAcceleration = 5000.f;
+    MinThrustAcceleration = 5000.f;
     MaxAcceleration = 49000.f;
     MinAcceleration = 50.f;
     MaxSpeedLerpAlpha = 0.4f;
@@ -172,7 +172,7 @@ void UPlaneMovementComponent::CalculateAcceleration()
     CurrentAcceleration += bThrustUp
                                ? ThrustUpAcceleration
                                : (bThrusting ? ThrustDownAcceleration : NoThrustDeceleration);
-    CurrentAcceleration = FMath::Clamp(CurrentAcceleration, MaxThrustDownAcceleration, MaxThrustUpAcceleration);
+    CurrentAcceleration = FMath::Clamp(CurrentAcceleration, MinThrustAcceleration, MaxThrustUpAcceleration);
 }
 
 void UPlaneMovementComponent::AddGravityForce(float DeltaTime) const
