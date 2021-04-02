@@ -244,14 +244,25 @@ public:
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Control")
     float LerpVelocity;
 
+    /**
+     * The functionality is the same as LerpVelocity but this one is applied when there is no thurst(ThrustInput = 0)
+     * Usually should be higher than LerpVelocity because that way the jet gets more control withour thrust
+     */
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Control")
     float LerpVelocityNoThrust;
 
 
+    /**
+     * Jet can be stalling
+     * Change this value if you want it to stall
+     * Stalling is basically removing all the force applied(Acceleration) from the jet, and thus it will fall down
+     * The only way to stop stalling is to increase ThrustInput and thus increase the CurrentAcceleration
+     * When the current Acceleartion is biger than ExitStallAcceleration, the jet stops stalling
+     * @warning if true, Doesn't apply Accleration and Aerodynamics, however the controls are still working!
+     * @see UEmpMovementEffect
+     */
     UPROPERTY(Category = Control, BlueprintReadWrite, EditAnywhere)
     bool bStalling;
-
-
 
     void AddAcceleration(float AddedAcceleration);
 
