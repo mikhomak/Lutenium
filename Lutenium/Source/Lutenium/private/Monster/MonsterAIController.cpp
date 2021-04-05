@@ -152,5 +152,5 @@ void AMonsterAIController::SetHasReachedCurrentTarget(bool bHasReached)
 void AMonsterAIController::StartOrStopMoving(bool bStartOrStopMoving)
 {
     bCanMove = bStartOrStopMoving;
-    BlackboardComp->SetValueAsBool(FN_BV_bHasReachedCurrentTarget, bStartOrStopMoving);
+    BlackboardComp->SetValueAsBool(FN_BV_bIsMonsterMoving, bStartOrStopMoving);
 }

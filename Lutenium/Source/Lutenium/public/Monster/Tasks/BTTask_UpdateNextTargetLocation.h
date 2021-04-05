@@ -26,7 +26,7 @@ public:
     bool bStartOrStop;
 
     UPROPERTY(EditAnywhere)
-    int32 CurrnetTargetIndex;
+    FBlackboardKeySelector CurrnetTargetIndexBlackboardKey; 
 
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;

@@ -7,7 +7,7 @@
 
 UBTTask_UpdateNextTargetLocation::UBTTask_UpdateNextTargetLocation()
 {
-  NodeName = TEXT("Stop or starts the movement");
+  NodeName = TEXT("Updates the next target position and optionally starts moving");
 }
 
 
@@ -21,7 +21,15 @@ EBTNodeResult::Type UBTTask_UpdateNextTargetLocation::ExecuteTask(UBehaviorTreeC
 	}
 
   /* Updates the value of bCanMove in MonsterAI and also updates the Blackboard value */
-  MonsterController->StartMovingToNextTargetLocation(CurrnetTargetIndex, bStartOrStop);
+  UBlackboardComponent* MyBlackboard = OwnerComp.GetBlackboardComponent();
+  if(MyBlackboard == nullptr)
+  {
+		return EBTNodeResult::Failed;
+  }
+
+  int32 CurrentTargetIndex = MyBlackboard->GetValueAsInt(CurrnetTargetIndexBlackboardKey.SelectedKeyName);
+
+  MonsterController->StartMovingToNextTargetLocation(++CurrentTargetIndex, bStartOrStop);
 
   return EBTNodeResult::Succeeded;
 
