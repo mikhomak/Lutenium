@@ -47,7 +47,7 @@ public:
 	/**
 	 * Movement component
 	 * We don't need complex behaviour for the monster
-	 * It should simply go from place A to place B without
+	 * It should simply go from place A to place B without complicated bullshiete
 	 */
 	UPROPERTY(Category = General, VisibleDefaultsOnly, BlueprintReadOnly)
 	class UFloatingPawnMovement* PawnMovement;
@@ -136,14 +136,14 @@ public:
 	 * Makes all the decesion
 	 * @warning MAKE LOGIC IN THE BEHAIVOR TREE ONLY
 	 */
-	UPROPERTY(EditDefaultsOnly, Category = "AI")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "AI")
 	class UBehaviorTree* BehaviorTree;
 
 	/**
 	 * The controller of the monster
 	 * Try to use controller(in all logic based stuff, ex: tasks, services, etc..) instead of this class itself as much as possible
 	 */
-	UPROPERTY(VisibleDefaultsOnly, Category = "AI")
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AI")
 	class AMonsterAIController* MonsterAI;
 
 	// ------------------------------------------------------------------
@@ -179,6 +179,27 @@ public:
 	/* Handles direct damage from the player. Reduces the actual damage  */
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
 
+	// ------------------------------------------------------------------
+	// Movement
+	// ------------------------------------------------------------------
+
+	/**
+	 * Current direction where the mosnter would go
+	 * Uses in PawnMovement->AddInputVector() in each Tick
+	 * Calculates in SetDirectionToMove()
+	 * Value should be normalized
+	 */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Movement")
+	FVector DirectionToMove;
+
+
+	/**
+	 * Sets direction to move based on the vector in world space
+	 * Calculates (PositionWS - ActorLocation()).Normalized
+	 * @param PositionWS - position of the target in world space
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+	void SetDirectionToMove(FVector& PositionWS);
 
 	// ------------------------------------------------------------------
 	// Other socket locations
@@ -247,8 +268,8 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
 	class UMonsterLegComponent* RightBackLeg;
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void LegHasMoved(EMonsterLeg Leg);
+	UFUNCTION(BlueprintImplementableEvent, Category = "Legs")
+	void LegHasMoved(int32 Index);
 
 	void InitLeg(class UMonsterLegComponent* Leg, int32 LegIndex);
 
@@ -270,11 +291,6 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Body")
 	bool bIsBodyMovingUp;
 
-	UFUNCTION()
-	void BodyTimelineMovement();
-
-	UFUNCTION()
-	void BodyTimelineMovementFinish();
 
 	UPROPERTY(EditDefaultsOnly, Category="Body")
 	UCurveFloat* BodyFloatCurve;

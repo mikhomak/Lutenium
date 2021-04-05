@@ -19,7 +19,7 @@ public:
 
     UBTTask_DoAttack();
 
-    UPROPERTY( EditAnywhere)
+    UPROPERTY(EditAnywhere)
     EMonsterWeaponType WeaponType;
 
 protected:

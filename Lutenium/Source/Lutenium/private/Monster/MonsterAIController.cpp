@@ -17,16 +17,13 @@ AMonsterAIController::AMonsterAIController()
     BehaviorComp = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("Behavior Tree"));
     BlackboardComp = CreateDefaultSubobject<UBlackboardComponent>(TEXT("Blackboard"));
 
-    /* Initialize sensing */
-    PerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerception Component"));
-    SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight Config"));
-    PerceptionComponent->ConfigureSense(*SightConfig);
-    PerceptionComponent->SetDominantSense(SightConfig->GetSenseImplementation());
-    /* Add event OnSeePlayer in BP */
 
     /* Set up names for blackboard values */
-    FN_BV_bIsPlayerInRadiusOfBeamDefense = "bIsPlayerInRadiusOfBeamDefense";
-    FN_BV_PlayerHightLevel = "PlayerHightLevel";
+    FN_BV_bIsPlayerInRadiusOfBeamDefense = "Is Player In Radius Of Beam Defense?";
+    FN_BV_PlayerHightLevel = "Player Hight Level";
+    FN_BV_CurrentTargetIndex = "Current target index to reach";
+    FN_BV_bHasReachedCurrentTarget = "Has Monster reached the current target?";
+    FN_BV_bIsMonsterMoving = "Is monster moving?";
 }
 
 void AMonsterAIController::BeginPlay()
@@ -44,6 +41,7 @@ void AMonsterAIController::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 }
+
 void AMonsterAIController::OnPossess(APawn* InPawn)
 {
     Super::OnPossess(InPawn);
@@ -58,10 +56,6 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
     }
 }
 
-void AMonsterAIController::OnSeePlayer(TArray<AActor*> Actors)
-{
-
-}
 
 /** IMPORTANT!!! Could ne null!!! */
 AMonsterWeapon* AMonsterAIController::GetWeapon(EMonsterWeaponType MonsterWeaponType)
@@ -122,4 +116,41 @@ int32 AMonsterAIController::SetPlayerHightLevelBlackboardValue()
     }
     BlackboardComp->SetValueAsInt(FN_BV_PlayerHightLevel, Hight);
     return Hight;
+}
+
+
+void AMonsterAIController::SetTargetsAndNextPosition(TArray<class AActor*>& NewTargets)
+{
+    Targets = NewTargets;
+    if(Targets.IsValidIndex(0))
+    {
+        CurrentTargetIndex = 0;
+        NextTargetPositionWS = Targets[0]->GetActorLocation();
+    }
+}
+
+void AMonsterAIController::StartMovingToNextTargetLocation(int32 Index, bool bShouldMove)
+{
+    if(Targets.IsValidIndex(Index))
+    {
+        CurrentTargetIndex = Index;        
+        NextTargetPositionWS = Targets[Index]->GetActorLocation();
+        MonsterPawn->SetDirectionToMove(NextTargetPositionWS);
+        BlackboardComp->SetValueAsInt(FN_BV_CurrentTargetIndex, Index);
+        // Starts or stops movement
+        StartOrStopMoving(bShouldMove);
+    }
+}
+
+
+void AMonsterAIController::SetHasReachedCurrentTarget(bool bHasReached)
+{
+    BlackboardComp->SetValueAsBool(FN_BV_bHasReachedCurrentTarget, bHasReached);
+}
+
+
+void AMonsterAIController::StartOrStopMoving(bool bStartOrStopMoving)
+{
+    bCanMove = bStartOrStopMoving;
+    BlackboardComp->SetValueAsBool(FN_BV_bHasReachedCurrentTarget, bStartOrStopMoving);
 }

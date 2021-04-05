@@ -212,6 +212,12 @@ void AEnemyMonsterPawn::GetActorEyesViewPoint(FVector& Location, FRotator& Rotat
 void AEnemyMonsterPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// movement
+	if(MonsterAI && MonsterAI->bCanMove)
+	{
+		PawnMovement->AddInputVector(DirectionToMove, true);
+	}
 	//bIsBodyMovingUp = RaycastLegJoints();
 }
 
@@ -226,17 +232,10 @@ FVector AEnemyMonsterPawn::GetLegLocation(int32 LegIndex) const
 void AEnemyMonsterPawn::LegHasMovedEventCaller(const int32 LegIndex)
 {
 	ToggleWhatLegsShouldMove(LegIndex % 2 != 0);
-	//LegHasMoved(MonsterLeg);
+	LegHasMoved(LegIndex);
 }
 
 
-void AEnemyMonsterPawn::BodyTimelineMovement()
-{
-}
-
-void AEnemyMonsterPawn::BodyTimelineMovementFinish()
-{
-}
 
 /* Checks if there is something between body and the first joint of each leg */
 /* If so, start timeline to move the body up*/
@@ -380,4 +379,11 @@ void AEnemyMonsterPawn::InitLeg(UMonsterLegComponent* Leg, int32 LegIndex)
 	Leg->SetMonsterMesh(MonsterMesh);
 	Leg->SetLegIndex(LegIndex);
 	Legs.Insert(Leg, LegIndex);
+}
+
+
+void AEnemyMonsterPawn::SetDirectionToMove(FVector& PositionWS)
+{
+	DirectionToMove = (PositionWS - GetActorLocation());
+	DirectionToMove.Normalize();
 }
