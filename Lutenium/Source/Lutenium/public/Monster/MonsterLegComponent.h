@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "Components/SceneComponent.h"
 #include "MonsterLegComponent.generated.h"
 
 /**
@@ -9,7 +9,7 @@
  * Main output of this component is the method GetCurrentPosition(), which returns the position where the leg is supposted to be
  * This method is called in EnemyMonsterPawn and then is transefered to the animation blueprint, where the bone of the moves to that location
  * How it works:
- *      1) Raycast down from the specific RaycastDownComponent on the actor. This Component moves with the body, not with the leg!
+ *      1) Raycast down from the specific component location
  *      2) Checks if the distance between raycast position and current leg position(CurrentPosition) is greater than a distance for the step (DistanceBetweenLegsToMove)
  *      3) If it is, then starts a timeline which moves the CurrentPosition untill it reaches the raycast position
  *      4) Invokes LegHasMovedEventCaller of EnemyMonsterPawn to toggle what legs should move next.
@@ -17,10 +17,9 @@
  *      1) Assign EnemyMonsterPawn - SetEnemyMonsterPawn()
  *      2) Assign MonsterMesh -  SetMonsterMesh()
  *      3) Assign MonsterLegType - SetMonsterLegType()
- *		4) Assign correct raycast component to the RaycastDownComponent
  */
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class LUTENIUM_API UMonsterLegComponent : public UActorComponent
+class LUTENIUM_API UMonsterLegComponent : public USceneComponent
 {
 	GENERATED_BODY()
 
@@ -69,13 +68,6 @@ public:
 	// -----------------------------------------------------------------------------------------------------------
 	// Step
 	// -----------------------------------------------------------------------------------------------------------
-
-	/**
-	 * Raycast down from this object
-	 * This object should not be a socket, it should be attached to the actor!
-	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg")
-	class USceneComponent* RaycastDownComponent;
 
 
 	/**
@@ -251,7 +243,6 @@ protected:
 	// -----------------------------------------------------------------------------------------------------------
 
 public:
-	FORCEINLINE UFUNCTION() void SetRaycastDownComponent(class USceneComponent* RaycastComponent) { RaycastDownComponent = RaycastComponent; }
 	FORCEINLINE UFUNCTION() void SetEnemyMonsterPawn(class AEnemyMonsterPawn* Pawn) { EnemyMonsterPawn = Pawn; }
 	FORCEINLINE UFUNCTION() FVector GetCurrentPosition() const { return CurrentPosition; }
 	FORCEINLINE UFUNCTION() void SetCanMove(const bool CanMove) { bCanMove = CanMove; }

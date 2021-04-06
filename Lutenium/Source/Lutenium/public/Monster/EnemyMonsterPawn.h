@@ -201,6 +201,34 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	void SetDirectionToMove(FVector& PositionWS);
 
+	/**
+	 * Because legs use IK and can pull the body far away from the actor location we need to make sure that the actor will wait untill the mesh comes to its place\
+	 * This value determines how far the mesh should for actor to stop
+	 * To check this value it uses - Dist(GetActorLocation(), GetCurrentBodyPosition())
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Movement")
+	float fDistanceBetweenBodyMeshAndActorToStop;
+
+
+	/**
+	 * When the actor was waiting for the mesh to catch up, checks the distance when the actor should start moving again
+	 * @see fDistanceBetweenBodyMeshAndActorToStop
+	 * @see bIsActorWaitingForBody
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Movement")
+	float fDistanceBetweenBodyMeshAndActorToStartMoving;
+	
+	/**
+	 * Indicates if the actor is waiting for the body to catch up
+	 */
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="Movement")
+	bool bIsActorWaitingForBody;
+
+	/**
+	 * Handles actor waiting for the mesh
+	 */
+	void HandleActorAndMeshStopAndStartMoving();
+
 	// ------------------------------------------------------------------
 	// Other socket locations
 	// ------------------------------------------------------------------
@@ -264,33 +292,16 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
 	class UMonsterLegComponent* RightBackLeg;
 
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
-	class USceneComponent* LeftFrontRaycastDownComponent;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
-	class USceneComponent* LeftMiddleRaycastDownComponent;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
-	class USceneComponent* LeftBackRaycastDownComponent;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
-	class USceneComponent* RightFrontRaycastDownComponent;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
-	class USceneComponent* RightMiddleRaycastDownComponent;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
-	class USceneComponent* RightBackRaycastDownComponent;
-
-
 	UFUNCTION(BlueprintImplementableEvent, Category = "Legs")
 	void LegHasMoved(int32 Index);
 
-	void InitLeg(class UMonsterLegComponent* Leg, int32 LegIndex, class USceneComponent* SceneComponent);
+	void InitLeg(class UMonsterLegComponent* Leg, int32 LegIndex);
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
 	bool bIsCurrentLegsOdd;
+
+
+
 	// ------------------------------------------------------------------
 	// Body Movement
 	// ------------------------------------------------------------------
@@ -307,13 +318,14 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Body")
 	bool bIsBodyMovingUp;
 
-
 	UPROPERTY(EditDefaultsOnly, Category="Body")
 	UCurveFloat* BodyFloatCurve;
 
 	struct FTimeline BodyTimeline;
 
-	FORCEINLINE FVector GetCurrentBodyPosition() const { return BodyPosition; }
+	UFUNCTION(Category = "Body")
+	FVector GetCurrentBodyPosition();
+
 
 	// ------------------------------------------------------------------
 	// BODY MOVEMENT WHEN THERE IS AN OVERLAP FROM THE BODY TO THE LEGS
