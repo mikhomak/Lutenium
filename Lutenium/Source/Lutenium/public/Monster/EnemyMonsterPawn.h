@@ -264,10 +264,30 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
 	class UMonsterLegComponent* RightBackLeg;
 
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
+	class USceneComponent* LeftFrontRaycastDownComponent;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
+	class USceneComponent* LeftMiddleRaycastDownComponent;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
+	class USceneComponent* LeftBackRaycastDownComponent;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
+	class USceneComponent* RightFrontRaycastDownComponent;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
+	class USceneComponent* RightMiddleRaycastDownComponent;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
+	class USceneComponent* RightBackRaycastDownComponent;
+
+
 	UFUNCTION(BlueprintImplementableEvent, Category = "Legs")
 	void LegHasMoved(int32 Index);
 
-	void InitLeg(class UMonsterLegComponent* Leg, int32 LegIndex);
+	void InitLeg(class UMonsterLegComponent* Leg, int32 LegIndex, class USceneComponent* SceneComponent);
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Legs")
 	bool bIsCurrentLegsOdd;

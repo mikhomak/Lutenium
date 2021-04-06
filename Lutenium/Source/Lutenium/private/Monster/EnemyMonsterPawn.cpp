@@ -12,6 +12,7 @@
 #include "Perception/PawnSensingComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
+#include "Components/SceneComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
 
 AEnemyMonsterPawn::AEnemyMonsterPawn()
@@ -70,23 +71,35 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
 	 */
 	/** RIGHT LEGS */
 	RightFrontLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Right Front Leg"));
-	InitLeg(RightFrontLeg, 0);
+	RightFrontRaycastDownComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Right Front Raycast Down Component"));
+	RightFrontRaycastDownComponent->AttachToComponent(SphereComponent, AttachmentTransformRules);
+	InitLeg(RightFrontLeg, 0, RightFrontRaycastDownComponent);
 
 	RightMiddleLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Right Middle Leg"));
-	InitLeg(RightMiddleLeg, 1);
+	RightMiddleRaycastDownComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Right Middle Raycast Down Component"));
+	RightMiddleRaycastDownComponent->AttachToComponent(SphereComponent, AttachmentTransformRules);
+	InitLeg(RightMiddleLeg, 1, RightMiddleRaycastDownComponent);
 
 	RightBackLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Right Back Leg"));
-	InitLeg(RightBackLeg, 2);
+	RightBackRaycastDownComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Right Back Raycast Down Component"));
+	RightBackRaycastDownComponent->AttachToComponent(SphereComponent, AttachmentTransformRules);
+	InitLeg(RightBackLeg, 2, RightBackRaycastDownComponent);
 
 	/** LEFT LEGS */
 	LeftFrontLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Left Front Leg"));
-	InitLeg(LeftFrontLeg, 3);
+	LeftFrontRaycastDownComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Left Front Raycast Down Component"));
+	LeftFrontRaycastDownComponent->AttachToComponent(SphereComponent, AttachmentTransformRules);
+	InitLeg(LeftFrontLeg, 3, LeftFrontRaycastDownComponent);
 
 	LeftMiddleLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Left Middle Leg"));
-	InitLeg(LeftMiddleLeg, 4);
+	LeftMiddleRaycastDownComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Left Middle Raycast Down Component"));
+	LeftMiddleRaycastDownComponent->AttachToComponent(SphereComponent, AttachmentTransformRules);
+	InitLeg(LeftMiddleLeg, 4, LeftMiddleRaycastDownComponent);
 
 	LeftBackLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Left Back Leg"));
-	InitLeg(LeftBackLeg, 5);
+	LeftBackRaycastDownComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Left Back Raycast Down Component"));
+	LeftBackRaycastDownComponent->AttachToComponent(SphereComponent, AttachmentTransformRules);
+	InitLeg(LeftBackLeg, 5, LeftBackRaycastDownComponent);
 
 	ToggleWhatLegsShouldMove(true);
 	bIsCurrentLegsOdd = true;
@@ -370,7 +383,7 @@ FVector AEnemyMonsterPawn::GetHightLevelSocketLocation(const int32 Location)
 }
 
 
-void AEnemyMonsterPawn::InitLeg(UMonsterLegComponent* Leg, int32 LegIndex)
+void AEnemyMonsterPawn::InitLeg(UMonsterLegComponent* Leg, int32 LegIndex, USceneComponent* SceneComponent)
 {
 	/**
 	 * LEFT    3-----------------------------0    RIGHT
@@ -384,8 +397,8 @@ void AEnemyMonsterPawn::InitLeg(UMonsterLegComponent* Leg, int32 LegIndex)
 	 *         5-----------------------------2
 	 */
 	Leg->SetEnemyMonsterPawn(this);
-	Leg->SetMonsterMesh(MonsterMesh);
 	Leg->SetLegIndex(LegIndex);
+	Leg->SetRaycastDownComponent(SceneComponent);
 	Legs.Insert(Leg, LegIndex);
 }
 

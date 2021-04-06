@@ -9,7 +9,7 @@
  * Main output of this component is the method GetCurrentPosition(), which returns the position where the leg is supposted to be
  * This method is called in EnemyMonsterPawn and then is transefered to the animation blueprint, where the bone of the moves to that location
  * How it works:
- *      1) Raycast down from the specific socket on the monster mesh - RaycastSocket. This socket moves with the body, not with the leg!
+ *      1) Raycast down from the specific RaycastDownComponent on the actor. This Component moves with the body, not with the leg!
  *      2) Checks if the distance between raycast position and current leg position(CurrentPosition) is greater than a distance for the step (DistanceBetweenLegsToMove)
  *      3) If it is, then starts a timeline which moves the CurrentPosition untill it reaches the raycast position
  *      4) Invokes LegHasMovedEventCaller of EnemyMonsterPawn to toggle what legs should move next.
@@ -17,7 +17,7 @@
  *      1) Assign EnemyMonsterPawn - SetEnemyMonsterPawn()
  *      2) Assign MonsterMesh -  SetMonsterMesh()
  *      3) Assign MonsterLegType - SetMonsterLegType()
- *		4) Put the name of the socket in RaycastSocket
+ *		4) Assign correct raycast component to the RaycastDownComponent
  */
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class LUTENIUM_API UMonsterLegComponent : public UActorComponent
@@ -39,12 +39,6 @@ public:
 	class AEnemyMonsterPawn* EnemyMonsterPawn;
 
 	/**
-	 * Reference to the monster mesh
-	 * Assign it after initialize the component
-	 */
-	UPROPERTY(BlueprintReadWrite, Category = "Leg")
-	class USkeletalMeshComponent* MonsterMesh;
-
 	/**
 	 * Tick component, duh
 	 * Don't forget to tick the timeline here hehehe
@@ -77,11 +71,11 @@ public:
 	// -----------------------------------------------------------------------------------------------------------
 
 	/**
-	 * Main socket to update RaycastPosition
-	 * @warning This socket should be attached to the mesh, not the leg!
+	 * Raycast down from this object
+	 * This object should not be a socket, it should be attached to the actor!
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg")
-	FName RaycastSocket;
+	class USceneComponent* RaycastDownComponent;
 
 
 	/**
@@ -197,7 +191,7 @@ protected:
 	float DistanceBetweenLegsToMove;
 
 	/**
-	 * Down length of the vector of the raycast from RaycastSocket
+	 * Down length of the vector of the raycast from RaycastDownComponent
 	 * Gets from EnemyMonsterPawn
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg")
@@ -257,7 +251,7 @@ protected:
 	// -----------------------------------------------------------------------------------------------------------
 
 public:
-	FORCEINLINE UFUNCTION() void SetMonsterMesh(class USkeletalMeshComponent* Mesh) { MonsterMesh = Mesh; }
+	FORCEINLINE UFUNCTION() void SetRaycastDownComponent(class USceneComponent* RaycastComponent) { RaycastDownComponent = RaycastComponent; }
 	FORCEINLINE UFUNCTION() void SetEnemyMonsterPawn(class AEnemyMonsterPawn* Pawn) { EnemyMonsterPawn = Pawn; }
 	FORCEINLINE UFUNCTION() FVector GetCurrentPosition() const { return CurrentPosition; }
 	FORCEINLINE UFUNCTION() void SetCanMove(const bool CanMove) { bCanMove = CanMove; }

@@ -2,6 +2,7 @@
 #include "Monster/EnemyMonsterPawn.h"
 #include "DrawDebugHelpers.h"
 #include "TimerManager.h"
+#include "Components/SceneComponent.h"
 #include "GameFramework/Actor.h"
 
 UMonsterLegComponent::UMonsterLegComponent()
@@ -27,7 +28,7 @@ void UMonsterLegComponent::BeginPlay()
 
 	/* Sets default location for each leg no matter if it can move or not */
 	FHitResult HitResult;
-	FVector RaycastLocation = MonsterMesh->GetSocketLocation(RaycastSocket); /* Gets location of the raycast socket */
+	FVector RaycastLocation = RaycastDownComponent->GetComponentLocation(); /* Gets location of the raycast socket */
 	FVector RaycastEndLocation = RaycastLocation + (FVector::DownVector * RaycastDownLength); /* Downvector from this socket  */
 	FVector DownRaycast = Raycast(RaycastLocation,
 										RaycastEndLocation,
@@ -59,7 +60,7 @@ void UMonsterLegComponent::RaycastLeg()
 	}
 
 	/* Raycasting only if the socket has moved too far away from the current leg position */
-	FVector RaycastLocation = MonsterMesh->GetSocketLocation(RaycastSocket);
+	FVector RaycastLocation = RaycastDownComponent->GetComponentLocation();
 	FVector RaycastEndLocation = RaycastLocation + (FVector::DownVector * RaycastDownLength);
 	const float DistanceBetweenCurrentPosAndPrevious = FVector::Distance(
 		CurrentPosition, FVector(RaycastLocation.X, RaycastLocation.Y, CurrentPosition.Z));
