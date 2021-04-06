@@ -189,7 +189,7 @@ public:
 	 * Calculates in SetDirectionToMove()
 	 * Value should be normalized
 	 */
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Movement")
+	UPROPERTY(BlueprintReadWrite, Category="Movement")
 	FVector DirectionToMove;
 
 
@@ -211,22 +211,18 @@ public:
 
 	/** Checks if the player is below that socket's location to fire the appropiate weapon*/
 	/** First hight level(the lowest one) to decide what weapon should be used for an attack */
-	/** RN it's traffic light*/
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Sockets")
 	FName FirstHightLevelSocketName;
 
 	/** Checks if the player is below that socket's location to fire the appropiate weapon*/
-	/** RN it's fan*/
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Sockets")
 	FName SecondHightLevelSocketName;
 
 	/** Checks if the player is BELOW that socket's location to fire the appropiate weapon*/
-	/** RN it's siren */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Sockets")
 	FName ThirdHightLevelSocketName;
 
 	/** Checks if the player is ABOVE that socket's location to fire the appropiate weapon*/
-	/** RN it's siren  but semisphere*/
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Sockets")
 	FName FourthHightLevelSocketName;
 

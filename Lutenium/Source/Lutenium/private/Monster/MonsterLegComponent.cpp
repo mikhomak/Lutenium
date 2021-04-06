@@ -27,13 +27,11 @@ void UMonsterLegComponent::BeginPlay()
 
 	/* Sets default location for each leg no matter if it can move or not */
 	FHitResult HitResult;
-	FCollisionQueryParams CollisionParams;
-	CollisionParams.AddIgnoredActor(EnemyMonsterPawn);
 	FVector RaycastLocation = MonsterMesh->GetSocketLocation(RaycastSocket); /* Gets location of the raycast socket */
 	FVector RaycastEndLocation = RaycastLocation + (FVector::DownVector * RaycastDownLength); /* Downvector from this socket  */
 	FVector DownRaycast = Raycast(RaycastLocation,
 										RaycastEndLocation,
-										HitResult, CollisionParams);
+										HitResult);
 	if(HitResult.bBlockingHit)
 	{
 		CurrentPosition = DownRaycast;
@@ -71,12 +69,10 @@ void UMonsterLegComponent::RaycastLeg()
 	if (DistanceBetweenCurrentPosAndPrevious >= DistanceBetweenLegsToMove)
 	{
 		FHitResult HitResult;
-		FCollisionQueryParams CollisionParams;
-		CollisionParams.AddIgnoredActor(EnemyMonsterPawn);
 		FVector RaycastResultLocation;
 		RaycastPosition = Raycast(RaycastLocation,
 										   RaycastEndLocation,
-										   HitResult, CollisionParams);
+										   HitResult);
 
 		/* If the position wasn't found, do nothing */
 		if (HitResult.bBlockingHit)
@@ -87,8 +83,7 @@ void UMonsterLegComponent::RaycastLeg()
 	}
 }
 
-FVector UMonsterLegComponent::Raycast(FVector& StartPos, FVector& EndPos, FHitResult& HitResult,
-										   FCollisionQueryParams& CollisionParams)
+FVector UMonsterLegComponent::Raycast(FVector& StartPos, FVector& EndPos, FHitResult& HitResult)
 {
 	/*GetWorld()->LineTraceSingleByChannel(
 		HitResult,
@@ -96,6 +91,8 @@ FVector UMonsterLegComponent::Raycast(FVector& StartPos, FVector& EndPos, FHitRe
 		EndPos,
 		ECollisionChannel::ECC_WorldStatic,
 		CollisionParams);*/
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(EnemyMonsterPawn);
 	GetWorld()->SweepSingleByObjectType(
                                    HitResult,
                                    StartPos,

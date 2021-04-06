@@ -137,8 +137,9 @@ public:
 	/**
 	 * After succefuly raycasting for the position, checks if there is something blocking between two joints
 	 */
+	UFUNCTION(BlueprintCallable)
 	FVector Raycast(FVector& StartPos, FVector& EndPos,
-						 FHitResult& HitResult, FCollisionQueryParams& CollisionParams);
+						 FHitResult& HitResult);
 
 protected:
 

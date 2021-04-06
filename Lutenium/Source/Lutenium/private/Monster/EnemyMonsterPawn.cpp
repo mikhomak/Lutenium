@@ -50,6 +50,11 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
 	BeamDefenseSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Beam Defense Sphere"));
 	BeamDefenseSphere->AttachToComponent(SphereComponent, AttachmentTransformRules);
 
+	/* Sockets */
+	FirstHightLevelSocketName = "FirstLevelSocket";
+	SecondHightLevelSocketName = "SecondLevelSocket";
+	FourthHightLevelSocketName = "FourthLevelSocket";
+
 	/* Initialize legs */
 
 	/**
@@ -226,7 +231,7 @@ void AEnemyMonsterPawn::Tick(float DeltaTime)
  */
 FVector AEnemyMonsterPawn::GetLegLocation(int32 LegIndex) const
 {
-	return Legs.IsValidIndex(LegIndex) ? Legs[LegIndex]->GetCurrentPosition() : FVector::ZeroVector;
+	return Legs.IsValidIndex(LegIndex) && Legs[LegIndex] != nullptr ? Legs[LegIndex]->GetCurrentPosition() : GetActorLocation();
 }
 
 void AEnemyMonsterPawn::LegHasMovedEventCaller(const int32 LegIndex)
@@ -268,13 +273,16 @@ void AEnemyMonsterPawn::ToggleWhatLegsShouldMove(const bool Odd)
 
 	for(int32 Index = 0; Index < Legs.Num(); Index++)
 	{
-		if(Index % 2 == 0)
+		if(Legs[Index] != nullptr)
 		{
-			Legs[Index]->SetCanMove(!bIsCurrentLegsOdd);
-		}
-		else
-		{
-			Legs[Index]->SetCanMove(bIsCurrentLegsOdd);
+			if(Index % 2 == 0)
+			{
+				Legs[Index]->SetCanMove(!bIsCurrentLegsOdd);
+			}
+			else
+			{
+				Legs[Index]->SetCanMove(bIsCurrentLegsOdd);
+			}
 		}
 	}
 }
