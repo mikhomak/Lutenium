@@ -20,7 +20,7 @@ AFanMW::AFanMW() : AMonsterWeapon()
     BackwardWindCollision->AttachToComponent(WeaponMesh, AttachmentTransformRules);
     ForwardWindCollision->SetCollisionProfileName(TEXT("OverlapAll"));
     BackwardWindCollision->SetCollisionProfileName(TEXT("OverlapAll"));
-
+    
     /* Forces */
     PushForce = 9000.f;
     PullForce = 9000.f;

@@ -40,7 +40,7 @@ public:
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Weapon")
     EMonsterWeaponType WeaponType;
 
-	// ------------------------------------------------------------------
+    // ------------------------------------------------------------------
 	// Monster references
 	// ------------------------------------------------------------------
 
@@ -245,6 +245,7 @@ public:
     /* Event is called on upgrade the weapon. Add SVX, VFX and so on in the BP.  */
     UFUNCTION(BlueprintImplementableEvent, Category = "Upgrade")
     void OnUpgradeEvent();
+
 
 public:
     FORCEINLINE void SetMonsterMesh(class USkeletalMeshComponent* Mesh) { MonsterMesh = Mesh; }
