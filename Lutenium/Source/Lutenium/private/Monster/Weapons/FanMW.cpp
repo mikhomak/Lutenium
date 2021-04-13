@@ -11,6 +11,7 @@
 
 AFanMW::AFanMW() : AMonsterWeapon()
 {
+
     /* Setting up mesh collisions */
     const FAttachmentTransformRules AttachmentTransformRules = FAttachmentTransformRules(
         EAttachmentRule::KeepRelative, false);
