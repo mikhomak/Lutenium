@@ -13,8 +13,9 @@
 3. Procedural animations for the monster
 4. Simulating PS1 limitations with modern technologies
 ---    
-### Screenshoots:
-![Stadium](https://github.com/mikhomak/Images/blob/master/Lutenium/stadium.gif?raw=true)    
+### Screenshots REALLY WIP:
+![Stadium](https://github.com/mikhomak/Images/blob/master/Lutenium/stadium.gif?raw=true)   
+![Stadium](https://github.com/mikhomak/Images/blob/master/Lutenium/QuickFly.gif?raw=true)    
 ![1](https://raw.githubusercontent.com/mikhomak/Images/master/Lutenium/1.png)     
 ![2](https://raw.githubusercontent.com/mikhomak/Images/master/Lutenium/2.png)     
 ![3](https://raw.githubusercontent.com/mikhomak/Images/master/Lutenium/3.png)     
