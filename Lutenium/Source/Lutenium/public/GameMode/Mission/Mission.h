@@ -18,6 +18,15 @@
  * Each mission has to have its subclass of EMissionInfo so you can add wharever data you want for this particular mission
  * @warning this class is the foundation for the missions, it doesn't do anything by itself, you have to override life cycles in BP!!!
  */
+
+UCLASS(Abstract, Blueprintable, BlueprintType, MinimalAPI)
+class UMissionInfo : public UObject
+{
+	GENERATED_BODY()
+	UMissionInfo(){}
+};
+
+
 UCLASS()
 class AMission : public AActor
 {
@@ -43,27 +52,32 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mission Information")
 	float MissionTimer;
 
+	UPROPERTY(BlueprintReadOnly, Category="Mission Information")
+	bool bHasStarted;
+
+	UPROPERTY(BlueprintReadOnly, Category="Mission Information")
+	bool bHasFinished;
 
 	/**
 	 * Override this method for starting the mission in BP
 	 * If this event is not being invoked, check bCheckMissionInfoClass
 	 */
 	UFUNCTION(BlueprintCallable, Category="Mission life cycle")
-	bool StartMission(class UPrimaryDataAsset* Info);
+	bool StartMission(class UMissionInfo* Info);
 
 	/**
 	 * Override this method for updating the mission in BP
 	 * If this event is not being invoked, check bCheckMissionInfoClass
 	 */
 	UFUNCTION(BlueprintCallable, Category="Mission life cycle")
-	bool UpdateMission(class UPrimaryDataAsset* Info);
+	bool UpdateMission(class UMissionInfo* Info);
 
 	/**
 	 * Override this method for finishing the mission in BP
 	 * If this event is not being invoked, check bCheckMissionInfoClass
 	 */
 	UFUNCTION(BlueprintCallable, Category="Mission life cycle")
-	bool FinishMission(class UPrimaryDataAsset* Info);
+	bool FinishMission(class UMissionInfo* Info);
 
 
 
@@ -73,24 +87,32 @@ public:
 	 * If this event is not being invoked, check bCheckMissionInfoClass
 	 */
 	UFUNCTION(BlueprintImplementableEvent, Category="Mission life cycle")
-	void StartMissionEvent(class UPrimaryDataAsset* Info, bool& bSuccess);
+	void StartMissionEvent(class UMissionInfo* Info, bool& bSuccess);
 
 	/**
 	 * Override this method for updating the mission in BP
 	 * If this event is not being invoked, check bCheckMissionInfoClass
 	 */
 	UFUNCTION(BlueprintImplementableEvent, Category="Mission life cycle")
-	void UpdateMissionEvent(class UPrimaryDataAsset* Info, bool& bSuccess);
+	void UpdateMissionEvent(class UMissionInfo* Info, bool& bSuccess);
 
 	/**
 	 * Override this method for finishing the mission in BP
 	 * If this event is not being invoked, check bCheckMissionInfoClass
 	 */
 	UFUNCTION(BlueprintImplementableEvent, Category="Mission life cycle")
-	void FinishMissionEvent(class UPrimaryDataAsset* Info, bool& bSuccess);
+	void FinishMissionEvent(class UMissionInfo* Info, bool& bSuccess);
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mission Information")
+	bool bCheckMissionInfoClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mission Information")
+	TSubclassOf<class UMissionInfo> MissionInfoClass;
 
 	UFUNCTION(BlueprintImplementableEvent, Category="Mission Information|Timer")
 	void TimerHasExpired();
 
+	UFUNCTION(BlueprintCallable, Category="Mission life cycle")
+	bool CheckIfMissionInfoClassIsCorrect(class UMissionInfo* Info);
 };
