@@ -72,7 +72,7 @@ public:
      * @warning Picks the first value of Targets for NextTargetPositionWS if 0 index is valid
      */
     UFUNCTION(BlueprintCallable, Category = "Movement")
-    void SetTargetsAndNextPosition(TArray<class AActor*>& NewTargets);   
+    void SetTargetsAndNextPosition(UPARAM(ref)  TArray<class AActor*>& NewTargets);   
 
     /**
      * Sets next location to move to

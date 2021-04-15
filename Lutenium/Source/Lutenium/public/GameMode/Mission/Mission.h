@@ -38,10 +38,10 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mission Information")
-	FString MissionName;
+	FText MissionName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mission Information")
-	FString MissionDescription;
+	FText MissionDescription;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mission Information")
 	bool bHasTimer;
