@@ -44,6 +44,8 @@ APlayerPawn::APlayerPawn()
     PlaneMovement->PhysicsComponent = PlaneBox;
 
 
+    HitForceImpactToKillPlayer = 12.f;
+
     // Weapons
     CurrentWeapon = EPlayerWeapon::Missile;
 
@@ -142,8 +144,10 @@ void APlayerPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Oth
 {
     Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
-    const FRotator CurrentRotation = GetActorRotation();
-    SetActorRotation(FQuat::Slerp(CurrentRotation.Quaternion(), HitNormal.ToOrientationQuat(), 0.025f));
+    if(NormalImpulse.Size() > HitForceImpactToKillPlayer)
+    {
+        OnDieEvent();
+    }
 }
 
 

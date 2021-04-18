@@ -19,6 +19,13 @@ void UMovementEffect::StartSafeDeactivation()
     }
 }
 
+void UMovementEffect::Deactivate()
+{
+	Active = false;
+	CanBeSafeDeactivated = true;
+	AdditionalDeactivationEffect();
+}
+
 void UMovementEffect::ApplyEffect()
 {
 

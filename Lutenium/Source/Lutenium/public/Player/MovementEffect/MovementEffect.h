@@ -57,8 +57,8 @@ public:
     virtual void ApplyEffect();
 
     /** Deactivating the effect */
-    FORCEINLINE UFUNCTION(BlueprintCallable, Category = "Effect")
-    void Deactivate() { Active = false; CanBeSafeDeactivated = true;  AdditionalDeactivationEffect();}
+    UFUNCTION(BlueprintCallable, Category = "Effect")
+    void Deactivate();
 
     /** Called once while creating the effect to set needed references(kinda like constructor but with arguments so yeah) */
     FORCEINLINE UFUNCTION(BlueprintCallable, Category = "Effect")

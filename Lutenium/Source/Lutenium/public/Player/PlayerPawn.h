@@ -103,8 +103,29 @@ public:
 	/**
 	 * On hit rotates the player
 	 * TODO decide what to do it with it
+	 * I think the player would be DED when there is a hit
 	 */
 	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
+
+	/**
+	 * If there is a hit and the force impact of the hit is greater than this value, calls OnDieEvent
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="General", meta = (ClampMin = "0", UIMin = "0"))
+	float HitForceImpactToKillPlayer;
+
+
+	/**
+	 * Event that happens before the jet is DEAD
+	 * Destroy actor in BP
+	 * Remove widgets in BP
+	 */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Effects")
+	void OnDieEvent();
+
+
+	// ------------------------------------------------------------------
+	// Additional movements
+	// ------------------------------------------------------------------
 
 	/** Returns the Yawn Imput */
 	UFUNCTION(BlueprintCallable, Category = "Input")
@@ -226,7 +247,7 @@ public:
 	/**
 	 * Cooldown time between each base support attack
 	 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons|BaseSupport")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons|BaseSupport", meta = (ClampMin = "0", UIMin = "0"))
 	float fBaseAttackCooldown;
 
 	/**
@@ -269,7 +290,7 @@ public:
 	/**
 	 * Fire rate of a MachineGun when the weapon input is hold (bWeaponFiring == true)
 	 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons|MachineGun")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons|MachineGun", meta = (ClampMin = "0", UIMin = "0"))
 	float MachineGunFireRate;
 
 	/**
@@ -342,7 +363,7 @@ public:
 	 * The length to raycast for the missile
 	 * Could be upgraded with EPlayerUpgrade::IncreasedAimRadius
 	 */
-	UPROPERTY(EditDefaultsOnly, Category = "Weapons|Missile")
+	UPROPERTY(EditDefaultsOnly, Category = "Weapons|Missile", meta = (ClampMin = "0", UIMin = "0"))
 	float MissileAimTraceLength;
 
 	/**
@@ -350,7 +371,7 @@ public:
 	 * The first raycast that we do, we are searching for the MonsterWPHurtbox
 	 * @see MissileAimLock()
 	 */
-	UPROPERTY(EditDefaultsOnly, Category = "Weapons|Missile")
+	UPROPERTY(EditDefaultsOnly, Category = "Weapons|Missile", meta = (ClampMin = "0", UIMin = "0"))
 	float FirstRaytraceMissileAimRadius;
 
 	/**
@@ -358,7 +379,7 @@ public:
 	 * @see FirstRaytraceMissileAimRadius
 	 * @see MissileAimLock()
 	 */
-	UPROPERTY(EditDefaultsOnly, Category = "Weapons|Missile")
+	UPROPERTY(EditDefaultsOnly, Category = "Weapons|Missile", meta = (ClampMin = "0", UIMin = "0"))
 	float SecondRaytraceMissileAimRadius;
 
 	/**
@@ -366,7 +387,7 @@ public:
 	 * @see FirstRaytraceMissileAimRadius
 	 * @see MissileAimLock()
 	 */
-	UPROPERTY(EditDefaultsOnly, Category = "Weapons|Missile")
+	UPROPERTY(EditDefaultsOnly, Category = "Weapons|Missile", meta = (ClampMin = "0", UIMin = "0"))
 	float UpgradeRaytraceMissileAimRadius;
 
 	/**
