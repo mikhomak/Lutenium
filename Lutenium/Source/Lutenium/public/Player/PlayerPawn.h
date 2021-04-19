@@ -21,7 +21,8 @@ enum class EPlayerUpgrade : uint8
 	MachineGun UMETA(DisplayName = "Machine Gun"),													// Just a gun
 	IncreasedDyingVelocity  UMETA(DisplayName = "Increased velocity to die on hit"),		// Increases the velocity needed to die on hit
 	BarrelRoll UMETA(DisplayName = "Fast barrerl roll"),									// DO A BARREL ROLL (fast one)
-	BackMirrors UMETA(DisplayName = "Back mirrors") 										// Adds Back mirrors to the UI
+	BackMirrors UMETA(DisplayName = "Back mirrors"), 										// Adds Back mirrors to the UI
+	TravelMode UMETA(DisplayName = "Travel Mode")
 };
 
 
@@ -99,6 +100,15 @@ public:
 	 * @see MissileAimLock()
 	 */
 	virtual void Tick(float DeltaSeconds) override;
+
+	/**
+	 * Binds some of the events from UPlaneMovementComponent
+	 */
+    virtual void BeginPlay() override;
+
+	// ------------------------------------------------------------------
+	// Health
+	// ------------------------------------------------------------------
 
 	/**
 	 * On hit rotates the player
@@ -217,7 +227,7 @@ public:
 	void OnSwitchWeaponEvent(EPlayerWeapon NextWeapon);
 
 	// ------------------------------------------------------------------
-	// MachineGun
+	// BaseSupport
 	// ------------------------------------------------------------------
 
 	/**
@@ -514,6 +524,13 @@ public:
 	 */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Effects")
 	void OnEmpDeactivateEvent();
+
+	/**
+	 * Effect when the jet enters travel mode
+	 * @see UPlayerPlaneMovementComponent
+	 */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Effects")
+	void OnEnteringTravelMode();
 
 protected:
 

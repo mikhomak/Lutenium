@@ -81,11 +81,6 @@ void UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
     {
         Movement(DeltaTime);
     }
-    else if(CurrentAcceleration > ExitStallAcceleration)
-    {
-        EmpMovementEffect->Deactivate();
-        bStalling = false;
-    }
     for (UMovementEffect* MovementEffect : MovementEffects)
     {
         MovementEffect->ApplyEffect();
@@ -119,7 +114,6 @@ void UPlaneMovementComponent::RollInput(const float Val)
 
 void UPlaneMovementComponent::Movement(const float DeltaTime)
 {
-
     CalculateAerodynamic(DeltaTime);
     AddThrust(DeltaTime);
 }
@@ -142,11 +136,17 @@ void UPlaneMovementComponent::Thrusting(float InputVal)
     {
         CurrentAcceleration += KickInAddedAcceleration;
         bHasAppliedKickInAcceleration = true;
-        OnKickInAccelerationEventCaller();
+        OnKickinAcceleration.Broadcast();
     }
     else if(CurrentAcceleration > MinAccelerationUntilKickIn)
     {
         bHasAppliedKickInAcceleration = false;
+    }
+
+    if(bStalling && CurrentAcceleration > ExitStallAcceleration)
+    {
+        EmpMovementEffect->Deactivate();
+        bStalling = false;
     }
 }
 
@@ -234,21 +234,11 @@ void UPlaneMovementComponent::HasDotChanged(const float DotProduct)
     const float AbsDot = DotProduct < 0 ? DotProduct * -1.f : DotProduct;
     if ((AbsPreviousDot > DotThreshold && AbsDot < DotThreshold) || (AbsPreviousDot < DotThreshold && AbsDot > DotThreshold))
     {
-        HasDotChangedEventCaller(DotProduct);
+        OnDotHasChanged.Broadcast(DotProduct);
     }
     Dot = DotProduct;
 }
 
-
-void UPlaneMovementComponent::HasDotChangedEventCaller(const float fNewDot)
-{
-
-}
-
-void UPlaneMovementComponent::OnKickInAccelerationEventCaller()
-{
-
-}
 
 void UPlaneMovementComponent::AddAcceleration(const float AddedAcceleration)
 {

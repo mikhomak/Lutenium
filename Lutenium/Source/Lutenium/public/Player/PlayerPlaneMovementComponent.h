@@ -33,6 +33,34 @@ public:
     	PlayerPawn = Pawn;
     }
 
+
+    virtual void ThrustInput(float Val) override;
+
+    virtual void Thrusting(float InputVal) override;
+
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Travel Mode")
+    float TimeBetweenDoubleThrustInputToEnterTravelMode;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Travel Mode")
+    float TravelModeMaxAccelerationMultiplier;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Travel Mode")
+    float TravelModeAircontrolMultiplier;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Travel Mode")
+    bool bCanEnterTravelMode;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Travel Mode")
+    bool bIsInTravelMode;
+
+    UFUNCTION(BlueprintCallable, Category="Travel Mode")
+    void ActivateTravelMode();
+
+    UFUNCTION(BlueprintCallable, Category="Travel Mode")
+    void DeactivateTravelMode();
+
+
     UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
     void DashInput();
 
@@ -56,9 +84,5 @@ public:
 
     void ResetDashCooldown();
 
-	virtual void HasDotChangedEventCaller(const float fNewDot) override;
-
-
-    virtual void OnKickInAccelerationEventCaller() override;
 
 };

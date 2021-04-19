@@ -34,6 +34,12 @@
  * Needs physics component(UPrimitiveComponent with PhysicsEnabled) in order to work and a pawn
  *
  */
+
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDotHasChangedSignature, float, Dot);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnKickInAccelerationSignature);
+
+
 UCLASS(meta=(BlueprintSpawnableComponent) )
 class LUTENIUM_API UPlaneMovementComponent : public UActorComponent
 {
@@ -94,7 +100,7 @@ public:
      * @warning In your pawn class bind this method to the thrust axis!
      */
     UFUNCTION(BlueprintCallable, Category = "Input")
-    void ThrustInput(float Val);
+    virtual void ThrustInput(float Val);
 
     /**
      * Adds torque to the Y axis
@@ -261,17 +267,16 @@ public:
      * @warning if true, Doesn't apply Accleration and Aerodynamics, however the controls are still working!
      * @see UEmpMovementEffect
      */
-    UPROPERTY(Category = Control, BlueprintReadWrite, EditAnywhere)
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Control")
     bool bStalling;
 
     void AddAcceleration(float AddedAcceleration);
 
-    UPROPERTY(Category = Speed, BlueprintReadWrite, EditDefaultsOnly)
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Acceleration")
     float ExitStallAcceleration;
 
 
-    UFUNCTION()
-    virtual void OnKickInAccelerationEventCaller();
+
     // ------------------------------------------------------------------
     // MovementEffects
     // ------------------------------------------------------------------
@@ -289,6 +294,11 @@ public:
     TSubclassOf<class UEmpMovementEffect> EmpMovementEffectClass;
 
 
+    UPROPERTY(BlueprintAssignable, Category="Physics|Aerodynamics")
+    FDotHasChangedSignature OnDotHasChanged;
+
+    UPROPERTY(BlueprintAssignable, Category="Physics|Aerodynamics")
+    FOnKickInAccelerationSignature OnKickinAcceleration;
 
 protected:
 
@@ -343,7 +353,7 @@ protected:
 
     void AddTorqueToThePlane(FVector Direction, float InputVal) const;
 
-    void Thrusting(float InputVal);
+    virtual void Thrusting(float InputVal);
 
     void AddThrust(float DeltaTime) const;
 
@@ -382,8 +392,7 @@ protected:
     /* Fires the event when Dot value changes drastically to enable VFX in blueprints */
     void HasDotChanged(float DotProduct);
 
-    UFUNCTION()
-    virtual void HasDotChangedEventCaller(const float fNewDot);
+
 
     void CalculateAerodynamic(float DeltaTime);
 

@@ -81,6 +81,17 @@ APlayerPawn::APlayerPawn()
     bHasDoubleAimLocks = false;
 }
 
+
+void APlayerPawn::BeginPlay()
+{
+    Super::BeginPlay();
+    if(PlaneMovement != nullptr)
+    {
+        PlaneMovement->OnDotHasChanged.AddDynamic(this, &APlayerPawn::DotHasChange);
+        PlaneMovement->OnKickinAcceleration.AddDynamic(this, &APlayerPawn::OnKickInAccelerationEvent);
+    }
+}
+
 void APlayerPawn::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);

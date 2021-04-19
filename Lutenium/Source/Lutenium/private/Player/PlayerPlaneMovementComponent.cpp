@@ -60,12 +60,25 @@ void UPlayerPlaneMovementComponent::ResetDashCooldown()
 }
 
 
-void UPlayerPlaneMovementComponent::HasDotChangedEventCaller(const float fNewDot)
+
+
+void UPlayerPlaneMovementComponent::ThrustInput(float Val)
 {
-	PlayerPawn->DotHasChange(fNewDot);
+    Super::ThrustInput(Val);
 }
 
-void UPlayerPlaneMovementComponent::OnKickInAccelerationEventCaller()
+void UPlayerPlaneMovementComponent::Thrusting(float InputVal)
 {
-    PlayerPawn->OnKickInAccelerationEvent();
+    Super::Thrusting(InputVal);
+}
+
+void UPlayerPlaneMovementComponent::ActivateTravelMode()
+{
+
+}
+
+
+void UPlayerPlaneMovementComponent::DeactivateTravelMode()
+{
+
 }
