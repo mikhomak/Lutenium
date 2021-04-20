@@ -1,6 +1,8 @@
 #include "Player/PlayerPlaneMovementComponent.h"
 #include "Player/PlayerPawn.h"
 #include "Player/MovementEffect/PlayerEmpMovementEffect.h"
+#include "InputActionValue.h"
+#include "EnhancedInputComponent.h"
 #include "Components/PrimitiveComponent.h"
 #include "TimerManager.h"
 
@@ -59,12 +61,60 @@ void UPlayerPlaneMovementComponent::ResetDashCooldown()
     }
 }
 
-
-
-
-void UPlayerPlaneMovementComponent::ThrustInput(float Val)
+void UPlayerPlaneMovementComponent::ReleasedThrustInput()
 {
-    Super::ThrustInput(Val);
+    if(TravelModeThurstActivations == 1 && bCanEnterTravelMode == false)
+    {
+        bCanEnterTravelMode = true;
+        FTimerHandle TimerHandle;
+        GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UPlayerPlaneMovementComponent::ResetEnteringTravelMode, 
+            TimeBetweenDoubleThrustInputToEnterTravelMode, false);
+        return;
+    }
+
+    if(bCanEnterTravelMode == false)
+    {
+        TravelModeThurstActivations = 0;
+        if(bIsInTravelMode)
+        {
+            DeactivateTravelMode();
+        }
+    }
+
+}
+
+
+void UPlayerPlaneMovementComponent::ThrustInput(const FInputActionValue& Value)
+{
+    Super::ThrustInput(Value.GetMagnitude());
+    
+
+    if(Value.GetMagnitude() == 0.f)
+    {
+        ReleasedThrustInput();
+    }
+
+    if(bIsInTravelMode)
+    {
+        return;
+    }
+    
+    if(Value.GetMagnitude() == 1.f)
+    {
+        if(TravelModeThurstActivations == 0 || bCanEnterTravelMode)
+        {
+            TravelModeThurstActivations += 1;
+        }
+
+        if(TravelModeThurstActivations == 2)
+        {
+            bCanEnterTravelMode = false;
+            ActivateTravelMode();
+        }
+    }
+    
+
+
 }
 
 void UPlayerPlaneMovementComponent::Thrusting(float InputVal)
@@ -74,11 +124,19 @@ void UPlayerPlaneMovementComponent::Thrusting(float InputVal)
 
 void UPlayerPlaneMovementComponent::ActivateTravelMode()
 {
-
+    OnTravelModeActivate.Broadcast();
+    bIsInTravelMode = true;
+    AirControl = AirControl * TravelModeAircontrolMultiplier;
+    MaxAcceleration = MaxAcceleration *  TravelModeMaxAccelerationMultiplier;
+    MaxThrustUpAcceleration = MaxThrustUpAcceleration *  TravelModeMaxAccelerationMultiplier;
 }
 
 
 void UPlayerPlaneMovementComponent::DeactivateTravelMode()
 {
-
+    OnTravelModeDeactivate.Broadcast();
+    AirControl = AirControl / TravelModeAircontrolMultiplier;
+    MaxAcceleration = MaxAcceleration / TravelModeMaxAccelerationMultiplier; 
+    MaxThrustUpAcceleration = MaxThrustUpAcceleration / TravelModeMaxAccelerationMultiplier ;
+    bIsInTravelMode = false;
 }

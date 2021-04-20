@@ -12,6 +12,9 @@
 #include "Player/Missile.h"
 #include "Player/MissileTargetHit.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "InputMappingContext.h"
 #include "AssistUtils/AssistUtils.h"
 
 APlayerPawn::APlayerPawn()
@@ -89,6 +92,25 @@ void APlayerPawn::BeginPlay()
     {
         PlaneMovement->OnDotHasChanged.AddDynamic(this, &APlayerPawn::DotHasChange);
         PlaneMovement->OnKickinAcceleration.AddDynamic(this, &APlayerPawn::OnKickInAccelerationEvent);
+        PlaneMovement->OnTravelModeActivate.AddDynamic(this, &APlayerPawn::TravelModeActivated);
+        PlaneMovement->OnTravelModeDeactivate.AddDynamic(this, &APlayerPawn::TravelModeDeactivated);
+    }
+}
+
+
+void APlayerPawn::PawnClientRestart()
+{
+    if (APlayerController* PC = Cast<APlayerController>(GetController()))
+    {
+        // Get the Enhanced Input Local Player Subsystem from the Local Player related to our Player Controller.
+        if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
+        {
+            // PawnClientRestart can run more than once in an Actor's lifetime, so start by clearing out any leftover mappings.
+            Subsystem->ClearAllMappings();
+
+            // Add each mapping context, along with their priority values. Higher values outprioritize lower values.
+            Subsystem->AddMappingContext(InputMapping, 1);
+        }
     }
 }
 
@@ -165,14 +187,33 @@ void APlayerPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Oth
 void APlayerPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
     check(PlayerInputComponent);
-    InputComponent = PlayerInputComponent;
-    PlayerInputComponent->BindAxis("Thrust", PlaneMovement, &UPlayerPlaneMovementComponent::ThrustInput);
-    PlayerInputComponent->BindAxis("Pitch", PlaneMovement, &UPlayerPlaneMovementComponent::PitchInput);
-    PlayerInputComponent->BindAxis("Yawn", PlaneMovement, &UPlayerPlaneMovementComponent::YawnInput);
-    PlayerInputComponent->BindAxis("Roll", PlaneMovement, &UPlayerPlaneMovementComponent::RollInput);
-    PlayerInputComponent->BindAction("Stop", IE_Released, PlaneMovement, &UPlayerPlaneMovementComponent::DashInput);
-    PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &APlayerPawn::WeaponInputPressed);
-    PlayerInputComponent->BindAction("Fire", IE_Released, this, &APlayerPawn::WeaponInputReleased);
+    if(UEnhancedInputComponent* PlayerEnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
+    {
+        if (ThrustInputAction)
+        {
+            PlayerEnhancedInputComponent->BindAction(ThrustInputAction, ETriggerEvent::Triggered, PlaneMovement, TEXT("ThrustInput"));
+        }
+
+        if (PitchInputAction)
+        {
+            PlayerEnhancedInputComponent->BindAction(PitchInputAction, ETriggerEvent::Triggered, PlaneMovement, TEXT("PitchInput"));
+        }
+
+        if (YawnInputAction)
+        {
+            PlayerEnhancedInputComponent->BindAction(YawnInputAction, ETriggerEvent::Triggered, PlaneMovement, TEXT("YawnInput"));
+        }
+
+        if (RollInputAction)
+        {
+            PlayerEnhancedInputComponent->BindAction(RollInputAction, ETriggerEvent::Triggered, PlaneMovement, TEXT("RollInput"));
+        }
+
+
+        //PlayerInputComponent->BindAction("Stop", IE_Released, PlaneMovement, &UPlayerPlaneMovementComponent::DashInput);
+        //PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &APlayerPawn::WeaponInputPressed);
+        //PlayerInputComponent->BindAction("Fire", IE_Released, this, &APlayerPawn::WeaponInputReleased);
+    }
 }
 
 
@@ -280,47 +321,6 @@ void APlayerPawn::FireMissile()
         }
     }
 
-}
-
-
-float APlayerPawn::GetThrustInput() const
-{
-    if (InputComponent)
-    {
-        check(InputComponent);
-        return InputComponent->GetAxisValue("Thrust");
-    }
-    return 0.f;
-}
-
-float APlayerPawn::GetYawnInput() const
-{
-    if (InputComponent)
-    {
-        check(InputComponent);
-        return InputComponent->GetAxisValue("Yawn");
-    }
-    return 0.f;
-}
-
-float APlayerPawn::GetRollInput() const
-{
-    if (InputComponent)
-    {
-        check(InputComponent);
-        return InputComponent->GetAxisValue("Roll");
-    }
-    return 0.f;
-}
-
-float APlayerPawn::GetPitchInput() const
-{
-    if (InputComponent)
-    {
-        check(InputComponent);
-        return InputComponent->GetAxisValue("Pitch");
-    }
-    return 0.f;
 }
 
 void APlayerPawn::BaseSupportAttack()

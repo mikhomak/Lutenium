@@ -4,6 +4,7 @@
 #include "CoreMinimal.h"
 #include "MovementEffect/MovementEffect.h"
 #include "Components/ActorComponent.h"
+#include "InputActionValue.h"
 #include "PlaneMovementComponent.generated.h"
 
 
@@ -100,7 +101,7 @@ public:
      * @warning In your pawn class bind this method to the thrust axis!
      */
     UFUNCTION(BlueprintCallable, Category = "Input")
-    virtual void ThrustInput(float Val);
+    virtual void ThrustInput(const FInputActionValue& Value);
 
     /**
      * Adds torque to the Y axis
@@ -108,7 +109,7 @@ public:
      * @warning In your pawn class bind this method to the Pitch axis!
      */
     UFUNCTION(BlueprintCallable, Category = "Input")
-    void PitchInput(float Val);
+    void PitchInput(const FInputActionValue& Value);
 
     /**
      * Adds torque to the Z axis
@@ -116,7 +117,7 @@ public:
      * @warning In your pawn class bind this method to the Yawn axis!
      */
     UFUNCTION(BlueprintCallable, Category = "Input")
-    void YawnInput(float Val);
+    void YawnInput(const FInputActionValue& Value);
 
     /**
      * Adds torque to the X axis
@@ -124,7 +125,7 @@ public:
      * @warning In your pawn class bind this method to the Roll axis!
      */
     UFUNCTION(BlueprintCallable, Category = "Input")
-    void RollInput(float Val);
+    void RollInput(const FInputActionValue& Value);
 
 
 

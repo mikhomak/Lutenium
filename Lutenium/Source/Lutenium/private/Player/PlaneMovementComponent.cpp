@@ -11,6 +11,7 @@
 #include "Math/UnrealMathUtility.h"
 #include "TimerManager.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "EnhancedInputComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
 UPlaneMovementComponent::UPlaneMovementComponent()
@@ -88,25 +89,25 @@ void UPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 }
 
 
-void UPlaneMovementComponent::ThrustInput(const float Val)
+void UPlaneMovementComponent::ThrustInput(const FInputActionValue& Value)
 {
-    Thrusting(Val);
+    Thrusting(Value.GetMagnitude());
 }
 
-void UPlaneMovementComponent::PitchInput(const float Val)
+void UPlaneMovementComponent::PitchInput(const FInputActionValue& Value)
 {
     const float fAppliedPitchControl = bThrustUp ? PitchControl : NoThrustPitchControl;
-    AddTorqueToThePlane(OwnerPawn->GetActorRightVector(), fAppliedPitchControl * Val);
+    AddTorqueToThePlane(OwnerPawn->GetActorRightVector(), fAppliedPitchControl * Value.GetMagnitude());
 }
 
-void UPlaneMovementComponent::YawnInput(const float Val)
+void UPlaneMovementComponent::YawnInput(const FInputActionValue& Value)
 {
-    AddTorqueToThePlane(OwnerPawn->GetActorUpVector(), Val * YawnControl);
+    AddTorqueToThePlane(OwnerPawn->GetActorUpVector(), Value.GetMagnitude() * YawnControl);
 }
 
-void UPlaneMovementComponent::RollInput(const float Val)
+void UPlaneMovementComponent::RollInput(const FInputActionValue& Value)
 {
-    AddTorqueToThePlane(OwnerPawn->GetActorForwardVector(), Val * RollControl);
+    AddTorqueToThePlane(OwnerPawn->GetActorForwardVector(), Value.GetMagnitude() * RollControl);
 }
 
 

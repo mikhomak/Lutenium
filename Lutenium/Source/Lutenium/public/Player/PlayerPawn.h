@@ -137,21 +137,20 @@ public:
 	// Additional movements
 	// ------------------------------------------------------------------
 
-	/** Returns the Yawn Imput */
-	UFUNCTION(BlueprintCallable, Category = "Input")
-	float GetYawnInput() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input|Actions")
+	class UInputAction* ThrustInputAction;
 
-	/** Returns the Roll Imput */
-	UFUNCTION(BlueprintCallable, Category = "Input")
-	float GetRollInput() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input|Actions")
+	class UInputAction* PitchInputAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input|Actions")
+	class UInputAction* RollInputAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input|Actions")
+	class UInputAction* YawnInputAction;
 
-	/** Returns the Pitch Imput */
-	UFUNCTION(BlueprintCallable, Category = "Input")
-	float GetPitchInput() const;
-
-	/** Returns the Thrust Imput */
-	UFUNCTION(BlueprintCallable, Category = "Input")
-	float GetThrustInput() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input|Mapping")
+	class UInputMappingContext* InputMapping;
 
 	/**
 	 * Event when Dot value has Changed dramatically
@@ -179,6 +178,12 @@ public:
 	 */
 	UFUNCTION(BlueprintImplementableEvent, Category = "PlaneMovement")
 	void OnKickInAccelerationEvent();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "PlaneMovement")
+	void TravelModeActivated();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "PlaneMovement")
+	void TravelModeDeactivated();
 
 	// ------------------------------------------------------------------
 	// Weapons
@@ -525,20 +530,11 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Effects")
 	void OnEmpDeactivateEvent();
 
-	/**
-	 * Effect when the jet enters travel mode
-	 * @see UPlayerPlaneMovementComponent
-	 */
-	UFUNCTION(BlueprintImplementableEvent, Category = "Effects")
-	void OnEnteringTravelMode();
-
 protected:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
-private:
-	UInputComponent* InputComponent;
-
+	virtual void PawnClientRestart() override;
 
 public:
 	FORCEINLINE class UStaticMeshComponent* GetPlaneMesh() const { return PlaneMesh; }
