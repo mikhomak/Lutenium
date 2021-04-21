@@ -18,11 +18,11 @@ enum class EPlayerUpgrade : uint8
 	IncreasedAimRadius UMETA(DisplayName = "Increased missile aim radius"),					// Increases aim radiusfor the missiles
 	DoubleMissileAimLock UMETA(DisplayName = "Double missile aim lock"),					// Adds second missile aim lock
 	BaseSupport UMETA(DisplayName = "Base support missile"),								// Support missile from the base to the current aim lock
-	MachineGun UMETA(DisplayName = "Machine Gun"),													// Just a gun
+	MachineGun UMETA(DisplayName = "Machine Gun"),											// Just a gun
 	IncreasedDyingVelocity  UMETA(DisplayName = "Increased velocity to die on hit"),		// Increases the velocity needed to die on hit
 	BarrelRoll UMETA(DisplayName = "Fast barrerl roll"),									// DO A BARREL ROLL (fast one)
 	BackMirrors UMETA(DisplayName = "Back mirrors"), 										// Adds Back mirrors to the UI
-	TravelMode UMETA(DisplayName = "Travel Mode")
+	TravelMode UMETA(DisplayName = "Travel Mode")											// Adds travel mode (goes fast, slow turn)
 };
 
 
@@ -191,9 +191,23 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "PlaneMovement")
 	void OnKickInAccelerationEvent();
 
+	/**
+	 * Event on entering the travel mode
+	 * Travel mode is an upgrade
+	 * Invokes in UPlayerPlaneMovementComponent::ActivateTravelMode()
+	 * @see EPlayerUpgrade::TravelMode
+	 * @see UPlayerPlaneMovementComponent
+	 */
 	UFUNCTION(BlueprintImplementableEvent, Category = "PlaneMovement")
 	void TravelModeActivated();
 
+	/**
+	 * Event on exiting the travel mode
+	 * Travel mode is an upgrade
+	 * Invokes in UPlayerPlaneMovementComponent::DeactivateTravelMode()
+	 * @see EPlayerUpgrade::TravelMode
+	 * @see UPlayerPlaneMovementComponent
+	 */
 	UFUNCTION(BlueprintImplementableEvent, Category = "PlaneMovement")
 	void TravelModeDeactivated();
 

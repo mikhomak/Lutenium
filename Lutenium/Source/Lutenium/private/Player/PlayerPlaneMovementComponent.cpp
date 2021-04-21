@@ -67,10 +67,19 @@ void UPlayerPlaneMovementComponent::ResetDashCooldown()
 void UPlayerPlaneMovementComponent::ThrustInput(const FInputActionValue& Value)
 {
     Super::ThrustInput(Value.GetMagnitude());
+    // Safety deactivation of the target mode
+    // If the jet is in travelMode, and Thrust is negative(aka the player is pressing stop button) deactivates the travel mode
+    // We don't care about bIsAbleToDeactivateTravelMode cuz if the player is pressing stop button, that probably means that she/he doesn't want to enter the travel mode
+    if(bIsInTravelMode && Value.GetMagnitude() < 0)
+    {
+        DeactivateTravelMode();
+    }
 }
 
 void UPlayerPlaneMovementComponent::ActivateTravelMode()
 {
+    // Upgrade boolean
+    // If the player doesn't have an upgrade, do nothing
     if(!bCanTravelMode)
     {
         return;
@@ -90,16 +99,20 @@ void UPlayerPlaneMovementComponent::ActivateTravelMode()
 
 void UPlayerPlaneMovementComponent::DeactivateTravelMode()
 {
+    // Upgrade boolean
+    // If the player doesn't have an upgrade, do nothing
     if(!bCanTravelMode)
     {
         return;
     }
 
+    // If the player is not in travel mode or is not able to deactivate it, do nothing
     if(!bIsInTravelMode || !bIsAbleToDeactivateTravelMode)
     {
         return;
     }
 
+    // The player is in travel mode and is able to deactivate it
     OnTravelModeDeactivate.Broadcast();
     AirControl = AirControl / TravelModeAircontrolMultiplier;
     MaxAcceleration = MaxAcceleration / TravelModeMaxAccelerationMultiplier; 

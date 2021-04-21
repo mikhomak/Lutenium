@@ -187,10 +187,12 @@ void APlayerPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Oth
 
 void APlayerPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
+    // ayo enhanced input system is FUCKING LIT
     if(UEnhancedInputComponent* PlayerEnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
     {
         if (ThrustInputAction)
         {
+            // I don't like binding stuff using the name of the function but there were reasons for that so that's okay..........
             PlayerEnhancedInputComponent->BindAction(ThrustInputAction, ETriggerEvent::Triggered, PlaneMovement, TEXT("ThrustInput"));
         }
 
