@@ -354,6 +354,7 @@ protected:
 
     void AddTorqueToThePlane(FVector Direction, float InputVal) const;
 
+    UFUNCTION(BlueprintCallable)
     virtual void Thrusting(float InputVal);
 
     void AddThrust(float DeltaTime) const;

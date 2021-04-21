@@ -100,6 +100,7 @@ void APlayerPawn::BeginPlay()
 
 void APlayerPawn::PawnClientRestart()
 {
+    Super::PawnClientRestart();   
     if (APlayerController* PC = Cast<APlayerController>(GetController()))
     {
         // Get the Enhanced Input Local Player Subsystem from the Local Player related to our Player Controller.
@@ -186,7 +187,6 @@ void APlayerPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Oth
 
 void APlayerPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
-    check(PlayerInputComponent);
     if(UEnhancedInputComponent* PlayerEnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
     {
         if (ThrustInputAction)
