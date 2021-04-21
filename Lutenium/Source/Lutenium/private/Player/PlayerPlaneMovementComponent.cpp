@@ -14,7 +14,7 @@ UPlayerPlaneMovementComponent::UPlayerPlaneMovementComponent()
     DashCooldown = 3.f;
     bCanDash = true;
 
-    TimeToBeAbleToDeactivateTravelMode = 1.f;
+    TimeToBeAbleToDeactivateTravelMode = 0.05f;
 
     EmpMovementEffectClass = UPlayerEmpMovementEffect::StaticClass();
 }
