@@ -209,10 +209,27 @@ void APlayerPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputCo
             PlayerEnhancedInputComponent->BindAction(RollInputAction, ETriggerEvent::Triggered, PlaneMovement, TEXT("RollInput"));
         }
 
+        if(WeaponInputAction)
+        {
+            PlayerEnhancedInputComponent->BindAction(WeaponInputAction, ETriggerEvent::Started, this, &APlayerPawn::WeaponInputPressed);
+            PlayerEnhancedInputComponent->BindAction(WeaponInputAction, ETriggerEvent::Completed, this, &APlayerPawn::WeaponInputReleased);
+        }
 
-        //PlayerInputComponent->BindAction("Stop", IE_Released, PlaneMovement, &UPlayerPlaneMovementComponent::DashInput);
-        //PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &APlayerPawn::WeaponInputPressed);
-        //PlayerInputComponent->BindAction("Fire", IE_Released, this, &APlayerPawn::WeaponInputReleased);
+        if(WeaponChangeInputAction)
+        {
+            PlayerEnhancedInputComponent->BindAction(WeaponChangeInputAction, ETriggerEvent::Started, this, &APlayerPawn::SwitchWeapon);
+        }
+
+        if(AdditionalWeaponInputAction)
+        {
+            PlayerEnhancedInputComponent->BindAction(AdditionalWeaponInputAction, ETriggerEvent::Started, this, &APlayerPawn::BaseSupportAttack);
+        }
+
+        if(TravelModeInputAction)
+        {
+            PlayerEnhancedInputComponent->BindAction(TravelModeInputAction, ETriggerEvent::Triggered, PlaneMovement, &UPlayerPlaneMovementComponent::ActivateTravelMode);
+            PlayerEnhancedInputComponent->BindAction(ThrustInputAction, ETriggerEvent::Completed, PlaneMovement, &UPlayerPlaneMovementComponent::DeactivateTravelMode);
+        }
     }
 }
 
@@ -246,6 +263,11 @@ void APlayerPawn::WeaponInputReleased()
     }
 }
 
+
+void APlayerPawn::SwitchWeapon()
+{
+    SwitchWeapons(CurrentWeapon == EPlayerWeapon::MachineGun ? EPlayerWeapon::Missile : EPlayerWeapon::MachineGun);
+}
 
 void APlayerPawn::SwitchWeapons(EPlayerWeapon NextWeapon)
 {
@@ -282,8 +304,8 @@ void APlayerPawn::FireMachineGun()
     SpawnParams.Instigator = this;
 
     FVector SpawnLocation = PlaneMesh->GetSocketLocation("MissileMuzzle");
-    AActor* Bullet = World->SpawnActor<AActor>(MachineGunBulletClass, SpawnLocation, UKismetMathLibrary::MakeRotFromX(GetActorForwardVector()),
-                                                            SpawnParams);
+    AActor* Bullet = World->SpawnActor<AActor>(MachineGunBulletClass, SpawnLocation, 
+                                        UKismetMathLibrary::MakeRotFromX(GetActorForwardVector()), SpawnParams);
     OnFireMachineGunEvent();
 }
 
@@ -376,6 +398,14 @@ void APlayerPawn::UpgradePlayer(const EPlayerUpgrade NewUpgrade)
 
             case EPlayerUpgrade::BaseSupport:
                 bCanBaseAttack = true;
+            break;
+            case EPlayerUpgrade::TravelMode:
+                if(PlaneMovement)
+                {
+                    PlaneMovement->bCanTravelMode = true;
+                }
+            break;
+
             default:
 
             break;

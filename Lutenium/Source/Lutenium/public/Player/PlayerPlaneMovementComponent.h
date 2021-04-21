@@ -43,14 +43,6 @@ public:
 
     virtual void ThrustInput(const FInputActionValue& Value) override;
 
-    virtual void Thrusting(float InputVal) override;
-
-    UFUNCTION(Category = "Control")
-    void ReleasedThrustInput();
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Travel Mode")
-    float TimeBetweenDoubleThrustInputToEnterTravelMode;
-    
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Travel Mode", meta = (ClampMin = "1", UIMin = "1", ClampMax = "2", UIMax = "2"))
     float TravelModeMaxAccelerationMultiplier;
     
@@ -58,10 +50,22 @@ public:
     float TravelModeAircontrolMultiplier;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Travel Mode")
-    bool bCanEnterTravelMode;
+    bool bIsInTravelMode;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Travel Mode")
-    bool bIsInTravelMode;
+    bool bCanTravelMode;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Travel Mode")
+    float TimeToBeAbleToDeactivateTravelMode;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Travel Mode")
+    bool bIsAbleToDeactivateTravelMode;
+
+    FORCEINLINE UFUNCTION(Category = "Travel Mode")
+    void CanDeactivateTravelMode()
+    {
+        bIsAbleToDeactivateTravelMode = true;
+    }
 
     UFUNCTION(BlueprintCallable, Category="Travel Mode")
     void ActivateTravelMode();
@@ -69,22 +73,9 @@ public:
     UFUNCTION(BlueprintCallable, Category="Travel Mode")
     void DeactivateTravelMode();
 
-    FORCEINLINE UFUNCTION(Category="Travel Mode")
-    void ResetEnteringTravelMode() 
-    {
-        if(bIsInTravelMode == false)
-        {
-            bCanEnterTravelMode = false;
-            TravelModeThurstActivations = 0;
-        }
-    }
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Travel mode")
-    int32 TravelModeThurstActivations;
 
     UPROPERTY(BlueprintAssignable, Category="Travel Mode")
     FOnTravelModeActivateSignature OnTravelModeActivate;
-
 
     UPROPERTY(BlueprintAssignable, Category="Travel Mode")
     FOnTravelModeDeactivateSignature OnTravelModeDeactivate;

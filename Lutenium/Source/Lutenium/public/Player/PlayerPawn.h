@@ -149,6 +149,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input|Actions")
 	class UInputAction* YawnInputAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input|Actions")
+	class UInputAction* WeaponInputAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input|Actions")
+	class UInputAction* WeaponChangeInputAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input|Actions")
+	class UInputAction* AdditionalWeaponInputAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input|Actions")
+	class UInputAction* TravelModeInputAction;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input|Mapping")
 	class UInputMappingContext* InputMapping;
 
@@ -216,6 +228,13 @@ public:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons")
 	bool bWeaponFiring;
+
+	/**
+	 * Switches the current weapon
+	 * Currently switches between missiles and machine gun
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Weapons")
+	void SwitchWeapon();
 
 	/**
 	 * Switches the current weapon
