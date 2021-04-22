@@ -194,6 +194,12 @@ void APlayerPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputCo
         {
             // I don't like binding stuff using the name of the function but there were reasons for that so that's okay..........
             PlayerEnhancedInputComponent->BindAction(ThrustInputAction, ETriggerEvent::Triggered, PlaneMovement, TEXT("ThrustInput"));
+            // We also want to send 0 to ThrustInput
+            // By default ETriggerEvent::Triggered is not triggered when there is no action applied in that input
+            PlayerEnhancedInputComponent->BindAction(ThrustInputAction, ETriggerEvent::Completed, PlaneMovement, TEXT("ThrustInput"));
+            // Safety deactivating travel mode
+            PlayerEnhancedInputComponent->BindAction(ThrustInputAction, ETriggerEvent::Completed, PlaneMovement, &UPlayerPlaneMovementComponent::DeactivateTravelMode);
+
         }
 
         if (PitchInputAction)
@@ -230,7 +236,6 @@ void APlayerPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputCo
         if(TravelModeInputAction)
         {
             PlayerEnhancedInputComponent->BindAction(TravelModeInputAction, ETriggerEvent::Triggered, PlaneMovement, &UPlayerPlaneMovementComponent::ActivateTravelMode);
-            PlayerEnhancedInputComponent->BindAction(ThrustInputAction, ETriggerEvent::Completed, PlaneMovement, &UPlayerPlaneMovementComponent::DeactivateTravelMode);
         }
     }
 }

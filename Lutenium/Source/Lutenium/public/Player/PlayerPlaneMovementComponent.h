@@ -13,7 +13,12 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnTravelModeActivateSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnTravelModeDeactivateSignature);
 
 
-
+/**
+ * Enhanced PlaneMovementComponent with new features, such as:
+ *  1) Travel Mode
+ *  2) Dashes
+ * Those feature don't need to be in PlaneMovementComponent because they are more specific
+ */
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class LUTENIUM_API UPlayerPlaneMovementComponent final : public UPlaneMovementComponent
 {
@@ -40,9 +45,18 @@ public:
     	PlayerPawn = Pawn;
     }
 
-
+    // ------------------------------------------------------------------
+    // Travel Mode
+    // ------------------------------------------------------------------
+    
+    /**
+     * Overriding ThrustInput method to savely deactivate travel mode in case if the player presses "thrust back"
+     */
     virtual void ThrustInput(const FInputActionValue& Value) override;
 
+    /**
+     * On entering 
+     */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Travel Mode", meta = (ClampMin = "1", UIMin = "1", ClampMax = "2", UIMax = "2"))
     float TravelModeMaxAccelerationMultiplier;
     
@@ -80,6 +94,11 @@ public:
     UPROPERTY(BlueprintAssignable, Category="Travel Mode")
     FOnTravelModeDeactivateSignature OnTravelModeDeactivate;
 
+
+    // ------------------------------------------------------------------
+    // DASH
+    // ------------------------------------------------------------------
+
     UFUNCTION(BlueprintCallable, Category = "Input", meta = (AdvancedDisplay = "2"))
     void DashInput();
 
@@ -90,10 +109,6 @@ public:
     UPROPERTY(Category = "Dash", EditAnywhere)
     float DashCooldown;
 
-
-    // ------------------------------------------------------------------
-    // DASH
-    // ------------------------------------------------------------------
     UPROPERTY(Category = Dash, EditDefaultsOnly)
     float DashImpactForce;
 
