@@ -15,7 +15,8 @@
 ---    
 ### Screenshots REALLY WIP:
 ![Stadium](https://github.com/mikhomak/Images/blob/master/Lutenium/tutorial.gif?raw=true)    
-![Stadium](https://github.com/mikhomak/Images/blob/master/Lutenium/QuickFly.gif?raw=true)    
+![Stadium](https://github.com/mikhomak/Images/blob/master/Lutenium/QuickFly.gif?raw=true)  
+![Stadium](https://github.com/mikhomak/Images/blob/master/Lutenium/Asset.gif?raw=true)   
 ![Stadium](https://github.com/mikhomak/Images/blob/master/Lutenium/stadium.gif?raw=true)   
 ![1](https://raw.githubusercontent.com/mikhomak/Images/master/Lutenium/7.png)     
 ![1](https://raw.githubusercontent.com/mikhomak/Images/master/Lutenium/1.png)     
