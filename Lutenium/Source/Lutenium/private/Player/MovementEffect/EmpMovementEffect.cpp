@@ -37,6 +37,7 @@ void UEmpMovementEffect::Activate(FVector NewRotationDirection, const float NewR
             Active = true;
             PlaneMovementComponent->bStalling = true;
             PlaneMovementComponent->ResetCurrentAcceleration();
+            OnEmpActivate.Broadcast();
             AdditionalActivateEffect();
         }
     }
@@ -61,4 +62,5 @@ void UEmpMovementEffect::AdditionalDeactivationEffect()
 {
     bAddAdditionalGravity = false;
     AdditionalGravity = -900.f;
+    OnEmpDeactivate.Broadcast();
 }

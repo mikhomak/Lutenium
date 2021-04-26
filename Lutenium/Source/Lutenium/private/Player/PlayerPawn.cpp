@@ -94,6 +94,8 @@ void APlayerPawn::BeginPlay()
         PlaneMovement->OnKickinAcceleration.AddDynamic(this, &APlayerPawn::OnKickInAccelerationEvent);
         PlaneMovement->OnTravelModeActivate.AddDynamic(this, &APlayerPawn::TravelModeActivated);
         PlaneMovement->OnTravelModeDeactivate.AddDynamic(this, &APlayerPawn::TravelModeDeactivated);
+        PlaneMovement->EmpMovementEffect->OnEmpActivate.AddDynamic(this, &APlayerPawn::OnEmpActivateEvent);
+        PlaneMovement->EmpMovementEffect->OnEmpDeactivate.AddDynamic(this, &APlayerPawn::OnEmpDeactivateEvent);
     }
 }
 

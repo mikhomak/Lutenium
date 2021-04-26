@@ -3,6 +3,10 @@
 #include "MovementEffect.h"
 #include "EmpMovementEffect.generated.h"
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEmpActivateSignature);
+
+
 UCLASS(BlueprintType, Blueprintable)
 class LUTENIUM_API UEmpMovementEffect : public UMovementEffect
 {
@@ -36,4 +40,11 @@ public:
     bool bAddAdditionalGravity;
 
     virtual void AdditionalDeactivationEffect() override;
+
+
+    UPROPERTY(BlueprintAssignable, Category="Effect")
+    FOnEmpActivateSignature OnEmpActivate;
+
+    UPROPERTY(BlueprintAssignable, Category="Effect")
+    FOnEmpActivateSignature OnEmpDeactivate;
 };

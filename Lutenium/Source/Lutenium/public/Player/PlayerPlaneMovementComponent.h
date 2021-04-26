@@ -35,6 +35,7 @@ public:
     virtual void BeginPlay() override;
 
 
+    /***
     UPROPERTY(BlueprintReadWrite, Category = "Owner")
     class APlayerPawn* PlayerPawn;
 
