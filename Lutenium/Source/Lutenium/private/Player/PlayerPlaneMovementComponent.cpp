@@ -1,6 +1,5 @@
 #include "Player/PlayerPlaneMovementComponent.h"
 #include "Player/PlayerPawn.h"
-#include "Player/MovementEffect/PlayerEmpMovementEffect.h"
 #include "InputActionValue.h"
 #include "EnhancedInputComponent.h"
 #include "Components/PrimitiveComponent.h"
@@ -15,8 +14,6 @@ UPlayerPlaneMovementComponent::UPlayerPlaneMovementComponent()
     bCanDash = true;
 
     TimeToBeAbleToDeactivateTravelMode = 0.05f;
-
-    EmpMovementEffectClass = UPlayerEmpMovementEffect::StaticClass();
 }
 
 void UPlayerPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -29,10 +26,7 @@ void UPlayerPlaneMovementComponent::TickComponent(float DeltaTime, ELevelTick Ti
 void UPlayerPlaneMovementComponent::BeginPlay()
 {
     Super::BeginPlay();
-    if(Cast<UPlayerEmpMovementEffect>(EmpMovementEffect) != nullptr)
-    {
-        ((UPlayerEmpMovementEffect*) EmpMovementEffect)->PlayerPawn = PlayerPawn;
-    }
+
 }
 
 
@@ -43,7 +37,6 @@ void UPlayerPlaneMovementComponent::DashInput()
         return;
     }
     bCanDash = false;
-    PlayerPawn->DashImpact();
     PhysicsComponent->AddForce(PhysicsComponent->GetForwardVector() * DashImpactForce, FName(), true);
     CurrentAcceleration = MaxThrustUpAcceleration;
     --DashesLeft;
