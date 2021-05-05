@@ -113,6 +113,9 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
 	TrafficLightSocketName = "TrafficLightSocket";
 	PowerSystemSocketName = "PowerSystemSocket";
 
+	/* Weapons */
+	CurrentWeaponLevel = 0;
+	StepScreamWeaponLevelNeeded = 1;
 	/* Don't forget to set the AI Controller in Blueprint! */
 }
 
@@ -266,10 +269,34 @@ FVector AEnemyMonsterPawn::GetLegLocation(int32 LegIndex) const
 	return Legs.IsValidIndex(LegIndex) && Legs[LegIndex] != nullptr ? Legs[LegIndex]->GetCurrentPosition() : GetActorLocation();
 }
 
-void AEnemyMonsterPawn::LegHasMovedEventCaller(const int32 LegIndex)
+void AEnemyMonsterPawn::LegHasMovedEventCaller(const int32 LegIndex, const FVector& Position)
 {
+	// If the weapon level is high enough, spawns the scream on the position of the stop
+	if(CurrentWeaponLevel >= StepScreamWeaponLevelNeeded)
+	{
+		SpawnStepScream(Position);
+	}
 	ToggleWhatLegsShouldMove(LegIndex % 2 != 0);
-	LegHasMoved(LegIndex);
+	LegHasMoved(LegIndex, Position);
+}
+
+
+void AEnemyMonsterPawn::SpawnStepScream(FVector Position)
+{
+	if(UWorld* World = GetWorld())
+	{
+	    FActorSpawnParameters SpawnParams;
+	    SpawnParams.Owner = this;
+	    SpawnParams.Instigator = this;
+	    
+	    AScream* Scream = World->SpawnActor<AScream>(StepScreamClass, Position, GetActorRotation(),
+	                                                    SpawnParams);
+	    if(Scream)
+	    {
+	        Scream->SetDragOrImpulse(false);
+	        Scream->bIsEmpScream = false;
+	    }
+	}
 }
 
 
@@ -330,6 +357,7 @@ void AEnemyMonsterPawn::LooseWeapon(EMonsterWeaponType WeaponType)
 			Pair.Value->UpgradeWeapon();
 		}
 	}
+	CurrentWeaponLevel = CurrentWeaponLevel + 1;
 }
 
 

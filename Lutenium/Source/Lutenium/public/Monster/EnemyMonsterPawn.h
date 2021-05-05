@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Monster/Weapons/Spells/Scream.h"
 #include "GameFramework/Pawn.h"
 #include "MonsterLeg.h"
 #include "Monster/Weapons/WeaponsUtils/MonsterWeaponType.h"
@@ -101,7 +102,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Legs movement")
 	float LegStepTime;
 
-	void LegHasMovedEventCaller(const int32 LegIndex);
+	UFUNCTION(BlueprintCallable)
+	void LegHasMovedEventCaller(const int32 LegIndex, const FVector& Position);
 
 
 	// ------------------------------------------------------------------
@@ -126,6 +128,40 @@ public:
 	 */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category ="Weapons")
 	TMap<EMonsterWeaponType, class AMonsterWeapon*> WeaponMap;
+
+	/**
+	 * Current Weapon level of each weapons
+	 * Upgrades on LooseWeapon() by loosing the weapon
+	 */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category ="Weapons")
+	int32 CurrentWeaponLevel;
+
+
+	/**
+	 * Weapon level on which monster start making screams on each step
+	 */
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category ="Weapons|Step Scream")
+	int32 StepScreamWeaponLevelNeeded;
+
+	/**
+	 * Spawns scream at each step
+	 * Should be BP derived class
+	 * Spawns in SpawnStepScream()
+	 */
+    UPROPERTY(EditDefaultsOnly, Category = "Weapons|Step Scream")
+	TSubclassOf<class AScream> StepScreamClass;
+
+protected:
+
+	/**
+	 * Spawn scream on the position of the stop movement of the leg
+	 * Executes if StepScreamWeaponLevelNeeded >= CurrentWeaponLevel
+	 * Invokes in LegHasMovedEventCaller()
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Weapons|Step Scream")
+	void SpawnStepScream(FVector Position);
+
+public:
 
 	// ------------------------------------------------------------------
 	// AI
@@ -293,7 +329,7 @@ protected:
 	class UMonsterLegComponent* RightBackLeg;
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Legs")
-	void LegHasMoved(int32 Index);
+	void LegHasMoved(int32 Index,const FVector& Position);
 
 	void InitLeg(class UMonsterLegComponent* Leg, int32 LegIndex);
 

@@ -57,7 +57,7 @@ public:
 	 * @param Target - target to follow or nullptr. Target usually is MonsterWeapon or the Monster itself
 	 * @param ShootDirection - if the Target is nullptr, the missile will fly to this directon. Should be normalized
 	 */
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void SetTargetOrDirection(class USceneComponent* Target, const FVector& ShootDirection);
 
 	/**

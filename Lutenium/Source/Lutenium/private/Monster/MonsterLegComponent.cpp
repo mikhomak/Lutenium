@@ -125,7 +125,7 @@ void UMonsterLegComponent::StopMoving()
 	bMoving = false;
 	CurrentStepTime = 0.f;
 	bHasReachedHighestPoint = false;
-	EnemyMonsterPawn->LegHasMovedEventCaller(LegIndex);
+	EnemyMonsterPawn->LegHasMovedEventCaller(LegIndex, CurrentPosition);
 }
 
 void UMonsterLegComponent::MoveLeg(float DeltaTime)
