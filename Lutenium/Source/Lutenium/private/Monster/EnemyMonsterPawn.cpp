@@ -293,6 +293,7 @@ void AEnemyMonsterPawn::SpawnStepScream(FVector Position)
 	                                                    SpawnParams);
 	    if(Scream)
 	    {
+            Scream->SetUseSecondMesh(true);
 	        Scream->SetDragOrImpulse(false);
 	        Scream->bIsEmpScream = false;
 	    }

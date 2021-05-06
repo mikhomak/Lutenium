@@ -39,6 +39,11 @@ void ASirenMW::ExecuteAttack()
                                                             SpawnParams);
             if(Scream)
             {
+                // if that's an impluse, let's change the mesh to the second one(in out case that's a semisphere)
+                if(bDragOrImpulse == true)
+                {
+                    Scream->SetUseSecondMesh(true);
+                }
                 Scream->SetDragOrImpulse(bDragOrImpulse);
                 Scream->bIsEmpScream = bIsEmpScream;
                 /* If that was the second attack, resets bDragOrImpulse to the default value (Draggggggging)*/

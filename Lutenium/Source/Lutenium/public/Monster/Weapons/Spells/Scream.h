@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/StaticMeshComponent.h"
 #include "Scream.generated.h"
 
 
@@ -52,6 +53,38 @@ public:
 
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Scream")
     float EmpForce;
+
+
+
+    /**
+     * Changes the mesh when its an semisphere mesh
+     * Replaces WaveMesh by this mesh if SetUseSecondMesh(true)
+     * Being invoked in SetUseSecondMesh();
+     */
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Scream")
+    UStaticMesh* SemisphereScreamMesh;
+
+    /**
+     * Replaces WaveMesh by SemisphereScreamMesh if bUseSecondMesh is true
+     * @param bUseSecondMesh - replace WaveMesh by SemisphereScreamMesh?
+     */
+    FORCEINLINE UFUNCTION(Category = "Scream")
+    void SetUseSecondMesh(bool bUseSecondMesh)
+    {
+        if(bUseSecondMesh)
+        {
+            WaveMesh->SetStaticMesh(SemisphereScreamMesh);
+            WaveMesh->SetMaterial(0, SemisphereMaterial);
+        }
+    }
+
+    /**
+     * Sets the material when the WaveMesh is being replaced by the SemisphereScreamMesh
+     * @see SetUseSecondMesh();
+     */
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Scream")
+    UMaterialInstance* SemisphereMaterial;
+
 protected:
     virtual void BeginPlay() override;
 
