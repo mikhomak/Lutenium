@@ -129,6 +129,31 @@ public:
     virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
 
 
+    /**
+     * Left arrow component
+     * Determines the direction of the interaction with the player when he/she overlaps with the LeftLightMesh
+     * Uses in LightBeginOverlap()
+     */
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Weapon")
+    class UArrowComponent* LeftArrow;
+
+    
+    /**
+     * Right arrow component
+     * Determines the direction of the interaction with the player when he/she overlaps with the RightLightMesh
+     * Uses in LightBeginOverlap()
+     */
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Weapon")
+    class UArrowComponent* RightArrow;
+
+    /**
+     * Right arrow component
+     * Determines the direction of the interaction with the player when he/she overlaps with the CenterLightMesh
+     * Uses in LightBeginOverlap()
+     */
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Weapon")
+    class UArrowComponent* CenterArrow;
+
 
 protected:
 

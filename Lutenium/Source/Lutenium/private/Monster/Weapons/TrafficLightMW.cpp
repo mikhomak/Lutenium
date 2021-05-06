@@ -10,6 +10,7 @@
 #include "Components/PrimitiveComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/ArrowComponent.h"
 #include "GameFramework/Actor.h"
 
 #define ECC_MonsterWPHurtbox ECollisionChannel::ECC_GameTraceChannel1
@@ -43,6 +44,16 @@ ATrafficLightMW::ATrafficLightMW() : AMonsterWeapon()
     RightLightMesh->AttachToComponent(WeaponMesh, AttachmentTransformRules);
     CenterLightMesh->AttachToComponent(WeaponMesh, AttachmentTransformRules);
 
+    /* Creating arrows */
+    LeftArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Left Arrow"));
+    RightArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Right Arrow"));
+    CenterArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Center Arrow"));
+
+    LeftArrow->AttachToComponent(WeaponMesh, AttachmentTransformRules);
+    RightArrow->AttachToComponent(WeaponMesh, AttachmentTransformRules);
+    CenterArrow->AttachToComponent(WeaponMesh, AttachmentTransformRules);
+
+    /* Other */
     MissileThrowForce = 6000.f;
     PlayerDragForce = 7000.f;
 
@@ -85,16 +96,20 @@ void ATrafficLightMW::ChangeLight(ETrafficLightPosition Position, ETrafficLight 
 void ATrafficLightMW::LightBeginOverlap(class AActor* Actor, const ETrafficLight TrafficLightStatus, const ETrafficLightPosition TrafficLightPosition)
 {
     FVector Position;
+    FRotator PushDirection = GetActorRotation();
     switch(TrafficLightPosition)
     {
         case ETrafficLightPosition::Right:
             Position = RightLightMesh->GetComponentLocation();
+            PushDirection = RightArrow->GetComponentRotation();
         break;
         case ETrafficLightPosition::Left:
             Position = LeftLightMesh->GetComponentLocation();
+            PushDirection = LeftArrow->GetComponentRotation();
         break;
         case ETrafficLightPosition::Center:
             Position = CenterLightMesh->GetComponentLocation();
+            PushDirection = CenterArrow->GetComponentRotation();
         break;
         default:
             Position = GetActorLocation();
@@ -113,9 +128,7 @@ void ATrafficLightMW::LightBeginOverlap(class AActor* Actor, const ETrafficLight
         OnMissileGetThrownAway(TrafficLightPosition, TrafficLightStatus, Missile->GetActorLocation(), bDefected);
 
         /* Throws missile in the opposite direction */
-        Position = Missile->GetActorLocation() - Position;
-        Position.Normalize();
-        Missile->ThrowMissile(Missile->GetActorForwardVector() * -1, MissileThrowForce, bDefected);
+        Missile->ThrowMissile(PushDirection.Vector(), MissileThrowForce, bDefected);
         return;
     }
 
@@ -137,9 +150,7 @@ void ATrafficLightMW::LightBeginOverlap(class AActor* Actor, const ETrafficLight
         }
         /* YELLOW */
         /* Pushing the player away*/
-        FVector DragDirection = PlayerPawn->GetActorLocation() - Position;
-        DragDirection.Normalize();
-        PlayerPawn->GetPlaneMovement()->DragMovementEffect->Activate(PlayerDragForce, DragDirection);
+        PlayerPawn->GetPlaneMovement()->DragMovementEffect->Activate(PlayerDragForce, PushDirection.Vector());
         return;
     }
 }
