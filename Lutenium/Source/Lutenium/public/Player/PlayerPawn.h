@@ -132,7 +132,15 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Effects")
 	void OnDieEvent();
 
-
+	/**
+	 * Method that calls OnDieEvent()
+	 * The purpouse of this is to call DieEvent(which should do death logic in BP) in other BP classes (ex: DeathZoneMissile)
+	 */
+	FORCEINLINE UFUNCTION(Category = "Health")
+	void Die()
+	{
+		OnDieEvent();
+	}
 	// ------------------------------------------------------------------
 	// Additional movements
 	// ------------------------------------------------------------------
