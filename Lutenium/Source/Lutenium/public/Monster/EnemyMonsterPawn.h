@@ -6,6 +6,7 @@
 #include "MonsterLeg.h"
 #include "Monster/Weapons/WeaponsUtils/MonsterWeaponType.h"
 #include "Components/TimelineComponent.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "EnemyMonsterPawn.generated.h"
 
 /**
@@ -44,6 +45,13 @@ public:
 	/** Main skeleton mesh for the monster */
 	UPROPERTY(Category = General, VisibleDefaultsOnly, BlueprintReadOnly)
 	class USkeletalMeshComponent* MonsterMesh;
+
+    /**
+     * Creating dynamic material 
+     * We need it in order to make the flash effect
+     */
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Weapon")
+    class UMaterialInstanceDynamic* MainMaterialInstance;
 
 	/**
 	 * Movement component
@@ -207,13 +215,58 @@ public:
 
 	/* Handles damage from the weapon. Do not reduce the damage */
 	UFUNCTION(BlueprintCallable, Category = "Health")
-	void TakeNonDirectDamage(float Damage);
+	void TakeNonDirectDamage(float Damage, bool bDirectDamage);
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Health")
 	bool bHandleDeathInCpp;
 
 	/* Handles direct damage from the player. Reduces the actual damage  */
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
+
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Health")
+	void TakeDamageEvent(const float Damage, const bool bDirectDamage);
+
+
+    /**
+     * Time that's weapon being invincible after taking damage
+     * Prevents insta-kills
+     */
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Health")
+    float InvincibilityTime;
+
+    /**
+     * Ends the invincibility and thos weapon can be damaged
+     * Fires this method by timer in OnTakeDamage()
+     */
+    FORCEINLINE UFUNCTION(BlueprintCallable, Category="Health")
+    void InvincibilityEnd()
+    {
+        // Stop flashing
+        if(bShouldFlash && MainMaterialInstance != nullptr)
+        {
+            MainMaterialInstance->SetScalarParameterValue(FlashParameterName, 0.f);
+        }
+        /* OOTB method lol there is a bool bCanBeDamaged in AActor*/
+        SetCanBeDamaged(true);
+    }
+
+    /**
+     * Should material flash on hit?
+     * Flash time is the same of InvincibilityTime
+     * Modifes FlashParameterName parameter of MainMaterialInstance
+     * RN it's float to lerp between normal texture and flash texture
+     * @TODO consider make the separate timer for it?
+     */
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Health|Flash")
+    bool bShouldFlash;
+
+    /**
+     * Paramter of MainMaterialInstance to do the flashy flash
+     * RN it's float to lerp between normal texture and flash texture
+     */
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Health|Flash")
+    FName FlashParameterName;
 
 	// ------------------------------------------------------------------
 	// Movement

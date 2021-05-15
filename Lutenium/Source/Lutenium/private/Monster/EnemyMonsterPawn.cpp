@@ -35,11 +35,15 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
 	/* Setting the mesh */
 	MonsterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
 	MonsterMesh->AttachToComponent(SphereComponent, AttachmentTransformRules);
+	FlashParameterName = "Flashing Hit Alpha Lerp";
+
 
 	/* Setting Health settings */
 	Health = 500.f;
 	DirectDamageReduction = 0.5f;
 	bHandleDeathInCpp = true;
+	InvincibilityTime = 0.2f;
+	bShouldFlash = true;
 
 	/* Setting up body variables */
 	BodySocketName = "BodySocket";
@@ -122,6 +126,14 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
 void AEnemyMonsterPawn::BeginPlay()
 {
 	Super::BeginPlay();
+    // Material
+    UMaterialInterface* Material = MonsterMesh->GetMaterial(0);
+
+    if(Material)
+    {
+        MainMaterialInstance = MonsterMesh->CreateDynamicMaterialInstance(0, Material);
+    }
+
 	SpawnWeapons();
 	/** Setting MonsterAI, in case it wasn't set */
 	if(MonsterAI == nullptr)
@@ -364,20 +376,43 @@ void AEnemyMonsterPawn::LooseWeapon(EMonsterWeaponType WeaponType)
 
 float AEnemyMonsterPawn::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser)
 {
+	if(!CanBeDamaged())
+	{
+		return 0.f;
+	}
+
 	Damage *= DirectDamageReduction;
 	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
-	TakeNonDirectDamage(Damage);
+	TakeNonDirectDamage(Damage, false);
 	return Damage;
 }
 
 
-void AEnemyMonsterPawn::TakeNonDirectDamage(float Damage)
+void AEnemyMonsterPawn::TakeNonDirectDamage(float Damage, bool bDirectDamage)
 {
+	if(!CanBeDamaged())
+	{
+		return;
+	}
+
+	// Making monster invincible for sometime
+	// We cannot use it in TakeDamage() because we call this method from the weapon when it gets damaged
+    SetCanBeDamaged(false);
 	Health -= Damage;
 	if(Health < 0)
 	{
 		Die();
+		return;
 	}
+
+	if(bShouldFlash && MainMaterialInstance != nullptr)
+    {
+        MainMaterialInstance->SetScalarParameterValue(FlashParameterName, 1.f);
+    }
+	TakeDamageEvent(Damage, bDirectDamage);
+	// Reseting bCanBeDamaged
+	FTimerHandle InvincibilityTimer;
+    GetWorldTimerManager().SetTimer(InvincibilityTimer, this, &AEnemyMonsterPawn::InvincibilityEnd, InvincibilityTime, false);
 }
 
 void AEnemyMonsterPawn::Die()

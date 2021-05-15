@@ -3,7 +3,6 @@
 #include "Components/SphereComponent.h"
 #include "Components/PrimitiveComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "Components/WidgetComponent.h"
 #include "TimerManager.h"
 #define ECC_MonsterWPHurtbox ECollisionChannel::ECC_GameTraceChannel1
 #define ECC_Monster ECollisionChannel::ECC_GameTraceChannel2
@@ -28,7 +27,7 @@ AMonsterWeapon::AMonsterWeapon()
     MassInKgAfterDetach = 55000.f;
     MeshDamageReduction = 0.4f;
     InvincibilityTime = 0.1f;
-    HealthWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthWidget"));
+    bShouldFlash = true;
 
     /* Attack */
     TimeBeforeAttack = 1.f;
@@ -40,6 +39,20 @@ AMonsterWeapon::AMonsterWeapon()
     CooldownTime = 10.f;
 
     bDebugDetach=false;
+}
+
+void AMonsterWeapon::BeginPlay()
+{
+    Super::BeginPlay();
+
+    // Material
+    UMaterialInterface* Material = WeaponMesh->GetMaterial(0);
+    FlashParameterName = "Flashing Hit Alpha Lerp";
+
+    if(Material)
+    {
+        MainMaterialInstance = WeaponMesh->CreateDynamicMaterialInstance(0, Material);
+    }
 }
 
 float AMonsterWeapon::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController * EventInstigator, AActor * DamageCauser)
@@ -94,7 +107,7 @@ void AMonsterWeapon::OnTakeDamage(float Damage)
     // Apply damage to the monster itself
     if(MonsterPawn)
     {
-        MonsterPawn->TakeNonDirectDamage(Damage);
+        MonsterPawn->TakeNonDirectDamage(Damage, true);
     }
 
     // ya die if ya die
@@ -105,6 +118,10 @@ void AMonsterWeapon::OnTakeDamage(float Damage)
     }
     else /* Removing Invincibility only if the weapon hasn't died yet */
     {
+        if(bShouldFlash && MainMaterialInstance != nullptr)
+        {
+            MainMaterialInstance->SetScalarParameterValue(FlashParameterName, 1.f);
+        }
         TakeDamageEvent(Damage);
         FTimerHandle InvincibilityTimer;
         GetWorldTimerManager().SetTimer(InvincibilityTimer, this, &AMonsterWeapon::InvincibilityEnd, InvincibilityTime, false);

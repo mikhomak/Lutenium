@@ -6,7 +6,7 @@
 #include "Monster/Weapons/WeaponsUtils/MonsterWeaponType.h"
 #include "GameFramework/Actor.h"
 #include "UObject/ObjectMacros.h"
-
+#include "Materials/MaterialInstanceDynamic.h"
 #include "MonsterWeapon.generated.h"
 
 /**
@@ -23,9 +23,16 @@ class LUTENIUM_API AMonsterWeapon : public AActor
 
 public:
     AMonsterWeapon();
-    /* Main weapon Mesh. Root Component */
+    /** Main weapon Mesh. Root Component */
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Weapon")
     class UStaticMeshComponent* WeaponMesh;
+
+    /**
+     * Creating dynamic material 
+     * We need it in order to make the flash effect
+     */
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Weapon")
+    class UMaterialInstanceDynamic* MainMaterialInstance;
 
     /**
      * Hurtbox collision component
@@ -127,6 +134,11 @@ public:
     FORCEINLINE UFUNCTION(BlueprintCallable, Category="Health")
     void InvincibilityEnd()
     {
+        // Stop flashing
+        if(bShouldFlash && MainMaterialInstance != nullptr)
+        {
+            MainMaterialInstance->SetScalarParameterValue(FlashParameterName, 0.f);
+        }
         /* OOTB method lol there is a bool bCanBeDamaged in AActor*/
         SetCanBeDamaged(true);
     }
@@ -158,6 +170,23 @@ public:
      */
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Health")
     class UWidgetComponent* HealthWidget;
+
+    /**
+     * Should material flash on hit?
+     * Flash time is the same of InvincibilityTime
+     * Modifes FlashParameterName parameter of MainMaterialInstance
+     * RN it's float to lerp between normal texture and flash texture
+     * @TODO consider make the separate timer for it?
+     */
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Health|Flash")
+    bool bShouldFlash;
+
+    /**
+     * Paramter of MainMaterialInstance to do the flashy flash
+     * RN it's float to lerp between normal texture and flash texture
+     */
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Health|Flash")
+    FName FlashParameterName;
 
 	// ------------------------------------------------------------------
 	// ATTACK
@@ -248,6 +277,8 @@ public:
 
 
 public:
+    virtual void BeginPlay() override;
+
     FORCEINLINE void SetMonsterMesh(class USkeletalMeshComponent* Mesh) { MonsterMesh = Mesh; }
     FORCEINLINE void SetMonsterPawn(class AEnemyMonsterPawn* Pawn) { MonsterPawn = Pawn; }
     FORCEINLINE void UpgradeWeapon() { LevelUpgrade++; OnUpgradeEvent(); SpecificUpgrade(LevelUpgrade); }
