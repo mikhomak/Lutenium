@@ -15,8 +15,9 @@
  *      4) Invokes LegHasMovedEventCaller of EnemyMonsterPawn to toggle what legs should move next.
  * Steps to install:
  *      1) Assign EnemyMonsterPawn - SetEnemyMonsterPawn()
- *      2) Assign MonsterMesh -  SetMonsterMesh()
+ *      2) Assign Mesh -  SetMesh()
  *      3) Assign MonsterLegType - SetMonsterLegType()
+ *		4) Set SecondJointSocketName and ThirdJointSocketName in case you need it
  */
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class LUTENIUM_API UMonsterLegComponent : public USceneComponent
@@ -37,6 +38,11 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Leg")
 	class AEnemyMonsterPawn* EnemyMonsterPawn;
 
+	/**
+	 * Reference to the mesh of the owner pawn
+	 */
+	UPROPERTY(BlueprintReadWrite, Category = "Mesh")
+	class USkeletalMeshComponent* Mesh;
 	/**
 	/**
 	 * Tick component, duh
@@ -124,8 +130,90 @@ public:
 	 * After succefuly raycasting for the position, checks if there is something blocking between two joints
 	 */
 	UFUNCTION(BlueprintCallable)
-	FVector Raycast(FVector& StartPos, FVector& EndPos,
+	FVector Raycast(const FVector& StartPos,const FVector& EndPos,
 						 FHitResult& HitResult);
+
+	// -----------------------------------------------------------------------------------------------------------
+	// Joint Sockets
+	// -----------------------------------------------------------------------------------------------------------
+
+    /**
+     *  Sockets to raycast
+     *                 THOSE ARE THE LEGS OKAY?
+     *
+     *
+     *                  FRONT  MIDDLE  BACK
+     *
+     *                    /2\    |    /2\
+     *                   /   \   |   /   \
+     *                  /     \  |  /     \
+     *                 /     MONSTER       \
+     *                /          |          \
+     *               /           |           \
+     *              3            |            3
+     *---------------------------------------------- FLOOR
+    */
+
+	/**
+	 * Before doing normal raycast from the component position
+	 * Doing the raycast from monster location(BodySocket) to first socket (Has to be on the top of the leg)
+	 * If there was a hit, place the CurrentPosition to that hit
+	 * This prevents leg from clipping through buildings
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg")
+	bool bActivateFirstJointRaycast;
+
+	/**
+	 * Before doing normal raycast from the component position
+	 * Doing the raycast from first socket to third socket (has to be on the end of the leg)
+	 * If there was a hit, place the CurrentPosition to that hit
+	 * This prevents leg from clipping through buildings
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg")
+	bool bActivateSecondJointRaycast;
+
+	/**
+	 * Second Joint Socket
+	 * Has to be on the highest point of the leg
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg")
+	FName SecondJointSocketName;
+
+	/**
+	 * Second Joint Socket
+	 * Has to be on the lowest(the end of the leg) point of the leg
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg")
+	FName ThirdJointSocketName;
+
+private:
+	/**
+	 * Raycasts the first joint
+	 * Invokes in RaycastLeg()
+	 * @warning works only when bActivateFirstJointRaycast == true
+	 * @see bActivateFirstJointRaycast
+	 * @see SecondJointSocketName
+	 * @return true if the raycast was successful, false in other case or bActivateFirstJointRaycast == false
+	 */
+	bool RaycastFirstJoint();
+
+	/**
+	 * Raycasts the second joint
+	 * Invokes in RaycastLeg()
+	 * @warning works only when bActivateSecondJointRaycast == true
+	 * @see bActivateSecondJointRaycast
+	 * @see ThirdJointSocketName
+	 * @return true if the raycast was successful, false in other case or bActivateSecondJointRaycast == false
+	 */
+	bool RaycastSecondJoint();
+
+	/**
+	 * Method thar calls RaycastLeg() with params, and if the hit was successful, then invokes StartMovingLeg(RaycastPosition)
+	 * @param StartPos - start position from which the raycast should begin
+	 * @param EndPos - end position to whcih the raycast should end
+	 * @return true if there was a hit and the leg will start move, false in other cases
+	 */
+	bool RaycastWithStartMoving(const FVector& StartPos,const FVector& EndPos);
 
 protected:
 
@@ -236,14 +324,38 @@ protected:
 
 	/** Draw lines between two points */
 	UFUNCTION(BlueprintCallable, Category = "Debug")
-	void DEBUG_DrawLineBetweenPoints(FVector& StartLocation, FVector& EndLocation);
+	void DEBUG_DrawLineBetweenPoints(const FVector& StartLocation, const FVector& EndLocation);
 
+	/** Draw debug sphere of the location */
+	UFUNCTION(BlueprintCallable, Category = "Debug")
+	void DEBUG_DrawSphere(const FVector& Location);
+
+	/**
+	 * Debug lines Thickness
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Debug")
+	float DEBUG_Thickness;
+
+	/** 
+	 * The radius of drawn debug spheres
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Debug")
+	float DEBUG_SphereRadius;
+
+	/** 
+	 * Life Time of debug drawings
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Debug")
+	float DEBUG_LifeTime;
+
+	
 	// -----------------------------------------------------------------------------------------------------------
 	// Setters
 	// -----------------------------------------------------------------------------------------------------------
 
 public:
 	FORCEINLINE UFUNCTION() void SetEnemyMonsterPawn(class AEnemyMonsterPawn* Pawn) { EnemyMonsterPawn = Pawn; }
+	FORCEINLINE UFUNCTION() void SetMesh(class USkeletalMeshComponent* InMesh) { Mesh = InMesh; }
 	FORCEINLINE UFUNCTION() FVector GetCurrentPosition() const { return CurrentPosition; }
 	FORCEINLINE UFUNCTION() void SetCanMove(const bool CanMove) { bCanMove = CanMove; }
 	FORCEINLINE UFUNCTION() void SetLegIndex(const int32 Index) { LegIndex = Index; }

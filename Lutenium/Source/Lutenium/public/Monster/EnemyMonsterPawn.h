@@ -412,7 +412,8 @@ protected:
 
 	struct FTimeline BodyTimeline;
 
-	UFUNCTION(Category = "Body")
+public:
+	UFUNCTION(BlueprintCallable, Category = "Body")
 	FVector GetCurrentBodyPosition();
 
 
@@ -422,9 +423,18 @@ protected:
 
 	void ToggleWhatLegsShouldMove(const bool Odd);
 
+	UPROPERTY( EditDefaultsOnly,BlueprintReadWrite, Category ="Body")
 	TArray<FName> TopSocketLocationNames;
 
+
+	UPROPERTY( EditDefaultsOnly,BlueprintReadWrite, Category ="Body")
 	bool bBodyMoving;
+
+	UPROPERTY( EditDefaultsOnly,BlueprintReadWrite, Category ="Body")
+	float BodyForwardRaycastLength;
+
+	UPROPERTY( EditDefaultsOnly,BlueprintReadWrite, Category ="Body")
+	bool bCheckBodyAltitude;
 
 	void CheckBodyAltitudeDependingOnLegs();
 
