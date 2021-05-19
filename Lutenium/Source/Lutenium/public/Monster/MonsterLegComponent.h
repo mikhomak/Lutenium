@@ -133,6 +133,36 @@ public:
 	FVector Raycast(const FVector& StartPos,const FVector& EndPos,
 						 FHitResult& HitResult);
 
+	/**
+	 * When the leg is moving (MoveLeg()) - should we check each frame if there is an obstacle between SecondJointSocketName and FinishPosition ?
+	 * If so, set this obstacle position (Hit position) as a FinishPosition
+	 * @warning uses bActivateSecondJointRaycast
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Obstacle")
+	bool bShouldRaycastJointsWhileMoving;
+
+	/**
+	 * If while the leg was moving, it found an obstacle, we will lerp the FinishPosition with that obstacle
+	 * This is the alpha value of this lerp
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Obstacle", meta = (UIMin = "0.0", UIMax = "1.0"))
+	float LerpAlphaValueMovingLegWhenThereIsAnObstacle;
+
+	/**
+	 * In case there was a hit, lerps FinishPosition with this Position in MoveLeg()
+	 * @warning bShouldRaycastJointsWhileMoving should be true in order to work with this variable
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Obstacle")
+	FVector ObstacleHitPosition;
+
+	/**
+	 * If there is an obstacle, lerps the ObstacleHitPosition with FinishPosition
+	 * changes in MoveLeg()
+	 * changes in StopLeg()
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Obstacle")
+	bool bIsThereAnObstacle;
+
 	// -----------------------------------------------------------------------------------------------------------
 	// Joint Sockets
 	// -----------------------------------------------------------------------------------------------------------
@@ -160,7 +190,7 @@ public:
 	 * If there was a hit, place the CurrentPosition to that hit
 	 * This prevents leg from clipping through buildings
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Joint Raycast")
 	bool bActivateFirstJointRaycast;
 
 	/**
@@ -169,22 +199,35 @@ public:
 	 * If there was a hit, place the CurrentPosition to that hit
 	 * This prevents leg from clipping through buildings
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Joint Raycast")
 	bool bActivateSecondJointRaycast;
 
 	/**
 	 * Second Joint Socket
 	 * Has to be on the highest point of the leg
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Joint Raycast", meta=(EditCondition="bActivateFirstJointRaycast"))
 	FName SecondJointSocketName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Joint Raycast", meta=(EditCondition="bActivateFirstJointRaycast"))
+	int32 MaxAttempsAtSecondJointRaycast;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Joint Raycast", meta=(EditCondition="bActivateFirstJointRaycast"))
+	int32 CurrentAttempsAtSecondJointRaycast;
 
 	/**
 	 * Second Joint Socket
 	 * Has to be on the lowest(the end of the leg) point of the leg
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Joint Raycast", meta=(EditCondition="bActivateSecondJointRaycast"))
 	FName ThirdJointSocketName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Joint Raycast", meta=(EditCondition="bActivateSecondJointRaycast"))
+	int32 MaxAttempsAtThirdJointRaycast;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Joint Raycast", meta=(EditCondition="bActivateSecondJointRaycast"))
+	int32 CurrentAttempsAtThirdJointRaycast;
+
 
 private:
 	/**
@@ -324,11 +367,11 @@ protected:
 
 	/** Draw lines between two points */
 	UFUNCTION(BlueprintCallable, Category = "Debug")
-	void DEBUG_DrawLineBetweenPoints(const FVector& StartLocation, const FVector& EndLocation);
+	void DEBUG_DrawLineBetweenPoints(const FVector& StartLocation, const FVector& EndLocation, FColor Color);
 
 	/** Draw debug sphere of the location */
 	UFUNCTION(BlueprintCallable, Category = "Debug")
-	void DEBUG_DrawSphere(const FVector& Location);
+	void DEBUG_DrawSphere(const FVector& Location, FColor Color);
 
 	/**
 	 * Debug lines Thickness
