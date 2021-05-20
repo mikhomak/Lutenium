@@ -10,6 +10,10 @@ UMonsterLegComponent::UMonsterLegComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	bMoving = false;
+
+	//General
+	RaycastSphereRadius = 4000.f;
+
 	
 	// obstacle movement
 	bShouldRaycastJointsWhileMoving = true;
@@ -227,7 +231,7 @@ FVector UMonsterLegComponent::Raycast(const FVector& StartPos, const FVector& En
                                    EndPos,
                                    FQuat::Identity,
                                    ECollisionChannel::ECC_WorldStatic,
-                                   FCollisionShape::MakeSphere(4000.f),
+                                   FCollisionShape::MakeSphere(RaycastSphereRadius),
                                    CollisionParams);
 	return HitResult.ImpactPoint;
 }
@@ -261,28 +265,42 @@ void UMonsterLegComponent::MoveLeg(float DeltaTime)
 {
 	CurrentStepTime += DeltaTime;
 	
-	if(bShouldRaycastJointsWhileMoving)
-	{
-		if(bIsThereAnObstacle)
-		{
-			FinishPosition = FMath::Lerp(FinishPosition, ObstacleHitPosition, LerpAlphaValueMovingLegWhenThereIsAnObstacle);
-		}
-		else
-		{
-			FHitResult HitResult;
-			const FVector SecondJointLocation = Mesh->GetSocketLocation(SecondJointSocketName);
-			const FVector ThridJointSocketLocation = Mesh->GetSocketLocation(ThirdJointSocketName);
-			FVector ObstaclePosition = Raycast(SecondJointLocation, ThridJointSocketLocation, HitResult);
-			if(HitResult.bBlockingHit)
-			{
-				ObstacleHitPosition = ObstaclePosition;
-				bIsThereAnObstacle = true;
-			}
-		}
-	}
+	// cautiion!
+	// this can change FinishPosition!!!
+	RaycastSecondJointsWhileMoving();
 
 	CurrentPosition = FMath::Lerp(CurrentPosition, GetCurrentPositionOfStep(), LerpValue);
+}
 
+
+/**
+ * While moving doing some raycast shit to see if there is an obstacle inside of the leg
+ */
+void UMonsterLegComponent::RaycastSecondJointsWhileMoving()
+{
+	if(!bShouldRaycastJointsWhileMoving)
+	{
+		return;
+	}
+
+
+	// if the obstacle has been already found, lerps the FinishPosition to Obstacle Position
+	if(bIsThereAnObstacle)
+	{
+		FinishPosition = FMath::Lerp(FinishPosition, ObstacleHitPosition, LerpAlphaValueMovingLegWhenThereIsAnObstacle);
+	}
+	else
+	{
+		FHitResult HitResult;
+		const FVector SecondJointLocation = Mesh->GetSocketLocation(SecondJointSocketName);
+		const FVector ThridJointSocketLocation = Mesh->GetSocketLocation(ThirdJointSocketName);
+		FVector ObstaclePosition = Raycast(SecondJointLocation, ThridJointSocketLocation, HitResult);
+		if(HitResult.bBlockingHit)
+		{
+			ObstacleHitPosition = ObstaclePosition;
+			bIsThereAnObstacle = true;
+		}
+	}
 }
 
 
