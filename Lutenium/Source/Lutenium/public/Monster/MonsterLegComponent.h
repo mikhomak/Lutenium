@@ -8,16 +8,30 @@
  * This component calculates the position for the leg in each moment
  * Main output of this component is the method GetCurrentPosition(), which returns the position where the leg is supposted to be
  * This method is called in EnemyMonsterPawn and then is transefered to the animation blueprint, where the bone of the moves to that location
+ *
  * How it works:
- *      1) Raycast down from the specific component location
- *      2) Checks if the distance between raycast position and current leg position(CurrentPosition) is greater than a distance for the step (DistanceBetweenLegsToMove)
- *      3) If it is, then starts a timeline which moves the CurrentPosition untill it reaches the raycast position
- *      4) Invokes LegHasMovedEventCaller of EnemyMonsterPawn to toggle what legs should move next.
+ *		1) Checks if the CurrentPosition and the component position is far enough to start a step(DistanceBetweenCurrentPosAndPrevious >= DistanceBetweenLegsToMove)
+ *      2) If so, raycast down from the component location
+ *		3) If there is a blocking hit, starts moving with the StartMovingLeg(RaycastHitBlockingPosition)
+ *		4) This method starts a movement (bMoving = true) and sets timer to stop the step StopMoving()
+ *		5) While bMoving == true -> each tick modifies CurrentPosition in MoveLeg()
+ *
  * Steps to install:
  *      1) Assign EnemyMonsterPawn - SetEnemyMonsterPawn()
  *      2) Assign Mesh -  SetMesh()
  *      3) Assign MonsterLegType - SetMonsterLegType()
- *		4) Set SecondJointSocketName and ThirdJointSocketName in case you need it
+ *		4) Place the component above the disered location (usualy the end of the leg)
+ *		5) Set SecondJointSocketName and ThirdJointSocketName in case you need it
+ *		6) Set index
+ *
+ * How to use it:
+ *		1) Setup the legs in the pawn/actor/character class (see Steps to install)
+ *		2) In animBP use GetCurrentPosition() for each leg and use it as IK position for your leg bone (You can use PowerIK plugin for that or the standart IK node provided in animBP)
+ *
+ * There are different modifiers to prevent the leg from clipping through other meshses. 
+ * See bShouldRaycastJointsWhileMoving, bActivateFirstJointRaycast and bActivateSecondJointRaycast
+ *
+ *
  */
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class LUTENIUM_API UMonsterLegComponent : public USceneComponent
