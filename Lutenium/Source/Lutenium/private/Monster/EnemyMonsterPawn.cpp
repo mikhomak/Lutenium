@@ -454,11 +454,12 @@ void AEnemyMonsterPawn::TakeNonDirectDamage(float Damage, bool bDirectDamage)
 		return;
 	}
 
+	// Damage material flash
+	TakeDamageEvent(Damage, bDirectDamage);
 	if(bShouldFlash && MainMaterialInstance != nullptr)
     {
         MainMaterialInstance->SetScalarParameterValue(FlashParameterName, 1.f);
     }
-	TakeDamageEvent(Damage, bDirectDamage);
 	// Reseting bCanBeDamaged
 	FTimerHandle InvincibilityTimer;
     GetWorldTimerManager().SetTimer(InvincibilityTimer, this, &AEnemyMonsterPawn::InvincibilityEnd, InvincibilityTime, false);

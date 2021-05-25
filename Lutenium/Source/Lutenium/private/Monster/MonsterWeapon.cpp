@@ -118,11 +118,12 @@ void AMonsterWeapon::OnTakeDamage(float Damage)
     }
     else /* Removing Invincibility only if the weapon hasn't died yet */
     {
+        // Damage material flash
+        TakeDamageEvent(Damage);
         if(bShouldFlash && MainMaterialInstance != nullptr)
         {
             MainMaterialInstance->SetScalarParameterValue(FlashParameterName, 1.f);
         }
-        TakeDamageEvent(Damage);
         FTimerHandle InvincibilityTimer;
         GetWorldTimerManager().SetTimer(InvincibilityTimer, this, &AMonsterWeapon::InvincibilityEnd, InvincibilityTime, false);
     }
