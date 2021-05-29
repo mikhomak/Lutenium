@@ -79,9 +79,12 @@ public:
      * Invoking diying if Health < 0
      * Dealing damage to the monster(transparent damage way weapon->monster)
      * Being called in TakeDamage
+     *
+     * @param Damage - amount of damage to apply. In this method it's pure damage, you have to apply reductions before it
+     * @param bIsHurtboxDamage - did damage came from hurtbox or mesh?
      */
     UFUNCTION(BlueprintCallable,Category="Health")
-    void OnTakeDamage(float Damage);
+    void OnTakeDamage(float Damage, bool bIsHurtboxDamage);
 
     /**
      * Takes damage when missile collides with mesh
@@ -105,7 +108,7 @@ public:
      * Add VFX, SFX all of the shiete
      */
     UFUNCTION(BlueprintImplementableEvent, Category="Health")
-    void TakeDamageEvent(float& Damage);
+    void TakeDamageEvent(float& Damage, bool bIsHurtboxDamage);
 
     /**
      * Apply reduced damage when the missile hit the mesh and not the hurtbox

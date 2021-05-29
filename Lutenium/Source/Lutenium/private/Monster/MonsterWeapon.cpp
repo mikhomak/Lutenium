@@ -82,16 +82,16 @@ float AMonsterWeapon::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 
 void AMonsterWeapon::TakeMeshDamage(float Damage)
 {
-    OnTakeDamage(Damage * MeshDamageReduction);
+    OnTakeDamage(Damage * MeshDamageReduction, false);
 }
 
 void AMonsterWeapon::TakeHurtboxDamage(float Damage)
 {
-    OnTakeDamage(Damage);
+    OnTakeDamage(Damage, true);
 }
 
 
-void AMonsterWeapon::OnTakeDamage(float Damage)
+void AMonsterWeapon::OnTakeDamage(float Damage, bool bIsHurtboxDamage)
 {
     /* Do nothign if the weapon is invincible right now */
     if(!CanBeDamaged())
@@ -119,7 +119,7 @@ void AMonsterWeapon::OnTakeDamage(float Damage)
     else /* Removing Invincibility only if the weapon hasn't died yet */
     {
         // Damage material flash
-        TakeDamageEvent(Damage);
+        TakeDamageEvent(Damage, bIsHurtboxDamage);
         if(bShouldFlash && MainMaterialInstance != nullptr)
         {
             MainMaterialInstance->SetScalarParameterValue(FlashParameterName, 1.f);
