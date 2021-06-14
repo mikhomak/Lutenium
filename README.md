@@ -8,7 +8,7 @@
 4. Soviet enviroment combined with modern extrime brutalism 
 
 ---    
-### Screenshots REALLY WIP:
+### Screenshots:
 ![Stadium](https://github.com/mikhomak/Images/blob/master/Lutenium/chemplant.gif?raw=true)   
 ![Stadium](https://github.com/mikhomak/Images/blob/master/Lutenium/Asset.gif?raw=true)   
 ![Stadium](https://github.com/mikhomak/Images/blob/master/Lutenium/flying_around.gif?raw=true)   
