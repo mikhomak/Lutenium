@@ -346,6 +346,8 @@ protected:
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Speed|KickIn")
     bool bHasAppliedKickInAcceleration;
 
+    float CurrentKickInAcceleration;
+
     float CurrentThrust;
 
     bool bThrustUp;
@@ -357,7 +359,7 @@ protected:
     UFUNCTION(BlueprintCallable)
     virtual void Thrusting(float InputVal);
 
-    void AddThrust(float DeltaTime) const;
+    void AddThrust(float DeltaTime);
 
     void CalculateAcceleration();
 

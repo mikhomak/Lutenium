@@ -37,6 +37,7 @@ UPlaneMovementComponent::UPlaneMovementComponent()
     MinAccelerationUntilKickIn = 8000.f;
     MaxAccelerationUntilKickIn = 15000.f;
     KickInAddedAcceleration = 12000.f;
+    CurrentKickInAcceleration = 0.f;
 
     CustomMaxGravity = -800.f;
     CustomMinGravity = -100.f;
@@ -135,6 +136,7 @@ void UPlaneMovementComponent::Thrusting(float InputVal)
     bThrustUp = InputVal > 0 ? true : false;
     if (bThrustUp && CurrentAcceleration < MaxAccelerationUntilKickIn && CurrentAcceleration > MinAccelerationUntilKickIn  && !bHasAppliedKickInAcceleration)
     {
+        CurrentKickInAcceleration = KickInAddedAcceleration;
         CurrentAcceleration += KickInAddedAcceleration;
         bHasAppliedKickInAcceleration = true;
         OnKickinAcceleration.Broadcast();
@@ -153,15 +155,21 @@ void UPlaneMovementComponent::Thrusting(float InputVal)
 
 
 // Lerping the speed to the maximum if the current acceleration is greater than MaxAcceleration(Allows dashing), and in other case clamping it to the MaxAcceleration
-void UPlaneMovementComponent::AddThrust(float DeltaTime) const
+void UPlaneMovementComponent::AddThrust(float DeltaTime)
 {
     if(bDeactivateThrust)
     {
         return;
     }
-    const float Speed = CurrentAcceleration > MaxAcceleration
+    float Speed = CurrentAcceleration > MaxAcceleration
                             ? FMath::Lerp(MaxAcceleration, CurrentAcceleration, MaxSpeedLerpAlpha)
-                            : FMath::Clamp(CurrentAcceleration, MinAcceleration, MaxAcceleration);
+                            : CurrentAcceleration;
+    
+    if(CurrentKickInAcceleration > 0.f)
+    {
+    	Speed += CurrentKickInAcceleration;
+    	CurrentKickInAcceleration = 0.f;
+    }                            	
 
     const FVector Velocity = FMath::Lerp(PhysicsComponent->GetPhysicsLinearVelocity(), PhysicsComponent->GetForwardVector() * Speed,
                                         bThrustUp ? LerpVelocity : LerpVelocityNoThrust);
@@ -173,7 +181,7 @@ void UPlaneMovementComponent::CalculateAcceleration()
     CurrentAcceleration += bThrustUp
                                ? ThrustUpAcceleration
                                : (bThrusting ? ThrustDownAcceleration : NoThrustDeceleration);
-    CurrentAcceleration = FMath::Clamp(CurrentAcceleration, MinThrustAcceleration, MaxThrustUpAcceleration);
+    CurrentAcceleration = FMath::Clamp(CurrentAcceleration, MinThrustAcceleration, MaxAcceleration);
 }
 
 void UPlaneMovementComponent::AddGravityForce(float DeltaTime) const
