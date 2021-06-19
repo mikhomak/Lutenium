@@ -19,9 +19,8 @@ UPlaneMovementComponent::UPlaneMovementComponent()
     PrimaryComponentTick.bCanEverTick = true;
     PrimaryComponentTick.TickGroup = TG_PrePhysics;
 
-    MaxThrustUpAcceleration = 25000.f;
     MinThrustAcceleration = 5000.f;
-    MaxAcceleration = 49000.f;
+    MaxAcceleration = 25000.f;
     MinAcceleration = 50.f;
     MaxSpeedLerpAlpha = 0.4f;
     ThrustUpAcceleration = 400.f;

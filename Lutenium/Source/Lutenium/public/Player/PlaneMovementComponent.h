@@ -224,13 +224,6 @@ public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Acceleration")
     float MaxSpeedLerpAlpha;
 
-    /**
-     * Maximum acceleration the plane could get when the ThrustInput is 1
-     * Not the same as MaxAcceleration!
-     * This one is the Maximum that we can get only with Thrusting, while MaxAcceleration also works with custom inputs, such as dashes and so on
-     */
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Acceleration")
-    float MaxThrustUpAcceleration;
 
     /**
      * Minimum acceleration
