@@ -16,17 +16,15 @@ class LUTENIUM_API AMonsterAIController : public AAIController
     GENERATED_BODY()
 
 public:
-
     AMonsterAIController();
 
+    FORCEINLINE class UBlackboardComponent *GetBlackboardComp() { return BlackboardComp; }
 
-    FORCEINLINE class UBlackboardComponent* GetBlackboardComp() { return BlackboardComp; }
-
-    FORCEINLINE class UBehaviorTreeComponent* GetBehaviorTreeComp() { return BehaviorComp; }
+    FORCEINLINE class UBehaviorTreeComponent *GetBehaviorTreeComp() { return BehaviorComp; }
 
     /* Caution! Can return nullptr! */
     UFUNCTION(BlueprintCallable, Category = "Weapons")
-    class AMonsterWeapon* GetWeapon(EMonsterWeaponType MonsterWeaponType);
+    class AMonsterWeapon *GetWeapon(EMonsterWeaponType MonsterWeaponType);
 
     /* Returns -1 in case if weapon was detatch*/
     UFUNCTION(BlueprintCallable, Category = "Weapons")
@@ -35,7 +33,7 @@ public:
     // ------------------------------------------------------------------
     // Movement
     // ------------------------------------------------------------------
-    
+
     /**
      * Indicates if the monster can move
      * Checks for this value in the tick of AEnemyMonsterPawn
@@ -58,7 +56,7 @@ public:
      * Can be any type of Actor
      */
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Movement")
-    TArray<class AActor*> Targets;
+    TArray<class AActor *> Targets;
 
     /**
      * Current Target index of array of Targets
@@ -72,7 +70,7 @@ public:
      * @warning Picks the first value of Targets for NextTargetPositionWS if 0 index is valid
      */
     UFUNCTION(BlueprintCallable, Category = "Movement")
-    void SetTargetsAndNextPosition(UPARAM(ref)  TArray<class AActor*>& NewTargets);   
+    void SetTargetsAndNextPosition(UPARAM(ref) TArray<class AActor *> &NewTargets);
 
     /**
      * Sets next location to move to
@@ -97,7 +95,6 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Movement")
     void SetHasReachedCurrentTarget(bool bHasReached);
 
-
     /**
      * Stops or start the movement
      * Updates FN_BV_bIsMonsterMoving in Blackboard
@@ -106,7 +103,6 @@ public:
     UFUNCTION(Category = "Movement")
     void StartOrStopMoving(bool bStartOrStopMoving);
 
-
     // ------------------------------------------------------------------
     // Player behaviour
     // ------------------------------------------------------------------
@@ -114,7 +110,7 @@ public:
     /** Reference to the player */
     /** CAUTION! Can be nullptr if the player wasn't been found */
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Behaviour")
-    class APlayerPawn* Player;
+    class APlayerPawn *Player;
 
     /** Checks if the player is int the radius to activate beam defense */
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Behaviour")
@@ -135,23 +131,22 @@ protected:
 
     virtual void Tick(float DeltaTime) override;
 
+    virtual void OnPossess(APawn *InPawn) override;
 
-    virtual void OnPossess(APawn* InPawn) override;
+    class UBehaviorTreeComponent *BehaviorComp;
 
-    class UBehaviorTreeComponent* BehaviorComp;
-
-    class UBlackboardComponent* BlackboardComp;
-
-    UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
-    class AEnemyMonsterPawn* MonsterPawn;
+    class UBlackboardComponent *BlackboardComp;
 
     UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
-    class USkeletalMeshComponent* MonsterMesh;
+    class AEnemyMonsterPawn *MonsterPawn;
 
-    UPROPERTY( EditDefaultsOnly,BlueprintReadOnly, Category ="Behaviour")
+    UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
+    class USkeletalMeshComponent *MonsterMesh;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Behaviour")
     FName FirstLevelSocket;
 
-    UPROPERTY( EditDefaultsOnly,BlueprintReadOnly, Category ="Behaviour")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Behaviour")
     FName SecondLevelSocket;
 
     // ------------------------------------------------------------------
@@ -181,11 +176,10 @@ protected:
      */
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Blackboard value names")
     FName FN_BV_bHasReachedCurrentTarget;
-      
+
     /**
      * Bool indicatges if the monster is moving or not
      */
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Blackboard value names")
     FName FN_BV_bIsMonsterMoving;
-      
 };

@@ -16,7 +16,7 @@
  * ExecuteAttack is specific for each weapon and does an actual attack
  * Each weapon has a cooldown
  */
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class LUTENIUM_API AMonsterWeapon : public AActor
 {
     GENERATED_BODY()
@@ -24,15 +24,15 @@ class LUTENIUM_API AMonsterWeapon : public AActor
 public:
     AMonsterWeapon();
     /** Main weapon Mesh. Root Component */
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Weapon")
-    class UStaticMeshComponent* WeaponMesh;
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Weapon")
+    class UStaticMeshComponent *WeaponMesh;
 
     /**
-     * Creating dynamic material 
+     * Creating dynamic material
      * We need it in order to make the flash effect
      */
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Weapon")
-    class UMaterialInstanceDynamic* MainMaterialInstance;
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Weapon")
+    class UMaterialInstanceDynamic *MainMaterialInstance;
 
     /**
      * Hurtbox collision component
@@ -40,38 +40,38 @@ public:
      * Set collision profile name as MonsterWPHurtbox for new collisions
      * Connect it to OnTakeDamage() method to well take damage duh
      */
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Weapon")
-    class USphereComponent* Hurtbox;
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Weapon")
+    class USphereComponent *Hurtbox;
 
     /** Weapon type */
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Weapon")
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Weapon")
     EMonsterWeaponType WeaponType;
 
     // ------------------------------------------------------------------
-	// Monster references
-	// ------------------------------------------------------------------
+    // Monster references
+    // ------------------------------------------------------------------
 
     /* Reference to the monster pawn */
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category=Monster)
-    class AEnemyMonsterPawn* MonsterPawn;
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = Monster)
+    class AEnemyMonsterPawn *MonsterPawn;
 
     /* Reference to the monster skeletal mesh */
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category=Monster)
-    class USkeletalMeshComponent* MonsterMesh;
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = Monster)
+    class USkeletalMeshComponent *MonsterMesh;
 
-	// ------------------------------------------------------------------
-	// Debug
-	// ------------------------------------------------------------------
+    // ------------------------------------------------------------------
+    // Debug
+    // ------------------------------------------------------------------
 
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Debug")
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Debug")
     bool bDebugDetach;
 
-	// ------------------------------------------------------------------
-	// Health & Death
-	// ------------------------------------------------------------------
+    // ------------------------------------------------------------------
+    // Health & Death
+    // ------------------------------------------------------------------
 
     /** Health of the weapon */
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Health")
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Health")
     float Health;
 
     /**
@@ -83,7 +83,7 @@ public:
      * @param Damage - amount of damage to apply. In this method it's pure damage, you have to apply reductions before it
      * @param bIsHurtboxDamage - did damage came from hurtbox or mesh?
      */
-    UFUNCTION(BlueprintCallable,Category="Health")
+    UFUNCTION(BlueprintCallable, Category = "Health")
     void OnTakeDamage(float Damage, bool bIsHurtboxDamage);
 
     /**
@@ -91,14 +91,14 @@ public:
      * Redcues damage applied to the weapon
      * Calls OnTakeDamage() with reduced damage
      */
-    UFUNCTION(BlueprintCallable,Category="Health")
-	void TakeMeshDamage(float Damage);
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    void TakeMeshDamage(float Damage);
 
     /**
      * Apply damage without reduction when the missile hits directly hurtbox
      * Calls OnTakeDamage()
      */
-    UFUNCTION(BlueprintCallable, Category="Health")
+    UFUNCTION(BlueprintCallable, Category = "Health")
     void TakeHurtboxDamage(float Damage);
 
     /**
@@ -107,13 +107,13 @@ public:
      * The final method to recieve damage is always OnTakeDamage()
      * Add VFX, SFX all of the shiete
      */
-    UFUNCTION(BlueprintImplementableEvent, Category="Health")
-    void TakeDamageEvent(float& Damage, bool bIsHurtboxDamage);
+    UFUNCTION(BlueprintImplementableEvent, Category = "Health")
+    void TakeDamageEvent(float &Damage, bool bIsHurtboxDamage);
 
     /**
      * Apply reduced damage when the missile hit the mesh and not the hurtbox
      */
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Health")
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Health")
     float MeshDamageReduction;
 
     /**
@@ -121,24 +121,23 @@ public:
      * Checks if the hit component was Mesh or Hurtbox
      * Calls TakeMeshDamage() or TakeHurtboxDamage()
      */
-    virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
+    virtual float TakeDamage(float Damage, struct FDamageEvent const &DamageEvent, class AController *EventInstigator, class AActor *DamageCauser) override;
 
     /**
      * Time that's weapon being invincible after taking damage
      * Prevents insta-kills
      */
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Health")
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Health")
     float InvincibilityTime;
 
     /**
      * Ends the invincibility and thos weapon can be damaged
      * Fires this method by timer in OnTakeDamage()
      */
-    FORCEINLINE UFUNCTION(BlueprintCallable, Category="Health")
-    void InvincibilityEnd()
+    FORCEINLINE UFUNCTION(BlueprintCallable, Category = "Health") void InvincibilityEnd()
     {
         // Stop flashing
-        if(bShouldFlash && MainMaterialInstance != nullptr)
+        if (bShouldFlash && MainMaterialInstance != nullptr)
         {
             MainMaterialInstance->SetScalarParameterValue(FlashParameterName, 0.f);
         }
@@ -157,7 +156,7 @@ public:
     /**
      * Do some vfx bullshit in bp on death
      */
-	UFUNCTION(BlueprintImplementableEvent, Category = "Health")
+    UFUNCTION(BlueprintImplementableEvent, Category = "Health")
     void DieEvent();
 
     /**
@@ -165,14 +164,14 @@ public:
      * After diying the weapon got detached and starts simulating physics
      * Put some cool values here so it would fall cool
      */
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Heath")
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Heath")
     float MassInKgAfterDetach;
 
     /**
      * Widget Component to display health for each weapon individually
      */
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Health")
-    class UWidgetComponent* HealthWidget;
+    class UWidgetComponent *HealthWidget;
 
     /**
      * Should material flash on hit?
@@ -191,9 +190,9 @@ public:
     UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Health|Flash")
     FName FlashParameterName;
 
-	// ------------------------------------------------------------------
-	// ATTACK
-	// ------------------------------------------------------------------
+    // ------------------------------------------------------------------
+    // ATTACK
+    // ------------------------------------------------------------------
 
     /**
      * Main action method
@@ -202,7 +201,7 @@ public:
      * After a delay calls the main function of the weapon(some weapons could have no action function)
      * @warning This method should be called in TASKS
      */
-    UFUNCTION(BlueprintCallable, Category="Atack")
+    UFUNCTION(BlueprintCallable, Category = "Atack")
     void DoAttack();
 
     /*
@@ -210,7 +209,7 @@ public:
      * Being executes after a certeain delay
      * @warning override this method in every weapon
      */
-    UFUNCTION(BlueprintCallable, Category="Atack")
+    UFUNCTION(BlueprintCallable, Category = "Atack")
     virtual void ExecuteAttack();
 
     /**
@@ -218,23 +217,23 @@ public:
      * This variable keeps track of the amount of repeated attacks so we can stop repeating it in ExecuteAttack()
      * Resets this value in DoAttack(), which is called in Tasks
      */
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Atack")
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Atack")
     int32 CurrentExecutedAttacks;
 
     /**
      * When the weapon wants to repeat the attack that variable determines the time between attack
      */
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Atack")
+    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Atack")
     float RepeatAttackTime;
 
     /**
      * Time to invoke ExecuteAttack() after invoking DoAttack()
      */
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Atack")
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Atack")
     float TimeBeforeAttack;
 
     /** Cooldown timer */
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Atack")
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Atack")
     float CooldownTime;
 
     /**
@@ -242,28 +241,27 @@ public:
      * Gets activated in CooldownEnd()
      * Gets deactivated in DoAttack()
      */
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Atack")
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Atack")
     bool bCanAttack;
 
     /**
      * Activates weapon after the cooldown
      * Gets called in DoAttack()
      */
-    FORCEINLINE UFUNCTION(BlueprintCallable, Category="Atack")
-    void CooldownEnd()
+    FORCEINLINE UFUNCTION(BlueprintCallable, Category = "Atack") void CooldownEnd()
     {
         bCanAttack = true;
     }
 
-	/* Add SVF, VFX and so on the BP to make the attack more telegraphic */
-    UFUNCTION(BlueprintNativeEvent , Category = "Attack")
+    /* Add SVF, VFX and so on the BP to make the attack more telegraphic */
+    UFUNCTION(BlueprintNativeEvent, Category = "Attack")
     void BeforeAttackEvent();
 
     /** The implementation of the event. Override this in every new weapon! Or else DoAttack() wouldn't work and it would crash the game YIKES*/
     virtual void BeforeAttackEvent_Implementation();
 
     /* Level of the weapon */
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Upgrade")
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Upgrade")
     int32 LevelUpgrade;
 
     /**
@@ -271,20 +269,32 @@ public:
      * Virtual method, could be overrated
      * Being called in SetUpgradeWeapon
      */
-    UFUNCTION(BlueprintCallable, Category="Upgrade")
+    UFUNCTION(BlueprintCallable, Category = "Upgrade")
     virtual void SpecificUpgrade(int32 Level);
 
     /* Event is called on upgrade the weapon. Add SVX, VFX and so on in the BP.  */
     UFUNCTION(BlueprintImplementableEvent, Category = "Upgrade")
     void OnUpgradeEvent();
 
-
 public:
     virtual void BeginPlay() override;
 
-    FORCEINLINE void SetMonsterMesh(class USkeletalMeshComponent* Mesh) { MonsterMesh = Mesh; }
-    FORCEINLINE void SetMonsterPawn(class AEnemyMonsterPawn* Pawn) { MonsterPawn = Pawn; }
-    FORCEINLINE void UpgradeWeapon() { LevelUpgrade++; OnUpgradeEvent(); SpecificUpgrade(LevelUpgrade); }
-    FORCEINLINE void SetUpgradeWeapon(int32 Level) { LevelUpgrade = Level; if(Level > LevelUpgrade) { OnUpgradeEvent(); SpecificUpgrade(Level); } }
+    FORCEINLINE void SetMonsterMesh(class USkeletalMeshComponent *Mesh) { MonsterMesh = Mesh; }
+    FORCEINLINE void SetMonsterPawn(class AEnemyMonsterPawn *Pawn) { MonsterPawn = Pawn; }
+    FORCEINLINE void UpgradeWeapon()
+    {
+        LevelUpgrade++;
+        OnUpgradeEvent();
+        SpecificUpgrade(LevelUpgrade);
+    }
+    FORCEINLINE void SetUpgradeWeapon(int32 Level)
+    {
+        LevelUpgrade = Level;
+        if (Level > LevelUpgrade)
+        {
+            OnUpgradeEvent();
+            SpecificUpgrade(Level);
+        }
+    }
     FORCEINLINE int32 GetUpgradeWeapon() { return LevelUpgrade; }
 };

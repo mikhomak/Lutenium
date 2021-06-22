@@ -17,7 +17,6 @@ AMonsterAIController::AMonsterAIController()
     BehaviorComp = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("Behavior Tree"));
     BlackboardComp = CreateDefaultSubobject<UBlackboardComponent>(TEXT("Blackboard"));
 
-
     /* Set up names for blackboard values */
     FN_BV_bIsPlayerInRadiusOfBeamDefense = "Is Player In Radius Of Beam Defense?";
     FN_BV_PlayerHightLevel = "Player Hight Level";
@@ -30,8 +29,8 @@ void AMonsterAIController::BeginPlay()
 {
     Super::BeginPlay();
     /* Storring player referense */
-    APlayerPawn* PlayerCharacter = Cast<APlayerPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-    if(PlayerCharacter)
+    APlayerPawn *PlayerCharacter = Cast<APlayerPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+    if (PlayerCharacter)
     {
         Player = PlayerCharacter;
     }
@@ -42,10 +41,10 @@ void AMonsterAIController::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
-void AMonsterAIController::OnPossess(APawn* InPawn)
+void AMonsterAIController::OnPossess(APawn *InPawn)
 {
     Super::OnPossess(InPawn);
-    AEnemyMonsterPawn* Monster = Cast<AEnemyMonsterPawn>(InPawn);
+    AEnemyMonsterPawn *Monster = Cast<AEnemyMonsterPawn>(InPawn);
 
     if (Monster && Monster->BehaviorTree->BlackboardAsset)
     {
@@ -56,11 +55,10 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
     }
 }
 
-
 /** IMPORTANT!!! Could ne null!!! */
-AMonsterWeapon* AMonsterAIController::GetWeapon(EMonsterWeaponType MonsterWeaponType)
+AMonsterWeapon *AMonsterAIController::GetWeapon(EMonsterWeaponType MonsterWeaponType)
 {
-    if(MonsterPawn)
+    if (MonsterPawn)
     {
         return MonsterPawn->WeaponMap.FindRef(MonsterWeaponType);
     }
@@ -69,8 +67,8 @@ AMonsterWeapon* AMonsterAIController::GetWeapon(EMonsterWeaponType MonsterWeapon
 
 int32 AMonsterAIController::GetWeaponLevel(EMonsterWeaponType MonsterWeaponType)
 {
-    AMonsterWeapon* Weapon = GetWeapon(MonsterWeaponType);
-    if(Weapon != nullptr)
+    AMonsterWeapon *Weapon = GetWeapon(MonsterWeaponType);
+    if (Weapon != nullptr)
     {
         return Weapon->GetUpgradeWeapon();
     }
@@ -87,7 +85,7 @@ void AMonsterAIController::SetIsPlayerInRadiusOfBeamDefense(bool bIsInRadius)
 /** Setting tha blackboard value for the PlayerHightLevel */
 int32 AMonsterAIController::SetPlayerHightLevelBlackboardValue()
 {
-    if(Player == nullptr)
+    if (Player == nullptr)
     {
         return -1;
     }
@@ -98,15 +96,15 @@ int32 AMonsterAIController::SetPlayerHightLevelBlackboardValue()
     const FVector FirstHight = MonsterPawn->GetHightLevelSocketLocation(1);
     const FVector SecondHight = MonsterPawn->GetHightLevelSocketLocation(2);
     const FVector FourthHight = MonsterPawn->GetHightLevelSocketLocation(4);
-    if(FirstHight.Z > PlayerHight)
+    if (FirstHight.Z > PlayerHight)
     {
         Hight = 1;
     }
-    else if(FirstHight.Z < PlayerHight && SecondHight.Z > PlayerHight)
+    else if (FirstHight.Z < PlayerHight && SecondHight.Z > PlayerHight)
     {
         Hight = 2;
     }
-    else if(SecondHight.Z < PlayerHight && FourthHight.Z > PlayerHight)
+    else if (SecondHight.Z < PlayerHight && FourthHight.Z > PlayerHight)
     {
         Hight = 3;
     }
@@ -118,11 +116,10 @@ int32 AMonsterAIController::SetPlayerHightLevelBlackboardValue()
     return Hight;
 }
 
-
-void AMonsterAIController::SetTargetsAndNextPosition(TArray<class AActor*>& NewTargets)
+void AMonsterAIController::SetTargetsAndNextPosition(TArray<class AActor *> &NewTargets)
 {
     Targets = NewTargets;
-    if(Targets.IsValidIndex(0))
+    if (Targets.IsValidIndex(0))
     {
         CurrentTargetIndex = 0;
         NextTargetPositionWS = Targets[0]->GetActorLocation();
@@ -131,9 +128,9 @@ void AMonsterAIController::SetTargetsAndNextPosition(TArray<class AActor*>& NewT
 
 void AMonsterAIController::StartMovingToNextTargetLocation(int32 Index, bool bShouldMove)
 {
-    if(Targets.IsValidIndex(Index))
+    if (Targets.IsValidIndex(Index))
     {
-        CurrentTargetIndex = Index;        
+        CurrentTargetIndex = Index;
         NextTargetPositionWS = Targets[Index]->GetActorLocation();
         MonsterPawn->SetDirectionToMove(NextTargetPositionWS);
         BlackboardComp->SetValueAsInt(FN_BV_CurrentTargetIndex, Index);
@@ -142,12 +139,10 @@ void AMonsterAIController::StartMovingToNextTargetLocation(int32 Index, bool bSh
     }
 }
 
-
 void AMonsterAIController::SetHasReachedCurrentTarget(bool bHasReached)
 {
     BlackboardComp->SetValueAsBool(FN_BV_bHasReachedCurrentTarget, bHasReached);
 }
-
 
 void AMonsterAIController::StartOrStopMoving(bool bStartOrStopMoving)
 {

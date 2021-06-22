@@ -14,7 +14,6 @@ UMonsterLegComponent::UMonsterLegComponent()
 	//General
 	RaycastSphereRadius = 4000.f;
 
-	
 	// obstacle movement
 	bShouldRaycastJointsWhileMoving = true;
 	LerpAlphaValueMovingLegWhenThereIsAnObstacle = 0.4f;
@@ -27,7 +26,7 @@ UMonsterLegComponent::UMonsterLegComponent()
 	MaxAttempsAtThirdJointRaycast = 2;
 	CurrentAttempsAtThirdJointRaycast = 0;
 
-	// DEBUG 
+	// DEBUG
 	DEBUG_Thickness = 1500.f;
 	DEBUG_LifeTime = 5.f;
 	DEBUG_SphereRadius = 5000.f;
@@ -37,7 +36,7 @@ void UMonsterLegComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	/** Gets default values from the EnemyMonsterPawn */
-	if(EnemyMonsterPawn)
+	if (EnemyMonsterPawn)
 	{
 		DistanceBetweenLegsToMove = EnemyMonsterPawn->LegDistanceBetweenLegsToMove;
 		RaycastDownLength = EnemyMonsterPawn->LegRaycastDownLength;
@@ -50,29 +49,27 @@ void UMonsterLegComponent::BeginPlay()
 
 	/* Sets default location for each leg no matter if it can move or not */
 	FHitResult HitResult;
-	FVector RaycastLocation = GetComponentLocation(); /* Gets location of the raycast socket */
+	FVector RaycastLocation = GetComponentLocation();										  /* Gets location of the raycast socket */
 	FVector RaycastEndLocation = RaycastLocation + (FVector::DownVector * RaycastDownLength); /* Downvector from this socket  */
 	FVector DownRaycast = Raycast(RaycastLocation,
-										RaycastEndLocation,
-										HitResult);
-	if(HitResult.bBlockingHit)
+								  RaycastEndLocation,
+								  HitResult);
+	if (HitResult.bBlockingHit)
 	{
 		CurrentPosition = DownRaycast;
 	}
 }
 
-
 void UMonsterLegComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-										 FActorComponentTickFunction* ThisTickFunction)
+										 FActorComponentTickFunction *ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	RaycastLeg();
-	if(bMoving)
+	if (bMoving)
 	{
 		MoveLeg(DeltaTime);
 	}
 }
-
 
 void UMonsterLegComponent::RaycastLeg()
 {
@@ -81,8 +78,6 @@ void UMonsterLegComponent::RaycastLeg()
 		return;
 	}
 
-
-
 	/* Raycasting only if the socket has moved too far away from the current leg position */
 	const FVector RaycastLocation = GetComponentLocation();
 	const FVector RaycastEndLocation = RaycastLocation + (FVector::DownVector * RaycastDownLength);
@@ -90,12 +85,12 @@ void UMonsterLegComponent::RaycastLeg()
 		CurrentPosition, FVector(RaycastLocation.X, RaycastLocation.Y, CurrentPosition.Z));
 
 	// DEBUG
-	if(bDrawDebug)
+	if (bDrawDebug)
 	{
 		DEBUG_DrawLineBetweenPoints(
 			FVector(CurrentPosition.X, CurrentPosition.Y, RaycastLocation.Z),
-		 	RaycastLocation,
-		 	FColor::Yellow);
+			RaycastLocation,
+			FColor::Yellow);
 		DEBUG_DrawRaycastSphere();
 	}
 
@@ -104,17 +99,16 @@ void UMonsterLegComponent::RaycastLeg()
 	{
 		// Joint raycasting
 		// IMPORTANT, inside we check for the bActivateFirstJointRaycast and bActivateSecondJointRaycast
-		// No need to check it here altough you can idc 
-		if(RaycastFirstJoint())
+		// No need to check it here altough you can idc
+		if (RaycastFirstJoint())
 		{
 			return;
 		}
 
-		if(RaycastSecondJoint())
+		if (RaycastSecondJoint())
 		{
 			return;
 		}
-
 
 		// Normal raycast
 		RaycastWithStartMoving(RaycastLocation, RaycastEndLocation);
@@ -123,11 +117,11 @@ void UMonsterLegComponent::RaycastLeg()
 
 bool UMonsterLegComponent::RaycastFirstJoint()
 {
-	if(!bActivateFirstJointRaycast)
+	if (!bActivateFirstJointRaycast)
 	{
 		return false;
 	}
-	if(Mesh == nullptr)
+	if (Mesh == nullptr)
 	{
 		return false;
 	}
@@ -135,11 +129,11 @@ bool UMonsterLegComponent::RaycastFirstJoint()
 	if (CurrentAttempsAtSecondJointRaycast > MaxAttempsAtSecondJointRaycast)
 	{
 		CurrentAttempsAtSecondJointRaycast = 0;
-	 	return false;
+		return false;
 	}
 
 	CurrentAttempsAtSecondJointRaycast += 1;
-    /**
+	/**
      *  Sockets to raycast
      *                 THOSE ARE THE LEGS OKAY?
      *
@@ -162,24 +156,23 @@ bool UMonsterLegComponent::RaycastFirstJoint()
 
 bool UMonsterLegComponent::RaycastSecondJoint()
 {
-	if(!bActivateSecondJointRaycast)
+	if (!bActivateSecondJointRaycast)
 	{
 		return false;
 	}
-	if(Mesh == nullptr)
+	if (Mesh == nullptr)
 	{
 		return false;
 	}
-
 
 	if (CurrentAttempsAtThirdJointRaycast > MaxAttempsAtThirdJointRaycast)
 	{
 		CurrentAttempsAtThirdJointRaycast = 0;
-	 	return false;
+		return false;
 	}
 
 	CurrentAttempsAtThirdJointRaycast += 1;
-    /**
+	/**
      *  Sockets to raycast
      *                 THOSE ARE THE LEGS OKAY?
      *
@@ -200,13 +193,13 @@ bool UMonsterLegComponent::RaycastSecondJoint()
 	return RaycastWithStartMoving(RaycastLocation, RaycastEndLocation);
 }
 
-bool UMonsterLegComponent::RaycastWithStartMoving(const FVector& StartPos, const FVector& EndPos)
+bool UMonsterLegComponent::RaycastWithStartMoving(const FVector &StartPos, const FVector &EndPos)
 {
 	DEBUG_DrawLineBetweenPoints(StartPos, EndPos, FColor::Cyan);
 	FHitResult HitResult;
 	RaycastPosition = Raycast(StartPos,
 							  EndPos,
-						   	  HitResult);
+							  HitResult);
 
 	/* If the position wasn't found, do nothing */
 	if (HitResult.bBlockingHit)
@@ -218,25 +211,22 @@ bool UMonsterLegComponent::RaycastWithStartMoving(const FVector& StartPos, const
 	return false;
 }
 
-
-FVector UMonsterLegComponent::Raycast(const FVector& StartPos, const FVector& EndPos, FHitResult& HitResult)
+FVector UMonsterLegComponent::Raycast(const FVector &StartPos, const FVector &EndPos, FHitResult &HitResult)
 {
 	DEBUG_DrawSphere(StartPos, FColor::Blue);
 	DEBUG_DrawSphere(EndPos, FColor::Green);
 	FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(EnemyMonsterPawn);
 	GetWorld()->SweepSingleByObjectType(
-                                   HitResult,
-                                   StartPos,
-                                   EndPos,
-                                   FQuat::Identity,
-                                   ECollisionChannel::ECC_WorldStatic,
-                                   FCollisionShape::MakeSphere(RaycastSphereRadius),
-                                   CollisionParams);
+		HitResult,
+		StartPos,
+		EndPos,
+		FQuat::Identity,
+		ECollisionChannel::ECC_WorldStatic,
+		FCollisionShape::MakeSphere(RaycastSphereRadius),
+		CollisionParams);
 	return HitResult.ImpactPoint;
 }
-
-
 
 void UMonsterLegComponent::StartMovingLeg(const FVector HitLocation)
 {
@@ -264,7 +254,7 @@ void UMonsterLegComponent::StopMoving()
 void UMonsterLegComponent::MoveLeg(float DeltaTime)
 {
 	CurrentStepTime += DeltaTime;
-	
+
 	// cautiion!
 	// this can change FinishPosition!!!
 	RaycastSecondJointsWhileMoving();
@@ -272,20 +262,18 @@ void UMonsterLegComponent::MoveLeg(float DeltaTime)
 	CurrentPosition = FMath::Lerp(CurrentPosition, GetCurrentPositionOfStep(), LerpValue);
 }
 
-
 /**
  * While moving doing some raycast shit to see if there is an obstacle inside of the leg
  */
 void UMonsterLegComponent::RaycastSecondJointsWhileMoving()
 {
-	if(!bShouldRaycastJointsWhileMoving)
+	if (!bShouldRaycastJointsWhileMoving)
 	{
 		return;
 	}
 
-
 	// if the obstacle has been already found, lerps the FinishPosition to Obstacle Position
-	if(bIsThereAnObstacle)
+	if (bIsThereAnObstacle)
 	{
 		FinishPosition = FMath::Lerp(FinishPosition, ObstacleHitPosition, LerpAlphaValueMovingLegWhenThereIsAnObstacle);
 	}
@@ -295,7 +283,7 @@ void UMonsterLegComponent::RaycastSecondJointsWhileMoving()
 		const FVector SecondJointLocation = Mesh->GetSocketLocation(SecondJointSocketName);
 		const FVector ThridJointSocketLocation = Mesh->GetSocketLocation(ThirdJointSocketName);
 		FVector ObstaclePosition = Raycast(SecondJointLocation, ThridJointSocketLocation, HitResult);
-		if(HitResult.bBlockingHit)
+		if (HitResult.bBlockingHit)
 		{
 			ObstacleHitPosition = ObstaclePosition;
 			bIsThereAnObstacle = true;
@@ -303,19 +291,17 @@ void UMonsterLegComponent::RaycastSecondJointsWhileMoving()
 	}
 }
 
-
 FVector UMonsterLegComponent::GetCurrentPositionOfStep()
 {
 
-
 	const float X = FMath::GetMappedRangeValueClamped(
-							FVector2D(0, StepTime),
-							FVector2D(StartPosition.X, FinishPosition.X),
-							CurrentStepTime);
+		FVector2D(0, StepTime),
+		FVector2D(StartPosition.X, FinishPosition.X),
+		CurrentStepTime);
 	const float Y = FMath::GetMappedRangeValueClamped(
-							FVector2D(0, StepTime),
-							FVector2D(StartPosition.Y, FinishPosition.Y),
-							CurrentStepTime);
+		FVector2D(0, StepTime),
+		FVector2D(StartPosition.Y, FinishPosition.Y),
+		CurrentStepTime);
 
 	// Z value defines depending if CurrentPosition.Z is higher of FinishPosition.Z
 	// The parabola of the step takes always StepTime seconds, so to get to the middle of the parabola, even if the leg should start on the higher ground, it takes StepTime/2
@@ -366,72 +352,66 @@ FVector UMonsterLegComponent::GetCurrentPositionOfStep()
 		bHasReachedHighestPoint = true;
 	}
 
-	const float Z = bHasReachedHighestPoint == false ?
-				 FMath::GetMappedRangeValueClamped(
-							FVector2D(0, StepTime / 2),
-							FVector2D(StartPosition.Z, HighestPoint),
-							CurrentStepTime) :
-				FMath::GetMappedRangeValueClamped(
-							FVector2D(StepTime / 2, StepTime),
-							FVector2D(HighestPoint, FinishPosition.Z),
-							CurrentStepTime);
+	const float Z = bHasReachedHighestPoint == false ? FMath::GetMappedRangeValueClamped(
+														   FVector2D(0, StepTime / 2),
+														   FVector2D(StartPosition.Z, HighestPoint),
+														   CurrentStepTime)
+													 : FMath::GetMappedRangeValueClamped(
+														   FVector2D(StepTime / 2, StepTime),
+														   FVector2D(HighestPoint, FinishPosition.Z),
+														   CurrentStepTime);
 	return FVector(X, Y, Z);
 }
 
-
-
-
 void UMonsterLegComponent::DEBUG_DrawRaycastSphere()
 {
-	if(!bDrawDebug)
+	if (!bDrawDebug)
 	{
 		return;
 	}
-	DrawDebugSphere(GetWorld(),       // world
-					RaycastPosition,  // position
-					DEBUG_SphereRadius,			  // radius
-					6,                // segments
-					FColor::Red, 	  // Color
-					false,			  // persistent lines
-					DEBUG_LifeTime,			  // life time
-					0,             	  // depth
-					DEBUG_Thickness);			  // thicknes
+	DrawDebugSphere(GetWorld(),			// world
+					RaycastPosition,	// position
+					DEBUG_SphereRadius, // radius
+					6,					// segments
+					FColor::Red,		// Color
+					false,				// persistent lines
+					DEBUG_LifeTime,		// life time
+					0,					// depth
+					DEBUG_Thickness);	// thicknes
 }
 
-void UMonsterLegComponent::DEBUG_DrawLineBetweenPoints(const FVector& StartLocation, const FVector& EndLocation, FColor Color)
+void UMonsterLegComponent::DEBUG_DrawLineBetweenPoints(const FVector &StartLocation, const FVector &EndLocation, FColor Color)
 {
-	if(!bDrawDebug)
+	if (!bDrawDebug)
 	{
 		return;
 	}
 
-	DrawDebugLine
-	(
-		GetWorld(),			// world
-		StartLocation,		// start location
-		EndLocation,		// end location
-		Color,		// color
-		false,				// persistent lines
-		DEBUG_LifeTime,				// life time
-		0,					// depth
-		DEBUG_Thickness 				// thicknes
+	DrawDebugLine(
+		GetWorld(),		// world
+		StartLocation,	// start location
+		EndLocation,	// end location
+		Color,			// color
+		false,			// persistent lines
+		DEBUG_LifeTime, // life time
+		0,				// depth
+		DEBUG_Thickness // thicknes
 	);
 }
 
-
-void UMonsterLegComponent::DEBUG_DrawSphere(const FVector& Location, FColor Color)
+void UMonsterLegComponent::DEBUG_DrawSphere(const FVector &Location, FColor Color)
 {
-	if(!bDrawDebug)
+	if (!bDrawDebug)
 	{
 		return;
 	}
-	DrawDebugSphere(GetWorld(),         // world
-					RaycastPosition,    // position
+	DrawDebugSphere(GetWorld(),			// world
+					RaycastPosition,	// position
 					DEBUG_SphereRadius, // radius
-					6,                  // segments
-					Color, 	    // Color
-					false,			    // persistent lines
-					DEBUG_LifeTime,	    // life time
-					0,             	    // depth
-					DEBUG_Thickness);   // thicknes
+					6,					// segments
+					Color,				// Color
+					false,				// persistent lines
+					DEBUG_LifeTime,		// life time
+					0,					// depth
+					DEBUG_Thickness);	// thicknes
 }

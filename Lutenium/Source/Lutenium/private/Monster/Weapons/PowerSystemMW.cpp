@@ -7,7 +7,6 @@
 #include "Monster/Weapons/WeaponsUtils/MonsterWeaponType.h"
 #include "Monster/Weapons/WeaponsUtils/FenceTower2DArray.h"
 
-
 APowerSystemMW::APowerSystemMW() : AMonsterWeapon()
 {
     Health = 100.f;
@@ -32,19 +31,19 @@ void APowerSystemMW::InitializeTowerFencse()
     SpawnParams.Owner = MonsterPawn;
     SpawnParams.Instigator = MonsterPawn;
 
-    if(FenceTowerClass)
+    if (FenceTowerClass)
     {
-        for(int32 HightIndex = 0; HightIndex < FenceTowersHightLevelsAmount; HightIndex++)
+        for (int32 HightIndex = 0; HightIndex < FenceTowersHightLevelsAmount; HightIndex++)
         {
             FenceTowers.Add(FFenceTower2DArray());
-            for(int32 PositionIndex = 0; PositionIndex < FenceTowersPositionsAmount; PositionIndex++)
+            for (int32 PositionIndex = 0; PositionIndex < FenceTowersPositionsAmount; PositionIndex++)
             {
-                AFenceTowerMW* SpawnedFenceTower = GetWorld()->SpawnActor<AFenceTowerMW>(FenceTowerClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
-                if(SpawnedFenceTower)
+                AFenceTowerMW *SpawnedFenceTower = GetWorld()->SpawnActor<AFenceTowerMW>(FenceTowerClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+                if (SpawnedFenceTower)
                 {
                     SpawnedFenceTower->AttachToComponent(MonsterMesh,
-                                                        FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false),
-                                                        ConstructSocketName(HightIndex, PositionIndex)); // Dynmaicly creates socket name
+                                                         FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false),
+                                                         ConstructSocketName(HightIndex, PositionIndex)); // Dynmaicly creates socket name
                     /* Setting monster params for the spawned towers*/
                     SpawnedFenceTower->MonsterPawn = MonsterPawn;
                     SpawnedFenceTower->MonsterMesh = MonsterMesh;
@@ -68,7 +67,7 @@ void APowerSystemMW::InitializeTowerFencse()
                     /* 2 create a beam to 0 and 4 */
                     /* 1 to 0 and 3 */
                     /* 5 to 4 and 3*/
-                    if(PositionIndex == 1 || PositionIndex == 2 || PositionIndex == 5 )
+                    if (PositionIndex == 1 || PositionIndex == 2 || PositionIndex == 5)
                     {
                         SpawnedFenceTower->bParentFenceTower = true;
                     }
@@ -81,42 +80,41 @@ void APowerSystemMW::InitializeTowerFencse()
             /* 2 create a beam to 0 and 4 */
             /* 1 to 0 and 3 */
             /* 5 to 4 and 3*/
-            if(FenceTowers[HightIndex][0] && FenceTowers[HightIndex][3] && FenceTowers[HightIndex][4])
+            if (FenceTowers[HightIndex][0] && FenceTowers[HightIndex][3] && FenceTowers[HightIndex][4])
             {
-                if(FenceTowers[HightIndex][1])
+                if (FenceTowers[HightIndex][1])
                 {
                     FenceTowers[HightIndex][1]->BeamFenceTowers.Add(FenceTowers[HightIndex][0]);
                     FenceTowers[HightIndex][1]->BeamFenceTowers.Add(FenceTowers[HightIndex][3]);
                 }
-                if(FenceTowers[HightIndex][5])
+                if (FenceTowers[HightIndex][5])
                 {
                     FenceTowers[HightIndex][5]->BeamFenceTowers.Add(FenceTowers[HightIndex][3]);
                     FenceTowers[HightIndex][5]->BeamFenceTowers.Add(FenceTowers[HightIndex][4]);
                 }
-                if(FenceTowers[HightIndex][2])
+                if (FenceTowers[HightIndex][2])
                 {
                     FenceTowers[HightIndex][2]->BeamFenceTowers.Add(FenceTowers[HightIndex][0]);
                     FenceTowers[HightIndex][2]->BeamFenceTowers.Add(FenceTowers[HightIndex][4]);
                 }
             }
-
         }
     }
 }
 
 FName APowerSystemMW::ConstructSocketName(int32 HightIndex, int32 PositionIndex)
 {
-    return FName(FString::Format(*TowerFenceSocketFormat, { HightIndex, PositionIndex }));
+    return FName(FString::Format(*TowerFenceSocketFormat, {HightIndex, PositionIndex}));
 }
 
 /** shoots from every tower */
 void APowerSystemMW::ExecuteAttack()
 {
-    for(int32 HightIndex = 0; HightIndex < FenceTowers.Num(); HightIndex++)
+    for (int32 HightIndex = 0; HightIndex < FenceTowers.Num(); HightIndex++)
     {
-        for(int32 PositionIndex = 0; PositionIndex < FenceTowers[HightIndex].Num(); PositionIndex++)
+        for (int32 PositionIndex = 0; PositionIndex < FenceTowers[HightIndex].Num(); PositionIndex++)
         {
-            if(FenceTowers[HightIndex][PositionIndex])
+            if (FenceTowers[HightIndex][PositionIndex])
             {
                 FenceTowers[HightIndex][PositionIndex]->ExecuteAttack();
             }
@@ -124,7 +122,7 @@ void APowerSystemMW::ExecuteAttack()
     }
 
     /* When the upgrade is >= 1 and Siren spawned less than 2 sirens, creates a timer for another one */
-    if(LevelUpgrade >= 1 && CurrentExecutedAttacks < 2)
+    if (LevelUpgrade >= 1 && CurrentExecutedAttacks < 2)
     {
         FTimerHandle SecondAttackTimer;
         GetWorldTimerManager().SetTimer(SecondAttackTimer, this, &APowerSystemMW::ExecuteAttack, RepeatAttackTime, false);
@@ -132,13 +130,12 @@ void APowerSystemMW::ExecuteAttack()
     }
 }
 
-
 void APowerSystemMW::ActivateBeamDefense()
 {
     /* Activates beam defense for every fence tower */
-    for(int32 HightIndex = 0; HightIndex < FenceTowers.Num(); HightIndex++)
+    for (int32 HightIndex = 0; HightIndex < FenceTowers.Num(); HightIndex++)
     {
-        if(FenceTowers.IsValidIndex(HightIndex))
+        if (FenceTowers.IsValidIndex(HightIndex))
         {
             // Numbers are the positions of tower fences on the legs. Monster is the head. Dashes are beams.
             //
@@ -182,16 +179,14 @@ void APowerSystemMW::ActivateBeamDefense()
             //
             SafeActiveBeam(true, FenceTowers[HightIndex][5], true);
             SafeActiveBeam(true, FenceTowers[HightIndex][5], false);
-
         }
     }
 }
 
-
 void APowerSystemMW::DeactivateBeamDefense()
 {
     /* Deactivate beam defense for every fence tower */
-    for(int32 HightIndex = 0; HightIndex < FenceTowers.Num(); HightIndex++)
+    for (int32 HightIndex = 0; HightIndex < FenceTowers.Num(); HightIndex++)
     {
         SafeActiveBeam(false, FenceTowers[HightIndex][2], true);
         SafeActiveBeam(false, FenceTowers[HightIndex][2], false);
@@ -202,9 +197,9 @@ void APowerSystemMW::DeactivateBeamDefense()
     }
 }
 
-void APowerSystemMW::SafeActiveBeam(bool bActivate, class AFenceTowerMW* FenceTowerStart, bool bLeft)
+void APowerSystemMW::SafeActiveBeam(bool bActivate, class AFenceTowerMW *FenceTowerStart, bool bLeft)
 {
-    if(FenceTowerStart)
+    if (FenceTowerStart)
     {
         FenceTowerStart->SetActiveBeam(bActivate, bLeft);
     }
@@ -215,18 +210,17 @@ void APowerSystemMW::BeforeAttackEvent_Implementation()
     /* OVERRIDE THIS EVENT IN BP */
 }
 
-
 void APowerSystemMW::SpecificUpgrade(int32 Level)
 {
     int NeighborHights[2]; /* Creates an arrya of existed hight neighbors. It can be lower hight, higher or both */
-    for(int32 HightIndex = 0; HightIndex < FenceTowers.Num(); HightIndex++)
+    for (int32 HightIndex = 0; HightIndex < FenceTowers.Num(); HightIndex++)
     {
         NeighborHights[0] = FenceTowers.IsValidIndex(HightIndex + 1) ? HightIndex + 1 : -1;
         NeighborHights[1] = FenceTowers.IsValidIndex(HightIndex - 1) ? HightIndex - 1 : -1;
 
-        for(auto NeighborHightIndex : NeighborHights)
+        for (auto NeighborHightIndex : NeighborHights)
         {
-            if(NeighborHightIndex != -1) /* add new neighbors only if the index is valid */
+            if (NeighborHightIndex != -1) /* add new neighbors only if the index is valid */
             {
 
                 //
@@ -273,18 +267,18 @@ void APowerSystemMW::SpecificUpgrade(int32 Level)
 }
 
 void APowerSystemMW::SaveAddNewNeighborsToTheParentTower(int ParentHightIndex,
-                                         int ParentPositionIndex,
-                                         int NeighborsHightIndex,
-                                         int LeftNeighborPositionIndex,
-                                         int RightNeighborPositionIndex)
+                                                         int ParentPositionIndex,
+                                                         int NeighborsHightIndex,
+                                                         int LeftNeighborPositionIndex,
+                                                         int RightNeighborPositionIndex)
 {
-    if(FenceTowers[ParentHightIndex].IsValidIndex(ParentPositionIndex) && FenceTowers[ParentHightIndex][ParentPositionIndex])
+    if (FenceTowers[ParentHightIndex].IsValidIndex(ParentPositionIndex) && FenceTowers[ParentHightIndex][ParentPositionIndex])
     {
-        if(FenceTowers[NeighborsHightIndex].IsValidIndex(LeftNeighborPositionIndex))
+        if (FenceTowers[NeighborsHightIndex].IsValidIndex(LeftNeighborPositionIndex))
         {
             FenceTowers[ParentHightIndex][ParentPositionIndex]->BeamFenceTowers.Add(FenceTowers[NeighborsHightIndex][LeftNeighborPositionIndex]);
         }
-        if(FenceTowers[NeighborsHightIndex].IsValidIndex(RightNeighborPositionIndex))
+        if (FenceTowers[NeighborsHightIndex].IsValidIndex(RightNeighborPositionIndex))
         {
             FenceTowers[ParentHightIndex][ParentPositionIndex]->BeamFenceTowers.Add(FenceTowers[NeighborsHightIndex][RightNeighborPositionIndex]);
         }
