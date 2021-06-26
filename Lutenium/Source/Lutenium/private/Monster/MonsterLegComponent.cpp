@@ -64,10 +64,75 @@ void UMonsterLegComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 										 FActorComponentTickFunction *ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
 	RaycastLeg();
 	if (bMoving)
 	{
 		MoveLeg(DeltaTime);
+	}
+
+	if(bDrawDebug)
+	{
+		DEBUG_DrawLineBetweenPoints(
+			CurrentPosition,
+			GetComponentLocation(),
+			FColor::Yellow,
+			true);
+
+		const FVector FirstJointRaycastLocation = EnemyMonsterPawn->GetCurrentBodyPosition();
+		const FVector FirstJointRaycastEndLocation = Mesh->GetSocketLocation(SecondJointSocketName);
+		const FVector RaycastEndLocation = GetComponentLocation() + (FVector::DownVector * RaycastDownLength);
+
+		// 				JOINTS
+		// first joint
+		DEBUG_DrawLineBetweenPoints(
+			FirstJointRaycastLocation,
+			FirstJointRaycastEndLocation,
+			FColor::Purple,
+			true);
+
+		const FVector SecondJointRaycastEndLocation = Mesh->GetSocketLocation(ThirdJointSocketName);
+
+		// second joint
+		DEBUG_DrawLineBetweenPoints(
+			FirstJointRaycastEndLocation,
+			SecondJointRaycastEndLocation,
+			FColor::Purple,
+			true);
+
+		//	second joint to finish position
+		DEBUG_DrawLineBetweenPoints(
+			FirstJointRaycastEndLocation,
+			FinishPosition,
+			FColor::Orange,
+			true);
+
+		// second joint to raycast position
+		DEBUG_DrawLineBetweenPoints(
+			FirstJointRaycastEndLocation,
+			RaycastEndLocation,
+			FColor::Emerald,
+			true);
+
+
+		// 				FINISH POSITION
+		DEBUG_DrawLineBetweenPoints(
+			CurrentPosition,
+			FinishPosition,
+			FColor::Red,
+			true);
+
+		DEBUG_DrawSphere(
+			FinishPosition,
+			FColor::Red,
+			true);
+
+		// Raycast position
+		DEBUG_DrawLineBetweenPoints(
+			FirstJointRaycastEndLocation,
+			RaycastPosition,
+			FColor::Red,
+			true);
 	}
 }
 
@@ -83,16 +148,6 @@ void UMonsterLegComponent::RaycastLeg()
 	const FVector RaycastEndLocation = RaycastLocation + (FVector::DownVector * RaycastDownLength);
 	const float DistanceBetweenCurrentPosAndPrevious = FVector::Distance(
 		CurrentPosition, FVector(RaycastLocation.X, RaycastLocation.Y, CurrentPosition.Z));
-
-	// DEBUG
-	if (bDrawDebug)
-	{
-		DEBUG_DrawLineBetweenPoints(
-			FVector(CurrentPosition.X, CurrentPosition.Y, RaycastLocation.Z),
-			RaycastLocation,
-			FColor::Yellow);
-		DEBUG_DrawRaycastSphere();
-	}
 
 	// Main Logic
 	if (DistanceBetweenCurrentPosAndPrevious >= DistanceBetweenLegsToMove)
@@ -111,7 +166,59 @@ void UMonsterLegComponent::RaycastLeg()
 		}
 
 		// Normal raycast
-		RaycastWithStartMoving(RaycastLocation, RaycastEndLocation);
+		FHitResult HitResult;
+		RaycastPosition = Raycast(RaycastLocation,
+								  RaycastEndLocation,
+								  HitResult);
+		if(HitResult.bBlockingHit)
+		{
+		   /**
+ 		    *  Sockets to raycast
+ 		    * Case 1: No obstacle, move the leg to the raycast position (return false -> doesn't start moving)
+ 		    *       
+ 		    *       
+ 		    *
+ 		    *                   RAYCAST LOCATION
+ 		    *                  	     |	   
+ 		    *                        |              FRONT  MIDDLE  BACK
+ 		    *                        |   
+ 		    *                        |                /2\    |    /2\
+ 		    *      					 |               /   \   |   /   \
+ 		    *                        |              /     \  |  /     \
+ 		    *                        |             /     MONSTER       \
+ 		    *                        |            /          |          \
+ 		    *                        |           /           |           \
+ 		    *                        |          3            |            3
+ 		    *--------------------------------------------------------------- FLOOR
+ 		    *                     RAYCAST POSITION     
+ 		    *
+ 		    *
+ 		    *
+ 		    * Case 2: There is an obstacle, move to the obstacle location (return true -> start moving)
+ 		    *       
+ 		    *
+ 		    *                   RAYCAST LOCATION
+ 		    *                  	     |	   
+ 		    *                        |              FRONT  MIDDLE  BACK
+ 		    *                        |   
+ 		    *                        |                /2\    |    /2\
+ 		    *      					 | OBSTACLE      /   \   |   /   \
+ 		    *                        |  -----       /     \  |  /     \
+ 		    *                        |  |   |      /     MONSTER       \
+ 		    *                        |  |   |     /          |          \
+ 		    *                        |  |   |    /           |           \
+ 		    *                        |  |   |   3            |            3
+ 		    *--------------------------------------------------------------- FLOOR
+ 		    *                     RAYCAST POSITION         
+ 		    */
+			// Should we raycast from the second joint to the raycast end position?
+			if(RaycastSecondJointToRaycastPosition(RaycastLocation, RaycastPosition))
+			{
+				return;
+			}
+			// If there was no obstacle between second joint and end postion, start moving to the end position
+			StartMovingLeg(RaycastPosition);
+		}
 	}
 }
 
@@ -193,9 +300,64 @@ bool UMonsterLegComponent::RaycastSecondJoint()
 	return RaycastWithStartMoving(RaycastLocation, RaycastEndLocation);
 }
 
+
+bool UMonsterLegComponent::RaycastSecondJointToRaycastPosition(const FVector& StartPos, const FVector& EndPos)
+{
+	// safety checks
+	if(!bShouldCheckForAnObstacleFromSecdonJointToRaycastPosition)
+	{
+		return false;
+	}
+	if (Mesh == nullptr)
+	{
+		return false;
+	}
+    /**
+     *  Sockets to raycast
+     * Case 1: No obstacle, move the leg to the raycast position (return false -> doesn't start moving)
+     *       
+     *       
+     *
+     *                   RAYCAST LOCATION
+     *                  	  |	   
+     *                        |              FRONT  MIDDLE  BACK
+     *                        |   
+     *                        |                /2\    |    /2\
+     *      				  |               /   \   |   /   \
+     *                        |              /     \  |  /     \
+     *                        |             /     MONSTER       \
+     *                        |            /          |          \
+     *                        |           /           |           \
+     *                        |          3            |            3
+     *--------------------------------------------------------------- FLOOR
+     *                     RAYCAST POSITION     
+     *
+     *
+     *
+     * Case 2: There is an obstacle, move to the obstacle location (return true -> start moving)
+     *       
+     *
+     *                   RAYCAST LOCATION
+     *                  	  |	   
+     *                        |              FRONT  MIDDLE  BACK
+     *                        |   
+     *                        |                /2\    |    /2\
+     *      				  | OBSTACLE      /   \   |   /   \
+     *                        |  -----       /     \  |  /     \
+     *                        |  |   |      /     MONSTER       \
+     *                        |  |   |     /          |          \
+     *                        |  |   |    /           |           \
+     *                        |  |   |   3            |            3
+     *--------------------------------------------------------------- FLOOR
+     *                     RAYCAST POSITION         
+     */
+
+	return RaycastWithStartMoving(StartPos, EndPos);
+
+}
+
 bool UMonsterLegComponent::RaycastWithStartMoving(const FVector &StartPos, const FVector &EndPos)
 {
-	DEBUG_DrawLineBetweenPoints(StartPos, EndPos, FColor::Cyan);
 	FHitResult HitResult;
 	RaycastPosition = Raycast(StartPos,
 							  EndPos,
@@ -213,8 +375,6 @@ bool UMonsterLegComponent::RaycastWithStartMoving(const FVector &StartPos, const
 
 FVector UMonsterLegComponent::Raycast(const FVector &StartPos, const FVector &EndPos, FHitResult &HitResult)
 {
-	DEBUG_DrawSphere(StartPos, FColor::Blue);
-	DEBUG_DrawSphere(EndPos, FColor::Green);
 	FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(EnemyMonsterPawn);
 	GetWorld()->SweepSingleByObjectType(
@@ -363,7 +523,7 @@ FVector UMonsterLegComponent::GetCurrentPositionOfStep()
 	return FVector(X, Y, Z);
 }
 
-void UMonsterLegComponent::DEBUG_DrawRaycastSphere()
+void UMonsterLegComponent::DEBUG_DrawRaycastSphere(bool bDrawEveryThick)
 {
 	if (!bDrawDebug)
 	{
@@ -375,12 +535,12 @@ void UMonsterLegComponent::DEBUG_DrawRaycastSphere()
 					6,					// segments
 					FColor::Red,		// Color
 					false,				// persistent lines
-					DEBUG_LifeTime,		// life time
+					bDrawEveryThick ? 0.f : DEBUG_LifeTime,		// life time
 					0,					// depth
 					DEBUG_Thickness);	// thicknes
 }
 
-void UMonsterLegComponent::DEBUG_DrawLineBetweenPoints(const FVector &StartLocation, const FVector &EndLocation, FColor Color)
+void UMonsterLegComponent::DEBUG_DrawLineBetweenPoints(const FVector &StartLocation, const FVector &EndLocation, FColor Color, bool bDrawEveryThick)
 {
 	if (!bDrawDebug)
 	{
@@ -393,13 +553,13 @@ void UMonsterLegComponent::DEBUG_DrawLineBetweenPoints(const FVector &StartLocat
 		EndLocation,	// end location
 		Color,			// color
 		false,			// persistent lines
-		DEBUG_LifeTime, // life time
+		bDrawEveryThick ? 0.f : DEBUG_LifeTime, // life time
 		0,				// depth
 		DEBUG_Thickness // thicknes
 	);
 }
 
-void UMonsterLegComponent::DEBUG_DrawSphere(const FVector &Location, FColor Color)
+void UMonsterLegComponent::DEBUG_DrawSphere(const FVector &Location, FColor Color, bool bDrawEveryThick)
 {
 	if (!bDrawDebug)
 	{
@@ -411,7 +571,7 @@ void UMonsterLegComponent::DEBUG_DrawSphere(const FVector &Location, FColor Colo
 					6,					// segments
 					Color,				// Color
 					false,				// persistent lines
-					DEBUG_LifeTime,		// life time
+					bDrawEveryThick ? 0.f : DEBUG_LifeTime,		// life time
 					0,					// depth
 					DEBUG_Thickness);	// thicknes
 }

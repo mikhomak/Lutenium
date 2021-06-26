@@ -166,7 +166,7 @@ public:
 	 *
 	 * @warning uses bActivateSecondJointRaycast
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Obstacle", meta=(EditCondition="bShouldRaycastJointsWhileMoving"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Obstacle")
 	bool bShouldRaycastJointsWhileMoving;
 
 	/**
@@ -191,6 +191,57 @@ public:
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Obstacle", meta=(EditCondition="bShouldRaycastJointsWhileMoving"))
 	bool bIsThereAnObstacle;
+
+	
+    /**
+     *  Sockets to raycast
+     * Case 1: No obstacle, move the leg to the raycast position (return false -> doesn't start moving)
+     *       
+     *       
+     *
+     *                   RAYCAST LOCATION
+     *                  	  |	   
+     *                        |              FRONT  MIDDLE  BACK
+     *                        |   
+     *                        |                /2\    |    /2\
+     *      			      |               /   \   |   /   \
+     *                        |              /     \  |  /     \
+     *                        |             /     MONSTER       \
+     *                        |            /          |          \
+     *                        |           /           |           \
+     *                        |          3            |            3
+     *--------------------------------------------------------------- FLOOR
+     *                     RAYCAST POSITION     
+     *
+     *
+     *
+     * Case 2: There is an obstacle, move to the obstacle location (return true -> start moving)
+     *       
+     *
+     *                   RAYCAST LOCATION
+     *                  	  |	   
+     *                        |              FRONT  MIDDLE  BACK
+     *                        |   
+     *                        |                /2\    |    /2\
+     *      				  | OBSTACLE      /   \   |   /   \
+     *                        |  -----       /     \  |  /     \
+     *                        |  |   |      /     MONSTER       \
+     *                        |  |   |     /          |          \
+     *                        |  |   |    /           |           \
+     *                        |  |   |   3            |            3
+     *--------------------------------------------------------------- FLOOR
+     *                     RAYCAST POSITION         
+     */
+	/**
+	 * While doing normal raycast (when the distance between current position and raycast position is too big (DistanceBetweenCurrentPosAndPrevious >= DistanceBetweenLegsToMove))
+	 * Should we also check if there is an obstacle from second joint to that raycast position before starting the movement?
+	 *
+	 * Checks in RaycastLeg()
+	 * Invokes RaycastSecondJointToRaycastPosition()
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Obstacle")
+	bool bShouldCheckForAnObstacleFromSecdonJointToRaycastPosition;
+
 
 	// -----------------------------------------------------------------------------------------------------------
 	// Joint Sockets
@@ -318,6 +369,16 @@ private:
 	 */
 	bool RaycastWithStartMoving(const FVector& StartPos,const FVector& EndPos);
 
+	/**
+	 * Checks between the second joint and the final raycast position
+	 * If there is an obstacle, setting FinishPosition as that obstacle location
+	 *
+	 * @param StartPos - start position, should be second joint position
+	 * @param EndPos - end position, should be raycast position
+	 * @return true if there is an obstacle and the movement has started, false if there was no obsctale
+	 * @warning - to activate this functionallity, bShouldCheckForAnObstacleFromSecdonJointToRaycastPosition should be true
+	 */
+	bool RaycastSecondJointToRaycastPosition(const FVector& StartPos, const FVector& EndPos);
 
 	/**
 	 * Raycast inside of the MoveLeg() method
@@ -439,15 +500,15 @@ protected:
 
 	/** Draws debug sphere on RaycastPoisition */
 	UFUNCTION(BlueprintCallable, Category = "Debug")
-	void DEBUG_DrawRaycastSphere();
+	void DEBUG_DrawRaycastSphere(bool bDrawEveryThick);
 
 	/** Draw lines between two points */
 	UFUNCTION(BlueprintCallable, Category = "Debug")
-	void DEBUG_DrawLineBetweenPoints(const FVector& StartLocation, const FVector& EndLocation, FColor Color);
+	void DEBUG_DrawLineBetweenPoints(const FVector& StartLocation, const FVector& EndLocation, FColor Color, bool bDrawEveryThick);
 
 	/** Draw debug sphere of the location */
 	UFUNCTION(BlueprintCallable, Category = "Debug")
-	void DEBUG_DrawSphere(const FVector& Location, FColor Color);
+	void DEBUG_DrawSphere(const FVector& Location, FColor Color, bool bDrawEveryThick);
 
 	/**
 	 * Debug lines Thickness

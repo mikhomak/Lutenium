@@ -38,7 +38,7 @@ void UPlayerPlaneMovementComponent::DashInput()
     }
     bCanDash = false;
     PhysicsComponent->AddForce(PhysicsComponent->GetForwardVector() * DashImpactForce, FName(), true);
-    CurrentAcceleration = MaxThrustUpAcceleration;
+    CurrentAcceleration = MinThrustAcceleration;
     --DashesLeft;
     FTimerHandle DashCooldownTimer;
     GetWorld()->GetTimerManager().SetTimer(DashCooldownTimer, this, &UPlayerPlaneMovementComponent::ResetDashCooldown,
@@ -82,7 +82,7 @@ void UPlayerPlaneMovementComponent::ActivateTravelMode()
     bIsInTravelMode = true;
     AirControl = AirControl * TravelModeAircontrolMultiplier;
     MaxAcceleration = MaxAcceleration *  TravelModeMaxAccelerationMultiplier;
-    MaxThrustUpAcceleration = MaxThrustUpAcceleration *  TravelModeMaxAccelerationMultiplier;
+    MinThrustAcceleration = MinThrustAcceleration *  TravelModeMaxAccelerationMultiplier;
     FTimerHandle TimerHandle;
     GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UPlayerPlaneMovementComponent::CanDeactivateTravelMode,
                                            TimeToBeAbleToDeactivateTravelMode, false);
@@ -109,7 +109,7 @@ void UPlayerPlaneMovementComponent::DeactivateTravelMode()
     OnTravelModeDeactivate.Broadcast();
     AirControl = AirControl / TravelModeAircontrolMultiplier;
     MaxAcceleration = MaxAcceleration / TravelModeMaxAccelerationMultiplier; 
-    MaxThrustUpAcceleration = MaxThrustUpAcceleration / TravelModeMaxAccelerationMultiplier ;
+    MinThrustAcceleration = MinThrustAcceleration / TravelModeMaxAccelerationMultiplier ;
     bIsInTravelMode = false;
     bIsAbleToDeactivateTravelMode = false;
 }
