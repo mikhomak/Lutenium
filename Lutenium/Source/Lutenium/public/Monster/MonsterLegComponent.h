@@ -57,7 +57,7 @@ public:
 	 */
 	UPROPERTY(BlueprintReadWrite, Category = "Mesh")
 	class USkeletalMeshComponent* Mesh;
-	/**
+
 	/**
 	 * Tick component, duh
 	 * Don't forget to tick the timeline here hehehe
@@ -121,6 +121,7 @@ public:
 	 */
 	UPROPERTY(BlueprintReadWrite, Category = "Leg")
 	FVector CurrentPosition;
+
 
 	/**
 	 * The radius of any raycast to find the FinishPosition
@@ -232,6 +233,7 @@ public:
      *--------------------------------------------------------------- FLOOR
      *                     RAYCAST POSITION         
      */
+	
 	/**
 	 * While doing normal raycast (when the distance between current position and raycast position is too big (DistanceBetweenCurrentPosAndPrevious >= DistanceBetweenLegsToMove))
 	 * Should we also check if there is an obstacle from second joint to that raycast position before starting the movement?
@@ -241,6 +243,16 @@ public:
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Obstacle")
 	bool bShouldCheckForAnObstacleFromSecdonJointToRaycastPosition;
+
+	/**
+	 * Indicates if we should raycasts highest location
+	 * Before starting moving the leg, checks if there is an obstacle between current position and the middle location of the movement(Highest Location)
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Obstacle")
+	bool bRaycastToTheHighestStep;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Obstacle")
+	bool bRaycastFromHighestStep;
 
 
 	// -----------------------------------------------------------------------------------------------------------
@@ -395,6 +407,23 @@ private:
 	 */
 	void RaycastSecondJointsWhileMoving();
 
+
+	/**
+	 * Indicates if we should raycasts highest location
+	 * Before starting moving the leg, checks if there is an obstacle between current position and the middle location of the movement(Highest Location)
+	 * After reaching the highest step, raycasts from the highest step to the finish position
+	 * Invokes in 
+	 *
+	 * @param StartPos - starting position, should be CurrentPosition
+	 * @param EndPos - finish position, should be the result of the normal raycast
+	 * @return true if there was an obstacle and FinishPosition was updated, false in other cases
+ 	 * @see bRaycastToTheHighestStep
+	 * @warning Changes FinishPosition!
+	 * @warning only works when bRaycastToTheHighestStep = true
+	 */
+	bool RaycastToTheHighestPosition(const FVector& StartPos, const FVector& EndPos);
+
+
 protected:
 
 	// -----------------------------------------------------------------------------------------------------------
@@ -447,8 +476,18 @@ protected:
 	 * The distance needed to start a step between CurrentPosition and RaycastPosition
 	 * Gets from EnemyMonsterPawn
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg", meta=(EditCondition="bShouldCheckForTheDistanceBetweenLegsToMove"))
 	float DistanceBetweenLegsToMove;
+
+	/**
+	 * Should we check for the distance to start moving each leg in particular?
+	 * If not, then when the other legs have moved(opposite indexes), start movign all of the currnet legs, no matter the distance
+	 * See bCanMove
+	 *
+	 * By default we are checkign for the distance
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg")
+	bool bShouldCheckForTheDistanceBetweenLegsToMove;
 
 	/**
 	 * Down length of the vector of the raycast from RaycastDownComponent
