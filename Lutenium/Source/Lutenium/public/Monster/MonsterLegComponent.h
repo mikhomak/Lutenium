@@ -21,7 +21,7 @@
  *      2) Assign Mesh -  SetMesh()
  *      3) Assign MonsterLegType - SetMonsterLegType()
  *		4) Place the component above the disered location (usualy the end of the leg)
- *		5) Set SecondJointSocketName and ThirdJointSocketName in case you need it
+ *		5) Set SecondJointBoneName and ThirdJointBoneName in case you need it
  *		6) Set index
  *
  * How to use it:
@@ -162,27 +162,18 @@ public:
 
 
 	/**
-	 * When the leg is moving (MoveLeg()) - should we check each frame if there is an obstacle between SecondJointSocketName and FinishPosition ?
-	 * If so, set this obstacle position (Hit position) as a FinishPosition
-	 *
-	 * @warning uses bActivateSecondJointRaycast
-	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Obstacle")
-	bool bShouldRaycastJointsWhileMoving;
-
-	/**
 	 * If while the leg was moving, it found an obstacle, we will lerp the FinishPosition with that obstacle
 	 * This is the alpha value of this lerp
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Obstacle", meta = (UIMin = "0.0", UIMax = "1.0", EditCondition="bShouldRaycastJointsWhileMoving"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Obstacle", meta = (UIMin = "0.0", UIMax = "1.0", EditCondition="bShouldRaycastAllJointsWhileMoving"))
 	float LerpAlphaValueMovingLegWhenThereIsAnObstacle;
 
 	/**
 	 * In case there was a hit, lerps FinishPosition with this Position in MoveLeg()
 	 * 
-	 * @warning bShouldRaycastJointsWhileMoving should be true in order to work with this variable
+	 * @warning bShouldRaycastAllJointsWhileMoving should be true in order to work with this variable
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Obstacle", meta=(EditCondition="bShouldRaycastJointsWhileMoving"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Obstacle", meta=(EditCondition="bShouldRaycastAllJointsWhileMoving"))
 	FVector ObstacleHitPosition;
 
 	/**
@@ -190,59 +181,9 @@ public:
 	 * changes in MoveLeg()
 	 * changes in StopLeg()
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Obstacle", meta=(EditCondition="bShouldRaycastJointsWhileMoving"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Obstacle", meta=(EditCondition="bShouldRaycastAllJointsWhileMoving"))
 	bool bIsThereAnObstacle;
 
-	
-    /**
-     *  Sockets to raycast
-     * Case 1: No obstacle, move the leg to the raycast position (return false -> doesn't start moving)
-     *       
-     *       
-     *
-     *                   RAYCAST LOCATION
-     *                  	  |	   
-     *                        |              FRONT  MIDDLE  BACK
-     *                        |   
-     *                        |                /2\    |    /2\
-     *      			      |               /   \   |   /   \
-     *                        |              /     \  |  /     \
-     *                        |             /     MONSTER       \
-     *                        |            /          |          \
-     *                        |           /           |           \
-     *                        |          3            |            3
-     *--------------------------------------------------------------- FLOOR
-     *                     RAYCAST POSITION     
-     *
-     *
-     *
-     * Case 2: There is an obstacle, move to the obstacle location (return true -> start moving)
-     *       
-     *
-     *                   RAYCAST LOCATION
-     *                  	  |	   
-     *                        |              FRONT  MIDDLE  BACK
-     *                        |   
-     *                        |                /2\    |    /2\
-     *      				  | OBSTACLE      /   \   |   /   \
-     *                        |  -----       /     \  |  /     \
-     *                        |  |   |      /     MONSTER       \
-     *                        |  |   |     /          |          \
-     *                        |  |   |    /           |           \
-     *                        |  |   |   3            |            3
-     *--------------------------------------------------------------- FLOOR
-     *                     RAYCAST POSITION         
-     */
-	
-	/**
-	 * While doing normal raycast (when the distance between current position and raycast position is too big (DistanceBetweenCurrentPosAndPrevious >= DistanceBetweenLegsToMove))
-	 * Should we also check if there is an obstacle from second joint to that raycast position before starting the movement?
-	 *
-	 * Checks in RaycastLeg()
-	 * Invokes RaycastSecondJointToRaycastPosition()
-	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Obstacle")
-	bool bShouldCheckForAnObstacleFromSecdonJointToRaycastPosition;
 
 	/**
 	 * Indicates if we should raycasts highest location
@@ -251,126 +192,52 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Obstacle")
 	bool bRaycastToTheHighestStep;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Obstacle")
-	bool bRaycastFromHighestStep;
-
-
-	// -----------------------------------------------------------------------------------------------------------
-	// Joint Sockets
-	// -----------------------------------------------------------------------------------------------------------
-
-    /**
-     *  Sockets to raycast
-     *                 THOSE ARE THE LEGS OKAY?
-     *
-     *
-     *                  FRONT  MIDDLE  BACK
-     *
-     *                    /2\    |    /2\
-     *                   /   \   |   /   \
-     *                  /     \  |  /     \
-     *                 /     MONSTER       \
-     *                /          |          \
-     *               /           |           \
-     *              3            |            3
-     *---------------------------------------------- FLOOR
-    */
-
-	/**
-	 * Before doing normal raycast from the component position
-	 * Doing the raycast from monster location(BodySocket) to first socket (Has to be on the top of the leg)
-	 * If there was a hit, place the CurrentPosition to that hit
-	 * This prevents leg from clipping through buildings
-	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Joint Raycast")
-	bool bActivateFirstJointRaycast;
-
-	/**
-	 * Before doing normal raycast from the component position
-	 * Doing the raycast from first socket to third socket (has to be on the end of the leg)
-	 * If there was a hit, place the CurrentPosition to that hit
-	 * This prevents leg from clipping through buildings
-	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg|Joint Raycast")
-	bool bActivateSecondJointRaycast;
-
-	/**
-	 * Second Joint Socket
-	 * Has to be on the highest point of the leg
-	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Joint Raycast", meta=(EditCondition="bActivateFirstJointRaycast"))
-	FName SecondJointSocketName;
-
-	/**
-	 * Maxium attempts of the raycast between joints
-	 * When CurrentAttempsAtSecondJointRaycast > MaxAttempsAtSecondJointRaycast, bActivateFirstJointRaycast will be ignored and the raycast between Mesh and First joint wouldn't happen
-	 * It prevents from stucking the mesh
-	 * So the next step this raycat wouldn't be considered
-	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Joint Raycast", meta=(EditCondition="bActivateFirstJointRaycast"))
-	int32 MaxAttempsAtSecondJointRaycast;
-	
-	/**
-	 * Current attempts for first joint raycast before starting to ignore it
-	 * When CurrentAttempsAtSecondJointRaycast > MaxAttempsAtSecondJointRaycast, bActivateFirstJointRaycast will be ignored and the raycast between Mesh and First joint wouldn't happen
-	 * It prevents from stucking the mesh
+	/*
+	 * Should we activate joint raycast for all joints?
+	 * Joints from JointRaycastArray
+	 * Executing before normal raycast!
 	 *
-	 * Updates in RaycastFirstJoint()
-	 * Resest in RaycastFirstJoint() when the CurrentAttempsAtSecondJointRaycast > MaxAttempsAtSecondJointRaycast
+	 * @see JointRaycastArray
+	 * @see RaycastJointArray()
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Joint Raycast", meta=(EditCondition="bActivateFirstJointRaycast"))
-	int32 CurrentAttempsAtSecondJointRaycast;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle")
+	bool bShouldRaycastAllJoints;
+
 
 	/**
-	 * Second Joint Socket
-	 * Has to be on the lowest(the end of the leg) point of the leg
-	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Joint Raycast", meta=(EditCondition="bActivateSecondJointRaycast"))
-	FName ThirdJointSocketName;
-
-	/**
-	 * Maxium attempts of the raycast between joints
-	 * When CurrentAttempsAtThirdJointRaycast > MaxAttempsAtThirdJointRaycast, bActivateSecondJointRaycast will be ignored and the raycast between Mesh and First joint wouldn't happen
-	 * It prevents from stucking the mesh
-	 * So the next step this raycat wouldn't be considered
-	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Joint Raycast", meta=(EditCondition="bActivateSecondJointRaycast"))
-	int32 MaxAttempsAtThirdJointRaycast;
-
-	/**
-	 * Current attempts for first joint raycast before starting to ignore it
-	 * When CurrentAttempsAtThirdJointRaycast > MaxAttempsAtThirdJointRaycast, bActivateSecondJointRaycast will be ignored and the raycast between Mesh and First joint wouldn't happen
-	 * It prevents from stucking the mesh
+	 * Should we activate joint raycast for all joints WHILE the leg is already moving?
+	 * Joints from JointRaycastArray
 	 *
-	 * Updates in RaycastSecondJoint()
-	 * Resest in RaycastSecondJoint() when the CurrentAttempsAtThirdJointRaycast > MaxAttempsAtThirdJointRaycast
+	 * @warning will change FinishPosition!
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Joint Raycast", meta=(EditCondition="bActivateSecondJointRaycast"))
-	int32 CurrentAttempsAtThirdJointRaycast;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle")
+	bool bShouldRaycastAllJointsWhileMoving;
+
+	/**
+	 * Joints to raycast
+	 * The order is important!
+	 * The names of the BONES
+	 *
+	 * @see bShouldRaycastAllJoints
+	 * @see bShouldRaycastAllJointsWhileMoving
+	 * @see RaycastJointArray()
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle", meta=(EditCondition="bShouldRaycastAllJoints || bShouldRaycastAllJointsWhileMoving"))
+	TArray<FName> JointRaycastArray;
+
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle|Directional")
+	bool bShouldRaycastForDirectionalObstacle;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle|Directional", meta=(EditCondition="bShoudlRaycastToTheMiddleDirection"))
+	float RaycastDirectionalVectorDistance;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle|Directional")
+	float AddedHightForRaycastForDirectionalObstacle;
 
 
 private:
-	/**
-	 * Raycasts the first joint
-	 * Invokes in RaycastLeg()
-	 * 
-	 * @warning works only when bActivateFirstJointRaycast == true
-	 * @see bActivateFirstJointRaycast
-	 * @see SecondJointSocketName
-	 * @return true if the raycast was successful, false in other case or bActivateFirstJointRaycast == false
-	 */
-	bool RaycastFirstJoint();
 
-	/**
-	 * Raycasts the second joint
-	 * Invokes in RaycastLeg()
-	 *
-	 * @warning works only when bActivateSecondJointRaycast == true
-	 * @see bActivateSecondJointRaycast
-	 * @see ThirdJointSocketName
-	 * @return true if the raycast was successful, false in other case or bActivateSecondJointRaycast == false
-	 */
-	bool RaycastSecondJoint();
 
 	/**
 	 * Method thar calls RaycastLeg() with params, and if the hit was successful, then invokes StartMovingLeg(RaycastPosition)
@@ -381,38 +248,47 @@ private:
 	 */
 	bool RaycastWithStartMoving(const FVector& StartPos,const FVector& EndPos);
 
-	/**
-	 * Checks between the second joint and the final raycast position
-	 * If there is an obstacle, setting FinishPosition as that obstacle location
-	 *
-	 * @param StartPos - start position, should be second joint position
-	 * @param EndPos - end position, should be raycast position
-	 * @return true if there is an obstacle and the movement has started, false if there was no obsctale
-	 * @warning - to activate this functionallity, bShouldCheckForAnObstacleFromSecdonJointToRaycastPosition should be true
-	 */
-	bool RaycastSecondJointToRaycastPosition(const FVector& StartPos, const FVector& EndPos);
 
 	/**
-	 * Raycast inside of the MoveLeg() method
-	 * Raycast from second to the third sockets: SecondJointSocketName ----> ThirdJointSocketName
+	 * Raycast all the joints from JointRaycastArray in order while the leg is MOVING - bMoving = true (inside of MoveLeg())
 	 * If there is a blocking object between them, stores the position of the hit in ObstacleHitPosition
 	 * If the hit was already registered(bIsThereAnObstacle) then it just lerps FinishPosition with ObstacleHitPosition with LerpAlphaValueMovingLegWhenThereIsAnObstacle as a lerp alpha value
-	 *
-	 * @warning only works with bShouldRaycastJointsWhileMoving == true
-	 * @warning changes FinishPosition!!!
+	 * If there was a hit on the earlier bones (in order from JointRaycastArray) - doesn't raycast the others
+	 * 
+	 * @return true if there was a hit or the hit was already registered, false in other cases
+	 * @see RaycastWhileMoving()
 	 * @see bIsThereAnObstacle
 	 * @see ObstacleHitPosition
 	 * @see LerpAlphaValueMovingLegWhenThereIsAnObstacle
 	 * @see bShouldRaycastJointsWhileMoving
+ 	 * @warning only works with bShouldRaycastJointsWhileMoving == true
+	 * @warning changes FinishPosition!!!
+	 * @warning should be only working while bMoving = true
 	 */
-	void RaycastSecondJointsWhileMoving();
+	bool RaycastAllJointsWhileMoving();
 
+
+	/**
+	 * Raycast from the StartPos to EndPos while the leg is moving!! - MoveLeg()
+	 * If there is a hit, stores the position in ObstacleHitPosition
+	 * If the hit was already registered(bIsThereAnObstacle) then it just lerps FinishPosition with ObstacleHitPosition with LerpAlphaValueMovingLegWhenThereIsAnObstacle as a lerp alpha value
+	 * 
+	 * @returns true if there was a hit and thus the FinishPosition has been changed or the hit was registerd and thus the FinishPosition is lerping, false in other cases
+ 	 * @see bIsThereAnObstacle
+	 * @see ObstacleHitPosition
+	 * @see LerpAlphaValueMovingLegWhenThereIsAnObstacle
+	 * @warning changes FinishPosition!!!
+	 * @warning should be call from MoveLeg()
+	 * @warning should be only working while bMoving = true
+	 */
+	bool RaycastWhileMoving(const FVector& StartPos, const FVector& EndPos);
 
 	/**
 	 * Indicates if we should raycasts highest location
 	 * Before starting moving the leg, checks if there is an obstacle between current position and the middle location of the movement(Highest Location)
 	 * After reaching the highest step, raycasts from the highest step to the finish position
-	 * Invokes in 
+	 * 
+	 * Invokes in RaycastLeg()
 	 *
 	 * @param StartPos - starting position, should be CurrentPosition
 	 * @param EndPos - finish position, should be the result of the normal raycast
@@ -423,6 +299,24 @@ private:
 	 */
 	bool RaycastToTheHighestPosition(const FVector& StartPos, const FVector& EndPos);
 
+	/**
+	 * Raycasting every joint array
+	 * The order of the array matters!
+	 * Executes before normal raycast, and after RaycastSecondJoint()
+	 * 
+	 * Invokes in RaycastLeg()
+	 *
+	 * @return true if there was a hit and thus the movenet start, false if there was no hit
+	 * @see JointRaycastArray
+	 * @see bShouldRaycastAllJoints
+	 * @warning only works with bShouldRaycastAllJoints = true
+	 * @warning starts moving! thus changes FinishPosition!
+	 */
+	bool RaycastJointArray();
+
+	bool RaycastWhileMovingForDirectionalObstacle();
+	
+	FVector RaycastObstaclePositionFromTheDownVector(const FVector& GoalPosition, FHitResult& HitResult);
 
 protected:
 

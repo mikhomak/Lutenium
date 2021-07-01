@@ -16,16 +16,12 @@ UMonsterLegComponent::UMonsterLegComponent()
 	bShouldCheckForTheDistanceBetweenLegsToMove = true;
 
 	// obstacle movement
-	bShouldRaycastJointsWhileMoving = true;
 	LerpAlphaValueMovingLegWhenThereIsAnObstacle = 0.4f;
 
-	bActivateFirstJointRaycast = true;
-	bActivateSecondJointRaycast = true;
 
-	MaxAttempsAtSecondJointRaycast = 2;
-	CurrentAttempsAtSecondJointRaycast = 0;
-	MaxAttempsAtThirdJointRaycast = 2;
-	CurrentAttempsAtThirdJointRaycast = 0;
+	// Directional obstacle
+	AddedHightForRaycastForDirectionalObstacle = 35000.f;
+	RaycastDirectionalVectorDistance = 20000.f;
 
 	// DEBUG
 	DEBUG_Thickness = 1500.f;
@@ -50,8 +46,8 @@ void UMonsterLegComponent::BeginPlay()
 
 	/* Sets default location for each leg no matter if it can move or not */
 	FHitResult HitResult;
-	FVector RaycastLocation = GetComponentLocation();										  /* Gets location of the raycast socket */
-	FVector RaycastEndLocation = RaycastLocation + (FVector::DownVector * RaycastDownLength); /* Downvector from this socket  */
+	FVector RaycastLocation = GetComponentLocation();										  
+	FVector RaycastEndLocation = RaycastLocation + (FVector::DownVector * RaycastDownLength); 
 	FVector DownRaycast = Raycast(RaycastLocation,
 								  RaycastEndLocation,
 								  HitResult);
@@ -74,53 +70,14 @@ void UMonsterLegComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 	if(bDrawDebug)
 	{
-		DEBUG_DrawLineBetweenPoints(
-			CurrentPosition,
+		DEBUG_DrawSphere(
 			GetComponentLocation(),
-			FColor::Yellow,
-			true);
-
-		const FVector FirstJointRaycastLocation = EnemyMonsterPawn->GetCurrentBodyPosition();
-		const FVector FirstJointRaycastEndLocation = Mesh->GetSocketLocation(SecondJointSocketName);
-		const FVector RaycastEndLocation = GetComponentLocation() + (FVector::DownVector * RaycastDownLength);
-
-		// 				JOINTS
-		// first joint
-		DEBUG_DrawLineBetweenPoints(
-			FirstJointRaycastLocation,
-			FirstJointRaycastEndLocation,
-			FColor::Purple,
-			true);
-
-		const FVector SecondJointRaycastEndLocation = Mesh->GetSocketLocation(ThirdJointSocketName);
-
-		// second joint
-		DEBUG_DrawLineBetweenPoints(
-			FirstJointRaycastEndLocation,
-			SecondJointRaycastEndLocation,
-			FColor::Purple,
-			true);
-
-		//	second joint to finish position
-		DEBUG_DrawLineBetweenPoints(
-			FirstJointRaycastEndLocation,
-			FinishPosition,
 			FColor::Orange,
 			true);
 
-		// second joint to raycast position
-		DEBUG_DrawLineBetweenPoints(
-			FirstJointRaycastEndLocation,
-			RaycastEndLocation,
-			FColor::Emerald,
-			true);
-
-
-		// 				FINISH POSITION
-		DEBUG_DrawLineBetweenPoints(
-			CurrentPosition,
-			FinishPosition,
-			FColor::Red,
+		DEBUG_DrawSphere(
+			StartPosition,
+			FColor::Blue,
 			true);
 
 		DEBUG_DrawSphere(
@@ -128,22 +85,45 @@ void UMonsterLegComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 			FColor::Red,
 			true);
 
-		// Raycast position
+
+
+		FVector GoalPosition;
+		// the leg is still going up
+		// lookin for middle point of the step
+		if(!bHasReachedHighestPoint)
+		{
+			const float HighestZLocation = FMath::Max(StartPosition.Z, FinishPosition.Z) + AddedHightStep;
+			GoalPosition = (StartPosition + FinishPosition) / 2;
+			GoalPosition.Z = HighestZLocation;
+		}
+		// the leg is going down
+		// looking for the finish point of the step
+		else
+		{
+			GoalPosition = FinishPosition;
+		}
+		GoalPosition = GoalPosition - CurrentPosition;
+		GoalPosition.Normalize();
+		GoalPosition = GoalPosition * RaycastDirectionalVectorDistance;
+
+
+
+
 		DEBUG_DrawLineBetweenPoints(
-			FirstJointRaycastEndLocation,
-			RaycastPosition,
+			CurrentPosition,
+			CurrentPosition + GoalPosition,
 			FColor::Red,
 			true);
 
-		// Raycast To the highest step position
-		const float HighestZLocation = FMath::Max(CurrentPosition.Z, RaycastPosition.Z) + AddedHightStep;
-		FVector MiddlePosition = FMath::Lerp(CurrentPosition, RaycastPosition, 0.5f);
-		MiddlePosition.Z = HighestZLocation;
 		DEBUG_DrawLineBetweenPoints(
-			StartPosition,
-			MiddlePosition,
-			FColor::Blue,
+			CurrentPosition,
+			FinishPosition,
+			FColor::Purple,
 			true);
+
+
+
+
 
 	}
 }
@@ -155,7 +135,7 @@ void UMonsterLegComponent::RaycastLeg()
 		return;
 	}
 
-	/* Raycasting only if the socket has moved too far away from the current leg position */
+	/* Raycasting only if the component has moved too far away from the current leg position */
 	const FVector ComponentLocation = GetComponentLocation();
 	const FVector RaycastEndLocation = ComponentLocation + (FVector::DownVector * RaycastDownLength);
 	const float DistanceBetweenCurrentPosAndPrevious = FVector::Distance(
@@ -165,14 +145,9 @@ void UMonsterLegComponent::RaycastLeg()
 	if (!bShouldCheckForTheDistanceBetweenLegsToMove || DistanceBetweenCurrentPosAndPrevious >= DistanceBetweenLegsToMove)
 	{
 		// Joint raycasting
-		// IMPORTANT, inside we check for the bActivateFirstJointRaycast and bActivateSecondJointRaycast
+		// IMPORTANT, inside we check for the bShouldRaycastAllJoints
 		// No need to check it here altough you can idc
-		if (RaycastFirstJoint())
-		{
-			return;
-		}
-
-		if (RaycastSecondJoint())
+		if(RaycastJointArray())
 		{
 			return;
 		}
@@ -184,52 +159,6 @@ void UMonsterLegComponent::RaycastLeg()
 								  HitResult);
 		if(HitResult.bBlockingHit)
 		{
-
-
-		   /**
- 		    *  Sockets to raycast
- 		    * Case 1: No obstacle, move the leg to the raycast position (return false -> doesn't start moving)
- 		    *       
- 		    *       
- 		    *
- 		    *                   RAYCAST LOCATION
- 		    *                  	     |	   
- 		    *                        |              FRONT  MIDDLE  BACK
- 		    *                        |   
- 		    *                        |                /2\    |    /2\
- 		    *      					 |               /   \   |   /   \
- 		    *                        |              /     \  |  /     \
- 		    *                        |             /     MONSTER       \
- 		    *                        |            /          |          \
- 		    *                        |           /           |           \
- 		    *                        |          3            |            3
- 		    *--------------------------------------------------------------- FLOOR
- 		    *                     RAYCAST POSITION     
- 		    *
- 		    *
- 		    *
- 		    * Case 2: There is an obstacle, move to the obstacle location (return true -> start moving)
- 		    *       
- 		    *
- 		    *                   RAYCAST LOCATION
- 		    *                  	     |	   
- 		    *                        |              FRONT  MIDDLE  BACK
- 		    *                        |   
- 		    *                        |                /2\    |    /2\
- 		    *      					 | OBSTACLE      /   \   |   /   \
- 		    *                        |  -----       /     \  |  /     \
- 		    *                        |  |   |      /     MONSTER       \
- 		    *                        |  |   |     /          |          \
- 		    *                        |  |   |    /           |           \
- 		    *                        |  |   |   3            |            3
- 		    *--------------------------------------------------------------- FLOOR
- 		    *                     RAYCAST POSITION         
- 		    */
-			// Should we raycast from the second joint to the raycast end position?
-			if(RaycastSecondJointToRaycastPosition(ComponentLocation, RaycastPosition))
-			{
-				return;
-			}
 			// If there was no obstacle between second joint and end postion, start moving to the end position
 			StartMovingLeg(RaycastPosition);
 			RaycastToTheHighestPosition(StartPosition, FinishPosition);
@@ -237,139 +166,6 @@ void UMonsterLegComponent::RaycastLeg()
 	}
 }
 
-bool UMonsterLegComponent::RaycastFirstJoint()
-{
-	if (!bActivateFirstJointRaycast)
-	{
-		return false;
-	}
-	if (Mesh == nullptr)
-	{
-		return false;
-	}
-
-	if (CurrentAttempsAtSecondJointRaycast > MaxAttempsAtSecondJointRaycast)
-	{
-		CurrentAttempsAtSecondJointRaycast = 0;
-		return false;
-	}
-
-	CurrentAttempsAtSecondJointRaycast += 1;
-	/**
-     *  Sockets to raycast
-     *                 THOSE ARE THE LEGS OKAY?
-     *
-     *
-     *                  FRONT  MIDDLE  BACK
-     *
-     *                    /2\    |    /2\
-     *                   /   \   |   /   \
-     *                  /     \  |  /     \
-     *                 /     MONSTER       \
-     *                /          |          \
-     *               /           |           \
-     *              3            |            3
-     *---------------------------------------------- FLOOR
-    */
-	const FVector RaycastLocation = EnemyMonsterPawn->GetCurrentBodyPosition();
-	const FVector RaycastEndLocation = Mesh->GetSocketLocation(SecondJointSocketName);
-	return RaycastWithStartMoving(RaycastLocation, RaycastEndLocation);
-}
-
-bool UMonsterLegComponent::RaycastSecondJoint()
-{
-	if (!bActivateSecondJointRaycast)
-	{
-		return false;
-	}
-	if (Mesh == nullptr)
-	{
-		return false;
-	}
-
-	if (CurrentAttempsAtThirdJointRaycast > MaxAttempsAtThirdJointRaycast)
-	{
-		CurrentAttempsAtThirdJointRaycast = 0;
-		return false;
-	}
-
-	CurrentAttempsAtThirdJointRaycast += 1;
-	/**
-     *  Sockets to raycast
-     *                 THOSE ARE THE LEGS OKAY?
-     *
-     *
-     *                  FRONT  MIDDLE  BACK
-     *
-     *                    /2\    |    /2\
-     *                   /   \   |   /   \
-     *                  /     \  |  /     \
-     *                 /     MONSTER       \
-     *                /          |          \
-     *               /           |           \
-     *              3            |            3
-     *---------------------------------------------- FLOOR
-    */
-	const FVector RaycastLocation = Mesh->GetSocketLocation(SecondJointSocketName);
-	const FVector RaycastEndLocation = Mesh->GetSocketLocation(ThirdJointSocketName);
-	return RaycastWithStartMoving(RaycastLocation, RaycastEndLocation);
-}
-
-
-bool UMonsterLegComponent::RaycastSecondJointToRaycastPosition(const FVector& StartPos, const FVector& EndPos)
-{
-	// safety checks
-	if(!bShouldCheckForAnObstacleFromSecdonJointToRaycastPosition)
-	{
-		return false;
-	}
-	if (Mesh == nullptr)
-	{
-		return false;
-	}
-    /**
-     *  Sockets to raycast
-     * Case 1: No obstacle, move the leg to the raycast position (return false -> doesn't start moving)
-     *       
-     *       
-     *
-     *                   RAYCAST LOCATION
-     *                  	  |	   
-     *                        |              FRONT  MIDDLE  BACK
-     *                        |   
-     *                        |                /2\    |    /2\
-     *      				  |               /   \   |   /   \
-     *                        |              /     \  |  /     \
-     *                        |             /     MONSTER       \
-     *                        |            /          |          \
-     *                        |           /           |           \
-     *                        |          3            |            3
-     *--------------------------------------------------------------- FLOOR
-     *                     RAYCAST POSITION     
-     *
-     *
-     *
-     * Case 2: There is an obstacle, move to the obstacle location (return true -> start moving)
-     *       
-     *
-     *                   RAYCAST LOCATION
-     *                  	  |	   
-     *                        |              FRONT  MIDDLE  BACK
-     *                        |   
-     *                        |                /2\    |    /2\
-     *      				  | OBSTACLE      /   \   |   /   \
-     *                        |  -----       /     \  |  /     \
-     *                        |  |   |      /     MONSTER       \
-     *                        |  |   |     /          |          \
-     *                        |  |   |    /           |           \
-     *                        |  |   |   3            |            3
-     *--------------------------------------------------------------- FLOOR
-     *                     RAYCAST POSITION         
-     */
-
-	return RaycastWithStartMoving(StartPos, EndPos);
-
-}
 
 bool UMonsterLegComponent::RaycastToTheHighestPosition(const FVector &StartPos, const FVector& EndPos)
 {
@@ -415,6 +211,43 @@ bool UMonsterLegComponent::RaycastWithStartMoving(const FVector &StartPos, const
 	return false;
 }
 
+
+bool UMonsterLegComponent::RaycastJointArray()
+{
+	if(!bShouldRaycastAllJoints)
+	{
+		return false;
+	}
+	if(Mesh == nullptr)
+	{
+		return false;
+	}
+
+	bool result = false;
+	for(int i = 0; i < JointRaycastArray.Num(); i++)
+	{
+		// if i + 1 is not valid, that mean that we reached the final bone and thus no hit was found
+		if(!JointRaycastArray.IsValidIndex(i+1))
+		{
+			return false;
+		}
+
+		const FVector StartPos = Mesh->GetBoneLocation(JointRaycastArray[i], EBoneSpaces::WorldSpace);
+		const FVector EndPos = Mesh->GetBoneLocation(JointRaycastArray[i+1], EBoneSpaces::WorldSpace);
+
+		result = RaycastWithStartMoving(StartPos, EndPos);
+		if(result == true)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+
+/**
+ * Raycast method for every raycast in this class
+ */
 FVector UMonsterLegComponent::Raycast(const FVector &StartPos, const FVector &EndPos, FHitResult &HitResult)
 {
 	FCollisionQueryParams CollisionParams;
@@ -459,39 +292,136 @@ void UMonsterLegComponent::MoveLeg(float DeltaTime)
 
 	// cautiion!
 	// this can change FinishPosition!!!
-	RaycastSecondJointsWhileMoving();
+	RaycastAllJointsWhileMoving();
+	RaycastWhileMovingForDirectionalObstacle();
+
+
 
 	CurrentPosition = FMath::Lerp(CurrentPosition, GetCurrentPositionOfStep(), LerpValue);
 }
 
-/**
- * While moving doing some raycast shit to see if there is an obstacle inside of the leg
- */
-void UMonsterLegComponent::RaycastSecondJointsWhileMoving()
+bool UMonsterLegComponent::RaycastWhileMovingForDirectionalObstacle()
 {
-	if (!bShouldRaycastJointsWhileMoving)
+	if(!bShouldRaycastForDirectionalObstacle)
 	{
-		return;
+		return false;
 	}
 
+	FVector GoalPosition;
+	// the leg is still going up
+	// lookin for middle point of the step
+	if(!bHasReachedHighestPoint)
+	{
+		const float HighestZLocation = FMath::Max(StartPosition.Z, FinishPosition.Z) + AddedHightStep;
+		GoalPosition = (StartPosition + FinishPosition) / 2;
+		GoalPosition.Z = HighestZLocation;
+	}
+	// the leg is going down
+	// looking for the finish point of the step
+	else
+	{
+		GoalPosition = FinishPosition;
+	}
+	GoalPosition = GoalPosition - CurrentPosition;
+	GoalPosition.Normalize();
+	GoalPosition = GoalPosition * RaycastDirectionalVectorDistance;
+
+
+
+	FHitResult HitResult;
+	const FVector DirectionalObstaclePosition = RaycastObstaclePositionFromTheDownVector(CurrentPosition + GoalPosition, HitResult);
+	if(HitResult.bBlockingHit)
+	{
+		FinishPosition = DirectionalObstaclePosition;
+		return true;
+	}
+
+	return false;
+}
+
+
+FVector UMonsterLegComponent::RaycastObstaclePositionFromTheDownVector(const FVector& GoalPosition, FHitResult& HitResult)
+{
+	FVector DirectionalObstacleHitPosition = Raycast(CurrentPosition, GoalPosition, HitResult);
+	if(HitResult.bBlockingHit)
+	{
+		FVector FinishDirectionalObstacleHitPosition = Raycast(DirectionalObstacleHitPosition + FVector::UpVector * AddedHightForRaycastForDirectionalObstacle, DirectionalObstacleHitPosition + FVector::DownVector * RaycastDownLength, HitResult);
+		if(HitResult.bBlockingHit)
+		{
+			return FinishDirectionalObstacleHitPosition;
+		}
+	}
+
+	return FVector::ZeroVector;
+}
+
+
+
+bool UMonsterLegComponent::RaycastAllJointsWhileMoving()
+{
+	if(!bShouldRaycastAllJointsWhileMoving)
+	{
+		return false;
+	}
+
+	// if there is already an obstacle, we don't care about raycasting all joints
+	// we only want to lerp the FinishPosition with ObstacleHitPosition
+	// that happens inside of RaycastWhileMoving()
+	// and we don't care about input vectors
+	if(bIsThereAnObstacle)
+	{
+		RaycastWhileMoving(FVector(), FVector());
+		return true;
+	}
+	
+	bool result = false;
+	for(int i = 0; i < JointRaycastArray.Num(); i++)
+	{
+		// if i + 1 is not valid, that mean that we reached the final bone and thus no hit was found
+		if(!JointRaycastArray.IsValidIndex(i+1))
+		{
+			return false;
+		}
+
+		const FVector StartPos = Mesh->GetBoneLocation(JointRaycastArray[i], EBoneSpaces::WorldSpace);
+		const FVector EndPos = Mesh->GetBoneLocation(JointRaycastArray[i+1], EBoneSpaces::WorldSpace);
+
+		result = RaycastWhileMoving(StartPos, EndPos);
+		if(result == true)
+		{
+			return true;
+		}
+	}
+
+	return false;
+
+}
+
+
+bool UMonsterLegComponent::RaycastWhileMoving(const FVector& StartPos, const FVector& EndPos)
+{
 	// if the obstacle has been already found, lerps the FinishPosition to Obstacle Position
 	if (bIsThereAnObstacle)
 	{
 		FinishPosition = FMath::Lerp(FinishPosition, ObstacleHitPosition, LerpAlphaValueMovingLegWhenThereIsAnObstacle);
+		return true;
 	}
 	else
 	{
 		FHitResult HitResult;
-		const FVector SecondJointLocation = Mesh->GetSocketLocation(SecondJointSocketName);
-		const FVector ThridJointSocketLocation = Mesh->GetSocketLocation(ThirdJointSocketName);
-		FVector ObstaclePosition = Raycast(SecondJointLocation, ThridJointSocketLocation, HitResult);
+		FVector ObstaclePosition = Raycast(StartPos, EndPos, HitResult);
 		if (HitResult.bBlockingHit)
 		{
 			ObstacleHitPosition = ObstaclePosition;
 			bIsThereAnObstacle = true;
+			return true;
 		}
 	}
+	return false;
+
 }
+
+
 
 FVector UMonsterLegComponent::GetCurrentPositionOfStep()
 {

@@ -82,44 +82,32 @@ AEnemyMonsterPawn::AEnemyMonsterPawn()
 	RightFrontLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Right Front Leg"));
 	RightFrontLeg->AttachToComponent(SphereComponent, AttachmentTransformRules);
 	RightFrontLeg->SetMesh(MonsterMesh);
-	RightFrontLeg->SecondJointSocketName = "RightFrontJoint_2_Socket";
-	RightFrontLeg->ThirdJointSocketName = "RightFrontSecond_3_JointSocket";
 	InitLeg(RightFrontLeg, 0);
 
 	RightMiddleLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Right Middle Leg"));
 	RightMiddleLeg->AttachToComponent(SphereComponent, AttachmentTransformRules);
 	RightMiddleLeg->SetMesh(MonsterMesh);
-	RightMiddleLeg->SecondJointSocketName = "RightMiddleJoint_2_Socket";
-	RightMiddleLeg->ThirdJointSocketName = "RightMiddleSecond_3_JointSocket";
 	InitLeg(RightMiddleLeg, 1);
 
 	RightBackLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Right Back Leg"));
 	RightBackLeg->AttachToComponent(SphereComponent, AttachmentTransformRules);
 	RightBackLeg->SetMesh(MonsterMesh);
-	RightBackLeg->SecondJointSocketName = "RightBackJoint_2_Socket";
-	RightBackLeg->ThirdJointSocketName = "RightBackSecond_3_JointSocket";
 	InitLeg(RightBackLeg, 2);
 
 	/** LEFT LEGS */
 	LeftFrontLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Left Front Leg"));
 	LeftFrontLeg->AttachToComponent(SphereComponent, AttachmentTransformRules);
 	LeftFrontLeg->SetMesh(MonsterMesh);
-	LeftFrontLeg->SecondJointSocketName = "LeftFrontJoint_2_Socket";
-	LeftFrontLeg->ThirdJointSocketName = "LeftFrontSecond_3_JointSocket";
 	InitLeg(LeftFrontLeg, 3);
 
 	LeftMiddleLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Left Middle Leg"));
 	LeftMiddleLeg->AttachToComponent(SphereComponent, AttachmentTransformRules);
 	LeftMiddleLeg->SetMesh(MonsterMesh);
-	LeftMiddleLeg->SecondJointSocketName = "LeftMiddleJoint_2_Socket";
-	LeftMiddleLeg->ThirdJointSocketName = "LeftMiddleSecond_3_JointSocket";
 	InitLeg(LeftMiddleLeg, 4);
 
 	LeftBackLeg = CreateDefaultSubobject<UMonsterLegComponent>(TEXT("Left Back Leg"));
 	LeftBackLeg->AttachToComponent(SphereComponent, AttachmentTransformRules);
 	LeftBackLeg->SetMesh(MonsterMesh);
-	LeftBackLeg->SecondJointSocketName = "LeftBackJoint_2_Socket";
-	LeftBackLeg->ThirdJointSocketName = "LeftBackSecond_3_JointSocket";
 	InitLeg(LeftBackLeg, 5);
 
 	ToggleWhatLegsShouldMove(true);
