@@ -208,7 +208,9 @@ public:
 	 * Should we activate joint raycast for all joints WHILE the leg is already moving?
 	 * Joints from JointRaycastArray
 	 *
+	 * @see bShouldExcludeBodyArea
 	 * @warning will change FinishPosition!
+	 * @warning not working in excluded zones if bShouldExcludeBodyArea
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle")
 	bool bShouldRaycastAllJointsWhileMoving;
@@ -221,11 +223,21 @@ public:
 	 * @see bShouldRaycastAllJoints
 	 * @see bShouldRaycastAllJointsWhileMoving
 	 * @see RaycastJointArray()
+	 * @see bShouldExcludeBodyArea
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle", meta=(EditCondition="bShouldRaycastAllJoints || bShouldRaycastAllJointsWhileMoving"))
 	TArray<FName> JointRaycastArray;
 
 
+
+	// -----------------------------------------------------------------------------------------------------------
+	// Obstacle
+	// -----------------------------------------------------------------------------------------------------------
+
+	/**
+	 * While moving, should we raycast for the direction that the leg is moving
+	 * If raycast finds a hit, then chaning FinishPosition to this hit location
+	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle|Directional")
 	bool bShouldRaycastForDirectionalObstacle;
 
@@ -235,6 +247,20 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle|Directional")
 	float AddedHightForRaycastForDirectionalObstacle;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle|Directional")
+	bool bCanRaycastDirection;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle|Directional")
+	float DirectionalRaycastBeggingThreshold;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle|Exclusion")
+	bool bShouldExcludeBodyArea;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle|Exclusion")
+	float ExcludedBodyAreaRadius;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle|Exclusion")
+	FName BodyBoneName;
 
 private:
 
@@ -317,6 +343,8 @@ private:
 	bool RaycastWhileMovingForDirectionalObstacle();
 	
 	FVector RaycastObstaclePositionFromTheDownVector(const FVector& GoalPosition, FHitResult& HitResult);
+
+	bool IsPositionInTheExcludedArea(FVector& Position);
 
 protected:
 
@@ -472,4 +500,5 @@ public:
 	FORCEINLINE UFUNCTION() FVector GetCurrentPosition() const { return CurrentPosition; }
 	FORCEINLINE UFUNCTION() void SetCanMove(const bool CanMove) { bCanMove = CanMove; }
 	FORCEINLINE UFUNCTION() void SetLegIndex(const int32 Index) { LegIndex = Index; }
+	FORCEINLINE UFUNCTION() void ResetCanRayscastDirection(){bCanRaycastDirection = true;}
 };

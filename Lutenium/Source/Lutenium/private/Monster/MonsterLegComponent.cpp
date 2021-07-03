@@ -17,12 +17,12 @@ UMonsterLegComponent::UMonsterLegComponent()
 
 	// obstacle movement
 	LerpAlphaValueMovingLegWhenThereIsAnObstacle = 0.4f;
-
+	BodyBoneName = "Body";
 
 	// Directional obstacle
 	AddedHightForRaycastForDirectionalObstacle = 35000.f;
 	RaycastDirectionalVectorDistance = 20000.f;
-
+	DirectionalRaycastBeggingThreshold =0.2f;
 	// DEBUG
 	DEBUG_Thickness = 1500.f;
 	DEBUG_LifeTime = 5.f;
@@ -189,6 +189,14 @@ bool UMonsterLegComponent::RaycastToTheHighestPosition(const FVector &StartPos, 
 	{
 		FinishPosition = RaycastResult;
 		return true;
+	}else
+	{
+		RaycastResult = Raycast(MiddlePosition, EndPos, HitResult);
+		if(HitResult.bBlockingHit)
+		{
+			FinishPosition = RaycastResult;
+			return true;
+		}
 	}
 	return false;
 }
@@ -274,6 +282,11 @@ void UMonsterLegComponent::StartMovingLeg(const FVector HitLocation)
 
 	FTimerHandle StepHandler;
 	GetWorld()->GetTimerManager().SetTimer(StepHandler, this, &UMonsterLegComponent::StopMoving, StepTime, false);
+
+	// directional raycast
+	bCanRaycastDirection = false;
+	FTimerHandle DirectionalRaycastThresholdTimerHandler;
+	GetWorld()->GetTimerManager().SetTimer(DirectionalRaycastThresholdTimerHandler, this, &UMonsterLegComponent::ResetCanRayscastDirection,DirectionalRaycastBeggingThreshold,false);
 }
 
 void UMonsterLegComponent::StopMoving()
@@ -302,7 +315,7 @@ void UMonsterLegComponent::MoveLeg(float DeltaTime)
 
 bool UMonsterLegComponent::RaycastWhileMovingForDirectionalObstacle()
 {
-	if(!bShouldRaycastForDirectionalObstacle)
+	if(!bShouldRaycastForDirectionalObstacle || !bCanRaycastDirection)
 	{
 		return false;
 	}
@@ -412,6 +425,10 @@ bool UMonsterLegComponent::RaycastWhileMoving(const FVector& StartPos, const FVe
 		FVector ObstaclePosition = Raycast(StartPos, EndPos, HitResult);
 		if (HitResult.bBlockingHit)
 		{
+			if(IsPositionInTheExcludedArea(ObstaclePosition))
+			{
+				return false;
+			}
 			ObstacleHitPosition = ObstaclePosition;
 			bIsThereAnObstacle = true;
 			return true;
@@ -419,6 +436,21 @@ bool UMonsterLegComponent::RaycastWhileMoving(const FVector& StartPos, const FVe
 	}
 	return false;
 
+}
+
+bool UMonsterLegComponent::IsPositionInTheExcludedArea(FVector& Position)
+{
+	if(!bShouldExcludeBodyArea)
+	{
+		return false;
+	}
+
+	FVector BodyPosition = Mesh->GetBoneLocation(BodyBoneName, EBoneSpaces::WorldSpace);
+	if(FVector::Distance(BodyPosition, Position) < ExcludedBodyAreaRadius)
+	{
+		return true;
+	}
+	return false;
 }
 
 
