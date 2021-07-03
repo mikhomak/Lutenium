@@ -17,7 +17,10 @@ UMonsterLegComponent::UMonsterLegComponent()
 
 	// obstacle movement
 	LerpAlphaValueMovingLegWhenThereIsAnObstacle = 0.4f;
+	// exclusion
 	BodyBoneName = "Body";
+	ExcludedBodyAreaRadius = 15000.f;
+	bShouldExcludeBodyArea = true;
 
 	// Directional obstacle
 	AddedHightForRaycastForDirectionalObstacle = 35000.f;
@@ -180,9 +183,6 @@ bool UMonsterLegComponent::RaycastToTheHighestPosition(const FVector &StartPos, 
 	}
 
 	// Setting Highest point
-	const float HighestZLocation = FMath::Max(StartPos.Z, EndPos.Z) + AddedHightStep;
-	FVector MiddlePosition = FMath::Lerp(StartPos, EndPos, 0.5f);
-	MiddlePosition.Z = HighestZLocation;
 	FHitResult HitResult;
 	FVector RaycastResult = Raycast(StartPos, MiddlePosition, HitResult);
 	if(HitResult.bBlockingHit)
@@ -276,6 +276,10 @@ void UMonsterLegComponent::StartMovingLeg(const FVector HitLocation)
 	StartPosition = CurrentPosition;
 	FinishPosition = HitLocation;
 
+	const float HighestZLocation = FMath::Max(StartPosition.Z, FinishPosition.Z) + AddedHightStep;
+	MiddlePosition = (StartPosition + FinishPosition) / 2;
+	MiddlePosition.Z = HighestZLocation;
+
 	HighestPoint = FMath::Max(StartPosition.Z, FinishPosition.Z) + AddedHightStep;
 
 	bMoving = true;
@@ -325,9 +329,7 @@ bool UMonsterLegComponent::RaycastWhileMovingForDirectionalObstacle()
 	// lookin for middle point of the step
 	if(!bHasReachedHighestPoint)
 	{
-		const float HighestZLocation = FMath::Max(StartPosition.Z, FinishPosition.Z) + AddedHightStep;
-		GoalPosition = (StartPosition + FinishPosition) / 2;
-		GoalPosition.Z = HighestZLocation;
+		GoalPosition = MiddlePosition;
 	}
 	// the leg is going down
 	// looking for the finish point of the step

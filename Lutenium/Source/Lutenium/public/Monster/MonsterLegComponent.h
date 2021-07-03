@@ -231,34 +231,101 @@ public:
 
 
 	// -----------------------------------------------------------------------------------------------------------
-	// Obstacle
+	// Directional Obstacle
 	// -----------------------------------------------------------------------------------------------------------
 
 	/**
 	 * While moving, should we raycast for the direction that the leg is moving
 	 * If raycast finds a hit, then chaning FinishPosition to this hit location
+	 * The direction is calculated as following:
+	 *		1) If the leg hasn't yet reached the highest point (bHasReachedHighestPoint == false), then the legs is moving up, and the direction is CurrentPosition -> MiddlePosition (calculated internally)
+	 *		2) If the leg is moving down from the MiddlePosition(second half of the step), then the direction is CurrentPosition -> FinishPosition
+	 * If there was a hit, then we are getting this location and raycasting from the TOP vertically down to this position and storing this position in FinishPosition
+	 * By doing that the leg position will always be on top of the obstacle
+	 * 
+	 * To prevent leg from stucking in the same place in case of some strange obstacle, there is a DirectionalRaycastBeggingThreshold that prevents raycasting for some time
+	 * This thershold controls bCanRaycastDirection, that indicates whenever we can to directional raycast 
+	 *
+	 * @see bCanRaycastDirection
+	 * @see RaycastWhileMovingForDirectionalObstacle()
+	 * @see DirectionalRaycastBeggingThreshold
+	 * @warning Changes FinishPosition!!
+	 * @warning only works with bCanRaycastDirection
+	 * @warning while moving!
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle|Directional")
 	bool bShouldRaycastForDirectionalObstacle;
 
+	/**
+	 * Directional raycast is normalized, so we need the length to know for how long we should be raycasting
+	 *
+	 * @see bShouldRaycastForDirectionalObstacle
+	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle|Directional", meta=(EditCondition="bShoudlRaycastToTheMiddleDirection"))
 	float RaycastDirectionalVectorDistance;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle|Directional")
+	/**
+	 * When there is a directional hit we need to raycast from the top to this position to find an appropiate location on the roof of the object
+	 *
+	 * @see bShouldRaycastForDirectionalObstacle
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle|Directional", meta=(EditCondition="bShoudlRaycastToTheMiddleDirection"))
 	float AddedHightForRaycastForDirectionalObstacle;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle|Directional")
+	/**
+	 * Determins whenever we can directional raycast
+	 * When the leg starats moving, we set this value to false
+	 * And starting the timer to ResetCanRayscastDirection() which sets this value to true so we can raycast
+	 *
+	 * @see bShouldRaycastForDirectionalObstacle
+	 * @see DirectionalRaycastBeggingThreshold
+	 * @see ResetCanRayscastDirection()
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle|Directional", meta=(EditCondition="bShoudlRaycastToTheMiddleDirection"))
 	bool bCanRaycastDirection;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle|Directional")
+	/**
+	 * Time threshold to start the directional raycast
+	 * When the leg starats moving, we set this value to false
+	 * And starting the timer to ResetCanRayscastDirection() which sets this value to true so we can raycast
+	 * 
+	 * @see bCanRaycastDirection
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle|Directional", meta=(EditCondition="bShoudlRaycastToTheMiddleDirection"))
 	float DirectionalRaycastBeggingThreshold;
 
+	// -----------------------------------------------------------------------------------------------------------
+	// Exclusion
+	// -----------------------------------------------------------------------------------------------------------
+
+	/**
+	 * While checking for obstacles when the legs are moving (bShouldRaycastAllJointsWhileMoving == true)
+	 * We exclude the body area, so even if there is an obstacle, we won't take it in considreation because it's too close to the body
+	 * The reason why we are doing this is to prevent strange leg behvaiour because it will fly around when the position is too close to the origin to the leg (aka body)
+	 *
+	 * The exlusion is calculated from the BodyBoneName with ExcludedBodyAreaRadius
+	 * If the ObstaclePosition inside of this sphere, don't consider it as a valid position
+	 *
+	 * Maybe we don't need this funcionallity by adjusting the IK with blend direction or pole vectors by damn bruh
+	 *
+	 * @todo add pole vector or bend direction
+	 * @see bShouldRaycastAllJointsWhileMoving
+	 * @warning while moving!
+	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle|Exclusion")
 	bool bShouldExcludeBodyArea;
 
+	/**
+	 * The radius from the bone for an excluded area
+	 *
+	 * @see bShouldExcludeBodyArea
+	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle|Exclusion")
 	float ExcludedBodyAreaRadius;
 
+	/**
+	 * The body bone name for the exlusion area
+	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg|Obstacle|Exclusion")
 	FName BodyBoneName;
 
@@ -340,10 +407,50 @@ private:
 	 */
 	bool RaycastJointArray();
 
+	/**
+	 * While moving, should we raycast for the direction that the leg is moving
+	 * If raycast finds a hit, then chaning FinishPosition to this hit location
+	 * The direction is calculated as following:
+	 *		1) If the leg hasn't yet reached the highest point (bHasReachedHighestPoint == false), then the legs is moving up, and the direction is CurrentPosition -> MiddlePosition (calculated internally)
+	 *		2) If the leg is moving down from the MiddlePosition(second half of the step), then the direction is CurrentPosition -> FinishPosition
+	 * If there was a hit, then we are getting this location and raycasting from the TOP vertically down to this position and storing this position in FinishPosition
+	 * By doing that the leg position will always be on top of the obstacle
+	 * 
+	 * To prevent leg from stucking in the same place in case of some strange obstacle, there is a DirectionalRaycastBeggingThreshold that prevents raycasting for some time
+	 * This thershold controls bCanRaycastDirection, that indicates whenever we can to directional raycast 
+	 *
+	 * Invokes in MoveLeg()
+	 * For the ObstaclePosition uses RaycastObstaclePositionFromTheDownVector so we always get the roof position of an obstacle
+	 *
+	 * @returns true if there was an obstacle, false in other cases
+	 * @see bCanRaycastDirection
+	 * @see bShouldRaycastForDirectionalObstacle
+	 * @see DirectionalRaycastBeggingThreshold
+	 * @warning Changes FinishPosition!!
+	 * @warning only works with bShouldRaycastForDirectionalObstacle
+	 * @warning while moving!
+	 */
 	bool RaycastWhileMovingForDirectionalObstacle();
 	
+	/**
+	 * Method to raycast from the top to the goal position
+	 * That way we can always find the roof location of the obstacle (GoalPosition)
+	 *
+	 * @param GoalPosition - position of an obstacle
+	 * @param HitResult - OutHitResult to check if there was a hit
+	 * @return Roof Position of GoalPosition
+	 */
 	FVector RaycastObstaclePositionFromTheDownVector(const FVector& GoalPosition, FHitResult& HitResult);
 
+	/**
+	 * Checks whenever the position from RaycastWhileMoving() was in the excluded zone
+	 *
+	 * @param Position to check
+	 * @return true if the position was excluded, false in other cases
+	 * @see bShouldExcludeBodyArea
+	 * @warning while moving!
+	 * @warning only working with bShouldExcludeBodyArea == true
+	 */
 	bool IsPositionInTheExcludedArea(FVector& Position);
 
 protected:
@@ -356,14 +463,14 @@ protected:
 	 * Defines if the leg is moving right now (Is in the timeline)
 	 * If it is moving, the leg ain't raycasting
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg")
+	UPROPERTY(BlueprintReadWrite, Category = "Leg")
 	bool bMoving;
 
 	/**
 	 * Defines if the leg should move or not
 	 * Being set from EnemyMonsterPawn by SetCanMove()
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg")
+	UPROPERTY(BlueprintReadWrite, Category = "Leg")
 	bool bCanMove;
 
 	/**
@@ -371,7 +478,7 @@ protected:
 	 * Enables in MoveLeg() when the leg has reached the highest point
 	 * Disables in StopMoving();
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg")
+	UPROPERTY(BlueprintReadWrite, Category = "Leg")
 	bool bHasReachedHighestPoint;
 
 	/**
@@ -429,20 +536,34 @@ protected:
 	 * Updates at MoveLeg()
 	 * Resets at StopMoving()
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Leg")
+	UPROPERTY(BlueprintReadOnly, Category = "Leg")
 	float CurrentStepTime;
 
 	/**
 	 * Start position of the step (CurrentPosition)
+	 *
+	 * Updated in StartMovingLeg()
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg")
+	UPROPERTY(BlueprintReadWrite, Category = "Leg")
 	FVector StartPosition;
 
 	/**
 	 * Finish position of the step (RaycastPosition)
+	 *
+	 * Updated in StartMovingLeg()
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Leg")
+	UPROPERTY(BlueprintReadWrite, Category = "Leg")
 	FVector FinishPosition;
+
+	/**
+	 * Middle position of the step
+	 * Takes the middle position of StartPosition and FinishPosition and adds AddedHighestStep
+	 * Z - Max(StartPosition.Z, FinishPosition.Z) + AddedHightStep
+	 * 
+	 * Updated in StartMovingLeg()
+	 */
+	UPROPERTY(BlueprintReadWrite, Category = "Leg")
+	FVector	MiddlePosition;
 
 	// -----------------------------------------------------------------------------------------------------------
 	// Debug
