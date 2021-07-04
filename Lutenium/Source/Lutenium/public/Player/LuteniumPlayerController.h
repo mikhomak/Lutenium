@@ -5,6 +5,31 @@
 
 #include "LuteniumPlayerController.generated.h"
 
+
+
+USTRUCT(BlueprintType)
+struct FPlayerPauseGame
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Pause")
+	bool bShouldUpdatePausing;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Pause")
+	bool bPauseTheGame;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Pause")
+	bool bShowMouseCursor;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Pause")
+	bool bUseDefaultPauseMapping;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Pause")
+	class UInputMappingContext* NewInputMapping;
+
+	FPlayerPauseGame(){};
+};
+
 /** 
  * Player controller with enhanced input system
  */
@@ -17,9 +42,13 @@ class ALuteniumPlayerController : public APlayerController
 	// Pause Menu
 	// ------------------------------------------------------------------
 public:
+
 	/**
 	 * Activates or deactivates the pause menu widget
 	 * Checks whenever bIsPauseMenuActive to activate/deactivate menu widget
+	 * Uses ResumeGame()
+	 * Uses OnPauseTheGame()
+	 *
 	 * @param bActivate - Activate pause menu?
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Pause Menu")
@@ -35,6 +64,7 @@ public:
 
 	/**
 	 * Events happens when the menu has toggled
+	 * 
 	 * @param bActivate - Is current menu active or deactivated?
 	 */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Pause Menu")
@@ -82,9 +112,38 @@ public:
 
 	/**
 	 * Sets input mapping for the this controller previously clearing all mappings
+	 *
+	 * @param InputMapping - new input mapping to set to the current input system
 	 */
 	UFUNCTION(BlueprintCallable, Category="Input|Mapping")
 	void SetClearInputMapping(class UInputMappingContext* InputMapping);
+
+	// ------------------------------------------------------------------
+	// Pausing the game
+	// ------------------------------------------------------------------
+	
+	/**
+	 * Pausing the game
+	 * Not necessarily to show the pause menu (like showing widget tutorials and such)
+	 * By using FPlayerPauseGame we can update the settings inside the controller
+	 * However it's better to use this funciton only to update the player-related functionallity (input, etc..)
+	 * And do the rest in GameMode/Instance
+	 *
+	 * @param PlayerPauseGameSettings to update the setting for the pausing(like disabling input and such)
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Pausing")
+	void OnPauseTheGame(FPlayerPauseGame& PlayerPauseGameSettings);
+
+
+	/**
+	 * Resuming game
+	 * Forcing SetPause(false)
+	 * Force disabling the cursour
+	 * And sets the Input Mapping to GameInputMapping
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Pausing")
+	void ResumeGame();
+
 protected:
 	
 	virtual void SetupInputComponent() override;

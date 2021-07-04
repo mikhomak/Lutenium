@@ -45,20 +45,22 @@ void ALuteniumPlayerController::ActivatePauseMenu(bool bActivate)
     // activate pause menu
     if(bActivate && !bIsPauseMenuActive)
     {
-        SetPause(true);
+        // Pause settings
+        FPlayerPauseGame PauseMenuSettings;
+        PauseMenuSettings.bShouldUpdatePausing = true;
+        PauseMenuSettings.bPauseTheGame = true;
+        OnPauseTheGame(PauseMenuSettings);
+
         PauseMenuWidget->AddToViewport(1);
-        bShowMouseCursor = true;
-        SetClearInputMapping(PauseMenuInputMapping);
         bIsPauseMenuActive = true;
         OnTogglePauseMenu(bActivate);
     }
+    // resuming pause menu
     else if(!bActivate && bIsPauseMenuActive)
     {
-        SetPause(false);
         PauseMenuWidget->RemoveFromParent();
-        bShowMouseCursor = false;
         bIsPauseMenuActive = false;
-        SetClearInputMapping(GameInputMapping);
+        ResumeGame();
         OnTogglePauseMenu(bActivate);
     }
 }
@@ -77,4 +79,37 @@ void ALuteniumPlayerController::SetClearInputMapping(class UInputMappingContext*
         Subsystem->ClearAllMappings();
         Subsystem->AddMappingContext(InputMapping, 1);
     }
+}
+
+
+void ALuteniumPlayerController::OnPauseTheGame(FPlayerPauseGame& PlayerPauseGameSettings)
+{
+
+    // Pause/resume the game?
+    if(PlayerPauseGameSettings.bShouldUpdatePausing)
+    {
+        SetPause(PlayerPauseGameSettings.bPauseTheGame);
+    }
+    
+    // Cursor
+    bShowMouseCursor = PlayerPauseGameSettings.bShowMouseCursor;
+
+    // Input mapping
+    if(PlayerPauseGameSettings.bUseDefaultPauseMapping)
+    {
+        SetClearInputMapping(PauseMenuInputMapping);
+    }
+    else
+    {
+        SetClearInputMapping(PlayerPauseGameSettings.NewInputMapping);
+    }
+
+
+}
+
+void ALuteniumPlayerController::ResumeGame()
+{
+    SetPause(false);
+    bShowMouseCursor = false;
+    SetClearInputMapping(GameInputMapping);
 }
