@@ -49,6 +49,7 @@ void ALuteniumPlayerController::ActivatePauseMenu(bool bActivate)
         FPlayerPauseGame PauseMenuSettings;
         PauseMenuSettings.bShouldUpdatePausing = true;
         PauseMenuSettings.bPauseTheGame = true;
+        PauseMenuSettings.bUseDefaultPauseMapping = true;
         OnPauseTheGame(PauseMenuSettings);
 
         PauseMenuWidget->AddToViewport(1);
@@ -82,7 +83,7 @@ void ALuteniumPlayerController::SetClearInputMapping(class UInputMappingContext*
 }
 
 
-void ALuteniumPlayerController::OnPauseTheGame(FPlayerPauseGame& PlayerPauseGameSettings)
+void ALuteniumPlayerController::OnPauseTheGame(const FPlayerPauseGame& PlayerPauseGameSettings)
 {
 
     // Pause/resume the game?

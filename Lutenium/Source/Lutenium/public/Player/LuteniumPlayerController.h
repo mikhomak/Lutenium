@@ -132,7 +132,7 @@ public:
 	 * @param PlayerPauseGameSettings to update the setting for the pausing(like disabling input and such)
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Pausing")
-	void OnPauseTheGame(FPlayerPauseGame& PlayerPauseGameSettings);
+	void OnPauseTheGame(const FPlayerPauseGame& PlayerPauseGameSettings);
 
 
 	/**
