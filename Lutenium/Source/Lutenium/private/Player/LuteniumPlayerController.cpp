@@ -50,6 +50,7 @@ void ALuteniumPlayerController::ActivatePauseMenu(bool bActivate)
         PauseMenuSettings.bShouldUpdatePausing = true;
         PauseMenuSettings.bPauseTheGame = true;
         PauseMenuSettings.bUseDefaultPauseMapping = true;
+        PauseMenuSettings.bShowMouseCursor = false;
         OnPauseTheGame(PauseMenuSettings);
 
         PauseMenuWidget->AddToViewport(1);
