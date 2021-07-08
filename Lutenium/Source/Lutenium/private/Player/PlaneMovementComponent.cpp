@@ -160,6 +160,8 @@ void UPlaneMovementComponent::AddThrust(float DeltaTime)
     {
         return;
     }
+    // If the acceleration somehow is beyond the MaxAcceleration,
+    // We don't force clamp it, but rather lerping it into MaxAcceleration
     float Speed = CurrentAcceleration > MaxAcceleration
                             ? FMath::Lerp(MaxAcceleration, CurrentAcceleration, MaxSpeedLerpAlpha)
                             : CurrentAcceleration;
@@ -180,7 +182,7 @@ void UPlaneMovementComponent::CalculateAcceleration()
     CurrentAcceleration += bThrustUp
                                ? ThrustUpAcceleration
                                : (bThrusting ? ThrustDownAcceleration : NoThrustDeceleration);
-    CurrentAcceleration = FMath::Clamp(CurrentAcceleration, MinThrustAcceleration, MaxAcceleration);
+    CurrentAcceleration = FMath::Clamp(CurrentAcceleration, MinAcceleration, MaxAcceleration);
 }
 
 void UPlaneMovementComponent::AddGravityForce(float DeltaTime) const
